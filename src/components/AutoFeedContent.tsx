@@ -1,0 +1,1274 @@
+import React, { useState, useEffect } from 'react';
+import { 
+  Code, Copy, Check, Plus, Terminal, Zap, Sparkles, 
+  Layers, RefreshCw, AlertCircle, Play, Pause, Globe, CheckCircle2, 
+  ShieldCheck, Flame, Rss, ArrowUpRight, ExternalLink, Trash2, 
+  SlidersHorizontal, CheckSquare, Eye, Radio, Server, Clock, Search
+} from 'lucide-react';
+import { JobAlert, ScraperSource, ScrapedPost, JobCategory } from '../types';
+
+interface AutoFeedContentProps {
+  onPushJob: (job: JobAlert) => Promise<void> | void;
+  onBulkPushJobs?: (jobs: JobAlert[]) => Promise<void> | void;
+  onToast: (msg: string) => void;
+  isAutoSyncActive: boolean;
+  setIsAutoSyncActive: (active: boolean) => void;
+  syncLogs: Array<{ id: number; time: string; message: string; type: string }>;
+}
+
+export const AutoFeedContent: React.FC<AutoFeedContentProps> = ({
+  onPushJob,
+  onBulkPushJobs,
+  onToast,
+  isAutoSyncActive,
+  setIsAutoSyncActive,
+  syncLogs
+}) => {
+  const [activeSubTab, setActiveSubTab] = useState<'scrapers' | 'rss_feeds' | 'sources' | 'webhook' | 'logs'>('scrapers');
+  
+  // Sources state
+  const [sources, setSources] = useState<ScraperSource[]>([]);
+  const [isLoadingSources, setIsLoadingSources] = useState(false);
+  
+  // Scraped Queue
+  const [scrapedQueue, setScrapedQueue] = useState<ScrapedPost[]>([]);
+  const [isScraping, setIsScraping] = useState(false);
+  const [selectedQueueIds, setSelectedQueueIds] = useState<Set<string>>(new Set());
+  const [categoryFilter, setCategoryFilter] = useState<string>('all');
+  
+  // Custom Source Modal / Form
+  const [showAddSourceModal, setShowAddSourceModal] = useState(false);
+  const [newSourceName, setNewSourceName] = useState('');
+  const [newSourceUrl, setNewSourceUrl] = useState('');
+  const [newSourceType, setNewSourceType] = useState<'rss' | 'html_scraper' | 'api'>('rss');
+  const [newSourceCategory, setNewSourceCategory] = useState<JobCategory>('latest-jobs');
+  const [newSourceState, setNewSourceState] = useState('Central');
+
+  // JSON Webhook input
+  const [customJsonInput, setCustomJsonInput] = useState('');
+  const [copiedCode, setCopiedCode] = useState<string | null>(null);
+
+  // RSS Feed Preview
+  const [rssCategoryFilter, setRssCategoryFilter] = useState('');
+  const [rssPreviewItems, setRssPreviewItems] = useState<any[]>([]);
+  const [loadingRssPreview, setLoadingRssPreview] = useState(false);
+
+  // Fetch Sources on load
+  const fetchSources = async () => {
+    setIsLoadingSources(true);
+    try {
+      const res = await fetch('/api/v1/scraper/sources');
+      const data = await res.json();
+      if (data.success && Array.isArray(data.sources)) {
+        setSources(data.sources);
+      }
+    } catch (err) {
+      console.warn('Failed to load scraper sources:', err);
+    } finally {
+      setIsLoadingSources(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchSources();
+  }, []);
+
+  // Fetch RSS Preview
+  const fetchRssPreview = async (cat?: string) => {
+    setLoadingRssPreview(true);
+    try {
+      const query = cat ? `?category=${cat}` : '';
+      const res = await fetch(`/api/v1/rss/preview${query}`);
+      const data = await res.json();
+      if (data.success && Array.isArray(data.items)) {
+        setRssPreviewItems(data.items);
+      }
+    } catch (err) {
+      console.warn('Failed to preview RSS feed:', err);
+    } finally {
+      setLoadingRssPreview(false);
+    }
+  };
+
+  useEffect(() => {
+    if (activeSubTab === 'rss_feeds') {
+      fetchRssPreview(rssCategoryFilter);
+    }
+  }, [activeSubTab, rssCategoryFilter]);
+
+  // Run Scraper Engine
+  const handleTriggerScraper = async (sourceId?: string) => {
+    setIsScraping(true);
+    onToast(sourceId ? '⏳ Scraping selected portal feed...' : '⏳ Automated Scraper starting across all active feeds...');
+    try {
+      const res = await fetch('/api/v1/scraper/run', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ sourceId })
+      });
+      const data = await res.json();
+      if (data.success && Array.isArray(data.posts)) {
+        setScrapedQueue(prev => {
+          // Prepend new unique items
+          const existingTitles = new Set(prev.map(p => p.title.toLowerCase().trim()));
+          const newItems = data.posts.filter((p: ScrapedPost) => !existingTitles.has(p.title.toLowerCase().trim()));
+          return [...newItems, ...prev];
+        });
+        fetchSources(); // Refresh last scraped timestamp
+        onToast(`✅ Scraped ${data.totalScraped} latest alerts from ${data.sourcesProcessed} government feeds!`);
+      } else {
+        onToast(`⚠️ Scraper responded: ${data.error || 'No new alerts found'}`);
+      }
+    } catch (err: any) {
+      onToast(`❌ Scraper failed: ${err.message}`);
+    } finally {
+      setIsScraping(false);
+    }
+  };
+
+  // Auto-Ingest Single Post
+  const handleApproveSingle = async (post: ScrapedPost) => {
+    const todayStr = new Date().toLocaleDateString('en-GB').replace(/\//g, '-');
+    const newJob: JobAlert = {
+      id: `job-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
+      title: post.title,
+      category: post.category,
+      postDate: post.postDate || todayStr,
+      isNew: true,
+      state: post.state || 'Central',
+      shortInfo: post.shortInfo || `Extracted via Automated Web Scraper from ${post.sourceName}`,
+      dates: post.dates || { start: todayStr, last: 'Check Official Notification' },
+      fees: post.fees || { general: '₹100', scSt: '₹0' },
+      links: post.links || { apply: 'https://india.gov.in', official: 'https://india.gov.in', notification: 'https://india.gov.in' }
+    };
+
+    try {
+      await onPushJob(newJob);
+    } catch (err) {
+      console.warn('Error in onPushJob:', err);
+    }
+
+    // Call backend auto-ingest
+    try {
+      await fetch('/api/v1/scraper/auto-ingest', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ posts: [newJob] })
+      });
+    } catch (e) {
+      console.warn('Backend sync warning:', e);
+    }
+
+    // Remove from queue
+    setScrapedQueue(prev => prev.filter(p => p.id !== post.id));
+    onToast(`🚀 Approved & Published: ${post.title.substring(0, 35)}...`);
+  };
+
+  // Bulk Ingest Selected
+  const handleBulkApproveSelected = async () => {
+    const toIngest = scrapedQueue.filter(p => selectedQueueIds.has(p.id));
+    if (toIngest.length === 0) {
+      onToast('⚠️ Select alerts from the queue to approve.');
+      return;
+    }
+
+    const todayStr = new Date().toLocaleDateString('en-GB').replace(/\//g, '-');
+    const newJobs: JobAlert[] = toIngest.map((post, idx) => ({
+      id: `job-${Date.now()}-${idx}-${Math.floor(Math.random() * 1000)}`,
+      title: post.title,
+      category: post.category,
+      postDate: post.postDate || todayStr,
+      isNew: true,
+      state: post.state || 'Central',
+      shortInfo: post.shortInfo || `Extracted via Automated Web Scraper from ${post.sourceName}`,
+      dates: post.dates || { start: todayStr, last: 'Check Official Notification' },
+      fees: post.fees || { general: '₹100', scSt: '₹0' },
+      links: post.links || { apply: 'https://india.gov.in', official: 'https://india.gov.in', notification: 'https://india.gov.in' }
+    }));
+
+    try {
+      if (onBulkPushJobs) {
+        await onBulkPushJobs(newJobs);
+      } else {
+        for (const j of newJobs) {
+          await onPushJob(j);
+        }
+      }
+    } catch (err) {
+      console.warn('Error in onBulkPushJobs:', err);
+    }
+
+    try {
+      await fetch('/api/v1/scraper/auto-ingest', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ posts: newJobs })
+      });
+    } catch (e) {
+      console.warn('Backend sync warning:', e);
+    }
+
+    setScrapedQueue(prev => prev.filter(p => !selectedQueueIds.has(p.id)));
+    setSelectedQueueIds(new Set());
+    onToast(`🎉 Bulk Ingested & Published ${toIngest.length} job notices to Portal!`);
+  };
+
+  // Discard Post
+  const handleDiscardPost = (id: string) => {
+    setScrapedQueue(prev => prev.filter(p => p.id !== id));
+    setSelectedQueueIds(prev => {
+      const next = new Set(prev);
+      next.delete(id);
+      return next;
+    });
+    onToast('🗑️ Alert discarded from queue.');
+  };
+
+  // Add Custom Source
+  const handleSaveNewSource = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newSourceName.trim() || !newSourceUrl.trim()) {
+      onToast('⚠️ Please enter both source name and URL');
+      return;
+    }
+
+    try {
+      const res = await fetch('/api/v1/scraper/sources', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: newSourceName,
+          url: newSourceUrl,
+          type: newSourceType,
+          defaultCategory: newSourceCategory,
+          state: newSourceState,
+          enabled: true
+        })
+      });
+      const data = await res.json();
+      if (data.success) {
+        setSources(data.sources);
+        setShowAddSourceModal(false);
+        setNewSourceName('');
+        setNewSourceUrl('');
+        onToast(`✅ Feed source added: ${newSourceName}`);
+      }
+    } catch (err: any) {
+      onToast(`❌ Failed to save source: ${err.message}`);
+    }
+  };
+
+  // Delete Source
+  const handleDeleteSource = async (id: string) => {
+    try {
+      const res = await fetch(`/api/v1/scraper/sources/${id}`, { method: 'DELETE' });
+      const data = await res.json();
+      if (data.success) {
+        setSources(data.sources);
+        onToast('🗑️ Feed source removed');
+      }
+    } catch (err: any) {
+      onToast(`❌ Failed to delete source: ${err.message}`);
+    }
+  };
+
+  // Toggle Source Enabled
+  const handleToggleSource = async (src: ScraperSource) => {
+    try {
+      const res = await fetch('/api/v1/scraper/sources', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...src, enabled: !src.enabled })
+      });
+      const data = await res.json();
+      if (data.success) {
+        setSources(data.sources);
+        onToast(src.enabled ? `⏸️ Source paused: ${src.name}` : `▶️ Source activated: ${src.name}`);
+      }
+    } catch (err: any) {
+      onToast(`❌ Error updating source: ${err.message}`);
+    }
+  };
+
+  const copyToClipboard = (text: string, id: string) => {
+    navigator.clipboard.writeText(text);
+    setCopiedCode(id);
+    onToast("📋 Copied to Clipboard!");
+    setTimeout(() => setCopiedCode(null), 2500);
+  };
+
+  const pythonScraperCode = `
+# ==============================================================================
+# FastArc Sarkari Job Automated Web Scraper & RSS Ingestion Daemon
+# Run via Python Cron: (e.g. crontab: */30 * * * * python3 scraper_daemon.py)
+# ==============================================================================
+import requests
+import xml.etree.ElementTree as ET
+import time
+
+API_ENDPOINT = "https://fastarc.in/api/v1/sarkari-posts"
+API_SECRET = "FASTARC_SECRET_KEY_12345"
+
+def scrape_and_push(feed_url, default_category="latest-jobs"):
+    print(f"📡 Fetching RSS Feed from: {feed_url}")
+    try:
+        response = requests.get(feed_url, timeout=15)
+        if response.status_code == 200:
+            root = ET.fromstring(response.content)
+            for item in root.findall('.//item')[:5]:
+                title = item.find('title').text if item.find('title') is not None else 'Govt Notice'
+                link = item.find('link').text if item.find('link') is not None else 'https://india.gov.in'
+                desc = item.find('description').text if item.find('description') is not None else ''
+                
+                payload = {
+                    "title": title,
+                    "category": default_category,
+                    "postDate": time.strftime("%d-%m-%Y"),
+                    "isNew": True,
+                    "state": "Central",
+                    "shortInfo": desc[:250],
+                    "links": { "apply": link, "official": link }
+                }
+                
+                # Push to FastArc API Gateway
+                headers = {"Authorization": f"Bearer {API_SECRET}", "Content-Type": "application/json"}
+                res = requests.post(API_ENDPOINT, json=payload, headers=headers)
+                print(f"   ↳ Auto-Injected: {title} | Status: {res.status_code}")
+    except Exception as e:
+        print(f"❌ Scraper error: {e}")
+
+if __name__ == "__main__":
+    print("🚀 Running FastArc Multi-Portal Automated Scraper...")
+    scrape_and_push("https://employmentnews.gov.in/feed.rss", "latest-jobs")
+    scrape_and_push("https://rrbapply.gov.in/updates.rss", "admit-cards")
+`.trim();
+
+  const handleManualAutoFill = async () => {
+    if (!customJsonInput.trim()) {
+      onToast("⚠️ Paste a valid JSON object or payload first!");
+      return;
+    }
+    try {
+      const parsed = JSON.parse(customJsonInput);
+      const todayStr = new Date().toLocaleDateString('en-GB').replace(/\//g, '-');
+
+      const newJob: JobAlert = {
+        id: `auto-${Date.now()}`,
+        title: parsed.title || "Untitled Govt Notice",
+        category: (parsed.category as any) || "latest-jobs",
+        postDate: parsed.postDate || todayStr,
+        isNew: parsed.isNew !== undefined ? parsed.isNew : true,
+        state: parsed.state || "Central",
+        shortInfo: parsed.shortInfo || "Auto-filled via REST API Gateway.",
+        dates: parsed.dates || { start: todayStr, last: 'Check Official Notice' },
+        fees: parsed.fees || { general: '₹100', scSt: '₹0' },
+        links: parsed.links || { apply: 'https://india.gov.in', official: 'https://india.gov.in' }
+      };
+
+      try {
+        await fetch('/api/v1/sarkari-posts', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer FASTARC_SECRET_KEY_12345'
+          },
+          body: JSON.stringify(parsed)
+        });
+      } catch (err) {
+        console.warn('Backend API notification sync warning:', err);
+      }
+
+      onPushJob(newJob);
+      setCustomJsonInput('');
+      onToast(`🚀 Auto-Filled to Portal & Database: ${newJob.title.substring(0, 30)}...`);
+    } catch (e) {
+      onToast("❌ Invalid JSON Payload. Check bracket & quote format.");
+    }
+  };
+
+  const filteredQueue = scrapedQueue.filter(p => {
+    if (categoryFilter === 'all') return true;
+    return p.category === categoryFilter;
+  });
+
+  return (
+    <div className="space-y-6 text-slate-800 dark:text-slate-200">
+      
+      {/* Top Banner */}
+      <div className="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl relative overflow-hidden">
+        <div className="flex items-center justify-between flex-wrap gap-4 relative z-10">
+          <div className="flex items-center space-x-3.5">
+            <div className="p-3 bg-gradient-to-tr from-amber-500 to-rose-600 rounded-xl text-white shadow-lg shadow-amber-950/50">
+              <Rss className="w-6 h-6" />
+            </div>
+            <div>
+              <div className="flex items-center space-x-2.5">
+                <h2 className="text-xl font-black text-white tracking-tight">Automated Web Scrapers &amp; RSS Feeds Hub</h2>
+                <span className="bg-amber-500/20 text-amber-300 border border-amber-500/30 text-[10px] font-extrabold px-2.5 py-0.5 rounded-full uppercase tracking-wider">
+                  v3.0 Engine
+                </span>
+              </div>
+              <p className="text-xs text-slate-400 mt-0.5">
+                Auto-scrape official govt portals, parse live RSS XML feeds, auto-categorize alerts, and syndicate FastArc feeds.
+              </p>
+            </div>
+          </div>
+
+          {/* Quick Action Controls */}
+          <div className="flex items-center space-x-3">
+            <button
+              onClick={() => handleTriggerScraper()}
+              disabled={isScraping}
+              className="px-4 py-2.5 bg-gradient-to-r from-amber-500 to-rose-600 hover:from-amber-400 hover:to-rose-500 disabled:opacity-50 text-white text-xs font-black rounded-xl shadow-lg shadow-amber-950/40 transition-all flex items-center space-x-2 cursor-pointer"
+            >
+              <RefreshCw className={`w-4 h-4 ${isScraping ? 'animate-spin' : ''}`} />
+              <span>{isScraping ? 'Scraping All Feeds...' : 'Scrape All Feeds Now'}</span>
+            </button>
+
+            <button
+              onClick={() => {
+                setIsAutoSyncActive(!isAutoSyncActive);
+                onToast(isAutoSyncActive ? "⏸️ Auto-Sync Paused" : "▶️ Automated Background Scraper Watcher Active!");
+              }}
+              className={`px-3.5 py-2.5 rounded-xl border text-xs font-bold flex items-center space-x-2 transition-all cursor-pointer shadow-md ${
+                isAutoSyncActive
+                  ? 'bg-emerald-950/80 border-emerald-500/50 text-emerald-300 hover:bg-emerald-900/80'
+                  : 'bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-700'
+              }`}
+            >
+              {isAutoSyncActive ? <Pause className="w-4 h-4 text-emerald-400" /> : <Play className="w-4 h-4 text-amber-400" />}
+              <span>Auto-Watcher: {isAutoSyncActive ? 'ACTIVE' : 'PAUSED'}</span>
+              <span className={`w-2 h-2 rounded-full ${isAutoSyncActive ? 'bg-emerald-400 animate-ping' : 'bg-slate-500'}`}></span>
+            </button>
+          </div>
+        </div>
+
+        {/* Sub Navigation Tabs */}
+        <div className="flex items-center space-x-2 mt-6 pt-4 border-t border-slate-800/80 overflow-x-auto text-xs font-bold">
+          <button
+            onClick={() => setActiveSubTab('scrapers')}
+            className={`px-3.5 py-2 rounded-xl flex items-center space-x-2 transition-all cursor-pointer ${
+              activeSubTab === 'scrapers'
+                ? 'bg-amber-500 text-slate-950 font-extrabold shadow-sm'
+                : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
+            }`}
+          >
+            <Zap className="w-4 h-4" />
+            <span>Scraper &amp; Ingestion Queue</span>
+            {scrapedQueue.length > 0 && (
+              <span className="bg-rose-600 text-white text-[10px] px-1.5 py-0.2 rounded-full font-black">
+                {scrapedQueue.length}
+              </span>
+            )}
+          </button>
+
+          <button
+            onClick={() => setActiveSubTab('rss_feeds')}
+            className={`px-3.5 py-2 rounded-xl flex items-center space-x-2 transition-all cursor-pointer ${
+              activeSubTab === 'rss_feeds'
+                ? 'bg-amber-500 text-slate-950 font-extrabold shadow-sm'
+                : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
+            }`}
+          >
+            <Rss className="w-4 h-4" />
+            <span>Public RSS XML Feeds</span>
+          </button>
+
+          <button
+            onClick={() => setActiveSubTab('sources')}
+            className={`px-3.5 py-2 rounded-xl flex items-center space-x-2 transition-all cursor-pointer ${
+              activeSubTab === 'sources'
+                ? 'bg-amber-500 text-slate-950 font-extrabold shadow-sm'
+                : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
+            }`}
+          >
+            <Server className="w-4 h-4" />
+            <span>Configured Sources ({sources.length})</span>
+          </button>
+
+          <button
+            onClick={() => setActiveSubTab('webhook')}
+            className={`px-3.5 py-2 rounded-xl flex items-center space-x-2 transition-all cursor-pointer ${
+              activeSubTab === 'webhook'
+                ? 'bg-amber-500 text-slate-950 font-extrabold shadow-sm'
+                : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
+            }`}
+          >
+            <Code className="w-4 h-4" />
+            <span>Developer Webhooks &amp; Bots</span>
+          </button>
+
+          <button
+            onClick={() => setActiveSubTab('logs')}
+            className={`px-3.5 py-2 rounded-xl flex items-center space-x-2 transition-all cursor-pointer ${
+              activeSubTab === 'logs'
+                ? 'bg-amber-500 text-slate-950 font-extrabold shadow-sm'
+                : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
+            }`}
+          >
+            <Terminal className="w-4 h-4" />
+            <span>Live Engine Logs</span>
+          </button>
+        </div>
+      </div>
+
+      {/* ========================================================================= */}
+      {/* SUB-TAB 1: SCRAPERS & INGESTION QUEUE */}
+      {/* ========================================================================= */}
+      {activeSubTab === 'scrapers' && (
+        <div className="space-y-6">
+          {/* Quick Trigger Cards for Official Portals */}
+          <div>
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-xs font-black uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
+                <Radio className="w-3.5 h-3.5 text-amber-500 animate-pulse" />
+                Active Government Feed Scrapers
+              </h3>
+              <span className="text-[11px] text-slate-500 font-medium">Click source to scrape individually</span>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
+              {sources.slice(0, 8).map(src => (
+                <div 
+                  key={src.id}
+                  className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-amber-500/50 p-3.5 rounded-xl shadow-xs transition-all flex flex-col justify-between"
+                >
+                  <div>
+                    <div className="flex items-center justify-between gap-1 mb-1.5">
+                      <span className="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+                        {src.type === 'rss' ? '📡 RSS Feed' : '🌐 Web Scraper'}
+                      </span>
+                      <span className={`w-2 h-2 rounded-full ${src.enabled ? 'bg-emerald-500' : 'bg-slate-400'}`}></span>
+                    </div>
+                    <h4 className="text-xs font-black text-slate-900 dark:text-white line-clamp-1">{src.name}</h4>
+                    <p className="text-[10px] text-slate-500 dark:text-slate-400 line-clamp-1 mt-0.5 font-mono">{src.url}</p>
+                  </div>
+
+                  <div className="mt-3 pt-2.5 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
+                    <span className="text-[10px] text-slate-400 font-medium">Last: {src.lastScraped || 'Pending'}</span>
+                    <button
+                      onClick={() => handleTriggerScraper(src.id)}
+                      disabled={isScraping}
+                      className="px-2.5 py-1 bg-amber-500/10 hover:bg-amber-500 text-amber-600 hover:text-slate-950 dark:text-amber-400 dark:hover:text-slate-950 rounded-lg text-[10px] font-extrabold transition-all cursor-pointer flex items-center gap-1"
+                    >
+                      <RefreshCw className="w-3 h-3" />
+                      <span>Fetch</span>
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Scraped Post Ingestion Queue */}
+          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm space-y-4">
+            <div className="flex items-center justify-between flex-wrap gap-3">
+              <div className="flex items-center space-x-2.5">
+                <span className="w-7 h-7 rounded-lg bg-amber-500/20 text-amber-500 font-black flex items-center justify-center text-xs">
+                  ⚡
+                </span>
+                <div>
+                  <h3 className="font-extrabold text-sm text-slate-900 dark:text-white">
+                    Live Scraped Alerts &amp; Auto-Ingestion Queue ({scrapedQueue.length})
+                  </h3>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">
+                    Review and approve alerts scraped automatically with intelligent classification.
+                  </p>
+                </div>
+              </div>
+
+              {/* Ingestion Batch Actions & Filter */}
+              <div className="flex items-center flex-wrap gap-2">
+                <select
+                  value={categoryFilter}
+                  onChange={(e) => setCategoryFilter(e.target.value)}
+                  className="px-3 py-1.5 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 rounded-lg text-xs font-bold focus:outline-none"
+                >
+                  <option value="all">All Categories</option>
+                  <option value="latest-jobs">Latest Jobs</option>
+                  <option value="admit-cards">Admit Cards</option>
+                  <option value="results">Results</option>
+                  <option value="answer-key">Answer Key</option>
+                  <option value="syllabus">Syllabus</option>
+                  <option value="admission">Admission</option>
+                  <option value="documents">Documents</option>
+                </select>
+
+                {scrapedQueue.length > 0 && (
+                  <>
+                    <button
+                      onClick={() => {
+                        if (selectedQueueIds.size === filteredQueue.length) {
+                          setSelectedQueueIds(new Set());
+                        } else {
+                          setSelectedQueueIds(new Set(filteredQueue.map(p => p.id)));
+                        }
+                      }}
+                      className="px-3 py-1.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5"
+                    >
+                      <CheckSquare className="w-3.5 h-3.5" />
+                      <span>{selectedQueueIds.size === filteredQueue.length ? 'Deselect All' : 'Select All'}</span>
+                    </button>
+
+                    <button
+                      onClick={handleBulkApproveSelected}
+                      disabled={selectedQueueIds.size === 0}
+                      className="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white rounded-lg text-xs font-extrabold transition-all cursor-pointer flex items-center gap-1.5 shadow-sm"
+                    >
+                      <CheckCircle2 className="w-3.5 h-3.5" />
+                      <span>Approve Selected ({selectedQueueIds.size})</span>
+                    </button>
+                  </>
+                )}
+              </div>
+            </div>
+
+            {/* Queue List */}
+            {scrapedQueue.length === 0 ? (
+              <div className="text-center py-12 px-4 border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-2xl bg-slate-50/50 dark:bg-slate-950/50">
+                <div className="w-12 h-12 rounded-full bg-amber-500/10 text-amber-500 flex items-center justify-center mx-auto mb-3">
+                  <Rss className="w-6 h-6" />
+                </div>
+                <h4 className="text-sm font-black text-slate-800 dark:text-slate-200">No Pending Scraped Alerts in Queue</h4>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 max-w-md mx-auto">
+                  Click <strong>"Scrape All Feeds Now"</strong> above to extract real-time notices from official employment portals and RSS feeds.
+                </p>
+                <button
+                  onClick={() => handleTriggerScraper()}
+                  disabled={isScraping}
+                  className="mt-4 px-4 py-2 bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-extrabold rounded-xl transition-all inline-flex items-center gap-2 cursor-pointer shadow-sm"
+                >
+                  <RefreshCw className={`w-4 h-4 ${isScraping ? 'animate-spin' : ''}`} />
+                  <span>Run Live Scraper Now</span>
+                </button>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {filteredQueue.map((post) => {
+                  const isSelected = selectedQueueIds.has(post.id);
+                  return (
+                    <div
+                      key={post.id}
+                      className={`p-4 rounded-xl border transition-all ${
+                        isSelected 
+                          ? 'bg-amber-50/40 dark:bg-amber-950/20 border-amber-500/60' 
+                          : 'bg-slate-50 dark:bg-slate-950 border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700'
+                      }`}
+                    >
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="flex items-start space-x-3">
+                          <input
+                            type="checkbox"
+                            checked={isSelected}
+                            onChange={(e) => {
+                              setSelectedQueueIds(prev => {
+                                const next = new Set(prev);
+                                if (e.target.checked) next.add(post.id);
+                                else next.delete(post.id);
+                                return next;
+                              });
+                            }}
+                            className="mt-1 rounded text-amber-600 focus:ring-amber-500 w-4 h-4 cursor-pointer"
+                          />
+                          <div>
+                            <div className="flex items-center flex-wrap gap-2 mb-1">
+                              <span className="bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 text-[10px] font-black uppercase px-2 py-0.5 rounded">
+                                {post.category}
+                              </span>
+                              <span className="bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-[10px] font-bold px-2 py-0.5 rounded">
+                                {post.state}
+                              </span>
+                              <span className="text-[10px] text-slate-500 dark:text-slate-400 font-mono">
+                                Source: {post.sourceName}
+                              </span>
+                              <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-bold">
+                                Confidence: {post.confidenceScore}%
+                              </span>
+                            </div>
+
+                            <h4 className="text-xs font-black text-slate-900 dark:text-white">{post.title}</h4>
+                            <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1 line-clamp-2">
+                              {post.shortInfo || 'Official public notice extracted via RSS webhook'}
+                            </p>
+
+                            <div className="flex items-center gap-4 mt-2 text-[10px] text-slate-500 font-medium">
+                              <span>📅 Date: {post.postDate}</span>
+                              {post.links?.apply && (
+                                <a 
+                                  href={post.links.apply} 
+                                  target="_blank" 
+                                  rel="noreferrer" 
+                                  className="text-amber-600 dark:text-amber-400 hover:underline flex items-center gap-0.5"
+                                >
+                                  Portal Link <ExternalLink className="w-2.5 h-2.5" />
+                                </a>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Action Buttons */}
+                        <div className="flex items-center space-x-2 shrink-0">
+                          <button
+                            onClick={() => handleApproveSingle(post)}
+                            className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-lg transition-all cursor-pointer flex items-center gap-1 shadow-xs"
+                          >
+                            <Check className="w-3.5 h-3.5" />
+                            <span>Approve &amp; Post</span>
+                          </button>
+                          <button
+                            onClick={() => handleDiscardPost(post.id)}
+                            className="p-1.5 text-slate-400 hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-all cursor-pointer"
+                            title="Discard alert"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* ========================================================================= */}
+      {/* SUB-TAB 2: PUBLIC RSS FEEDS (FASTARC XML SYNDICATION) */}
+      {/* ========================================================================= */}
+      {activeSubTab === 'rss_feeds' && (
+        <div className="space-y-6">
+          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm">
+            <div className="flex items-center space-x-3 mb-4">
+              <div className="p-3 bg-amber-500/10 text-amber-500 rounded-xl">
+                <Rss className="w-6 h-6" />
+              </div>
+              <div>
+                <h3 className="font-extrabold text-base text-slate-900 dark:text-white">FastArc Public RSS 2.0 Syndication Feeds</h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400">
+                  Allow news aggregators, Android apps, Telegram bots, and external websites to subscribe to your live job updates in standard RSS 2.0 XML format.
+                </p>
+              </div>
+            </div>
+
+            {/* Grid of Feed Endpoints */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+              
+              {/* Feed 1: All Alerts */}
+              <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 flex flex-col justify-between">
+                <div>
+                  <div className="flex items-center justify-between mb-1.5">
+                    <span className="text-xs font-black text-slate-900 dark:text-white flex items-center gap-1.5">
+                      <Flame className="w-4 h-4 text-amber-500" />
+                      All Government Job Alerts Feed
+                    </span>
+                    <span className="text-[10px] font-mono bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 px-2 py-0.5 rounded font-bold">
+                      RSS 2.0 XML
+                    </span>
+                  </div>
+                  <p className="text-xs text-slate-500 mb-3 font-mono bg-white dark:bg-slate-900 p-2 rounded-lg border border-slate-200 dark:border-slate-800 select-all">
+                    /api/v1/rss/feed.xml
+                  </p>
+                </div>
+                <div className="flex items-center justify-between gap-2">
+                  <a
+                    href="/api/v1/rss/feed.xml"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="px-3 py-1.5 bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 rounded-lg text-xs font-bold flex items-center gap-1 transition-all"
+                  >
+                    <ExternalLink className="w-3.5 h-3.5" />
+                    <span>View XML</span>
+                  </a>
+                  <button
+                    onClick={() => copyToClipboard(`${window.location.origin}/api/v1/rss/feed.xml`, 'all-rss')}
+                    className="px-3 py-1.5 bg-amber-500 hover:bg-amber-400 text-slate-950 rounded-lg text-xs font-extrabold flex items-center gap-1 transition-all cursor-pointer shadow-xs"
+                  >
+                    {copiedCode === 'all-rss' ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
+                    <span>{copiedCode === 'all-rss' ? 'Copied' : 'Copy Feed Link'}</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Feed 2: Latest Jobs Only */}
+              <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 flex flex-col justify-between">
+                <div>
+                  <div className="flex items-center justify-between mb-1.5">
+                    <span className="text-xs font-black text-slate-900 dark:text-white flex items-center gap-1.5">
+                      ⭐ Latest Vacancies &amp; Jobs Only
+                    </span>
+                    <span className="text-[10px] font-mono bg-rose-500/20 text-rose-600 dark:text-rose-400 px-2 py-0.5 rounded font-bold">
+                      Category Feed
+                    </span>
+                  </div>
+                  <p className="text-xs text-slate-500 mb-3 font-mono bg-white dark:bg-slate-900 p-2 rounded-lg border border-slate-200 dark:border-slate-800 select-all">
+                    /api/v1/rss/feed.xml?category=latest-jobs
+                  </p>
+                </div>
+                <div className="flex items-center justify-between gap-2">
+                  <a
+                    href="/api/v1/rss/feed.xml?category=latest-jobs"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="px-3 py-1.5 bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 rounded-lg text-xs font-bold flex items-center gap-1 transition-all"
+                  >
+                    <ExternalLink className="w-3.5 h-3.5" />
+                    <span>View XML</span>
+                  </a>
+                  <button
+                    onClick={() => copyToClipboard(`${window.location.origin}/api/v1/rss/feed.xml?category=latest-jobs`, 'jobs-rss')}
+                    className="px-3 py-1.5 bg-amber-500 hover:bg-amber-400 text-slate-950 rounded-lg text-xs font-extrabold flex items-center gap-1 transition-all cursor-pointer shadow-xs"
+                  >
+                    {copiedCode === 'jobs-rss' ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
+                    <span>{copiedCode === 'jobs-rss' ? 'Copied' : 'Copy Feed Link'}</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Feed 3: Admit Cards */}
+              <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 flex flex-col justify-between">
+                <div>
+                  <div className="flex items-center justify-between mb-1.5">
+                    <span className="text-xs font-black text-slate-900 dark:text-white flex items-center gap-1.5">
+                      📄 Admit Cards &amp; Hall Tickets Feed
+                    </span>
+                    <span className="text-[10px] font-mono bg-indigo-500/20 text-indigo-600 dark:text-indigo-400 px-2 py-0.5 rounded font-bold">
+                      Category Feed
+                    </span>
+                  </div>
+                  <p className="text-xs text-slate-500 mb-3 font-mono bg-white dark:bg-slate-900 p-2 rounded-lg border border-slate-200 dark:border-slate-800 select-all">
+                    /api/v1/rss/feed.xml?category=admit-cards
+                  </p>
+                </div>
+                <div className="flex items-center justify-between gap-2">
+                  <a
+                    href="/api/v1/rss/feed.xml?category=admit-cards"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="px-3 py-1.5 bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 rounded-lg text-xs font-bold flex items-center gap-1 transition-all"
+                  >
+                    <ExternalLink className="w-3.5 h-3.5" />
+                    <span>View XML</span>
+                  </a>
+                  <button
+                    onClick={() => copyToClipboard(`${window.location.origin}/api/v1/rss/feed.xml?category=admit-cards`, 'admit-rss')}
+                    className="px-3 py-1.5 bg-amber-500 hover:bg-amber-400 text-slate-950 rounded-lg text-xs font-extrabold flex items-center gap-1 transition-all cursor-pointer shadow-xs"
+                  >
+                    {copiedCode === 'admit-rss' ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
+                    <span>{copiedCode === 'admit-rss' ? 'Copied' : 'Copy Feed Link'}</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Feed 4: Results */}
+              <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 flex flex-col justify-between">
+                <div>
+                  <div className="flex items-center justify-between mb-1.5">
+                    <span className="text-xs font-black text-slate-900 dark:text-white flex items-center gap-1.5">
+                      🏆 Exam Results &amp; Cutoffs Feed
+                    </span>
+                    <span className="text-[10px] font-mono bg-teal-500/20 text-teal-600 dark:text-teal-400 px-2 py-0.5 rounded font-bold">
+                      Category Feed
+                    </span>
+                  </div>
+                  <p className="text-xs text-slate-500 mb-3 font-mono bg-white dark:bg-slate-900 p-2 rounded-lg border border-slate-200 dark:border-slate-800 select-all">
+                    /api/v1/rss/feed.xml?category=results
+                  </p>
+                </div>
+                <div className="flex items-center justify-between gap-2">
+                  <a
+                    href="/api/v1/rss/feed.xml?category=results"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="px-3 py-1.5 bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 rounded-lg text-xs font-bold flex items-center gap-1 transition-all"
+                  >
+                    <ExternalLink className="w-3.5 h-3.5" />
+                    <span>View XML</span>
+                  </a>
+                  <button
+                    onClick={() => copyToClipboard(`${window.location.origin}/api/v1/rss/feed.xml?category=results`, 'results-rss')}
+                    className="px-3 py-1.5 bg-amber-500 hover:bg-amber-400 text-slate-950 rounded-lg text-xs font-extrabold flex items-center gap-1 transition-all cursor-pointer shadow-xs"
+                  >
+                    {copiedCode === 'results-rss' ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
+                    <span>{copiedCode === 'results-rss' ? 'Copied' : 'Copy Feed Link'}</span>
+                  </button>
+                </div>
+              </div>
+
+            </div>
+
+            {/* Live RSS Feed Preview Box */}
+            <div className="mt-8 pt-6 border-t border-slate-200 dark:border-slate-800">
+              <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
+                <h4 className="text-xs font-black text-slate-900 dark:text-white uppercase tracking-wider flex items-center gap-1.5">
+                  <Eye className="w-4 h-4 text-amber-500" />
+                  Live RSS Feed Reader Preview
+                </h4>
+                <div className="flex items-center gap-2">
+                  <select
+                    value={rssCategoryFilter}
+                    onChange={(e) => setRssCategoryFilter(e.target.value)}
+                    className="px-3 py-1.5 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 rounded-lg text-xs font-bold"
+                  >
+                    <option value="">All Categories Feed</option>
+                    <option value="latest-jobs">Latest Jobs Feed</option>
+                    <option value="admit-cards">Admit Cards Feed</option>
+                    <option value="results">Results Feed</option>
+                    <option value="answer-key">Answer Key Feed</option>
+                    <option value="syllabus">Syllabus Feed</option>
+                  </select>
+                  <button
+                    onClick={() => fetchRssPreview(rssCategoryFilter)}
+                    className="p-1.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-lg text-slate-600 dark:text-slate-300"
+                    title="Refresh Preview"
+                  >
+                    <RefreshCw className={`w-3.5 h-3.5 ${loadingRssPreview ? 'animate-spin' : ''}`} />
+                  </button>
+                </div>
+              </div>
+
+              <div className="space-y-2 max-h-80 overflow-y-auto pr-1">
+                {rssPreviewItems.map((item) => (
+                  <div key={item.id} className="p-3 bg-slate-50 dark:bg-slate-950 rounded-xl border border-slate-200 dark:border-slate-800 flex items-center justify-between">
+                    <div>
+                      <div className="flex items-center gap-2 mb-0.5">
+                        <span className="text-[9px] font-extrabold uppercase px-1.5 py-0.2 bg-amber-500/20 text-amber-600 dark:text-amber-400 rounded">
+                          {item.category}
+                        </span>
+                        <span className="text-[10px] text-slate-400">📅 {item.postDate}</span>
+                      </div>
+                      <h5 className="text-xs font-bold text-slate-900 dark:text-white line-clamp-1">{item.title}</h5>
+                    </div>
+                    <span className="text-[10px] font-mono text-emerald-500 font-semibold shrink-0 ml-3">
+                      ✓ Valid Item
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+          </div>
+        </div>
+      )}
+
+      {/* ========================================================================= */}
+      {/* SUB-TAB 3: CONFIGURED SOURCES MANAGER */}
+      {/* ========================================================================= */}
+      {activeSubTab === 'sources' && (
+        <div className="space-y-6">
+          <div className="flex items-center justify-between flex-wrap gap-3">
+            <div>
+              <h3 className="font-extrabold text-sm text-slate-900 dark:text-white">Active Scraper &amp; RSS Feed Sources</h3>
+              <p className="text-xs text-slate-500 dark:text-slate-400">Manage target government website URLs, RSS endpoints, and automatic state mapping.</p>
+            </div>
+            <button
+              onClick={() => setShowAddSourceModal(true)}
+              className="px-4 py-2 bg-gradient-to-r from-amber-500 to-rose-600 hover:from-amber-400 hover:to-rose-500 text-white text-xs font-extrabold rounded-xl shadow-md transition-all flex items-center gap-1.5 cursor-pointer"
+            >
+              <Plus className="w-4 h-4" />
+              <span>Add Custom RSS / Scraper Source</span>
+            </button>
+          </div>
+
+          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden shadow-sm">
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-xs">
+                <thead className="bg-slate-50 dark:bg-slate-950/80 border-b border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400 uppercase font-black tracking-wider text-[10px]">
+                  <tr>
+                    <th className="py-3 px-4">Source Name &amp; URL</th>
+                    <th className="py-3 px-4">Type</th>
+                    <th className="py-3 px-4">Default Category</th>
+                    <th className="py-3 px-4">State</th>
+                    <th className="py-3 px-4">Last Scraped</th>
+                    <th className="py-3 px-4">Status</th>
+                    <th className="py-3 px-4 text-right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60 font-medium">
+                  {sources.map((src) => (
+                    <tr key={src.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors">
+                      <td className="py-3.5 px-4">
+                        <div className="font-extrabold text-slate-900 dark:text-white">{src.name}</div>
+                        <div className="text-[10px] text-slate-400 font-mono line-clamp-1">{src.url}</div>
+                      </td>
+                      <td className="py-3.5 px-4">
+                        <span className="px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-[10px] font-bold">
+                          {src.type.toUpperCase()}
+                        </span>
+                      </td>
+                      <td className="py-3.5 px-4">
+                        <span className="px-2 py-0.5 rounded bg-amber-500/10 text-amber-600 dark:text-amber-400 text-[10px] font-black uppercase">
+                          {src.defaultCategory}
+                        </span>
+                      </td>
+                      <td className="py-3.5 px-4 text-slate-600 dark:text-slate-300 font-bold">{src.state}</td>
+                      <td className="py-3.5 px-4 text-slate-400 font-mono text-[11px]">{src.lastScraped || 'Never'}</td>
+                      <td className="py-3.5 px-4">
+                        <span className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[10px] font-extrabold ${
+                          src.enabled ? 'bg-emerald-500/10 text-emerald-500' : 'bg-slate-500/10 text-slate-400'
+                        }`}>
+                          <span className={`w-1.5 h-1.5 rounded-full ${src.enabled ? 'bg-emerald-500' : 'bg-slate-400'}`}></span>
+                          {src.enabled ? 'Active' : 'Disabled'}
+                        </span>
+                      </td>
+                      <td className="py-3.5 px-4 text-right">
+                        <div className="flex items-center justify-end space-x-2">
+                          <button
+                            onClick={() => handleToggleSource(src)}
+                            className="px-2 py-1 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded text-[11px] font-bold cursor-pointer"
+                          >
+                            {src.enabled ? 'Pause' : 'Enable'}
+                          </button>
+                          <button
+                            onClick={() => handleTriggerScraper(src.id)}
+                            className="p-1.5 text-amber-500 hover:bg-amber-500/10 rounded cursor-pointer"
+                            title="Scrape Now"
+                          >
+                            <RefreshCw className="w-3.5 h-3.5" />
+                          </button>
+                          <button
+                            onClick={() => handleDeleteSource(src.id)}
+                            className="p-1.5 text-slate-400 hover:text-red-500 hover:bg-red-500/10 rounded cursor-pointer"
+                            title="Delete source"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ========================================================================= */}
+      {/* SUB-TAB 4: DEVELOPER WEBHOOK & CODE */}
+      {/* ========================================================================= */}
+      {activeSubTab === 'webhook' && (
+        <div className="space-y-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            
+            {/* Box 1: Manual JSON Auto-Post Tester */}
+            <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm flex flex-col justify-between">
+              <div>
+                <div className="flex items-center space-x-2 mb-3">
+                  <span className="w-7 h-7 rounded-lg bg-orange-600/20 text-orange-500 font-black flex items-center justify-center text-xs">
+                    1
+                  </span>
+                  <h3 className="font-extrabold text-sm text-slate-900 dark:text-white">REST Webhook Auto-Post Tester</h3>
+                </div>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mb-3">
+                  Test instant auto-ingestion with raw JSON payloads without reload.
+                </p>
+
+                <textarea
+                  rows={9}
+                  value={customJsonInput}
+                  onChange={(e) => setCustomJsonInput(e.target.value)}
+                  placeholder={`{\n  "title": "SSC CGL 2026 Tier 1 Exam Scorecard Released",\n  "category": "results",\n  "state": "Central",\n  "postDate": "15-08-2026",\n  "shortInfo": "Staff Selection Commission Combined Graduate Level Result scorecard live.",\n  "links": { "apply": "https://ssc.gov.in", "official": "https://ssc.gov.in" }\n}`}
+                  className="w-full font-mono text-xs p-3.5 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-800 dark:text-slate-200 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition-colors"
+                />
+              </div>
+
+              <div className="flex items-center justify-between gap-3 mt-4 pt-3 border-t border-slate-100 dark:border-slate-800">
+                <button
+                  type="button"
+                  onClick={() => {
+                    const sample = {
+                      title: "SSC CGL 2026 Tier 1 Exam Scorecard Released",
+                      category: "results",
+                      state: "Central",
+                      postDate: "15-08-2026",
+                      shortInfo: "Staff Selection Commission Combined Graduate Level Result scorecard live.",
+                      links: { apply: "https://ssc.gov.in", official: "https://ssc.gov.in" }
+                    };
+                    setCustomJsonInput(JSON.stringify(sample, null, 2));
+                  }}
+                  className="px-3.5 py-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold rounded-lg transition-all cursor-pointer"
+                >
+                  Load Sample JSON
+                </button>
+
+                <button
+                  type="button"
+                  onClick={handleManualAutoFill}
+                  className="px-4 py-2 bg-gradient-to-r from-red-600 to-amber-600 hover:from-red-500 hover:to-amber-500 text-white text-xs font-extrabold rounded-lg shadow-md shadow-red-950/30 transition-all flex items-center space-x-1.5 cursor-pointer"
+                >
+                  <Plus className="w-4 h-4" />
+                  <span>Push to Database</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Box 2: Node.js / Python Code Snippets */}
+            <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-sm flex flex-col justify-between">
+              <div>
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center space-x-2">
+                    <Code className="w-4 h-4 text-amber-400" />
+                    <span className="text-xs font-mono font-bold text-slate-200">Python Scraper Daemon Script</span>
+                  </div>
+                  <button
+                    onClick={() => copyToClipboard(pythonScraperCode, 'python-code')}
+                    className="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded text-[11px] font-bold flex items-center gap-1 cursor-pointer"
+                  >
+                    {copiedCode === 'python-code' ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
+                    <span>{copiedCode === 'python-code' ? 'Copied' : 'Copy'}</span>
+                  </button>
+                </div>
+
+                <div className="bg-slate-950 rounded-xl p-3 font-mono text-[11px] text-slate-300 overflow-x-auto max-h-56">
+                  <pre>{pythonScraperCode}</pre>
+                </div>
+              </div>
+
+              <div className="mt-4 pt-3 border-t border-slate-800 text-[11px] text-slate-400">
+                💡 Tip: You can trigger live scraping on this server by calling <code>POST /api/v1/scraper/run</code> at any time.
+              </div>
+            </div>
+
+          </div>
+        </div>
+      )}
+
+      {/* ========================================================================= */}
+      {/* SUB-TAB 5: LIVE ENGINE LOGS */}
+      {/* ========================================================================= */}
+      {activeSubTab === 'logs' && (
+        <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-sm space-y-3">
+          <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+            <div className="flex items-center space-x-2">
+              <Terminal className="w-4 h-4 text-emerald-400" />
+              <span className="text-xs font-mono font-bold text-slate-200">FastArc Automated Engine Event Streams</span>
+            </div>
+            <span className="text-[10px] font-mono text-emerald-400 bg-emerald-950/60 border border-emerald-500/30 px-2 py-0.5 rounded">
+              {syncLogs.length} Events Recorded
+            </span>
+          </div>
+
+          <div className="bg-slate-950 rounded-xl p-4 font-mono text-xs space-y-2 border border-slate-800 min-h-[300px] max-h-[400px] overflow-y-auto">
+            {syncLogs.length === 0 ? (
+              <div className="text-slate-500 text-center py-10">No engine events yet. Trigger a scrape to see live logs.</div>
+            ) : (
+              syncLogs.map((log) => (
+                <div key={log.id} className="flex items-start space-x-2 leading-relaxed">
+                  <span className="text-slate-600 shrink-0">[{log.time}]</span>
+                  <span className={log.type === 'success' ? 'text-emerald-400 font-semibold' : 'text-slate-400'}>
+                    {log.message}
+                  </span>
+                </div>
+              ))
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Add Custom Source Modal */}
+      {showAddSourceModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
+          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 w-full max-w-lg shadow-2xl">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-base font-black text-slate-900 dark:text-white">Add Custom RSS / Scraper Source</h3>
+              <button 
+                onClick={() => setShowAddSourceModal(false)}
+                className="text-slate-400 hover:text-slate-600 dark:hover:text-white"
+              >
+                ✕
+              </button>
+            </div>
+
+            <form onSubmit={handleSaveNewSource} className="space-y-4">
+              <div>
+                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Source Name / Portal</label>
+                <input
+                  type="text"
+                  required
+                  value={newSourceName}
+                  onChange={(e) => setNewSourceName(e.target.value)}
+                  placeholder="e.g. BPSC Official Recruitment Portal"
+                  className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-xs font-medium text-slate-800 dark:text-slate-200 focus:outline-none focus:border-amber-500"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Feed / Webhook URL</label>
+                <input
+                  type="url"
+                  required
+                  value={newSourceUrl}
+                  onChange={(e) => setNewSourceUrl(e.target.value)}
+                  placeholder="https://example.gov.in/feed.rss or noticeboard.html"
+                  className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-xs font-medium text-slate-800 dark:text-slate-200 focus:outline-none focus:border-amber-500 font-mono"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Source Type</label>
+                  <select
+                    value={newSourceType}
+                    onChange={(e) => setNewSourceType(e.target.value as any)}
+                    className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-xs font-medium text-slate-800 dark:text-slate-200 focus:outline-none"
+                  >
+                    <option value="rss">📡 RSS / Atom XML Feed</option>
+                    <option value="html_scraper">🌐 HTML Web Scraper</option>
+                    <option value="api">🔌 JSON REST API</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Default Category</label>
+                  <select
+                    value={newSourceCategory}
+                    onChange={(e) => setNewSourceCategory(e.target.value as any)}
+                    className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-xs font-medium text-slate-800 dark:text-slate-200 focus:outline-none"
+                  >
+                    <option value="latest-jobs">Latest Jobs</option>
+                    <option value="admit-cards">Admit Cards</option>
+                    <option value="results">Results</option>
+                    <option value="answer-key">Answer Key</option>
+                    <option value="syllabus">Syllabus</option>
+                    <option value="admission">Admission</option>
+                    <option value="documents">Documents</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">State / Region</label>
+                <input
+                  type="text"
+                  value={newSourceState}
+                  onChange={(e) => setNewSourceState(e.target.value)}
+                  placeholder="Central, UP, Bihar, Delhi, Rajasthan, etc."
+                  className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-xs font-medium text-slate-800 dark:text-slate-200 focus:outline-none"
+                />
+              </div>
+
+              <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-100 dark:border-slate-800">
+                <button
+                  type="button"
+                  onClick={() => setShowAddSourceModal(false)}
+                  className="px-4 py-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-700 dark:text-slate-300 text-xs font-bold rounded-xl"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-4 py-2 bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-black rounded-xl shadow-md cursor-pointer"
+                >
+                  Save Feed Source
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+    </div>
+  );
+};

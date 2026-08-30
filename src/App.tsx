@@ -1,0 +1,2017 @@
+/**
+ * @license
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+import React, { useState, useEffect, useRef } from 'react';
+import { Facebook, Twitter, Instagram, Youtube, Search, Bell, Home, Briefcase, FileText, Trophy, ArrowLeft, Star, IdCard, Trash2, Loader2, AlertTriangle, EyeOff } from 'lucide-react';
+import { Header } from './components/Header';
+import { Marquee } from './components/Marquee';
+import { Hero } from './components/Hero';
+import { JobColumn } from './components/JobColumn';
+import { CategoryIcon } from './components/CategoryIcon';
+import { JobDetailModal } from './components/JobDetailModal';
+import { AdminPanel } from './components/AdminPanel';
+import { LoginModal } from './components/LoginModal';
+import { SuperAdminDashboardModal } from './components/SuperAdminDashboardModal';
+import { InfoModal } from './components/InfoModal';
+import { SubscribeModal } from './components/SubscribeModal';
+import { LogoutConfirmModal } from './components/LogoutConfirmModal';
+import { FAQ } from './components/FAQ';
+import { getSocialTheme } from './components/SocialLinksManager';
+import { OfficialSocialLogo } from './components/SocialIcons';
+import { JobAlert, JobCategory, EmployeeUser, SocialLinkItem, SuperAdminTabType } from './types';
+import { defaultJobsDatabase, defaultSocialLinks } from './data';
+import { loadThemeColors, applyThemeColorsToDOM } from './utils/themeColors';
+import { loadColumnConfigs, DEFAULT_COLUMN_CONFIGS, ColumnConfigsMap } from './utils/columnConfig';
+import { loadWebsiteControlConfig, applyWebsiteControlToDOM, WebsiteControlConfig } from './utils/websiteControlConfig';
+import { updateJobDetailSeo, resetDefaultSeo } from './utils/seo';
+import { 
+  subscribeToJobs, 
+  saveJobToFirestore, 
+  deleteJobFromFirestore, 
+  resetJobsInFirestore, 
+  appendJobsToFirestore,
+  subscribeToMarquee, 
+  saveMarqueeToFirestore,
+  subscribeToEmployees,
+  subscribeToSocialLinks,
+  saveSocialLinksToFirestore,
+  subscribeToSiteLogo,
+  saveSiteLogoToFirestore,
+  subscribeToColumnConfigs,
+  subscribeToSeoConfig,
+  subscribeToThemeColors,
+  subscribeToWebsiteControlConfig,
+  validateFirestoreConnection,
+  subscribeToAutoSync,
+  saveAutoSyncToFirestore
+} from './services/firestoreService';
+
+
+export default function App() {
+  const [themeMode, setThemeMode] = useState<'light' | 'dark' | 'system'>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('theme_mode');
+      if (saved === 'light' || saved === 'dark' || saved === 'system') return saved;
+      const oldTheme = localStorage.getItem('theme');
+      if (oldTheme === 'dark') return 'dark';
+      if (oldTheme === 'light') return 'light';
+    }
+    return 'system';
+  });
+
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+    if (typeof window !== 'undefined') {
+      if (themeMode === 'dark') return true;
+      if (themeMode === 'light') return false;
+      return window.matchMedia('(prefers-color-scheme: dark)').matches;
+    }
+    return false;
+  });
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    localStorage.setItem('theme_mode', themeMode);
+
+    const applyTheme = () => {
+      let effectiveDark = false;
+      if (themeMode === 'dark') {
+        effectiveDark = true;
+      } else if (themeMode === 'light') {
+        effectiveDark = false;
+      } else {
+        effectiveDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      }
+
+      setIsDarkMode(effectiveDark);
+      if (effectiveDark) {
+        document.documentElement.classList.add('dark');
+        document.body.classList.add('dark');
+        localStorage.setItem('theme', 'dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+        document.body.classList.remove('dark');
+        localStorage.setItem('theme', 'light');
+      }
+    };
+
+    applyTheme();
+    applyThemeColorsToDOM(loadThemeColors());
+
+    if (themeMode === 'system') {
+      const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+      const handleChange = (e: MediaQueryListEvent) => {
+        const isDark = e.matches;
+        setIsDarkMode(isDark);
+        if (isDark) {
+          document.documentElement.classList.add('dark');
+          document.body.classList.add('dark');
+        } else {
+          document.documentElement.classList.remove('dark');
+          document.body.classList.remove('dark');
+        }
+      };
+      mediaQuery.addEventListener('change', handleChange);
+      return () => mediaQuery.removeEventListener('change', handleChange);
+    }
+  }, [themeMode]);
+
+  const toggleDarkMode = () => {
+    setThemeMode(prev => (prev === 'dark' ? 'light' : 'dark'));
+  };
+
+  // Persistent Auth Session across page refreshes
+  const [isAdminLoggedIn, setIsAdminLoggedIn] = useState<boolean>(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const saved = localStorage.getItem('fastarc_auth_session');
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          return Boolean(parsed.isAdminLoggedIn);
+        }
+      } catch (e) { /* ignore */ }
+    }
+    return false;
+  });
+
+  const [isSuperAdminLoggedIn, setIsSuperAdminLoggedIn] = useState<boolean>(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const saved = localStorage.getItem('fastarc_auth_session');
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          return Boolean(parsed.isSuperAdminLoggedIn);
+        }
+      } catch (e) { /* ignore */ }
+    }
+    return false;
+  });
+
+  const [currentUserRole, setCurrentUserRole] = useState<'superadmin' | 'admin' | 'employee' | null>(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const saved = localStorage.getItem('fastarc_auth_session');
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          return parsed.currentUserRole || null;
+        }
+      } catch (e) { /* ignore */ }
+    }
+    return null;
+  });
+
+  const [currentEmployee, setCurrentEmployee] = useState<EmployeeUser | null>(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const saved = localStorage.getItem('fastarc_auth_session');
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          return parsed.currentEmployee || null;
+        }
+      } catch (e) { /* ignore */ }
+    }
+    return null;
+  });
+
+  // Save auth session whenever login credentials or role changes
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      if (isAdminLoggedIn) {
+        localStorage.setItem('fastarc_auth_session', JSON.stringify({
+          isAdminLoggedIn,
+          isSuperAdminLoggedIn,
+          currentUserRole,
+          currentEmployee
+        }));
+      } else {
+        localStorage.removeItem('fastarc_auth_session');
+      }
+    }
+  }, [isAdminLoggedIn, isSuperAdminLoggedIn, currentUserRole, currentEmployee]);
+
+  const [employees, setEmployees] = useState<EmployeeUser[]>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('fastarc_employees');
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          if (Array.isArray(parsed)) {
+            return parsed;
+          }
+        } catch (e) { /* ignore */ }
+      }
+    }
+    return [
+      {
+        id: 'emp-1',
+        name: 'Ramesh Data Operator',
+        username: 'ramesh',
+        password: 'Pass123#',
+        role: 'employee',
+        createdAt: '11 Aug 2026',
+        status: 'active',
+        permissions: {
+          canAddJob: true,
+          canEditJob: true,
+          canDeleteJob: false,
+          canEditTicker: true,
+          canExportDatabase: false,
+          canSendBroadcast: false,
+          canViewAnalytics: true,
+        }
+      }
+    ];
+  });
+
+  const [deletedEmployeeLogs, setDeletedEmployeeLogs] = useState<Array<{
+    id: string;
+    name: string;
+    username: string;
+    deletedAt: string;
+    deletedBy: string;
+  }>>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('fastarc_deleted_employee_logs');
+      if (saved) {
+        try { return JSON.parse(saved); } catch (e) {}
+      }
+    }
+    return [];
+  });
+
+  const [jobs, setJobs] = useState<JobAlert[]>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('fastarc_jobs');
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          if (Array.isArray(parsed) && parsed.length >= defaultJobsDatabase.length) {
+            return parsed;
+          }
+        } catch (e) { /* ignore */ }
+      }
+    }
+    return defaultJobsDatabase;
+  });
+
+  const [columnConfigs, setColumnConfigs] = useState<ColumnConfigsMap>(() => loadColumnConfigs());
+
+  useEffect(() => {
+    const handleColumnUpdate = (e: any) => {
+      if (e.detail) {
+        setColumnConfigs(e.detail);
+      } else {
+        setColumnConfigs(loadColumnConfigs());
+      }
+    };
+
+    window.addEventListener('fastarc_columns_updated', handleColumnUpdate);
+    return () => {
+      window.removeEventListener('fastarc_columns_updated', handleColumnUpdate);
+    };
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem('fastarc_jobs', JSON.stringify(jobs));
+  }, [jobs]);
+
+  // Real-time Firestore & Backend Sync
+  useEffect(() => {
+    validateFirestoreConnection();
+
+    // 1. Subscribe to real-time Firestore jobs collection
+    const unsubscribeJobs = subscribeToJobs(
+      (liveJobs) => {
+        if (Array.isArray(liveJobs)) {
+          setJobs(liveJobs);
+          localStorage.setItem('fastarc_jobs', JSON.stringify(liveJobs));
+        }
+      },
+      (err) => {
+        console.warn('Falling back to local/backend data:', err);
+      }
+    );
+
+    // 2. Subscribe to real-time Marquee ticker
+    const unsubscribeMarquee = subscribeToMarquee((text) => {
+      if (text) {
+        setMarqueeText(text);
+      }
+    });
+
+    // 3. Subscribe to real-time Employees
+    const unsubscribeEmployees = subscribeToEmployees((liveEmployees) => {
+      if (Array.isArray(liveEmployees)) {
+        setEmployees(liveEmployees);
+        localStorage.setItem('fastarc_employees', JSON.stringify(liveEmployees));
+
+        // Sync current active staff session permissions/status if logged in as employee
+        setCurrentEmployee(prev => {
+          if (!prev) return null;
+          const matched = liveEmployees.find(e => e.id === prev.id);
+          if (matched) {
+            if (matched.status === 'suspended') {
+              setIsAdminLoggedIn(false);
+              setIsSuperAdminLoggedIn(false);
+              setCurrentUserRole(null);
+              triggerToast('⚠️ Staff account suspended by Super Admin.');
+              return null;
+            }
+            return matched;
+          }
+          return prev;
+        });
+      }
+    });
+
+    // 4. Fallback/Initial sync with Express server if available
+    fetch('/api/v1/sarkari-posts')
+      .then(res => res.json())
+      .then(data => {
+        if (data.success && Array.isArray(data.jobs) && data.jobs.length > 0) {
+          const serverJobs: JobAlert[] = data.jobs.map((j: any) => ({
+            id: j.id,
+            title: j.title,
+            category: j.category,
+            postDate: j.post_date || j.postDate || '',
+            isNew: Boolean(j.is_new !== undefined ? j.is_new : j.isNew),
+            state: j.state || 'Central',
+            shortInfo: j.short_info || j.shortInfo || '',
+            ageLimit: j.ageLimit || '',
+            eligibility: j.eligibility || '',
+            dates: typeof j.dates === 'string' ? JSON.parse(j.dates) : (j.dates || { start: 'N/A', last: 'N/A' }),
+            fees: typeof j.fees === 'string' ? JSON.parse(j.fees) : (j.fees || { general: 'N/A', scSt: 'N/A' }),
+            links: (() => {
+              const raw = typeof j.links === 'string' ? JSON.parse(j.links) : j.links;
+              const apply = (raw?.apply && raw.apply !== '#') ? raw.apply : 'https://india.gov.in';
+              const official = (raw?.official && raw.official !== '#') ? raw.official : 'https://india.gov.in';
+              const notification = raw?.notification || official;
+              return { apply, official, notification };
+            })(),
+          }));
+          setJobs(prev => (prev.length === 0 ? serverJobs : prev));
+        }
+      })
+      .catch(() => {});
+
+
+
+
+    const unsubscribeSiteLogo = subscribeToSiteLogo((liveLogo, timestamp) => {
+      if (liveLogo) {
+        const isDataUri = liveLogo.startsWith('data:');
+        let finalLogo = liveLogo;
+        if (!isDataUri && timestamp) {
+          finalLogo = liveLogo.includes('?') ? `${liveLogo}&v=${timestamp}` : `${liveLogo}?v=${timestamp}`;
+        }
+        setSiteLogo(finalLogo);
+        localStorage.setItem('fastarc_site_logo', finalLogo);
+      }
+    });
+
+    const unsubscribeSocial = subscribeToSocialLinks((liveSocial) => {
+      if (Array.isArray(liveSocial) && liveSocial.length > 0) {
+        setSocialLinks(liveSocial);
+        localStorage.setItem('fastarc_social_links', JSON.stringify(liveSocial));
+      }
+    });
+
+    const unsubscribeColumns = subscribeToColumnConfigs((liveConfigs) => {
+      if (liveConfigs) {
+        setColumnConfigs(liveConfigs);
+        localStorage.setItem('fastarc_column_configs', JSON.stringify(liveConfigs));
+      }
+    });
+
+    const unsubscribeSeo = subscribeToSeoConfig((liveSeo) => {
+      if (liveSeo) {
+        localStorage.setItem('fastarc_global_seo_config', JSON.stringify(liveSeo));
+        if (typeof window !== 'undefined') {
+          const urlParams = new URLSearchParams(window.location.search);
+          if (!urlParams.get('jobId')) {
+            resetDefaultSeo(urlParams.get('tab') || 'home');
+          }
+        }
+      }
+    });
+
+    const unsubscribeTheme = subscribeToThemeColors((liveColors) => {
+      if (liveColors) {
+        localStorage.setItem('fastarc_theme_colors', JSON.stringify(liveColors));
+        applyThemeColorsToDOM(liveColors);
+      }
+    });
+
+    const unsubscribeWebsiteControl = subscribeToWebsiteControlConfig((liveConfig) => {
+      if (liveConfig) {
+        setWebsiteControlConfig(liveConfig);
+        localStorage.setItem('fastarc_website_control_config', JSON.stringify(liveConfig));
+        applyWebsiteControlToDOM(liveConfig);
+      }
+    });
+
+    return () => {
+      unsubscribeJobs();
+      unsubscribeMarquee();
+      unsubscribeEmployees();
+      unsubscribeSocial();
+      unsubscribeSiteLogo();
+      unsubscribeColumns();
+      unsubscribeSeo();
+      unsubscribeTheme();
+      unsubscribeWebsiteControl();
+    };
+  }, []);
+
+  const [socialLinks, setSocialLinks] = useState<SocialLinkItem[]>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('fastarc_social_links');
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+        } catch (e) {}
+      }
+    }
+    return defaultSocialLinks;
+  });
+
+  const handleSaveSocialLinks = async (newLinks: SocialLinkItem[]) => {
+    setSocialLinks(newLinks);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('fastarc_social_links', JSON.stringify(newLinks));
+    }
+    await saveSocialLinksToFirestore(newLinks);
+  };
+
+  const [stateFilters, setStateFilters] = useState<string[]>(['All']);
+  const [searchQuery, setSearchQuery] = useState('');
+  
+  const [isLoginOpen, setIsLoginOpen] = useState(false);
+  const [isAdminPanelOpen, setIsAdminPanelOpen] = useState(false);
+  const [isSuperAdminModalOpen, setIsSuperAdminModalOpen] = useState(false);
+  const [superAdminTab, setSuperAdminTab] = useState<SuperAdminTabType>('analytics');
+  const [superAdminInitialColumnId, setSuperAdminInitialColumnId] = useState<string | undefined>(undefined);
+
+  const handleOpenSuperAdmin = (tab?: SuperAdminTabType, colId?: string) => {
+    if (tab) {
+      setSuperAdminTab(tab);
+    } else {
+      setSuperAdminTab('analytics');
+    }
+    setSuperAdminInitialColumnId(colId);
+    setIsSuperAdminModalOpen(true);
+  };
+
+  const [isSubscribeModalOpen, setIsSubscribeModalOpen] = useState(false);
+  const [isLogoutConfirmOpen, setIsLogoutConfirmOpen] = useState(false);
+  const [editingJob, setEditingJob] = useState<JobAlert | null>(null);
+  const [marqueeText, setMarqueeText] = useState("🔥 UP Police Constable Result 2026 Declared Now! | 🚀 SSC CGL 2026 Notification & Online Form Active | 🎓 CBSE Board Class 10th & 12th Board Result Released | 💼 Railway RRB NTPC Admit Card Download Started!");
+  
+  const [siteLogo, setSiteLogo] = useState<string>(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('fastarc_site_logo') || "/logo.png";
+    }
+    return "/logo.png";
+  });
+  
+  useEffect(() => {
+    localStorage.setItem('fastarc_site_logo', siteLogo);
+  }, [siteLogo]);
+
+  const [websiteControlConfig, setWebsiteControlConfig] = useState<WebsiteControlConfig>(() => {
+    const cfg = loadWebsiteControlConfig();
+    applyWebsiteControlToDOM(cfg);
+    return cfg;
+  });
+
+  useEffect(() => {
+    const handleWebsiteControlUpdate = (e: any) => {
+      if (e.detail) {
+        setWebsiteControlConfig(e.detail);
+        applyWebsiteControlToDOM(e.detail);
+      } else {
+        const cfg = loadWebsiteControlConfig();
+        setWebsiteControlConfig(cfg);
+        applyWebsiteControlToDOM(cfg);
+      }
+    };
+    window.addEventListener('fastarc_website_control_updated', handleWebsiteControlUpdate);
+    return () => window.removeEventListener('fastarc_website_control_updated', handleWebsiteControlUpdate);
+  }, []);
+
+  const [selectedJobId, setSelectedJobId] = useState<string | null>(null);
+  const [activeInfoPage, setActiveInfoPage] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState('home');
+
+  useEffect(() => {
+    const handleSeoUpdate = () => {
+      if (!selectedJobId) {
+        resetDefaultSeo(activeTab);
+      }
+    };
+    window.addEventListener('fastarc_seo_updated', handleSeoUpdate);
+    return () => {
+      window.removeEventListener('fastarc_seo_updated', handleSeoUpdate);
+    };
+  }, [selectedJobId, activeTab]);
+  const [isMoreStatesOpen, setIsMoreStatesOpen] = useState(false);
+  const [stateSearchQuery, setStateSearchQuery] = useState('');
+  const moreStatesRef = useRef<HTMLDivElement>(null);
+  
+  const [recentJobIds, setRecentJobIds] = useState<string[]>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('fastarc_recent_jobs');
+      if (saved) {
+        try { return JSON.parse(saved); } catch (e) { /* ignore */ }
+      }
+    }
+    return [];
+  });
+
+  useEffect(() => {
+    localStorage.setItem('fastarc_recent_jobs', JSON.stringify(recentJobIds));
+  }, [recentJobIds]);
+
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [isAutoSyncActive, setIsAutoSyncActiveState] = useState<boolean>(false);
+
+  useEffect(() => {
+    const unsubscribe = subscribeToAutoSync((isActive) => {
+      setIsAutoSyncActiveState(isActive);
+      localStorage.setItem('fastarc_auto_sync', String(isActive));
+    });
+    return () => unsubscribe();
+  }, []);
+
+  const setIsAutoSyncActive = (isActive: boolean) => {
+    setIsAutoSyncActiveState(isActive);
+    saveAutoSyncToFirestore(isActive).catch(console.error);
+  };
+
+  const [syncLogs, setSyncLogs] = useState<Array<{ id: number; time: string; message: string; type: string }>>([
+    { id: 1, time: new Date().toLocaleTimeString(), message: "FastArc Server Sync & Persistent Database Initialized.", type: "system" }
+  ]);
+
+  // Auto-Sync Background Feeder simulation (Deduplicated)
+  useEffect(() => {
+    let interval: any;
+    if (isAutoSyncActive) {
+      interval = setInterval(() => {
+        const autoTemplates = [
+          {
+            title: "SBI PO Recruitment 2026 Notification Active",
+            category: "latest-jobs",
+            state: "Central",
+            shortInfo: "State Bank of India Probationary Officer 2,000 Posts notification.",
+            dates: { start: "15-08-2026", last: "05-09-2026" },
+            fees: { general: "₹750", scSt: "₹0" },
+            links: { apply: "https://sbi.co.in/careers", official: "https://sbi.co.in" }
+          },
+          {
+            title: "CTET July 2026 Exam Answer Key Out Download",
+            category: "answer-key",
+            state: "Central",
+            shortInfo: "CBSE Central Teacher Eligibility Test answer key released.",
+            dates: { start: "N/A", last: "20-08-2026" },
+            fees: { general: "N/A", scSt: "N/A" },
+            links: { apply: "https://ctet.nic.in", official: "https://ctet.nic.in" }
+          },
+          {
+            title: "Bihar BPSC 70th Combined Prelims Result 2026",
+            category: "results",
+            state: "Bihar",
+            shortInfo: "Bihar Public Service Commission 70th prelims result declared.",
+            dates: { start: "N/A", last: "N/A" },
+            fees: { general: "N/A", scSt: "N/A" },
+            links: { apply: "https://bpsc.bih.nic.in", official: "https://bpsc.bih.nic.in" }
+          }
+        ];
+
+        const randomItem = autoTemplates[Math.floor(Math.random() * autoTemplates.length)];
+        const todayStr = new Date().toLocaleDateString('en-GB').replace(/\//g, '-');
+        
+        const newJob: JobAlert = {
+          id: `auto-${Date.now()}`,
+          title: randomItem.title,
+          category: randomItem.category as any,
+          postDate: todayStr,
+          isNew: true,
+          state: randomItem.state,
+          shortInfo: randomItem.shortInfo,
+          dates: randomItem.dates,
+          fees: randomItem.fees,
+          links: randomItem.links
+        };
+
+        setJobs(prev => {
+          const normTitle = newJob.title.trim().toLowerCase();
+          if (prev.some(j => j.title && j.title.trim().toLowerCase() === normTitle)) return prev;
+          triggerToast(`🔔 Auto-Filled: ${newJob.title.substring(0, 30)}...`);
+          setSyncLogs(logs => [
+            { id: Date.now(), time: new Date().toLocaleTimeString(), message: `AUTO-POST ADDED: ${newJob.title}`, type: "success" },
+            ...logs.slice(0, 20)
+          ]);
+          saveJobToFirestore(newJob).catch(err => console.warn('Auto-sync firestore save error:', err));
+          return [newJob, ...prev];
+        });
+
+      }, 20000); // Trigger auto-fill every 20s
+    }
+    return () => clearInterval(interval);
+  }, [isAutoSyncActive]);
+
+  useEffect(() => {
+    localStorage.setItem('fastarc_employees', JSON.stringify(employees));
+  }, [employees]);
+
+  // Employee/Role permissions resolution
+  const currentPermissions = {
+    canAddJob: isSuperAdminLoggedIn || !currentEmployee || currentEmployee.permissions.canAddJob,
+    canEditJob: isSuperAdminLoggedIn || !currentEmployee || currentEmployee.permissions.canEditJob,
+    canDeleteJob: isSuperAdminLoggedIn || !currentEmployee || currentEmployee.permissions.canDeleteJob,
+    canEditTicker: isSuperAdminLoggedIn || !currentEmployee || currentEmployee.permissions.canEditTicker,
+    canExportDatabase: isSuperAdminLoggedIn || !currentEmployee || currentEmployee.permissions.canExportDatabase,
+    canSendBroadcast: isSuperAdminLoggedIn || !currentEmployee || currentEmployee.permissions.canSendBroadcast,
+    canViewAnalytics: isSuperAdminLoggedIn || !currentEmployee || currentEmployee.permissions.canViewAnalytics,
+  };
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (moreStatesRef.current && !moreStatesRef.current.contains(event.target as Node)) {
+        setIsMoreStatesOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+
+  
+  const triggerToast = (message: string) => {
+    setToastMessage(message);
+    setTimeout(() => setToastMessage(null), 3000);
+  };
+
+  const handleAdminAction = () => {
+    if (isAdminLoggedIn) {
+      if (currentUserRole === 'employee' && !currentPermissions.canAddJob) {
+        triggerToast('⚠️ Privilege Restricted: You do not have permission to Add Jobs.');
+        return;
+      }
+      setEditingJob(null);
+      setIsAdminPanelOpen(true);
+    } else {
+      setIsLoginOpen(true);
+    }
+  };
+
+  const handleLogout = () => {
+    setIsLogoutConfirmOpen(true);
+  };
+
+  const confirmLogout = () => {
+    setIsAdminLoggedIn(false);
+    setIsSuperAdminLoggedIn(false);
+    setCurrentUserRole(null);
+    setCurrentEmployee(null);
+    setIsAdminPanelOpen(false);
+    setIsSuperAdminModalOpen(false);
+    setIsLogoutConfirmOpen(false);
+    triggerToast('Logged out of system.');
+  };
+
+  const handleSaveJob = async (job: JobAlert) => {
+    // Deduplication check: verify if a job with matching normalized title already exists
+    const normTitle = job.title ? job.title.trim().toLowerCase() : '';
+    const existingJob = jobs.find(j => j.title && j.title.trim().toLowerCase() === normTitle);
+
+    let finalJob = job;
+    const isExistingOrEditing = editingJob || existingJob;
+
+    if (existingJob && (!editingJob || editingJob.id !== existingJob.id)) {
+      // Overwrite existing job ID to avoid creating duplicate post
+      finalJob = {
+        ...job,
+        id: existingJob.id
+      };
+    }
+
+    try {
+      await saveJobToFirestore(finalJob);
+      triggerToast(isExistingOrEditing ? 'Live database updated!' : 'Post added successfully!');
+    } catch (err) {
+      console.warn('Firestore save error, saving locally & backend:', err);
+      setJobs(prev => {
+        const idx = prev.findIndex(j => j.id === finalJob.id || (j.title && j.title.trim().toLowerCase() === normTitle));
+        if (idx !== -1) {
+          const clone = [...prev];
+          clone[idx] = finalJob;
+          return clone;
+        }
+        return [finalJob, ...prev];
+      });
+      triggerToast('Post saved!');
+    }
+
+    try {
+      if (isExistingOrEditing) {
+        await fetch(`/api/v1/sarkari-posts/${finalJob.id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(finalJob)
+        });
+      } else {
+        await fetch('/api/v1/sarkari-posts', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer FASTARC_SECRET_KEY_12345'
+          },
+          body: JSON.stringify(finalJob)
+        });
+      }
+    } catch (err) {
+      console.warn('Backend fallback sync:', err);
+    }
+
+    setIsAdminPanelOpen(false);
+    setEditingJob(null);
+  };
+
+  const handleBulkSaveJobs = async (jobsToSave: JobAlert[]) => {
+    try {
+      await appendJobsToFirestore(jobsToSave);
+      triggerToast(`Published ${jobsToSave.length} jobs to database across all devices!`);
+    } catch (err) {
+      console.warn('Firestore bulk save error:', err);
+      setJobs(prev => [...jobsToSave, ...prev.filter(p => !jobsToSave.some(j => j.id === p.id))]);
+      triggerToast(`Published ${jobsToSave.length} jobs locally!`);
+    }
+
+    try {
+      await fetch('/api/v1/scraper/auto-ingest', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ posts: jobsToSave })
+      });
+    } catch (e) {
+      console.warn('Backend auto-ingest sync warning:', e);
+    }
+  };
+
+  const handleJobClick = (jobId: string) => {
+    setSelectedJobId(jobId);
+    setRecentJobIds(prev => {
+      const newHistory = [jobId, ...prev.filter(id => id !== jobId)].slice(0, 50); // keep up to 50
+      return newHistory;
+    });
+
+    // Push history state so browser/mobile Back button closes this job modal instead of navigating away
+    const currentUrl = new URL(window.location.href);
+    if (currentUrl.searchParams.get('jobId') !== jobId) {
+      currentUrl.searchParams.set('jobId', jobId);
+      window.history.pushState({ modal: 'jobDetail', jobId }, document.title, currentUrl.toString());
+    }
+  };
+
+  const handleCloseJobModal = () => {
+    // If the modal was pushed to history, go back so history state stays in sync
+    if (window.history.state?.modal === 'jobDetail' || window.history.state?.jobId) {
+      window.history.back();
+    } else {
+      setSelectedJobId(null);
+      const currentUrl = new URL(window.location.href);
+      if (currentUrl.searchParams.has('jobId')) {
+        currentUrl.searchParams.delete('jobId');
+        window.history.replaceState({}, document.title, currentUrl.toString());
+      }
+    }
+  };
+
+  // Browser popstate listener (handles browser back/forward buttons & phone back gestures)
+  useEffect(() => {
+    const handlePopState = (event: PopStateEvent) => {
+      const params = new URLSearchParams(window.location.search);
+      const jobIdParam = params.get('jobId') || (event.state?.modal === 'jobDetail' ? event.state?.jobId : null);
+      if (jobIdParam) {
+        setSelectedJobId(jobIdParam);
+      } else {
+        setSelectedJobId(null);
+      }
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+    };
+  }, []);
+
+  // Initial deep link detection from URL parameters (e.g. ?jobId=xyz)
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const jobIdParam = params.get('jobId');
+    if (jobIdParam && jobs.some(j => j.id === jobIdParam)) {
+      setSelectedJobId(jobIdParam);
+      window.history.replaceState({ modal: 'jobDetail', jobId: jobIdParam }, document.title, window.location.href);
+    }
+  }, [jobs]);
+
+  // Dynamic SEO meta tags and Canonical URL management
+  useEffect(() => {
+    if (selectedJobId) {
+      const currentJob = jobs.find(j => j.id === selectedJobId);
+      if (currentJob) {
+        updateJobDetailSeo(currentJob);
+      }
+    } else {
+      resetDefaultSeo(activeTab);
+    }
+  }, [selectedJobId, jobs, activeTab]);
+
+  const handleEditJob = (id: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (currentUserRole === 'employee' && !currentPermissions.canEditJob) {
+      triggerToast('⚠️ Privilege Restricted: You do not have permission to Edit Jobs.');
+      return;
+    }
+    const job = jobs.find(j => j.id === id);
+    if (job) {
+      setEditingJob(job);
+      setIsAdminPanelOpen(true);
+    }
+  };
+
+  const [jobToDelete, setJobToDelete] = useState<string | null>(null);
+  const [isDeletingJob, setIsDeletingJob] = useState(false);
+
+  const handleDeleteJob = (id: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (currentUserRole === 'employee' && !currentPermissions.canDeleteJob) {
+      triggerToast('⚠️ Privilege Restricted: Delete action locked by Super Admin.');
+      return;
+    }
+    setJobToDelete(id);
+  };
+
+  const confirmDelete = async () => {
+    if (!jobToDelete || isDeletingJob) return;
+    const id = jobToDelete;
+    setIsDeletingJob(true);
+
+    try {
+      // 1. Await successful deletion from Firestore cloud database FIRST
+      await deleteJobFromFirestore(id);
+
+      // 2. Only after receiving a successful response from Firestore, apply optimistic UI update
+      setJobs(prev => {
+        const updated = prev.filter(j => j.id !== id);
+        localStorage.setItem('fastarc_jobs', JSON.stringify(updated));
+        return updated;
+      });
+
+      // 3. Delete from backend server in background
+      fetch(`/api/v1/sarkari-posts/${id}`, {
+        method: 'DELETE'
+      }).catch(err => {
+        console.warn('Backend delete sync error:', err);
+      });
+
+      triggerToast('Job Alert deleted from database across all devices.');
+      setJobToDelete(null);
+    } catch (err: any) {
+      console.error('Firestore delete error:', err);
+      triggerToast(`❌ Failed to delete job: ${err?.message || 'Database error'}`);
+    } finally {
+      setIsDeletingJob(false);
+    }
+  };
+
+  const cancelDelete = () => {
+    if (isDeletingJob) return;
+    setJobToDelete(null);
+  };
+
+
+  const handleStateToggle = (state: string) => {
+    setIsSuperAdminModalOpen(false);
+    setStateFilters(prev => {
+      if (state === 'All') return ['All'];
+      
+      const isUp = state === 'UP' || state === 'Uttar Pradesh';
+      const isCentral = state === 'Central' || state === 'Central (Govt)';
+      
+      const exists = prev.some(s => {
+        if (isUp) return s === 'UP' || s === 'Uttar Pradesh';
+        if (isCentral) return s === 'Central' || s === 'Central (Govt)';
+        return s.toLowerCase() === state.toLowerCase();
+      });
+      
+      if (exists) {
+        // Unselect filter when tapped again
+        const newFilters = prev.filter(s => {
+          if (isUp) return s !== 'UP' && s !== 'Uttar Pradesh';
+          if (isCentral) return s !== 'Central' && s !== 'Central (Govt)';
+          return s.toLowerCase() !== state.toLowerCase();
+        });
+        return newFilters.length === 0 ? ['All'] : newFilters;
+      } else {
+        // Select filter
+        return [...prev.filter(s => s !== 'All'), state];
+      }
+    });
+  };
+
+  const isStateMatch = (jobState: string, filterState: string) => {
+    if (filterState === 'All') return true;
+    if (filterState === 'Central' || filterState === 'Central (Govt)') {
+      return jobState === 'Central' || jobState === 'Central (Govt)';
+    }
+    if (filterState === 'UP' || filterState === 'Uttar Pradesh') {
+      return jobState === 'UP' || jobState === 'Uttar Pradesh';
+    }
+    return jobState.toLowerCase() === filterState.toLowerCase();
+  };
+
+  const filteredJobs = (stateFilters.includes('All') 
+    ? jobs 
+    : jobs.filter(j => stateFilters.some(sf => isStateMatch(j.state, sf)))
+  ).filter(job => {
+    const query = searchQuery.toLowerCase().trim();
+    if (!query) return true;
+    
+    // Check multiple fields so expired/historical forms are 100% discoverable by year, exam, org, etc.
+    const titleMatch = job.title && job.title.toLowerCase().includes(query);
+    const categoryMatch = job.category && job.category.toLowerCase().includes(query);
+    const stateMatch = job.state && job.state.toLowerCase().includes(query);
+    const shortInfoMatch = job.shortInfo && job.shortInfo.toLowerCase().includes(query);
+    const postDateMatch = job.postDate && job.postDate.toLowerCase().includes(query);
+    const startDateMatch = job.dates?.start && job.dates.start.toLowerCase().includes(query);
+    const lastDateMatch = job.dates?.last && job.dates.last.toLowerCase().includes(query);
+    const qualMatch = job.qualification && job.qualification.toLowerCase().includes(query);
+    const vacMatch = job.totalVacancies && String(job.totalVacancies).toLowerCase().includes(query);
+
+    return (
+      titleMatch ||
+      categoryMatch ||
+      stateMatch ||
+      shortInfoMatch ||
+      postDateMatch ||
+      startDateMatch ||
+      lastDateMatch ||
+      qualMatch ||
+      vacMatch
+    );
+  });
+
+  const counts = {
+    latest: filteredJobs.filter(j => j.category === 'latest-jobs').length,
+    admit: filteredJobs.filter(j => j.category === 'admit-cards').length,
+    results: filteredJobs.filter(j => j.category === 'results').length,
+    answerKey: filteredJobs.filter(j => j.category === 'answer-key').length,
+    syllabus: filteredJobs.filter(j => j.category === 'syllabus').length,
+    admission: filteredJobs.filter(j => j.category === 'admission').length,
+    documents: filteredJobs.filter(j => j.category === 'documents').length,
+    important: filteredJobs.filter(j => j.category === 'important').length,
+  };
+
+  const handleSeeMoreCategory = (category: JobCategory) => {
+    let targetTab = category as string;
+    if (category === 'admit-cards') targetTab = 'admit-card';
+    if (category === 'latest-jobs') targetTab = 'latest-jobs';
+    setActiveTab(targetTab);
+  };
+
+  const handleTabChange = (id: string) => {
+    setIsSuperAdminModalOpen(false);
+    if (activeTab === id) {
+      // Tap again to unselect filter and return to Home
+      setActiveTab('home');
+      setStateFilters(['All']);
+    } else {
+      setActiveTab(id);
+    }
+    if (id === 'home') {
+      setStateFilters(['All']);
+    }
+  };
+
+  const scrollToSection = (id: string) => {
+    const element = document.getElementById(id);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
+
+  return (
+    <div className="bg-slate-50 text-slate-800 dark:bg-slate-950 dark:text-slate-100 min-h-screen flex flex-col transition-colors duration-300 w-full">
+      <div className="fixed top-0 left-0 right-0 z-50 w-full shadow-md bg-white dark:bg-slate-900">
+        <Marquee text={marqueeText} />
+        <Header 
+          siteLogo={siteLogo}
+          themeMode={themeMode}
+          onSetThemeMode={setThemeMode}
+          onToggleDarkMode={toggleDarkMode} 
+          isDarkMode={isDarkMode} 
+          onAdminLoginClick={handleAdminAction}
+          isLoggedIn={isAdminLoggedIn}
+          isSuperAdmin={isSuperAdminLoggedIn}
+          employeeName={currentEmployee?.name}
+          onOpenSuperAdminModal={handleOpenSuperAdmin}
+          onLogout={handleLogout}
+          onInfoClick={setActiveInfoPage}
+          activeTab={activeTab}
+          onTabChange={handleTabChange}
+          socialLinks={socialLinks}
+          onSelectState={(stateName) => {
+            handleStateToggle(stateName);
+            setActiveTab('home');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }}
+        />
+      </div>
+      {isSuperAdminModalOpen ? (
+        <div className="pt-[84px] flex-1 w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+          <SuperAdminDashboardModal
+            siteLogo={siteLogo}
+            setSiteLogo={async (logo) => { setSiteLogo(logo); await saveSiteLogoToFirestore(logo); }}
+            isOpen={isSuperAdminModalOpen}
+            onClose={() => setIsSuperAdminModalOpen(false)}
+            jobs={jobs}
+            setJobs={setJobs}
+            employees={employees}
+            setEmployees={setEmployees}
+            deletedEmployeeLogs={deletedEmployeeLogs}
+            setDeletedEmployeeLogs={setDeletedEmployeeLogs}
+            marqueeText={marqueeText}
+            setMarqueeText={(text) => {
+              setMarqueeText(text);
+              saveMarqueeToFirestore(text).catch(err => console.warn('Marquee Firestore sync error:', err));
+            }}
+            onOpenAddJob={() => setIsAdminPanelOpen(true)}
+            onResetDatabase={async () => {
+              try {
+                await resetJobsInFirestore();
+                triggerToast('Database reset to default data across all devices!');
+              } catch (err) {
+                console.warn('Reset Firestore error:', err);
+                setJobs(defaultJobsDatabase);
+                triggerToast('Database reset to default data!');
+              }
+            }}
+            onToast={triggerToast}
+            onSaveJob={handleSaveJob}
+            onBulkSaveJobs={handleBulkSaveJobs}
+            onOpenNpmSystem={() => handleOpenSuperAdmin('npm')}
+            socialLinks={socialLinks}
+            setSocialLinks={setSocialLinks}
+            onSaveSocialLinks={handleSaveSocialLinks}
+            initialTab={superAdminTab}
+            initialColumnId={superAdminInitialColumnId}
+            isAutoSyncActive={isAutoSyncActive}
+            setIsAutoSyncActive={setIsAutoSyncActive}
+            syncLogs={syncLogs}
+          />
+        </div>
+      ) : (
+        <>
+          <div className="pt-[84px]">
+            <Hero searchQuery={searchQuery} setSearchQuery={setSearchQuery} jobs={jobs} />
+          </div>
+
+          
+          {activeInfoPage && (
+            <InfoModal pageId={activeInfoPage} onClose={() => setActiveInfoPage(null)} />
+          )}
+      
+      <div className="bg-slate-100 dark:bg-slate-900/60 border-b border-slate-200 dark:border-slate-800 py-2.5 transition-colors duration-300">
+        <div className="w-full mx-auto px-4 sm:px-6 lg:px-8 flex flex-wrap items-center justify-between gap-y-3">
+          <div className="flex flex-wrap items-center gap-2 text-xs font-semibold">
+            <span className="text-slate-500 dark:text-slate-400 mr-1">Filters:</span>
+            {['All', 'Central', 'UP', 'Bihar'].map(state => (
+              <button 
+                key={state}
+                onClick={() => handleStateToggle(state)} 
+                className={stateFilters.includes(state) 
+                  ? "bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-extrabold px-3 py-1.5 rounded-full transition-all shadow-sm" 
+                  : "bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 px-3 py-1.5 rounded-full hover:bg-slate-100 dark:hover:bg-slate-700 transition-all font-semibold"}
+              >
+                {state === 'Central' ? 'Central (Govt)' : state === 'UP' ? 'Uttar Pradesh' : state === 'All' ? 'All India' : state}
+              </button>
+            ))}
+            
+            <div className="relative flex items-center" ref={moreStatesRef}>
+              <button
+                onClick={() => setIsMoreStatesOpen(!isMoreStatesOpen)}
+                className={stateFilters.filter(s => !['All', 'Central', 'UP', 'Bihar'].includes(s)).length > 0
+                  ? "bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-extrabold pl-3 pr-2 py-1.5 rounded-full outline-none flex items-center text-xs transition-all shadow-sm"
+                  : "bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 pl-3 pr-2 py-1.5 flex items-center rounded-full hover:bg-slate-100 dark:hover:bg-slate-700 outline-none text-xs font-semibold transition-all"}
+              >
+                More States
+                {stateFilters.filter(s => !['All', 'Central', 'UP', 'Bihar'].includes(s)).length > 0 && (
+                  <span className="ml-1.5 bg-slate-950 text-amber-400 text-[10px] font-black px-1.5 py-0.2 rounded-full">
+                    {stateFilters.filter(s => !['All', 'Central', 'UP', 'Bihar'].includes(s)).length}
+                  </span>
+                )}
+                <svg className={`w-3.5 h-3.5 ml-1 transition-transform duration-200 ${isMoreStatesOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+              </button>
+              
+              <div 
+                className={`absolute top-full left-0 mt-2 w-64 bg-white dark:bg-[#1e293b] border border-slate-200 dark:border-slate-700/50 rounded-xl shadow-2xl py-2 z-50 flex-col transition-all duration-200 origin-top-left ${isMoreStatesOpen ? 'opacity-100 scale-100 flex' : 'opacity-0 scale-95 hidden pointer-events-none'}`}
+              >
+                <div className="px-3 pb-2 mb-2 border-b border-slate-100 dark:border-slate-700/50 flex flex-col gap-2">
+                  <div className="relative">
+                    <Search className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" />
+                    <input 
+                      type="text" 
+                      placeholder="Search states..."
+                      value={stateSearchQuery}
+                      onChange={(e) => setStateSearchQuery(e.target.value)}
+                      className="w-full bg-transparent border border-slate-200 dark:border-slate-600 rounded-lg pl-9 pr-3 py-1.5 text-xs text-slate-800 dark:text-slate-200 focus:outline-none focus:border-amber-500 transition-colors"
+                    />
+                  </div>
+                  {!stateFilters.includes('All') && (
+                    <div className="flex justify-between items-center text-[11px] px-0.5 pt-0.5">
+                      <span className="text-slate-500 dark:text-slate-400 font-medium">
+                        {stateFilters.length} state{stateFilters.length > 1 ? 's' : ''} active
+                      </span>
+                      <button 
+                        onClick={() => setStateFilters(['All'])}
+                        className="text-amber-600 dark:text-amber-400 hover:underline font-bold"
+                      >
+                        Reset All
+                      </button>
+                    </div>
+                  )}
+                </div>
+                <div className="max-h-64 overflow-y-auto custom-scrollbar flex-col flex">
+                {[
+                  'Andaman and Nicobar Islands', 'Andhra Pradesh', 'Arunachal Pradesh', 'Assam', 'Bihar', 'Central', 'Chandigarh', 'Chhattisgarh',
+                  'Dadra and Nagar Haveli', 'Daman and Diu', 'Delhi', 'Goa', 'Gujarat', 'Haryana', 'Himachal Pradesh',
+                  'Jammu and Kashmir', 'Jharkhand', 'Karnataka', 'Kerala', 'Ladakh', 'Lakshadweep', 'Madhya Pradesh',
+                  'Maharashtra', 'Manipur', 'Meghalaya', 'Mizoram', 'Nagaland', 'Odisha', 'Puducherry', 'Punjab',
+                  'Rajasthan', 'Sikkim', 'Tamil Nadu', 'Telangana', 'Tripura', 'Uttar Pradesh', 'Uttarakhand', 'West Bengal', 'Other'
+                ].filter(s => s.toLowerCase().includes(stateSearchQuery.toLowerCase())).map(s => {
+                  const isChecked = stateFilters.includes(s) || (s === 'Uttar Pradesh' && stateFilters.includes('UP'));
+                  return (
+                    <label
+                      key={s}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleStateToggle(s);
+                      }}
+                      className={`flex items-center w-full text-left px-3.5 py-1.5 hover:bg-slate-100 dark:hover:bg-slate-700/50 cursor-pointer text-xs font-medium transition-colors select-none ${
+                        isChecked 
+                          ? 'text-amber-700 dark:text-amber-300 bg-amber-100/80 dark:bg-amber-950/40 font-bold' 
+                          : 'text-slate-700 dark:text-slate-200'
+                      }`}
+                    >
+                      <input 
+                        type="checkbox"
+                        checked={isChecked}
+                        onChange={() => {}} 
+                        className="mr-2.5 w-4 h-4 rounded border-slate-300 dark:border-slate-600 text-amber-600 focus:ring-amber-500 accent-amber-600 cursor-pointer"
+                      />
+                      <span className="flex-1">{s}</span>
+                    </label>
+                  );
+                })}
+                {[
+                  'Andaman and Nicobar Islands', 'Andhra Pradesh', 'Arunachal Pradesh', 'Assam', 'Bihar', 'Central', 'Chandigarh', 'Chhattisgarh',
+                  'Dadra and Nagar Haveli', 'Daman and Diu', 'Delhi', 'Goa', 'Gujarat', 'Haryana', 'Himachal Pradesh',
+                  'Jammu and Kashmir', 'Jharkhand', 'Karnataka', 'Kerala', 'Ladakh', 'Lakshadweep', 'Madhya Pradesh',
+                  'Maharashtra', 'Manipur', 'Meghalaya', 'Mizoram', 'Nagaland', 'Odisha', 'Puducherry', 'Punjab',
+                  'Rajasthan', 'Sikkim', 'Tamil Nadu', 'Telangana', 'Tripura', 'Uttar Pradesh', 'Uttarakhand', 'West Bengal', 'Other'
+                ].filter(s => s.toLowerCase().includes(stateSearchQuery.toLowerCase())).length === 0 && (
+                  <div className="px-4 py-3 text-xs text-slate-500 dark:text-slate-400 text-center">No states found</div>
+                )}
+                </div>
+              </div>
+            </div>
+          </div>
+          <button onClick={() => triggerToast('Database synced successfully!')} className="text-xs font-semibold text-slate-500 hover:text-indigo-500 dark:text-slate-400 whitespace-nowrap ml-4">
+             Refresh Data
+          </button>
+        </div>
+      </div>
+
+      <main className="w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow">
+        <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3 mb-8">
+          <div onClick={() => handleTabChange('latest-jobs')} className={`bg-indigo-50 dark:bg-indigo-950/20 border ${activeTab === 'latest-jobs' ? 'border-indigo-400 dark:border-indigo-500 shadow-md ring-2 ring-indigo-200 dark:ring-indigo-900/50' : 'border-indigo-100 dark:border-indigo-900/50'} rounded-xl p-2.5 flex items-center space-x-2.5 transition-all duration-300 cursor-pointer hover:shadow-md hover:-translate-y-1 hover:border-indigo-300 dark:hover:border-indigo-700`}>
+            <div className="w-8 h-8 bg-indigo-500 rounded-lg flex items-center justify-center text-white font-bold overflow-hidden p-1 shrink-0">
+              <CategoryIcon icon={columnConfigs['latest-jobs']?.icon || '💼'} className="w-5 h-5 object-contain" />
+            </div>
+            <div className="min-w-0">
+              <h4 className="text-[10px] sm:text-xs text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider truncate">
+                {columnConfigs['latest-jobs']?.title || 'Latest Jobs'}
+              </h4>
+              <p className="text-base font-black text-slate-900 dark:text-white leading-tight">{counts.latest}</p>
+            </div>
+          </div>
+          
+          <div onClick={() => handleTabChange('admit-card')} className={`bg-amber-50 dark:bg-amber-950/20 border ${activeTab === 'admit-card' ? 'border-amber-400 dark:border-amber-500 shadow-md ring-2 ring-amber-200 dark:ring-amber-900/50' : 'border-amber-100 dark:border-amber-900/50'} rounded-xl p-2.5 flex items-center space-x-2.5 transition-all duration-300 cursor-pointer hover:shadow-md hover:-translate-y-1 hover:border-amber-300 dark:hover:border-amber-700`}>
+            <div className="w-8 h-8 bg-amber-500 rounded-lg flex items-center justify-center text-white font-bold overflow-hidden p-1 shrink-0">
+              <CategoryIcon icon={columnConfigs['admit-cards']?.icon || '📄'} className="w-5 h-5 object-contain" />
+            </div>
+            <div className="min-w-0">
+              <h4 className="text-[10px] sm:text-xs text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider truncate">
+                {columnConfigs['admit-cards']?.title || 'Admit Cards'}
+              </h4>
+              <p className="text-base font-black text-slate-900 dark:text-white leading-tight">{counts.admit}</p>
+            </div>
+          </div>
+          
+          <div onClick={() => handleTabChange('results')} className={`bg-emerald-50 dark:bg-emerald-950/20 border ${activeTab === 'results' ? 'border-emerald-400 dark:border-emerald-500 shadow-md ring-2 ring-emerald-200 dark:ring-emerald-900/50' : 'border-emerald-100 dark:border-emerald-900/50'} rounded-xl p-2.5 flex items-center space-x-2.5 transition-all duration-300 cursor-pointer hover:shadow-md hover:-translate-y-1 hover:border-emerald-300 dark:hover:border-emerald-700`}>
+            <div className="w-8 h-8 bg-emerald-500 rounded-lg flex items-center justify-center text-white font-bold overflow-hidden p-1 shrink-0">
+              <CategoryIcon icon={columnConfigs['results']?.icon || '🏆'} className="w-5 h-5 object-contain" />
+            </div>
+            <div className="min-w-0">
+              <h4 className="text-[10px] sm:text-xs text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider truncate">
+                {columnConfigs['results']?.title || 'Results'}
+              </h4>
+              <p className="text-base font-black text-slate-900 dark:text-white leading-tight">{counts.results}</p>
+            </div>
+          </div>
+          
+          <div onClick={() => handleTabChange('answer-key')} className={`bg-cyan-50 dark:bg-cyan-950/20 border ${activeTab === 'answer-key' ? 'border-cyan-400 dark:border-cyan-500 shadow-md ring-2 ring-cyan-200 dark:ring-cyan-900/50' : 'border-cyan-100 dark:border-cyan-900/50'} rounded-xl p-2.5 flex items-center space-x-2.5 transition-all duration-300 cursor-pointer hover:shadow-md hover:-translate-y-1 hover:border-cyan-300 dark:hover:border-cyan-700`}>
+            <div className="w-8 h-8 bg-cyan-500 rounded-lg flex items-center justify-center text-white font-bold overflow-hidden p-1 shrink-0">
+              <CategoryIcon icon={columnConfigs['answer-key']?.icon || '🔑'} className="w-5 h-5 object-contain" />
+            </div>
+            <div className="min-w-0">
+              <h4 className="text-[10px] sm:text-xs text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider truncate">
+                {columnConfigs['answer-key']?.title || 'Answer Key'}
+              </h4>
+              <p className="text-base font-black text-slate-900 dark:text-white leading-tight">{counts.answerKey}</p>
+            </div>
+          </div>
+          
+          <div onClick={() => handleTabChange('syllabus')} className={`bg-fuchsia-50 dark:bg-fuchsia-950/20 border ${activeTab === 'syllabus' ? 'border-fuchsia-400 dark:border-fuchsia-500 shadow-md ring-2 ring-fuchsia-200 dark:ring-fuchsia-900/50' : 'border-fuchsia-100 dark:border-fuchsia-900/50'} rounded-xl p-2.5 flex items-center space-x-2.5 transition-all duration-300 cursor-pointer hover:shadow-md hover:-translate-y-1 hover:border-fuchsia-300 dark:hover:border-fuchsia-700`}>
+            <div className="w-8 h-8 bg-fuchsia-500 rounded-lg flex items-center justify-center text-white font-bold overflow-hidden p-1 shrink-0">
+              <CategoryIcon icon={columnConfigs['syllabus']?.icon || '📚'} className="w-5 h-5 object-contain" />
+            </div>
+            <div className="min-w-0">
+              <h4 className="text-[10px] sm:text-xs text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider truncate">
+                {columnConfigs['syllabus']?.title || 'Syllabus'}
+              </h4>
+              <p className="text-base font-black text-slate-900 dark:text-white leading-tight">{counts.syllabus}</p>
+            </div>
+          </div>
+
+          <div onClick={() => handleTabChange('admission')} className={`bg-rose-50 dark:bg-rose-950/20 border ${activeTab === 'admission' ? 'border-rose-400 dark:border-rose-500 shadow-md ring-2 ring-rose-200 dark:ring-rose-900/50' : 'border-rose-100 dark:border-rose-900/50'} rounded-xl p-2.5 flex items-center space-x-2.5 transition-all duration-300 cursor-pointer hover:shadow-md hover:-translate-y-1 hover:border-rose-300 dark:hover:border-rose-700`}>
+            <div className="w-8 h-8 bg-rose-500 rounded-lg flex items-center justify-center text-white font-bold overflow-hidden p-1 shrink-0">
+              <CategoryIcon icon={columnConfigs['admission']?.icon || '🎓'} className="w-5 h-5 object-contain" />
+            </div>
+            <div className="min-w-0">
+              <h4 className="text-[10px] sm:text-xs text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider truncate">
+                {columnConfigs['admission']?.title || 'Admission'}
+              </h4>
+              <p className="text-base font-black text-slate-900 dark:text-white leading-tight">{counts.admission}</p>
+            </div>
+          </div>
+          
+          <div onClick={() => handleTabChange('documents')} className={`bg-orange-50 dark:bg-orange-950/20 border ${activeTab === 'documents' ? 'border-orange-400 dark:border-orange-500 shadow-md ring-2 ring-orange-200 dark:ring-orange-900/50' : 'border-orange-100 dark:border-orange-900/50'} rounded-xl p-2.5 flex items-center space-x-2.5 transition-all duration-300 cursor-pointer hover:shadow-md hover:-translate-y-1 hover:border-orange-300 dark:hover:border-orange-700`}>
+            <div className="w-8 h-8 bg-orange-500 rounded-lg flex items-center justify-center text-white font-bold overflow-hidden p-1 shrink-0">
+              <CategoryIcon icon={columnConfigs['documents']?.icon || '📜'} className="w-5 h-5 object-contain" />
+            </div>
+            <div className="min-w-0">
+              <h4 className="text-[10px] sm:text-xs text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider truncate">
+                {columnConfigs['documents']?.title || 'Services'}
+              </h4>
+              <p className="text-base font-black text-slate-900 dark:text-white leading-tight">{counts.documents}</p>
+            </div>
+          </div>
+          
+          <div onClick={() => handleTabChange('important')} className={`bg-pink-50 dark:bg-pink-950/20 border ${activeTab === 'important' ? 'border-pink-400 dark:border-pink-500 shadow-md ring-2 ring-pink-200 dark:ring-pink-900/50' : 'border-pink-100 dark:border-pink-900/50'} rounded-xl p-2.5 flex items-center space-x-2.5 transition-all duration-300 cursor-pointer hover:shadow-md hover:-translate-y-1 hover:border-pink-300 dark:hover:border-pink-700`}>
+            <div className="w-8 h-8 bg-pink-500 rounded-lg flex items-center justify-center text-white font-bold overflow-hidden p-1 shrink-0">
+              <CategoryIcon icon={columnConfigs['important']?.icon || '⚠️'} className="w-5 h-5 object-contain" />
+            </div>
+            <div className="min-w-0">
+              <h4 className="text-[10px] sm:text-xs text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider truncate">
+                {columnConfigs['important']?.title || 'Important'}
+              </h4>
+              <p className="text-base font-black text-slate-900 dark:text-white leading-tight">{counts.important}</p>
+            </div>
+          </div>
+        </div>
+
+        {activeTab === 'home' && (
+          <>
+            {/* Super Admin Notice if any sections are hidden from public view */}
+            {isSuperAdminLoggedIn && Object.keys(DEFAULT_COLUMN_CONFIGS).some(k => columnConfigs[k]?.enabled === false) && (
+              <div className="mb-6 p-3.5 bg-amber-500/10 border border-amber-500/30 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs text-amber-700 dark:text-amber-300 shadow-sm animate-in fade-in">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-8 h-8 rounded-lg bg-amber-500/20 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0">
+                    <EyeOff className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <span className="font-black uppercase tracking-wider block">Super Admin Visibility Alert</span>
+                    <span className="text-[11px] text-slate-600 dark:text-slate-400">
+                      Hidden sections on homepage:{' '}
+                      <strong className="text-amber-800 dark:text-amber-300">
+                        {Object.keys(DEFAULT_COLUMN_CONFIGS)
+                          .filter(k => columnConfigs[k]?.enabled === false)
+                          .map(k => columnConfigs[k]?.title || k)
+                          .join(', ')}
+                      </strong>
+                    </span>
+                  </div>
+                </div>
+                <button
+                  onClick={() => handleOpenSuperAdmin('columns')}
+                  className="px-3 py-1.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black rounded-xl text-xs cursor-pointer transition-all shadow-sm shrink-0"
+                >
+                  Manage Section Visibility
+                </button>
+              </div>
+            )}
+
+            {/* Primary Main Columns: Result, Admit Card, Latest Jobs (Respects visibility toggle) */}
+            {(() => {
+              const primaryCols = [
+                {
+                  id: 'results',
+                  domId: 'section-results',
+                  gradientFrom: 'from-teal-600',
+                  gradientTo: 'to-emerald-500',
+                  initialLimit: 30,
+                  maxHeightClass: 'max-h-[920px]',
+                  maxHeightExpandedClass: 'max-h-[1400px]',
+                  bgDark: false
+                },
+                {
+                  id: 'admit-cards',
+                  domId: 'section-admit-cards',
+                  gradientFrom: 'from-indigo-500',
+                  gradientTo: 'to-purple-500',
+                  initialLimit: 30,
+                  maxHeightClass: 'max-h-[920px]',
+                  maxHeightExpandedClass: 'max-h-[1400px]',
+                  bgDark: false
+                },
+                {
+                  id: 'latest-jobs',
+                  domId: 'section-latest-jobs',
+                  gradientFrom: 'from-rose-500',
+                  gradientTo: 'to-red-500',
+                  initialLimit: 30,
+                  maxHeightClass: 'max-h-[920px]',
+                  maxHeightExpandedClass: 'max-h-[1400px]',
+                  bgDark: false
+                }
+              ].filter(col => columnConfigs[col.id]?.enabled !== false);
+
+              if (primaryCols.length === 0) return null;
+
+              const gridClass = primaryCols.length === 3 
+                ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8' 
+                : primaryCols.length === 2 
+                  ? 'grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 max-w-5xl mx-auto' 
+                  : 'grid grid-cols-1 gap-6 mb-8 max-w-2xl mx-auto';
+
+              return (
+                <div className={gridClass}>
+                  {primaryCols.map(col => (
+                    <JobColumn 
+                      key={col.id}
+                      searchQuery={searchQuery}
+                      id={col.domId}
+                      title={columnConfigs[col.id]?.title || col.id.toUpperCase()}
+                      hindiTitle={columnConfigs[col.id]?.hindiTitle}
+                      tagline={columnConfigs[col.id]?.tagline}
+                      badgeText={columnConfigs[col.id]?.badgeText}
+                      icon={columnConfigs[col.id]?.icon || '⭐'}
+                      jobs={filteredJobs}
+                      categoryId={col.id as any}
+                      gradientFrom={col.gradientFrom}
+                      gradientTo={col.gradientTo}
+                      bgDark={col.bgDark}
+                      onJobClick={handleJobClick}
+                      isAdmin={isAdminLoggedIn}
+                      isSuperAdmin={isSuperAdminLoggedIn}
+                      onQuickEditTitle={() => handleOpenSuperAdmin('columns', col.id)}
+                      onEdit={handleEditJob}
+                      onDelete={handleDeleteJob}
+                      onSeeMore={handleSeeMoreCategory}
+                      initialLimit={col.initialLimit}
+                      maxHeightClass={col.maxHeightClass}
+                      maxHeightExpandedClass={col.maxHeightExpandedClass}
+                    />
+                  ))}
+                </div>
+              );
+            })()}
+
+            {/* Secondary Columns: Answer Key, Syllabus, Admission (Respects visibility toggle) */}
+            {(() => {
+              const secondaryCols = [
+                {
+                  id: 'answer-key',
+                  domId: 'section-answer-key',
+                  initialLimit: 7
+                },
+                {
+                  id: 'syllabus',
+                  domId: 'section-syllabus',
+                  initialLimit: 7
+                },
+                {
+                  id: 'admission',
+                  domId: 'section-admission',
+                  initialLimit: 7
+                }
+              ].filter(col => columnConfigs[col.id]?.enabled !== false);
+
+              if (secondaryCols.length === 0) return null;
+
+              const gridClass = secondaryCols.length === 3 
+                ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8' 
+                : secondaryCols.length === 2 
+                  ? 'grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 max-w-5xl mx-auto' 
+                  : 'grid grid-cols-1 gap-6 mb-8 max-w-2xl mx-auto';
+
+              return (
+                <div className={gridClass}>
+                  {secondaryCols.map(col => (
+                    <JobColumn 
+                      key={col.id}
+                      searchQuery={searchQuery}
+                      id={col.domId}
+                      title={columnConfigs[col.id]?.title || col.id.toUpperCase()}
+                      hindiTitle={columnConfigs[col.id]?.hindiTitle}
+                      tagline={columnConfigs[col.id]?.tagline}
+                      badgeText={columnConfigs[col.id]?.badgeText}
+                      icon={columnConfigs[col.id]?.icon || '🔑'}
+                      jobs={filteredJobs}
+                      categoryId={col.id as any}
+                      gradientFrom=""
+                      gradientTo=""
+                      bgDark={true}
+                      onJobClick={handleJobClick}
+                      isAdmin={isAdminLoggedIn}
+                      isSuperAdmin={isSuperAdminLoggedIn}
+                      onQuickEditTitle={() => handleOpenSuperAdmin('columns', col.id)}
+                      onEdit={handleEditJob}
+                      onDelete={handleDeleteJob}
+                      onSeeMore={handleSeeMoreCategory}
+                      initialLimit={col.initialLimit}
+                    />
+                  ))}
+                </div>
+              );
+            })()}
+
+            {/* Additional Columns: Certificate & Services, Important Links (Respects visibility toggle) */}
+            {(() => {
+              const additionalCols = [
+                {
+                  id: 'documents',
+                  domId: 'section-documents',
+                  initialLimit: 7
+                },
+                {
+                  id: 'important',
+                  domId: 'section-important',
+                  initialLimit: 7
+                }
+              ].filter(col => columnConfigs[col.id]?.enabled !== false);
+
+              if (additionalCols.length === 0) return null;
+
+              const gridClass = additionalCols.length === 2 
+                ? 'grid grid-cols-1 md:grid-cols-2 gap-6' 
+                : 'grid grid-cols-1 max-w-2xl mx-auto gap-6';
+
+              return (
+                <div className={gridClass}>
+                  {additionalCols.map(col => (
+                    <JobColumn 
+                      key={col.id}
+                      searchQuery={searchQuery}
+                      id={col.domId}
+                      title={columnConfigs[col.id]?.title || col.id.toUpperCase()}
+                      hindiTitle={columnConfigs[col.id]?.hindiTitle}
+                      tagline={columnConfigs[col.id]?.tagline}
+                      badgeText={columnConfigs[col.id]?.badgeText}
+                      icon={columnConfigs[col.id]?.icon || '📜'}
+                      jobs={filteredJobs}
+                      categoryId={col.id as any}
+                      gradientFrom=""
+                      gradientTo=""
+                      bgDark={true}
+                      onJobClick={handleJobClick}
+                      isAdmin={isAdminLoggedIn}
+                      isSuperAdmin={isSuperAdminLoggedIn}
+                      onQuickEditTitle={() => handleOpenSuperAdmin('columns', col.id)}
+                      onEdit={handleEditJob}
+                      onDelete={handleDeleteJob}
+                      onSeeMore={handleSeeMoreCategory}
+                      initialLimit={col.initialLimit}
+                    />
+                  ))}
+                </div>
+              );
+            })()}
+          </>
+        )}
+
+        {activeTab !== 'home' && (
+          <div className="max-w-4xl mx-auto space-y-4">
+            {/* Top Category Navigation Header */}
+            <div className="flex flex-wrap items-center justify-between gap-3 bg-white dark:bg-slate-900 px-4 py-2 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
+              <button
+                onClick={() => handleTabChange('home')}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-100 hover:bg-amber-500 hover:text-white dark:hover:bg-amber-600 transition-all text-xs font-semibold cursor-pointer shadow-xs"
+              >
+                <ArrowLeft className="w-3.5 h-3.5" />
+                <span>Back</span>
+              </button>
+              <span className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">
+                Viewing full category
+              </span>
+            </div>
+
+            {activeTab === 'results' && (
+              <JobColumn searchQuery={searchQuery} 
+                title={`ALL ${columnConfigs['results']?.title || 'RESULTS'}`}
+                hindiTitle={columnConfigs['results']?.hindiTitle}
+                tagline={columnConfigs['results']?.tagline}
+                badgeText={columnConfigs['results']?.badgeText}
+                icon={columnConfigs['results']?.icon || '🏆'} 
+                jobs={filteredJobs} 
+                categoryId="results" 
+                gradientFrom="" 
+                gradientTo=""
+                bgDark={true}
+                onJobClick={handleJobClick}
+                isAdmin={isAdminLoggedIn}
+                isSuperAdmin={isSuperAdminLoggedIn}
+                onQuickEditTitle={() => handleOpenSuperAdmin('columns')}
+                onEdit={handleEditJob}
+                onDelete={handleDeleteJob}
+                defaultExpanded={true}
+              />
+            )}
+            {(activeTab === 'admit-card' || activeTab === 'admit-cards') && (
+              <JobColumn searchQuery={searchQuery} 
+                title={`ALL ${columnConfigs['admit-cards']?.title || 'ADMIT CARDS'}`}
+                hindiTitle={columnConfigs['admit-cards']?.hindiTitle}
+                tagline={columnConfigs['admit-cards']?.tagline}
+                badgeText={columnConfigs['admit-cards']?.badgeText}
+                icon={columnConfigs['admit-cards']?.icon || '📄'} 
+                jobs={filteredJobs} 
+                categoryId="admit-cards" 
+                gradientFrom="" 
+                gradientTo=""
+                bgDark={true}
+                onJobClick={handleJobClick}
+                isAdmin={isAdminLoggedIn}
+                isSuperAdmin={isSuperAdminLoggedIn}
+                onQuickEditTitle={() => handleOpenSuperAdmin('columns')}
+                onEdit={handleEditJob}
+                onDelete={handleDeleteJob}
+                defaultExpanded={true}
+              />
+            )}
+            {(activeTab === 'latest-jobs' || activeTab === 'latest-job') && (
+              <JobColumn searchQuery={searchQuery} 
+                title={`ALL ${columnConfigs['latest-jobs']?.title || 'LATEST JOBS'}`}
+                hindiTitle={columnConfigs['latest-jobs']?.hindiTitle}
+                tagline={columnConfigs['latest-jobs']?.tagline}
+                badgeText={columnConfigs['latest-jobs']?.badgeText}
+                icon={columnConfigs['latest-jobs']?.icon || '⭐'} 
+                jobs={filteredJobs} 
+                categoryId="latest-jobs" 
+                gradientFrom="" 
+                gradientTo=""
+                bgDark={true}
+                onJobClick={handleJobClick}
+                isAdmin={isAdminLoggedIn}
+                isSuperAdmin={isSuperAdminLoggedIn}
+                onQuickEditTitle={() => handleOpenSuperAdmin('columns')}
+                onEdit={handleEditJob}
+                onDelete={handleDeleteJob}
+                defaultExpanded={true}
+              />
+            )}
+            {activeTab === 'answer-key' && (
+              <JobColumn searchQuery={searchQuery} 
+                title={`ALL ${columnConfigs['answer-key']?.title || 'ANSWER KEYS'}`}
+                hindiTitle={columnConfigs['answer-key']?.hindiTitle}
+                tagline={columnConfigs['answer-key']?.tagline}
+                badgeText={columnConfigs['answer-key']?.badgeText}
+                icon={columnConfigs['answer-key']?.icon || '🔑'} 
+                jobs={filteredJobs} 
+                categoryId="answer-key" 
+                gradientFrom="" 
+                gradientTo=""
+                bgDark={true}
+                onJobClick={handleJobClick}
+                isAdmin={isAdminLoggedIn}
+                isSuperAdmin={isSuperAdminLoggedIn}
+                onQuickEditTitle={() => handleOpenSuperAdmin('columns')}
+                onEdit={handleEditJob}
+                onDelete={handleDeleteJob}
+                defaultExpanded={true}
+              />
+            )}
+            {activeTab === 'syllabus' && (
+              <JobColumn searchQuery={searchQuery} 
+                title={`ALL ${columnConfigs['syllabus']?.title || 'SYLLABUS'}`}
+                hindiTitle={columnConfigs['syllabus']?.hindiTitle}
+                tagline={columnConfigs['syllabus']?.tagline}
+                badgeText={columnConfigs['syllabus']?.badgeText}
+                icon={columnConfigs['syllabus']?.icon || '📚'} 
+                jobs={filteredJobs} 
+                categoryId="syllabus" 
+                gradientFrom="" 
+                gradientTo=""
+                bgDark={true}
+                onJobClick={handleJobClick}
+                isAdmin={isAdminLoggedIn}
+                isSuperAdmin={isSuperAdminLoggedIn}
+                onQuickEditTitle={() => handleOpenSuperAdmin('columns')}
+                onEdit={handleEditJob}
+                onDelete={handleDeleteJob}
+                defaultExpanded={true}
+              />
+            )}
+            {activeTab === 'admission' && (
+              <JobColumn searchQuery={searchQuery} 
+                title={`ALL ${columnConfigs['admission']?.title || 'ADMISSIONS'}`}
+                hindiTitle={columnConfigs['admission']?.hindiTitle}
+                tagline={columnConfigs['admission']?.tagline}
+                badgeText={columnConfigs['admission']?.badgeText}
+                icon={columnConfigs['admission']?.icon || '🎓'} 
+                jobs={filteredJobs} 
+                categoryId="admission" 
+                gradientFrom="" 
+                gradientTo=""
+                bgDark={true}
+                onJobClick={handleJobClick}
+                isAdmin={isAdminLoggedIn}
+                isSuperAdmin={isSuperAdminLoggedIn}
+                onQuickEditTitle={() => handleOpenSuperAdmin('columns')}
+                onEdit={handleEditJob}
+                onDelete={handleDeleteJob}
+                defaultExpanded={true}
+              />
+            )}
+            {activeTab === 'documents' && (
+              <JobColumn searchQuery={searchQuery} 
+                title={`ALL ${columnConfigs['documents']?.title || 'CERTIFICATES & SERVICES'}`}
+                hindiTitle={columnConfigs['documents']?.hindiTitle}
+                tagline={columnConfigs['documents']?.tagline}
+                badgeText={columnConfigs['documents']?.badgeText}
+                icon={columnConfigs['documents']?.icon || '📜'} 
+                jobs={filteredJobs} 
+                categoryId="documents" 
+                gradientFrom="" 
+                gradientTo=""
+                bgDark={true}
+                onJobClick={handleJobClick}
+                isAdmin={isAdminLoggedIn}
+                isSuperAdmin={isSuperAdminLoggedIn}
+                onQuickEditTitle={() => handleOpenSuperAdmin('columns')}
+                onEdit={handleEditJob}
+                onDelete={handleDeleteJob}
+                defaultExpanded={true}
+              />
+            )}
+            {activeTab === 'important' && (
+              <JobColumn searchQuery={searchQuery} 
+                title={`ALL ${columnConfigs['important']?.title || 'IMPORTANT'}`}
+                hindiTitle={columnConfigs['important']?.hindiTitle}
+                tagline={columnConfigs['important']?.tagline}
+                badgeText={columnConfigs['important']?.badgeText}
+                icon={columnConfigs['important']?.icon || '⚠️'} 
+                jobs={filteredJobs} 
+                categoryId="important" 
+                gradientFrom="" 
+                gradientTo=""
+                bgDark={true}
+                onJobClick={handleJobClick}
+                isAdmin={isAdminLoggedIn}
+                isSuperAdmin={isSuperAdminLoggedIn}
+                onQuickEditTitle={() => handleOpenSuperAdmin('columns')}
+                onEdit={handleEditJob}
+                onDelete={handleDeleteJob}
+                defaultExpanded={true}
+              />
+            )}
+            {activeTab === 'history' && (
+              <JobColumn searchQuery={searchQuery} 
+                title="RECENT SEARCHES" 
+                icon="⏱️" 
+                jobs={recentJobIds.map(id => jobs.find(j => j.id === id)).filter(Boolean) as any} 
+                categoryId="latest-jobs" 
+                gradientFrom="" 
+                gradientTo=""
+                bgDark={true}
+                onJobClick={handleJobClick}
+                isAdmin={isAdminLoggedIn}
+                onEdit={handleEditJob}
+                onDelete={handleDeleteJob}
+                disableFilter={true}
+                defaultExpanded={true}
+              />
+            )}
+          </div>
+        )}
+      </main>
+
+      <FAQ />
+        </>
+      )}
+
+      <footer className="custom-footer-override bg-slate-900 border-t-4 border-amber-500 pt-4 sm:pt-5 pb-8 mt-12 transition-colors duration-300">
+        <div className="w-full mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8 text-sm">
+            <div className="space-y-2.5">
+              <button
+                onClick={() => setIsSubscribeModalOpen(true)}
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-gradient-to-r from-blue-900 via-indigo-900 to-slate-900 hover:from-blue-800 hover:to-indigo-800 text-amber-300 text-xs font-black px-4 py-2 rounded-xl shadow-md shadow-blue-950/80 border border-amber-500/50 hover:scale-105 active:scale-95 transition-all cursor-pointer group"
+                title="Click to subscribe for email notifications of all new job posts"
+              >
+                <Bell className="w-4 h-4 fill-current text-amber-400 animate-bounce group-hover:rotate-12 transition-transform" />
+                <span>Subscribe</span>
+              </button>
+
+              <a 
+                href="#" 
+                className="flex items-center space-x-2 group cursor-pointer" 
+                onClick={(e) => {
+                  e.preventDefault();
+                  setActiveInfoPage(null);
+                  setSelectedJobId(null);
+                  setActiveTab('home');
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }}
+                title="FastArc Govt Jobs Portal - Back to Home"
+              >
+                <div className="w-9 h-9 rounded-full p-0.5 bg-black border-2 border-amber-500/80 shadow-md flex items-center justify-center overflow-hidden shrink-0 transform group-hover:scale-105 transition-transform duration-200">
+                  <img 
+                    src={siteLogo || "/logo.png"} 
+                    alt="FastArc Logo" 
+                    className="w-full h-full object-cover rounded-full"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src = "https://lh3.googleusercontent.com/d/1IE6MQ8EUwyKmGeXnpLTXx7d5HBLJiKb4";
+                    }}
+                  />
+                </div>
+                <div>
+                  <h4 className="text-xl font-black text-white tracking-tight leading-none group-hover:text-amber-400 transition-colors">
+                    Fast<span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-300">Arc</span>
+                  </h4>
+                  <p className="text-[9px] text-amber-400/90 font-extrabold tracking-widest uppercase mt-0.5">Govt Jobs Portal</p>
+                </div>
+              </a>
+
+              <p className="text-slate-400 text-xs leading-relaxed">
+                FastArc Govt Jobs Portal offers lightning-fast notification updates for Central & State Government examinations, admit cards, answer keys, results, and curriculum PDF patterns.
+              </p>
+            </div>
+            <div>
+              <h5 className="font-bold text-white mb-4 text-xs uppercase tracking-widest">Job Portals</h5>
+              <ul className="space-y-3 text-xs text-slate-400">
+                <li>
+                  <button 
+                    onClick={() => handleSeeMoreCategory('results')} 
+                    className="hover:text-amber-400 text-left transition-colors cursor-pointer"
+                  >
+                    Results Alerts
+                  </button>
+                </li>
+                <li>
+                  <button 
+                    onClick={() => handleSeeMoreCategory('admit-cards')} 
+                    className="hover:text-amber-400 text-left transition-colors cursor-pointer"
+                  >
+                    Admit Card Alerts
+                  </button>
+                </li>
+                <li>
+                  <button 
+                    onClick={() => handleSeeMoreCategory('latest-jobs')} 
+                    className="hover:text-amber-400 text-left transition-colors cursor-pointer"
+                  >
+                    Latest Sarkari Jobs
+                  </button>
+                </li>
+                <li>
+                  <button 
+                    onClick={() => handleSeeMoreCategory('admission')} 
+                    className="hover:text-amber-400 text-left transition-colors cursor-pointer"
+                  >
+                    Admission Updates
+                  </button>
+                </li>
+              </ul>
+            </div>
+            <div>
+              <h5 className="font-bold text-white mb-4 text-xs uppercase tracking-widest">Policy & Information</h5>
+              <ul className="space-y-2.5 text-xs text-slate-400">
+                <li>
+                  <button 
+                    onClick={() => setActiveInfoPage('privacy')} 
+                    className="hover:text-amber-400 text-left transition-colors flex items-center gap-1.5 cursor-pointer"
+                  >
+                    <span>Privacy Policy</span>
+                    <span className="text-[9px] bg-emerald-500/20 text-emerald-400 font-bold px-1 rounded">AdSense</span>
+                  </button>
+                </li>
+                <li>
+                  <button 
+                    onClick={() => setActiveInfoPage('disclaimer')} 
+                    className="hover:text-amber-400 text-left transition-colors flex items-center gap-1.5 cursor-pointer"
+                  >
+                    <span>Disclaimer (Non-Govt)</span>
+                  </button>
+                </li>
+                <li>
+                  <button 
+                    onClick={() => setActiveInfoPage('terms')} 
+                    className="hover:text-amber-400 text-left transition-colors flex items-center gap-1.5 cursor-pointer"
+                  >
+                    <span>Terms & Conditions</span>
+                  </button>
+                </li>
+                <li>
+                  <button 
+                    onClick={() => setActiveInfoPage('about')} 
+                    className="hover:text-amber-400 text-left transition-colors flex items-center gap-1.5 cursor-pointer"
+                  >
+                    <span>About Us & Editorial Team</span>
+                  </button>
+                </li>
+                <li>
+                  <button 
+                    onClick={() => setActiveInfoPage('contact')} 
+                    className="hover:text-amber-400 text-left transition-colors flex items-center gap-1.5 cursor-pointer"
+                  >
+                    <span>Contact Us & Grievance</span>
+                  </button>
+                </li>
+              </ul>
+            </div>
+            <div>
+              <h5 className="font-bold text-amber-500 mb-4 text-xs uppercase tracking-widest flex items-center justify-between">
+                <span>Disclaimer</span>
+                <button 
+                  onClick={() => setActiveInfoPage('disclaimer')}
+                  className="text-[10px] text-amber-400 hover:underline font-normal cursor-pointer"
+                >
+                  Read Policy →
+                </button>
+              </h5>
+              <p className="text-xs text-slate-400 leading-relaxed">
+                FastArc is an independent career news aggregator. We are NOT associated with UPSC, SSC, NTA, or any government agency. Always cross-verify exam details on official commission platforms before submitting application fees.
+              </p>
+            </div>
+          </div>
+          <div className="border-t border-slate-800 pt-6 flex flex-col md:flex-row items-center justify-between gap-4">
+            <p className="text-xs text-slate-500">&copy; 2026 FastArc Govt Jobs Portal. All Rights Reserved.</p>
+            <div className="flex flex-col items-center gap-2">
+              <span className="text-[11px] font-bold text-slate-400 uppercase tracking-widest text-center">
+                Official Channels & Social Links
+              </span>
+              <div className="flex items-center justify-center flex-wrap gap-3">
+                {socialLinks.filter(l => l.enabled).map(item => {
+                  return (
+                    <a
+                      key={item.id}
+                      href={item.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 hover:scale-110 active:scale-95 transition-all shadow-md border border-slate-700/60 flex items-center justify-center group"
+                      title={`${item.title} (${item.handle || item.url}) - Click to Open`}
+                    >
+                      <OfficialSocialLogo platform={item.platform} className="w-5 h-5 drop-shadow-sm group-hover:scale-110 transition-transform" />
+                    </a>
+                  );
+                })}
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </footer>
+
+      {jobToDelete && (() => {
+        const targetJob = jobs.find(j => j.id === jobToDelete);
+        return (
+          <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
+            <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl p-6 max-w-md w-full border border-slate-200 dark:border-slate-800 animate-in zoom-in-95 duration-200">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 rounded-xl bg-rose-100 dark:bg-rose-950/50 text-rose-600 dark:text-rose-400 flex items-center justify-center shrink-0">
+                  <Trash2 className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="text-base font-extrabold text-slate-900 dark:text-white">Confirm Permanent Deletion</h3>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">Database synchronization safety check</p>
+                </div>
+              </div>
+
+              <div className="p-3.5 bg-rose-50/60 dark:bg-rose-950/20 border border-rose-200 dark:border-rose-900/40 rounded-xl mb-4 text-xs space-y-1.5">
+                <div className="font-bold text-slate-900 dark:text-white line-clamp-2">
+                  {targetJob?.title || 'Selected Job Alert'}
+                </div>
+                <div className="flex items-center gap-2 text-[11px] text-slate-500 dark:text-slate-400">
+                  <span>Category: <strong className="text-slate-700 dark:text-slate-300 uppercase">{targetJob?.category || 'General'}</strong></span>
+                  {targetJob?.postDate && <span>• Posted: {targetJob.postDate}</span>}
+                </div>
+              </div>
+
+              <p className="text-xs text-slate-600 dark:text-slate-400 mb-6 leading-relaxed">
+                Are you sure you want to delete this job alert? This will immediately remove it from the cloud database and sync the removal across all devices. This action cannot be undone.
+              </p>
+
+              <div className="flex items-center space-x-3">
+                <button 
+                  type="button"
+                  disabled={isDeletingJob}
+                  onClick={cancelDelete} 
+                  className="flex-1 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 font-bold py-2.5 rounded-xl transition-all text-xs disabled:opacity-50 cursor-pointer"
+                >
+                  Cancel
+                </button>
+                <button 
+                  type="button"
+                  disabled={isDeletingJob}
+                  onClick={confirmDelete} 
+                  className="flex-1 bg-rose-600 hover:bg-rose-700 text-white font-extrabold py-2.5 rounded-xl transition-all text-xs shadow-md shadow-rose-600/30 flex items-center justify-center gap-1.5 disabled:opacity-75 cursor-pointer"
+                >
+                  {isDeletingJob ? (
+                    <>
+                      <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                      <span>Deleting from Cloud...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Trash2 className="w-3.5 h-3.5" />
+                      <span>Yes, Delete Job</span>
+                    </>
+                  )}
+                </button>
+              </div>
+            </div>
+          </div>
+        );
+      })()}
+
+      {toastMessage && (
+        <div className="fixed bottom-5 right-5 z-50 bg-slate-900 dark:bg-slate-800 text-white text-xs font-bold px-4 py-3 rounded-lg shadow-2xl transition-all duration-300 flex items-center space-x-2">
+          <span className="text-emerald-400">✔</span>
+          <span>{toastMessage}</span>
+        </div>
+      )}
+
+      <JobDetailModal job={jobs.find(j => j.id === selectedJobId) || null} onClose={handleCloseJobModal} />
+      <AdminPanel isOpen={isAdminPanelOpen} onClose={() => setIsAdminPanelOpen(false)} onSave={handleSaveJob} editingJob={editingJob} />
+      <LoginModal 
+        isOpen={isLoginOpen} 
+        onClose={() => setIsLoginOpen(false)} 
+        employees={employees}
+        onLoginSuccess={(userType, emp) => { 
+          setIsAdminLoggedIn(true); 
+          setIsLoginOpen(false); 
+          setCurrentUserRole(userType);
+
+          // Reset to home page view
+          setActiveInfoPage(null);
+          setSelectedJobId(null);
+          setActiveTab('all');
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+
+          if (userType === 'superadmin') {
+            setIsSuperAdminLoggedIn(true);
+            setCurrentEmployee(null);
+            triggerToast('👑 Super Admin Logged In Successfully!');
+          } else if (userType === 'employee' && emp) {
+            setIsSuperAdminLoggedIn(false);
+            setCurrentEmployee(emp);
+            triggerToast(`👤 Welcome ${emp.name}! Logged in as Staff.`);
+          } else {
+            setIsSuperAdminLoggedIn(false);
+            setCurrentEmployee(null);
+            triggerToast('👤 Admin Logged In Successfully!');
+          }
+        }} 
+      />
+      <SubscribeModal
+        isOpen={isSubscribeModalOpen}
+        onClose={() => setIsSubscribeModalOpen(false)}
+        siteLogo={siteLogo}
+        onSubscribeSuccess={(email) => {
+          triggerToast(`🎉 ${email} subscribed! Notifications enabled for all new job posts.`);
+        }}
+      />
+      <LogoutConfirmModal
+        isOpen={isLogoutConfirmOpen}
+        onConfirm={confirmLogout}
+        onCancel={() => setIsLogoutConfirmOpen(false)}
+      />
+    </div>
+  );
+}
+

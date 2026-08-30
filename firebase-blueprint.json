@@ -1,0 +1,74 @@
+{
+  "entities": {
+    "Job": {
+      "title": "Job",
+      "description": "A government job posting",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string", "maxLength": 300 },
+        "category": { "type": "string", "enum": ["latest-jobs", "admit-cards", "results", "answer-key", "syllabus", "admission"] },
+        "postDate": { "type": "string", "maxLength": 50 },
+        "isNew": { "type": "boolean" },
+        "state": { "type": "string", "maxLength": 100 },
+        "shortInfo": { "type": "string", "maxLength": 5000 },
+        "ageLimit": { "type": "string", "maxLength": 1000 },
+        "eligibility": { "type": "string", "maxLength": 5000 },
+        "fees": { "type": "object" },
+        "dates": { "type": "object" },
+        "links": { "type": "object" }
+      },
+      "required": ["title", "category", "postDate", "isNew", "state"]
+    },
+    "SiteConfig": {
+      "title": "SiteConfig",
+      "description": "Site configuration such as marquee and settings",
+      "type": "object",
+      "properties": {
+        "marqueeText": { "type": "string", "maxLength": 1000 },
+        "updatedAt": { "type": "string" }
+      }
+    },
+    "Employee": {
+      "title": "Employee",
+      "description": "Employee user and permissions",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "maxLength": 100 },
+        "username": { "type": "string", "maxLength": 100 },
+        "role": { "type": "string" },
+        "status": { "type": "string" },
+        "permissions": { "type": "object" }
+      },
+      "required": ["name", "username", "role"]
+    },
+    "Subscriber": {
+      "title": "Subscriber",
+      "description": "Email alert subscriber",
+      "type": "object",
+      "properties": {
+        "email": { "type": "string", "maxLength": 200 },
+        "category": { "type": "string", "maxLength": 100 },
+        "date": { "type": "string", "maxLength": 50 }
+      },
+      "required": ["email"]
+    }
+  },
+  "firestore": {
+    "/jobs/{jobId}": {
+      "schema": { "$ref": "#/entities/Job" },
+      "description": "Government job postings"
+    },
+    "/site_config/{configId}": {
+      "schema": { "$ref": "#/entities/SiteConfig" },
+      "description": "Site configurations like marquee text"
+    },
+    "/employees/{employeeId}": {
+      "schema": { "$ref": "#/entities/Employee" },
+      "description": "Portal employees and roles"
+    },
+    "/subscribers/{subscriberId}": {
+      "schema": { "$ref": "#/entities/Subscriber" },
+      "description": "Subscriber alerts"
+    }
+  }
+}
