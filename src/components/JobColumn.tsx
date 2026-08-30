@@ -275,16 +275,17 @@ export const JobColumn: React.FC<JobColumnProps> = ({
               >
                 <a 
                   href={getJobDetailUrl(item)}
-                  target="_blank"
-                  rel="noopener noreferrer"
                   onClick={(e) => {
+                    if (e.metaKey || e.ctrlKey || e.shiftKey) {
+                      return; // allow browser to open new tab natively
+                    }
                     e.preventDefault();
-                    openJobInNewTab(item);
+                    onJobClick(item.id);
                   }}
                   className="flex-grow pr-3 cursor-pointer no-underline block"
                 >
                   <span className="text-xs font-semibold text-slate-800 dark:text-slate-100 group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors leading-relaxed block">
-                    <HighlightText text={item.title} query={searchQuery.trim()} />
+                    <HighlightText text={item.title} query={searchQuery?.trim()} />
                   </span>
                   <div className="flex items-center flex-wrap gap-1.5 mt-1.5">
                     <span className="text-[9px] text-slate-400 font-medium">
@@ -330,19 +331,14 @@ export const JobColumn: React.FC<JobColumnProps> = ({
                       NEW
                     </span>
                   )}
-                  <a
-                    href={getJobDetailUrl(item)}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      openJobInNewTab(item);
-                    }}
-                    className="p-1 text-slate-300 group-hover:text-amber-500 transition-colors cursor-pointer"
-                    title="Open Job Details in New Tab"
+                  <button
+                    type="button"
+                    onClick={() => onJobClick(item.id)}
+                    className="p-1 text-slate-300 hover:text-amber-500 transition-colors cursor-pointer"
+                    title="View Details"
                   >
                     <ArrowRight className="w-3.5 h-3.5" />
-                  </a>
+                  </button>
                 </div>
               </div>
             );

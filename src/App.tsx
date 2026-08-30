@@ -1028,6 +1028,7 @@ export default function App() {
           job={selectedJob}
           allJobs={jobs}
           onBackToHome={handleCloseJobModal}
+          onSelectJob={(jobId) => handleJobClick(jobId)}
           siteLogo={siteLogo}
           socialLinks={socialLinks}
           isDarkMode={isDarkMode}

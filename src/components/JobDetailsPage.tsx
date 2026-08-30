@@ -17,6 +17,7 @@ interface JobDetailsPageProps {
   job: JobAlert | null;
   allJobs: JobAlert[];
   onBackToHome: () => void;
+  onSelectJob?: (jobId: string) => void;
   siteLogo?: string;
   socialLinks?: SocialLinkItem[];
   isDarkMode: boolean;
@@ -38,6 +39,7 @@ export const JobDetailsPage: React.FC<JobDetailsPageProps> = ({
   job: rawJob,
   allJobs,
   onBackToHome,
+  onSelectJob,
   siteLogo = "/logo.png",
   socialLinks = [],
   isDarkMode,
@@ -972,7 +974,14 @@ export const JobDetailsPage: React.FC<JobDetailsPageProps> = ({
               {relatedJobs.map((rj) => (
                 <div
                   key={rj.id}
-                  onClick={() => openJobInNewTab(rj)}
+                  onClick={() => {
+                    if (onSelectJob) {
+                      onSelectJob(rj.id);
+                      window.scrollTo({ top: 0, behavior: 'smooth' });
+                    } else {
+                      openJobInNewTab(rj);
+                    }
+                  }}
                   className="p-3 bg-slate-50 hover:bg-amber-50/60 dark:bg-slate-800/60 dark:hover:bg-slate-800 rounded-xl border border-slate-200/80 dark:border-slate-700/60 hover:border-amber-300 dark:hover:border-amber-500/40 transition-all cursor-pointer group flex flex-col justify-between"
                 >
                   <div>
@@ -985,8 +994,8 @@ export const JobDetailsPage: React.FC<JobDetailsPageProps> = ({
                   </div>
                   <div className="flex items-center justify-between mt-2 pt-2 border-t border-slate-200/60 dark:border-slate-700/60 text-[10px] text-slate-400">
                     <span>📅 {rj.postDate}</span>
-                    <span className="font-bold text-amber-600 dark:text-amber-400 group-hover:translate-x-0.5 transition-transform">
-                      Open in Tab ↗
+                    <span className="font-bold text-amber-600 dark:text-amber-400 group-hover:translate-x-0.5 transition-transform flex items-center gap-1">
+                      View Details →
                     </span>
                   </div>
                 </div>
