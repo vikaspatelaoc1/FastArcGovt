@@ -113,6 +113,12 @@ export interface WebsiteContentConfig {
   badgeHotText: string;
 }
 
+export interface WebsiteSeoConfig {
+  metaTitle: string;
+  metaDescription: string;
+  metaKeywords: string;
+}
+
 export interface WebsiteVersionSnapshot {
   id: string;
   timestamp: string;
@@ -130,6 +136,7 @@ export interface WebsiteControlConfig {
   sections: WebsiteSectionItem[];
   media: WebsiteMediaConfig;
   content: WebsiteContentConfig;
+  seo?: WebsiteSeoConfig;
   versionHistory?: WebsiteVersionSnapshot[];
   lastUpdated?: string;
   lastUpdatedBy?: string;
@@ -293,6 +300,11 @@ export const DEFAULT_WEBSITE_CONTROL_CONFIG: WebsiteControlConfig = {
     ctaButtonLink: '#latest-jobs',
     marqueeHeadline: '⚡ RRB Technician 2026 Admit Card Released | SSC CGL Tier 1 Online Application Form Active | UPSC CSE Prelims Result Announced',
     badgeHotText: 'NEW'
+  },
+  seo: {
+    metaTitle: 'FastArc Govt - Latest Sarkari Naukri, Results, Admit Card',
+    metaDescription: 'Find the latest Govt Jobs, Sarkari Naukri, Results, Admit Cards, and Exam updates instantly.',
+    metaKeywords: 'Sarkari Naukri, Govt Jobs, Results, Admit Card, SSC, Railway'
   },
   versionHistory: []
 };

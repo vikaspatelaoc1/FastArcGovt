@@ -20,6 +20,7 @@ export const Hero: React.FC<HeroProps> = ({ searchQuery, setSearchQuery, jobs })
   const [isFocused, setIsFocused] = useState(false);
   const [isListening, setIsListening] = useState(false);
   const [searchHistory, setSearchHistory] = useState<string[]>([]);
+  const [selectedIndex, setSelectedIndex] = useState<number>(-1);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const recognitionRef = useRef<any>(null);
 
@@ -33,6 +34,11 @@ export const Hero: React.FC<HeroProps> = ({ searchQuery, setSearchQuery, jobs })
       }
     }
   }, []);
+
+  // Reset selected index when search query changes
+  useEffect(() => {
+    setSelectedIndex(-1);
+  }, [searchQuery]);
 
   const saveSearchToHistory = (query: string) => {
     if (!query.trim()) return;
@@ -51,11 +57,69 @@ export const Hero: React.FC<HeroProps> = ({ searchQuery, setSearchQuery, jobs })
   const handleSearchSubmit = () => {
     saveSearchToHistory(searchQuery);
     setIsFocused(false);
+    setSelectedIndex(-1);
   };
 
+  const handleSelectSuggestion = (text: string) => {
+    setSearchQuery(text);
+    saveSearchToHistory(text);
+    setIsFocused(false);
+    setSelectedIndex(-1);
+  };
+
+  const suggestions = useMemo(() => {
+    if (!searchQuery.trim()) return [];
+    const query = searchQuery.toLowerCase().trim();
+    
+    // Find frequencies of matching titles
+    const counts: Record<string, number> = {};
+    jobs.forEach(job => {
+      const match = 
+        (job.title && job.title.toLowerCase().includes(query)) || 
+        (job.category && job.category.toLowerCase().includes(query)) ||
+        (job.state && job.state.toLowerCase().includes(query)) ||
+        (job.shortInfo && job.shortInfo.toLowerCase().includes(query)) ||
+        (job.postDate && job.postDate.toLowerCase().includes(query));
+
+      if (match && job.title) {
+        counts[job.title] = (counts[job.title] || 0) + 1;
+      }
+    });
+    
+    // Return top 5 most frequently occurring titles
+    return Object.entries(counts)
+      .sort((a, b) => b[1] - a[1]) // Sort by count descending
+      .slice(0, 5)
+      .map(entry => entry[0]);
+  }, [jobs, searchQuery]);
+
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
-      handleSearchSubmit();
+    const isShowingSuggestions = isFocused && searchQuery.trim() && suggestions.length > 0;
+    const isShowingHistory = isFocused && !searchQuery.trim() && searchHistory.length > 0;
+    const currentList = isShowingSuggestions ? suggestions : (isShowingHistory ? searchHistory : []);
+
+    if (e.key === 'ArrowDown') {
+      if (currentList.length > 0) {
+        e.preventDefault();
+        setIsFocused(true);
+        setSelectedIndex(prev => (prev < currentList.length - 1 ? prev + 1 : 0));
+      }
+    } else if (e.key === 'ArrowUp') {
+      if (currentList.length > 0) {
+        e.preventDefault();
+        setIsFocused(true);
+        setSelectedIndex(prev => (prev > 0 ? prev - 1 : currentList.length - 1));
+      }
+    } else if (e.key === 'Enter') {
+      if (selectedIndex >= 0 && selectedIndex < currentList.length) {
+        e.preventDefault();
+        handleSelectSuggestion(currentList[selectedIndex]);
+      } else {
+        handleSearchSubmit();
+      }
+    } else if (e.key === 'Escape') {
+      setIsFocused(false);
+      setSelectedIndex(-1);
     }
   };
 
@@ -64,6 +128,7 @@ export const Hero: React.FC<HeroProps> = ({ searchQuery, setSearchQuery, jobs })
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setIsFocused(false);
+        setSelectedIndex(-1);
       }
     };
 
@@ -119,32 +184,6 @@ export const Hero: React.FC<HeroProps> = ({ searchQuery, setSearchQuery, jobs })
       recognitionRef.current?.start();
     }
   };
-
-  const suggestions = useMemo(() => {
-    if (!searchQuery.trim()) return [];
-    const query = searchQuery.toLowerCase().trim();
-    
-    // Find frequencies of matching titles
-    const counts: Record<string, number> = {};
-    jobs.forEach(job => {
-      const match = 
-        (job.title && job.title.toLowerCase().includes(query)) || 
-        (job.category && job.category.toLowerCase().includes(query)) ||
-        (job.state && job.state.toLowerCase().includes(query)) ||
-        (job.shortInfo && job.shortInfo.toLowerCase().includes(query)) ||
-        (job.postDate && job.postDate.toLowerCase().includes(query));
-
-      if (match && job.title) {
-        counts[job.title] = (counts[job.title] || 0) + 1;
-      }
-    });
-    
-    // Return top 5 most frequently occurring titles
-    return Object.entries(counts)
-      .sort((a, b) => b[1] - a[1]) // Sort by count descending
-      .slice(0, 5)
-      .map(entry => entry[0]);
-  }, [jobs, searchQuery]);
 
   return (
     <div className="bg-slate-900 dark:bg-slate-950 border-b border-slate-800 relative transition-colors duration-300 z-40">
@@ -212,22 +251,27 @@ export const Hero: React.FC<HeroProps> = ({ searchQuery, setSearchQuery, jobs })
           {/* Suggestions Dropdown */}
           {isFocused && searchQuery.trim() && suggestions.length > 0 && (
             <div className="absolute top-full left-0 right-0 mt-2 bg-slate-900 border border-slate-700 rounded-xl shadow-2xl overflow-hidden z-30 animate-in fade-in slide-in-from-top-2 duration-200 text-left">
-              <ul className="py-2">
-                {suggestions.map((suggestion, index) => (
-                  <li key={index}>
-                    <button
-                      onClick={() => {
-                        setSearchQuery(suggestion);
-                        saveSearchToHistory(suggestion);
-                        setIsFocused(false);
-                      }}
-                      className="w-full text-left px-4 py-2.5 hover:bg-slate-800 text-slate-300 hover:text-white transition-colors flex items-center gap-3"
-                    >
-                      <Search className="w-4 h-4 text-slate-500" />
-                      <span className="truncate text-sm">{suggestion}</span>
-                    </button>
-                  </li>
-                ))}
+              <ul className="py-2" role="listbox">
+                {suggestions.map((suggestion, index) => {
+                  const isSelected = selectedIndex === index;
+                  return (
+                    <li key={index} role="option" aria-selected={isSelected}>
+                      <button
+                        type="button"
+                        onMouseEnter={() => setSelectedIndex(index)}
+                        onClick={() => handleSelectSuggestion(suggestion)}
+                        className={`w-full text-left px-4 py-2.5 transition-colors flex items-center gap-3 cursor-pointer ${
+                          isSelected
+                            ? 'bg-slate-800 text-amber-300 font-semibold border-l-4 border-amber-500 pl-3'
+                            : 'hover:bg-slate-800 text-slate-300 hover:text-white'
+                        }`}
+                      >
+                        <Search className={`w-4 h-4 shrink-0 transition-colors ${isSelected ? 'text-amber-400' : 'text-slate-500'}`} />
+                        <span className="truncate text-sm">{suggestion}</span>
+                      </button>
+                    </li>
+                  );
+                })}
               </ul>
             </div>
           )}
@@ -241,38 +285,47 @@ export const Hero: React.FC<HeroProps> = ({ searchQuery, setSearchQuery, jobs })
                   onClick={(e) => {
                     e.stopPropagation();
                     setSearchHistory([]);
+                    setSelectedIndex(-1);
                     localStorage.removeItem('fastarc_search_queries');
                   }}
-                  className="text-xs text-slate-500 hover:text-rose-400 transition-colors"
+                  className="text-xs text-slate-500 hover:text-rose-400 transition-colors cursor-pointer"
                 >
                   Clear All
                 </button>
               </div>
-              <ul className="py-1">
-                {searchHistory.map((historyItem, index) => (
-                  <li key={index}>
-                    <div className="w-full text-left px-4 py-2 hover:bg-slate-800 text-slate-300 hover:text-white transition-colors flex items-center justify-between group">
-                      <button
-                        onClick={() => {
-                          setSearchQuery(historyItem);
-                          saveSearchToHistory(historyItem);
-                          setIsFocused(false);
-                        }}
-                        className="flex-grow flex items-center gap-3 text-left"
+              <ul className="py-1" role="listbox">
+                {searchHistory.map((historyItem, index) => {
+                  const isSelected = selectedIndex === index;
+                  return (
+                    <li key={index} role="option" aria-selected={isSelected}>
+                      <div 
+                        onMouseEnter={() => setSelectedIndex(index)}
+                        className={`w-full text-left px-4 py-2 transition-colors flex items-center justify-between group cursor-pointer ${
+                          isSelected 
+                            ? 'bg-slate-800 text-amber-300 font-semibold border-l-4 border-amber-500 pl-3' 
+                            : 'hover:bg-slate-800 text-slate-300 hover:text-white'
+                        }`}
                       >
-                        <History className="w-4 h-4 text-slate-500" />
-                        <span className="truncate text-sm">{historyItem}</span>
-                      </button>
-                      <button 
-                        onClick={(e) => removeHistoryItem(e, historyItem)}
-                        className="p-1 text-slate-500 opacity-0 group-hover:opacity-100 hover:text-rose-400 transition-all rounded-full hover:bg-slate-700"
-                        title="Remove from history"
-                      >
-                        <X className="w-3.5 h-3.5" />
-                      </button>
-                    </div>
-                  </li>
-                ))}
+                        <button
+                          type="button"
+                          onClick={() => handleSelectSuggestion(historyItem)}
+                          className="flex-grow flex items-center gap-3 text-left cursor-pointer"
+                        >
+                          <History className={`w-4 h-4 shrink-0 transition-colors ${isSelected ? 'text-amber-400' : 'text-slate-500'}`} />
+                          <span className="truncate text-sm">{historyItem}</span>
+                        </button>
+                        <button 
+                          type="button"
+                          onClick={(e) => removeHistoryItem(e, historyItem)}
+                          className="p-1 text-slate-500 opacity-0 group-hover:opacity-100 hover:text-rose-400 transition-all rounded-full hover:bg-slate-700 cursor-pointer"
+                          title="Remove from history"
+                        >
+                          <X className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    </li>
+                  );
+                })}
               </ul>
             </div>
           )}

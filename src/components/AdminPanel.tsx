@@ -385,7 +385,38 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose, onSave,
               </div>
             </div>
           </div>
-          <div className="flex space-x-2 pt-4">
+          
+          {editingJob && (
+            <div className="flex flex-col gap-2 pt-2 border-t border-slate-200 dark:border-slate-800">
+              <span className="text-xs text-slate-500 font-bold uppercase">Quick Share Broadcast</span>
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    const text = `🔥 *${formData.title}*\n\n📝 *Category:* ${formData.category?.toUpperCase() || 'LATEST'}\n📅 *Last Date:* ${formData.dates?.last || 'Available Now'}\n\n👉 *View Details & Apply:* ${window.location.origin}/?jobId=${editingJob.id}`;
+                    window.open(`https://t.me/share/url?url=${encodeURIComponent(text)}`, '_blank');
+                  }}
+                  className="flex-1 bg-[#229ED9] hover:bg-[#1c84b6] text-white py-2 rounded-lg text-xs font-bold transition-all shadow flex items-center justify-center gap-1.5 cursor-pointer"
+                >
+                  <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.446 1.394c-.14.18-.357.295-.6.295-.002 0-.003 0-.005 0l.213-3.054 5.56-5.022c.24-.213-.054-.334-.373-.121l-6.869 4.326-2.96-.924c-.64-.203-.658-.64.135-.954l11.566-4.458c.538-.196 1.006.128.832.941z"/></svg>
+                  Telegram
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const text = `🔥 *${formData.title}*\n\n📝 *Category:* ${formData.category?.toUpperCase() || 'LATEST'}\n📅 *Last Date:* ${formData.dates?.last || 'Available Now'}\n\n👉 *View Details & Apply:* ${window.location.origin}/?jobId=${editingJob.id}`;
+                    window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`, '_blank');
+                  }}
+                  className="flex-1 bg-[#25D366] hover:bg-[#20bd5a] text-white py-2 rounded-lg text-xs font-bold transition-all shadow flex items-center justify-center gap-1.5 cursor-pointer"
+                >
+                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12.031 0C5.405 0 .016 5.389.016 12.016c0 2.12.553 4.187 1.603 6.002L.031 24l6.125-1.607c1.748.966 3.708 1.474 5.706 1.474h.007c6.626 0 12.016-5.389 12.016-12.016C23.885 5.389 18.497 0 12.031 0zm0 21.84c-1.782 0-3.526-.479-5.056-1.385l-.362-.214-3.765.986.997-3.666-.235-.373C2.593 15.541 2.052 13.805 2.052 12.017c0-5.503 4.478-9.98 9.98-9.98 5.503 0 9.98 4.477 9.98 9.98 0 5.503-4.477 9.98-9.98 9.98zm5.474-7.485c-.3-.15-1.776-.877-2.052-.977-.277-.101-.478-.151-.679.151-.202.302-.778.978-.953 1.178-.175.202-.35.227-.652.076-1.353-.68-2.316-1.258-3.238-2.839-.175-.302.175-.286.471-.876.101-.202.05-.378-.025-.529-.076-.151-.679-1.637-.93-2.241-.243-.585-.49-.504-.678-.513-.175-.01-.378-.01-.579-.01-.202 0-.528.076-.804.378-.276.302-1.054 1.03-1.054 2.512 0 1.482 1.079 2.915 1.23 3.115.151.2 2.124 3.242 5.143 4.542 1.956.845 2.457.777 3.333.626.877-.151 1.777-.726 2.028-1.431.251-.705.251-1.309.176-1.431-.075-.126-.277-.202-.577-.353z"/></svg>
+                  WhatsApp
+                </button>
+              </div>
+            </div>
+          )}
+
+          <div className="flex space-x-2 pt-4 border-t border-slate-200 dark:border-slate-800">
             <button type="button" onClick={onClose} className="w-1/3 bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold py-3 rounded-lg shadow-md transition-all">
               Cancel
             </button>

@@ -279,6 +279,7 @@ export const WebsiteControlTab: React.FC<WebsiteControlTabProps> = ({
           { id: 'layout', label: 'Grid & Layout', icon: Layout },
           { id: 'media', label: 'Images & Media', icon: ImageIcon },
           { id: 'content', label: 'Content & Texts', icon: FileText },
+          { id: 'seo', label: 'SEO Config', icon: Search },
           { id: 'preview', label: 'Live Simulator', icon: Monitor },
           { id: 'versions', label: 'Version History', icon: History }
         ].map(tab => {
@@ -1156,6 +1157,74 @@ export const WebsiteControlTab: React.FC<WebsiteControlTabProps> = ({
                   }))}
                   className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-900 dark:text-white"
                 />
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* SUBTAB SEO: SEO CONFIG */}
+      {activeSubTab === 'seo' && (
+        <div className="space-y-6 animate-in fade-in duration-200">
+          <div className="bg-white dark:bg-slate-900 rounded-2xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
+            <h3 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+              <Search className="w-5 h-5 text-indigo-500" /> SEO & Meta Tags
+            </h3>
+            <p className="text-xs text-slate-500 dark:text-slate-400">
+              Configure how your website appears on Google Search and social media sharing. These tags dynamically update your site's metadata.
+            </p>
+            <div className="space-y-4 pt-2">
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-slate-800 dark:text-slate-200">Meta Title (SEO Title)</label>
+                <input
+                  type="text"
+                  value={config.seo?.metaTitle || ''}
+                  onChange={(e) => handleUpdate(prev => ({
+                    ...prev,
+                    seo: { ...prev.seo!, metaTitle: e.target.value }
+                  }))}
+                  className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-900 dark:text-white"
+                  placeholder="e.g. FastArc Govt - Latest Sarkari Naukri"
+                />
+              </div>
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-slate-800 dark:text-slate-200">Meta Description</label>
+                <textarea
+                  rows={3}
+                  value={config.seo?.metaDescription || ''}
+                  onChange={(e) => handleUpdate(prev => ({
+                    ...prev,
+                    seo: { ...prev.seo!, metaDescription: e.target.value }
+                  }))}
+                  className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-900 dark:text-white"
+                  placeholder="A short description of your website for search engines..."
+                />
+              </div>
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-slate-800 dark:text-slate-200">Meta Keywords</label>
+                <input
+                  type="text"
+                  value={config.seo?.metaKeywords || ''}
+                  onChange={(e) => handleUpdate(prev => ({
+                    ...prev,
+                    seo: { ...prev.seo!, metaKeywords: e.target.value }
+                  }))}
+                  className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-900 dark:text-white"
+                  placeholder="e.g. Sarkari Naukri, Govt Jobs, SSC (comma separated)"
+                />
+              </div>
+            </div>
+            
+            <div className="bg-slate-100 dark:bg-slate-800/80 p-4 rounded-xl border border-slate-200 dark:border-slate-700 mt-4">
+              <span className="text-[11px] font-bold text-slate-500 uppercase block mb-2">Google Search Preview</span>
+              <div className="bg-white dark:bg-[#202124] p-3 rounded-lg border border-slate-200 dark:border-slate-700 shadow-sm">
+                <div className="text-[11px] text-[#202124] dark:text-[#dadce0] truncate mb-1">https://yourwebsite.com</div>
+                <div className="text-[16px] text-[#1a0dab] dark:text-[#8ab4f8] font-medium truncate mb-1 leading-tight hover:underline cursor-pointer">
+                  {config.seo?.metaTitle || 'Your Website Title'}
+                </div>
+                <div className="text-[12px] text-[#4d5156] dark:text-[#bdc1c6] line-clamp-2 leading-snug">
+                  {config.seo?.metaDescription || 'Your website description will appear here in Google search results...'}
+                </div>
               </div>
             </div>
           </div>
