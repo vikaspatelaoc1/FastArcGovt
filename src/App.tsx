@@ -765,6 +765,7 @@ export default function App() {
 
   const handleJobClick = (jobId: string) => {
     setSelectedJobId(jobId);
+    window.scrollTo({ top: 0, behavior: 'instant' });
     setRecentJobIds(prev => {
       const newHistory = [jobId, ...prev.filter(id => id !== jobId)].slice(0, 50); // keep up to 50
       return newHistory;
@@ -780,6 +781,7 @@ export default function App() {
 
   const handleCloseJobModal = () => {
     setSelectedJobId(null);
+    window.scrollTo({ top: 0, behavior: 'instant' });
     const currentUrl = new URL(window.location.href);
     if (currentUrl.searchParams.has('jobId') || currentUrl.searchParams.has('id') || currentUrl.searchParams.has('slug') || currentUrl.searchParams.has('job')) {
       currentUrl.searchParams.delete('jobId');
@@ -997,10 +999,12 @@ export default function App() {
     if (category === 'admit-cards') targetTab = 'admit-card';
     if (category === 'latest-jobs') targetTab = 'latest-jobs';
     setActiveTab(targetTab);
+    window.scrollTo({ top: 0, behavior: 'instant' });
   };
 
   const handleTabChange = (id: string) => {
     setIsSuperAdminModalOpen(false);
+    window.scrollTo({ top: 0, behavior: 'instant' });
     if (activeTab === id) {
       // Tap again to unselect filter and return to Home
       setActiveTab('home');
@@ -1048,6 +1052,7 @@ export default function App() {
             setActiveTab(cat);
             handleCloseJobModal();
           }}
+          onOpenSubscribeModal={() => setIsSubscribeModalOpen(true)}
         />
 
         {activeInfoPage && (

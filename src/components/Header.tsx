@@ -166,9 +166,9 @@ export const Header: React.FC<HeaderProps> = ({
 
   return (
     <>
-      <header className="bg-white border-b-2 border-slate-200 dark:bg-slate-900 dark:border-slate-800 w-full shadow-md transition-colors duration-300">
+      <header className="sticky top-0 z-50 bg-white border-b-2 border-slate-200 dark:bg-slate-900 dark:border-slate-800 w-full shadow-md transition-colors duration-300">
       <div className="w-full mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between h-24 sm:h-28 items-center py-2 sm:py-3">
+        <div className="flex justify-between h-18 sm:h-20 items-center py-2">
           
           {/* Left Side: All Options Hamburger Button + FastArc Logo */}
           <div className="flex items-center space-x-3 sm:space-x-4">
@@ -176,24 +176,24 @@ export const Header: React.FC<HeaderProps> = ({
               whileHover={{ scale: 1.08 }}
               whileTap={{ scale: 0.90, rotate: -6 }}
               onClick={() => setIsDrawerOpen(true)}
-              className="relative w-12 h-12 sm:w-14 sm:h-14 rounded-2xl text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-900 hover:bg-amber-50 dark:hover:bg-slate-800 hover:text-amber-600 dark:hover:text-amber-400 transition-all focus:outline-none cursor-pointer flex flex-col justify-center items-center gap-[5.5px] sm:gap-[6.5px] border-2 border-slate-200 dark:border-slate-800 shadow-md hover:shadow-lg hover:border-amber-400/70 group overflow-hidden active:shadow-inner shrink-0"
+              className="relative w-11 h-11 sm:w-12 sm:h-12 rounded-2xl text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-900 hover:bg-amber-50 dark:hover:bg-slate-800 hover:text-amber-600 dark:hover:text-amber-400 transition-all focus:outline-none cursor-pointer flex flex-col justify-center items-center gap-[5px] sm:gap-[6px] border-2 border-slate-200 dark:border-slate-800 shadow-md hover:shadow-lg hover:border-amber-400/70 group overflow-hidden active:shadow-inner shrink-0"
               title="All Options & Categories Menu"
               aria-label="Open Navigation Drawer"
             >
-              {/* 3-bar animated Hamburger Lines (Doubled size) */}
+              {/* 3-bar animated Hamburger Lines */}
               <motion.span 
-                className="w-6.5 sm:w-7.5 h-[3px] sm:h-[3.5px] bg-slate-800 dark:bg-slate-100 group-hover:bg-amber-600 dark:group-hover:bg-amber-400 rounded-full transition-all duration-200 group-hover:w-8" 
+                className="w-5 sm:w-6 h-[2.5px] sm:h-[3px] bg-slate-800 dark:bg-slate-100 group-hover:bg-amber-600 dark:group-hover:bg-amber-400 rounded-full transition-all duration-200 group-hover:w-7" 
               />
               <motion.span 
-                className="w-5 sm:w-6 h-[3px] sm:h-[3.5px] bg-slate-800 dark:bg-slate-100 group-hover:bg-amber-600 dark:group-hover:bg-amber-400 rounded-full transition-all duration-200 self-start ml-1 group-hover:w-8 group-hover:ml-0" 
+                className="w-4 sm:w-5 h-[2.5px] sm:h-[3px] bg-slate-800 dark:bg-slate-100 group-hover:bg-amber-600 dark:group-hover:bg-amber-400 rounded-full transition-all duration-200 self-start ml-1 group-hover:w-7 group-hover:ml-0" 
               />
               <motion.span 
-                className="w-6.5 sm:w-7.5 h-[3px] sm:h-[3.5px] bg-slate-800 dark:bg-slate-100 group-hover:bg-amber-600 dark:group-hover:bg-amber-400 rounded-full transition-all duration-200 group-hover:w-8" 
+                className="w-5 sm:w-6 h-[2.5px] sm:h-[3px] bg-slate-800 dark:bg-slate-100 group-hover:bg-amber-600 dark:group-hover:bg-amber-400 rounded-full transition-all duration-200 group-hover:w-7" 
               />
             </motion.button>
 
             <a href="#" className="flex items-center space-x-3 sm:space-x-3.5 group" onClick={(e) => handleNavClick(e, 'home')}>
-              <div className="w-13 h-13 sm:w-15 sm:h-15 lg:w-16 lg:h-16 rounded-full p-0.5 bg-black border-2 border-amber-500 shadow-md flex items-center justify-center overflow-hidden shrink-0 transform group-hover:scale-105 transition-transform duration-200">
+              <div className="w-11 h-11 sm:w-13 sm:h-13 rounded-full p-0.5 bg-black border-2 border-amber-500 shadow-md flex items-center justify-center overflow-hidden shrink-0 transform group-hover:scale-105 transition-transform duration-200">
                 <img 
                   src={siteLogo} 
                   alt="FastArc Logo" 
@@ -204,10 +204,10 @@ export const Header: React.FC<HeaderProps> = ({
                 />
               </div>
               <div>
-                <h1 className="text-2xl sm:text-3xl lg:text-[34px] font-black text-slate-900 dark:text-white tracking-tight leading-none group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors">
+                <h1 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight leading-none group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors">
                   Fast<span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-600 via-amber-500 to-yellow-500 dark:from-amber-400 dark:via-yellow-400 dark:to-amber-300">Arc</span>
                 </h1>
-                <p className="text-xs sm:text-[13px] text-amber-700 dark:text-amber-400/90 font-extrabold tracking-wider uppercase mt-1">Govt Jobs Portal</p>
+                <p className="text-[11px] sm:text-xs text-amber-700 dark:text-amber-400/90 font-extrabold tracking-wider uppercase mt-0.5">Govt Jobs Portal</p>
               </div>
             </a>
           </div>
@@ -354,7 +354,7 @@ export const Header: React.FC<HeaderProps> = ({
                     <a
                       key={item.id}
                       href={item.url}
-                      
+                      target="_blank"
                       rel="noopener noreferrer"
                       className="hover:scale-110 active:scale-95 transition-transform flex items-center justify-center p-1 rounded-full"
                       title={`${item.title} - Official Channel`}

@@ -33,6 +33,7 @@ interface JobDetailsPageProps {
   onLogout: () => void;
   onInfoClick: (pageId: string) => void;
   onSelectCategory: (category: string) => void;
+  onOpenSubscribeModal?: () => void;
 }
 
 export const JobDetailsPage: React.FC<JobDetailsPageProps> = ({
@@ -54,7 +55,8 @@ export const JobDetailsPage: React.FC<JobDetailsPageProps> = ({
   onOpenNpmSystem,
   onLogout,
   onInfoClick,
-  onSelectCategory
+  onSelectCategory,
+  onOpenSubscribeModal
 }) => {
   // Always enrich job details so NO field is missing or broken
   const job = useMemo(() => {
@@ -253,7 +255,7 @@ export const JobDetailsPage: React.FC<JobDetailsPageProps> = ({
 
       {/* 2. Top Breadcrumbs & Utility Bar */}
       <section className="bg-white dark:bg-slate-900 border-b border-slate-200/80 dark:border-slate-800/80 shadow-xs print:hidden">
-        <div className="max-w-6xl mx-auto px-4 py-2.5 flex flex-wrap items-center justify-between gap-3 text-xs">
+        <div className="w-full px-3 sm:px-4 md:px-6 py-3 flex flex-wrap items-center justify-between gap-3 text-xs">
           <nav aria-label="Breadcrumb" className="flex items-center flex-wrap gap-1.5 font-medium text-slate-500 dark:text-slate-400">
             <button 
               onClick={onBackToHome}
@@ -299,7 +301,7 @@ export const JobDetailsPage: React.FC<JobDetailsPageProps> = ({
       </section>
 
       {/* 3. Main Content Container */}
-      <main className="flex-1 max-w-6xl w-full mx-auto px-3 sm:px-4 py-6 md:py-8 space-y-6">
+      <main className="flex-1 w-full px-3 sm:px-4 md:px-6 py-6 md:py-8 space-y-6">
         
         {/* SARKARI RESULT OFFICIAL FORMATTED JOB POSTING CARD */}
         <article className="bg-white dark:bg-slate-900 rounded-2xl border-2 border-slate-200 dark:border-slate-800 shadow-xl overflow-hidden print:border-none print:shadow-none">
@@ -1018,57 +1020,153 @@ export const JobDetailsPage: React.FC<JobDetailsPageProps> = ({
       )}
 
       {/* 17. Standard Full-width FastArc Footer */}
-      <footer className="bg-slate-900 dark:bg-black text-slate-300 border-t border-slate-800 mt-12 py-10 print:hidden">
-        <div className="max-w-6xl mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
-            <div className="space-y-3">
-              <div className="flex items-center space-x-2">
-                <img 
-                  src={siteLogo} 
-                  alt="FastArc Logo" 
-                  className="w-8 h-8 rounded-full object-cover border border-amber-400"
-                  onError={(e) => {
-                    (e.target as HTMLImageElement).src = "https://lh3.googleusercontent.com/d/1IE6MQ8EUwyKmGeXnpLTXx7d5HBLJiKb4";
-                  }}
-                />
-                <span className="text-lg font-black text-white tracking-wider">
-                  FAST<span className="text-amber-500">ARC</span>
-                </span>
-              </div>
-              <p className="text-xs text-slate-400 leading-relaxed">
-                India's fastest growing government jobs portal, providing verified recruitment notices, admit cards, answer keys, results, and study syllabus updates.
+      <footer className="custom-footer-override bg-slate-900 border-t-4 border-amber-500 pt-4 sm:pt-5 pb-8 mt-12 transition-colors duration-300 print:hidden">
+        <div className="w-full mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8 text-sm">
+            <div className="space-y-3.5">
+              {onOpenSubscribeModal && (
+                <button
+                  onClick={onOpenSubscribeModal}
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-gradient-to-r from-blue-900 via-indigo-900 to-slate-900 hover:from-blue-800 hover:to-indigo-800 text-amber-300 text-sm sm:text-[15px] font-black px-4.5 py-2.5 rounded-xl shadow-md shadow-blue-950/80 border border-amber-500/50 hover:scale-105 active:scale-95 transition-all cursor-pointer group"
+                  title="Click to subscribe for email notifications of all new job posts"
+                >
+                  <Bell className="w-4.5 h-4.5 fill-current text-amber-400 animate-bounce group-hover:rotate-12 transition-transform" />
+                  <span>Subscribe</span>
+                </button>
+              )}
+
+              <a 
+                href="#" 
+                className="flex items-center space-x-3 group cursor-pointer" 
+                onClick={(e) => {
+                  e.preventDefault();
+                  onBackToHome();
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }}
+                title="FastArc Govt Jobs Portal - Back to Home"
+              >
+                <div className="w-13 h-13 sm:w-15 sm:h-15 lg:w-16 lg:h-16 rounded-full p-0.5 bg-black border-2 border-amber-500 shadow-md flex items-center justify-center overflow-hidden shrink-0 transform group-hover:scale-105 transition-transform duration-200">
+                  <img 
+                    src={siteLogo || "/logo.png"} 
+                    alt="FastArc Logo" 
+                    className="w-full h-full object-cover scale-125 rounded-full"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src = "https://lh3.googleusercontent.com/d/1IE6MQ8EUwyKmGeXnpLTXx7d5HBLJiKb4";
+                    }}
+                  />
+                </div>
+                <div>
+                  <h4 className="text-2xl sm:text-3xl font-black text-white tracking-tight leading-none group-hover:text-amber-400 transition-colors">
+                    Fast<span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-300">Arc</span>
+                  </h4>
+                  <p className="text-xs sm:text-[13px] text-amber-400 font-extrabold tracking-wider uppercase mt-1">Govt Jobs Portal</p>
+                </div>
+              </a>
+
+              <p className="text-slate-300 text-sm sm:text-[14.5px] leading-relaxed">
+                FastArc Govt Jobs Portal offers lightning-fast notification updates for Central & State Government examinations, admit cards, answer keys, results, and curriculum PDF patterns.
               </p>
             </div>
-
             <div>
-              <h5 className="font-bold text-amber-500 mb-4 text-xs uppercase tracking-widest">Important Categories</h5>
-              <ul className="space-y-2 text-xs text-slate-400">
-                <li><button onClick={() => { onSelectCategory('latest-jobs'); onBackToHome(); }} className="hover:text-amber-400 transition-colors">Latest Online Forms 2026</button></li>
-                <li><button onClick={() => { onSelectCategory('admit-cards'); onBackToHome(); }} className="hover:text-amber-400 transition-colors">Admit Card Hall Tickets</button></li>
-                <li><button onClick={() => { onSelectCategory('results'); onBackToHome(); }} className="hover:text-amber-400 transition-colors">Exam Scorecards & Results</button></li>
-                <li><button onClick={() => { onSelectCategory('answer-key'); onBackToHome(); }} className="hover:text-amber-400 transition-colors">Official Answer Keys</button></li>
+              <h5 className="font-black text-white mb-4 text-sm sm:text-[15px] uppercase tracking-wider">Job Portals</h5>
+              <ul className="space-y-3.5 text-sm sm:text-[14.5px] text-slate-300">
+                <li>
+                  <button 
+                    onClick={() => { onSelectCategory('results'); onBackToHome(); }} 
+                    className="hover:text-amber-400 text-left transition-colors cursor-pointer font-medium"
+                  >
+                    Results Alerts
+                  </button>
+                </li>
+                <li>
+                  <button 
+                    onClick={() => { onSelectCategory('admit-cards'); onBackToHome(); }} 
+                    className="hover:text-amber-400 text-left transition-colors cursor-pointer font-medium"
+                  >
+                    Admit Card Alerts
+                  </button>
+                </li>
+                <li>
+                  <button 
+                    onClick={() => { onSelectCategory('latest-jobs'); onBackToHome(); }} 
+                    className="hover:text-amber-400 text-left transition-colors cursor-pointer font-medium"
+                  >
+                    Latest Sarkari Jobs
+                  </button>
+                </li>
+                <li>
+                  <button 
+                    onClick={() => { onSelectCategory('admission'); onBackToHome(); }} 
+                    className="hover:text-amber-400 text-left transition-colors cursor-pointer font-medium"
+                  >
+                    Admission Updates
+                  </button>
+                </li>
               </ul>
             </div>
-
             <div>
-              <h5 className="font-bold text-amber-500 mb-4 text-xs uppercase tracking-widest">Quick Navigation</h5>
-              <ul className="space-y-2 text-xs text-slate-400">
-                <li><button onClick={onBackToHome} className="hover:text-amber-400 transition-colors">Home Page</button></li>
-                <li><button onClick={() => onInfoClick('about')} className="hover:text-amber-400 transition-colors">About FastArc</button></li>
-                <li><button onClick={() => onInfoClick('privacy')} className="hover:text-amber-400 transition-colors">Privacy Policy</button></li>
-                <li><button onClick={() => onInfoClick('contact')} className="hover:text-amber-400 transition-colors">Contact Us & Grievance</button></li>
+              <h5 className="font-black text-white mb-4 text-sm sm:text-[15px] uppercase tracking-wider">Policy & Information</h5>
+              <ul className="space-y-3.5 text-sm sm:text-[14.5px] text-slate-300">
+                <li>
+                  <button 
+                    onClick={() => onInfoClick('privacy')} 
+                    className="hover:text-amber-400 text-left transition-colors flex items-center gap-1.5 cursor-pointer font-medium"
+                  >
+                    <span>Privacy Policy</span>
+                    <span className="text-[10px] bg-emerald-500/20 text-emerald-400 font-black px-1.5 py-0.5 rounded">AdSense</span>
+                  </button>
+                </li>
+                <li>
+                  <button 
+                    onClick={() => onInfoClick('disclaimer')} 
+                    className="hover:text-amber-400 text-left transition-colors flex items-center gap-1.5 cursor-pointer font-medium"
+                  >
+                    <span>Disclaimer (Non-Govt)</span>
+                  </button>
+                </li>
+                <li>
+                  <button 
+                    onClick={() => onInfoClick('terms')} 
+                    className="hover:text-amber-400 text-left transition-colors flex items-center gap-1.5 cursor-pointer font-medium"
+                  >
+                    <span>Terms & Conditions</span>
+                  </button>
+                </li>
+                <li>
+                  <button 
+                    onClick={() => onInfoClick('about')} 
+                    className="hover:text-amber-400 text-left transition-colors flex items-center gap-1.5 cursor-pointer font-medium"
+                  >
+                    <span>About Us & Editorial Team</span>
+                  </button>
+                </li>
+                <li>
+                  <button 
+                    onClick={() => onInfoClick('contact')} 
+                    className="hover:text-amber-400 text-left transition-colors flex items-center gap-1.5 cursor-pointer font-medium"
+                  >
+                    <span>Contact Us & Grievance</span>
+                  </button>
+                </li>
               </ul>
             </div>
-
             <div>
-              <h5 className="font-bold text-amber-500 mb-4 text-xs uppercase tracking-widest">Disclaimer</h5>
-              <p className="text-xs text-slate-400 leading-relaxed">
-                FastArc is an independent information service and is NOT affiliated with any government agency. Always refer to official notifications for binding recruitment guidelines.
+              <h5 className="font-black text-amber-500 mb-4 text-sm sm:text-[15px] uppercase tracking-wider flex items-center justify-between">
+                <span>Disclaimer</span>
+                <button 
+                  onClick={() => onInfoClick('disclaimer')}
+                  className="text-xs text-amber-400 hover:underline font-bold cursor-pointer"
+                >
+                  Read Policy →
+                </button>
+              </h5>
+              <p className="text-sm sm:text-[14px] text-slate-300 leading-relaxed font-normal">
+                FastArc is an independent career news aggregator. We are NOT associated with UPSC, SSC, NTA, or any government agency. Always cross-verify exam details on official commission platforms before submitting application fees.
               </p>
             </div>
           </div>
 
-          <div className="border-t border-slate-800 pt-6 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-slate-500">
+          <div className="border-t border-slate-800 pt-6 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-slate-400">
             <p>&copy; 2026 FastArc Govt Result. All Rights Reserved.</p>
             <div className="flex items-center gap-3">
               {socialLinks.filter(l => l.enabled).map(item => (
@@ -1077,10 +1175,10 @@ export const JobDetailsPage: React.FC<JobDetailsPageProps> = ({
                   href={item.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 transition-all text-slate-300 hover:text-white"
+                  className="p-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 transition-all text-slate-300 hover:text-white"
                   title={item.title}
                 >
-                  <OfficialSocialLogo platform={item.platform} className="w-4 h-4" />
+                  <OfficialSocialLogo platform={item.platform} className="w-4.5 h-4.5" />
                 </a>
               ))}
             </div>
