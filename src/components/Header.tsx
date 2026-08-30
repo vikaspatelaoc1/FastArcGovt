@@ -166,34 +166,34 @@ export const Header: React.FC<HeaderProps> = ({
 
   return (
     <>
-      <header className="sticky top-0 z-50 bg-white border-b-2 border-slate-200 dark:bg-slate-900 dark:border-slate-800 w-full shadow-md transition-colors duration-300">
-      <div className="w-full mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between h-18 sm:h-20 items-center py-2">
+      <header className="sticky top-0 z-50 bg-white border-b border-slate-200 dark:bg-slate-900 dark:border-slate-800 w-full shadow-sm transition-colors duration-300">
+      <div className="w-full mx-auto px-3 sm:px-5 lg:px-6">
+        <div className="flex justify-between h-14 sm:h-16 items-center py-1">
           
           {/* Left Side: All Options Hamburger Button + FastArc Logo */}
-          <div className="flex items-center space-x-3 sm:space-x-4">
+          <div className="flex items-center space-x-2.5 sm:space-x-3">
             <motion.button
-              whileHover={{ scale: 1.08 }}
-              whileTap={{ scale: 0.90, rotate: -6 }}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.92, rotate: -4 }}
               onClick={() => setIsDrawerOpen(true)}
-              className="relative w-11 h-11 sm:w-12 sm:h-12 rounded-2xl text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-900 hover:bg-amber-50 dark:hover:bg-slate-800 hover:text-amber-600 dark:hover:text-amber-400 transition-all focus:outline-none cursor-pointer flex flex-col justify-center items-center gap-[5px] sm:gap-[6px] border-2 border-slate-200 dark:border-slate-800 shadow-md hover:shadow-lg hover:border-amber-400/70 group overflow-hidden active:shadow-inner shrink-0"
+              className="relative w-9 h-9 sm:w-10 sm:h-10 rounded-xl text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-900 hover:bg-amber-50 dark:hover:bg-slate-800 hover:text-amber-600 dark:hover:text-amber-400 transition-all focus:outline-none cursor-pointer flex flex-col justify-center items-center gap-[4px] border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow hover:border-amber-400/70 group overflow-hidden shrink-0"
               title="All Options & Categories Menu"
               aria-label="Open Navigation Drawer"
             >
               {/* 3-bar animated Hamburger Lines */}
               <motion.span 
-                className="w-5 sm:w-6 h-[2.5px] sm:h-[3px] bg-slate-800 dark:bg-slate-100 group-hover:bg-amber-600 dark:group-hover:bg-amber-400 rounded-full transition-all duration-200 group-hover:w-7" 
+                className="w-4.5 sm:w-5 h-[2px] bg-slate-800 dark:bg-slate-100 group-hover:bg-amber-600 dark:group-hover:bg-amber-400 rounded-full transition-all duration-200 group-hover:w-6" 
               />
               <motion.span 
-                className="w-4 sm:w-5 h-[2.5px] sm:h-[3px] bg-slate-800 dark:bg-slate-100 group-hover:bg-amber-600 dark:group-hover:bg-amber-400 rounded-full transition-all duration-200 self-start ml-1 group-hover:w-7 group-hover:ml-0" 
+                className="w-3.5 sm:w-4 h-[2px] bg-slate-800 dark:bg-slate-100 group-hover:bg-amber-600 dark:group-hover:bg-amber-400 rounded-full transition-all duration-200 self-start ml-0.5 group-hover:w-6 group-hover:ml-0" 
               />
               <motion.span 
-                className="w-5 sm:w-6 h-[2.5px] sm:h-[3px] bg-slate-800 dark:bg-slate-100 group-hover:bg-amber-600 dark:group-hover:bg-amber-400 rounded-full transition-all duration-200 group-hover:w-7" 
+                className="w-4.5 sm:w-5 h-[2px] bg-slate-800 dark:bg-slate-100 group-hover:bg-amber-600 dark:group-hover:bg-amber-400 rounded-full transition-all duration-200 group-hover:w-6" 
               />
             </motion.button>
 
-            <a href="#" className="flex items-center space-x-3 sm:space-x-3.5 group" onClick={(e) => handleNavClick(e, 'home')}>
-              <div className="w-11 h-11 sm:w-13 sm:h-13 rounded-full p-0.5 bg-black border-2 border-amber-500 shadow-md flex items-center justify-center overflow-hidden shrink-0 transform group-hover:scale-105 transition-transform duration-200">
+            <a href="#" className="flex items-center space-x-2 sm:space-x-2.5 group" onClick={(e) => handleNavClick(e, 'home')}>
+              <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full p-0.5 bg-black border border-amber-500 shadow-sm flex items-center justify-center overflow-hidden shrink-0 transform group-hover:scale-105 transition-transform duration-200">
                 <img 
                   src={siteLogo} 
                   alt="FastArc Logo" 
@@ -204,21 +204,21 @@ export const Header: React.FC<HeaderProps> = ({
                 />
               </div>
               <div>
-                <h1 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight leading-none group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors">
+                <h1 className="text-lg sm:text-xl font-black text-slate-900 dark:text-white tracking-tight leading-none group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors">
                   Fast<span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-600 via-amber-500 to-yellow-500 dark:from-amber-400 dark:via-yellow-400 dark:to-amber-300">Arc</span>
                 </h1>
-                <p className="text-[11px] sm:text-xs text-amber-700 dark:text-amber-400/90 font-extrabold tracking-wider uppercase mt-0.5">Govt Jobs Portal</p>
+                <p className="text-[9.5px] sm:text-[10.5px] text-amber-700 dark:text-amber-400/90 font-extrabold tracking-wider uppercase mt-0.5">Govt Jobs Portal</p>
               </div>
             </a>
           </div>
           
-          <nav className="hidden md:flex space-x-5 lg:space-x-8 text-base sm:text-[17px] font-bold items-center">
+          <nav className="hidden md:flex space-x-4 lg:space-x-6 text-sm sm:text-[15px] font-bold items-center">
             {navLinks.map((link) => (
               <a
                 key={link.id}
                 href="#"
                 onClick={(e) => handleNavClick(e, link.id)}
-                className={`transition-colors font-extrabold text-[16px] lg:text-[18px] py-2 ${
+                className={`transition-colors font-bold text-[14px] lg:text-[15px] py-1 ${
                   activeTab === link.id
                     ? 'text-amber-600 dark:text-amber-400 border-b-2 border-amber-500'
                     : 'text-slate-700 dark:text-slate-200 hover:text-amber-600 dark:hover:text-amber-400'
@@ -231,9 +231,9 @@ export const Header: React.FC<HeaderProps> = ({
             <div className="relative flex items-center group" ref={moreRef}>
               <button
                 onClick={() => setIsMoreOpen(!isMoreOpen)}
-                className="flex items-center text-slate-700 dark:text-slate-200 hover:text-amber-600 dark:hover:text-amber-400 transition-colors focus:outline-none outline-none font-extrabold text-[16px] lg:text-[18px] py-2 cursor-pointer"
+                className="flex items-center text-slate-700 dark:text-slate-200 hover:text-amber-600 dark:hover:text-amber-400 transition-colors focus:outline-none outline-none font-bold text-[14px] lg:text-[15px] py-1 cursor-pointer"
               >
-                More <ChevronDown className={`w-4.5 h-4.5 ml-1.5 transition-transform duration-200 ${isMoreOpen ? 'rotate-180' : ''}`} />
+                More <ChevronDown className={`w-4 h-4 ml-1 transition-transform duration-200 ${isMoreOpen ? 'rotate-180' : ''}`} />
               </button>
               <div 
                 className={`absolute top-full left-0 mt-2 w-56 bg-white dark:bg-[#1e293b] border border-slate-200 dark:border-slate-700/50 rounded-xl shadow-2xl py-2 z-50 flex-col transition-all duration-200 origin-top-left ${isMoreOpen ? 'opacity-100 scale-100 flex' : 'opacity-0 scale-95 hidden pointer-events-none'}`}
@@ -366,120 +366,135 @@ export const Header: React.FC<HeaderProps> = ({
               );
             })()}
             
-            {/* The right-most flush Admin Login/Status Button */}
-            <div className="flex items-center space-x-0 ml-2 sm:ml-4 -mr-4 sm:-mr-6 lg:-mr-8 h-24 sm:h-28">
+            {/* Admin Control Bar / Action Buttons Dock */}
+            <div className="flex items-center space-x-0 ml-1.5 sm:ml-3">
               {isLoggedIn ? (
-                <>
-                  {isSuperAdmin && onOpenSuperAdminModal && (
+                <div className="flex items-center h-10 sm:h-11 rounded-xl sm:rounded-2xl border border-amber-500/40 bg-[#1e1e48] shadow-md shadow-indigo-950/40 divide-x divide-white/10 relative">
+                  {(isSuperAdmin || !employeeName) && onOpenSuperAdminModal && (
                     <>
-                      {/* 3-Dot (⋮) More Options Menu Button */}
+                      {/* 1. 3-Dot (⋮) More Options Menu Button */}
                       <div className="relative h-full" ref={header3DotRef}>
                         <button
-                          onClick={() => setIsHeader3DotOpen(!isHeader3DotOpen)}
-                          className={`bg-[#1e1e48] hover:bg-blue-950 text-amber-400 h-full px-3 sm:px-4 flex items-center justify-center transition-colors border-l border-white/10 cursor-pointer ${
-                            isHeader3DotOpen ? 'bg-blue-950 text-amber-300 ring-1 ring-amber-400/50' : ''
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setIsHeader3DotOpen(prev => !prev);
+                          }}
+                          className={`h-full px-2.5 sm:px-3.5 flex items-center justify-center transition-all hover:bg-blue-950 text-amber-400 cursor-pointer rounded-l-xl sm:rounded-l-2xl ${
+                            isHeader3DotOpen ? 'bg-blue-950 text-amber-300 ring-2 ring-amber-400 shadow-inner' : ''
                           }`}
-                          title="Super Admin 3-Dot Menu (Website Control, Colors, Columns)"
+                          title="3-Dot Quick Access Menu (Website Control, Colors, Columns, Control Center)"
                           aria-label="3-Dot Menu"
                         >
-                          <MoreVertical className="w-5.5 h-5.5 sm:w-6 sm:h-6" />
+                          <MoreVertical className="w-5 h-5 text-amber-400" />
                         </button>
 
                         {/* 3-Dot Dropdown Menu */}
                         {isHeader3DotOpen && (
-                          <div className="absolute right-0 top-full mt-2 w-72 sm:w-80 bg-slate-900 border-2 border-amber-500/60 rounded-2xl shadow-2xl z-50 overflow-hidden animate-in fade-in zoom-in-95 duration-150 flex flex-col">
+                          <div 
+                            className="absolute left-0 top-full mt-2 w-72 sm:w-80 bg-[#090d16] border-2 border-amber-500 rounded-2xl shadow-2xl z-[9999] overflow-hidden animate-in fade-in zoom-in-95 duration-150 flex flex-col max-w-[90vw]"
+                            onClick={(e) => e.stopPropagation()}
+                          >
                             {/* Header */}
-                            <div className="px-4 py-3 bg-slate-950 border-b border-slate-800 flex items-center justify-between">
-                              <div className="flex items-center space-x-2">
-                                <div className="p-1 rounded-lg bg-amber-500 text-slate-950 font-black">
-                                  <MoreVertical className="w-4 h-4" />
+                            <div className="px-4 py-3 bg-[#060a12] border-b border-slate-800 flex items-center justify-between">
+                              <div className="flex items-center space-x-2.5">
+                                <div className="p-2 rounded-xl bg-amber-500 text-slate-950 font-black shadow-md flex items-center justify-center shrink-0">
+                                  <MoreVertical className="w-4 h-4 text-slate-950 stroke-[3]" />
                                 </div>
                                 <div>
-                                  <div className="text-xs font-black text-white uppercase tracking-wider">3-Dot Menu Options</div>
-                                  <div className="text-[10px] text-amber-400 font-medium">Quick Access & Customizers</div>
+                                  <div className="text-xs sm:text-[13px] font-black text-white uppercase tracking-wider">3–DOT MENU OPTIONS</div>
+                                  <div className="text-[10.5px] text-amber-400 font-bold">Quick Access & Customizers</div>
                                 </div>
                               </div>
-                              <span className="text-[9px] bg-amber-500/20 text-amber-300 font-bold px-2 py-0.5 rounded-full border border-amber-500/30">
-                                3-DOTS
-                              </span>
                             </div>
 
                             {/* Dropdown Options List */}
-                            <div className="p-2 space-y-1.5">
-                              {/* 1. Website Control & Settings (Moved here) */}
+                            <div className="p-2.5 space-y-2 bg-[#090d16]">
+                              {/* 1. Website Control & Settings */}
                               <button
+                                type="button"
                                 onClick={() => {
                                   setIsHeader3DotOpen(false);
                                   onOpenSuperAdminModal('websiteControl');
                                 }}
-                                className="w-full flex items-center space-x-3 p-2.5 rounded-xl bg-indigo-950/50 hover:bg-indigo-900/70 border border-indigo-500/40 text-left transition-all group cursor-pointer"
+                                className="w-full flex items-center space-x-3 p-2.5 rounded-xl bg-[#111936] hover:bg-[#18244d] border border-blue-500/40 text-left transition-all group cursor-pointer shadow-sm"
                               >
-                                <div className="p-2 rounded-lg bg-indigo-600 text-white group-hover:scale-105 transition-transform shadow-md shrink-0">
-                                  <SlidersHorizontal className="w-4 h-4" />
+                                <div className="p-2.5 rounded-xl bg-blue-600 text-white group-hover:scale-105 transition-transform shadow-md shrink-0 flex items-center justify-center">
+                                  <SlidersHorizontal className="w-4 h-4 text-white" />
                                 </div>
                                 <div className="flex-1 min-w-0">
-                                  <div className="text-xs font-black text-white group-hover:text-amber-300 transition-colors flex items-center justify-between">
-                                    <span>Website Control</span>
-                                    <span className="text-[8px] bg-indigo-500/30 text-indigo-300 px-1.5 py-0.2 rounded font-bold uppercase">Moved here</span>
+                                  <div className="text-xs font-black text-white group-hover:text-amber-300 transition-colors">
+                                    Website Control
                                   </div>
-                                  <div className="text-[10px] text-slate-400 truncate">Logo, Layout, Sections, Header & Footer</div>
+                                  <div className="text-[10.5px] text-slate-400 truncate mt-0.5">
+                                    Logo, Layout, Sections, Header & Footer
+                                  </div>
                                 </div>
                               </button>
 
                               {/* 2. Theme & Colors Customizer */}
                               <button
+                                type="button"
                                 onClick={() => {
                                   setIsHeader3DotOpen(false);
                                   onOpenSuperAdminModal('colors');
                                 }}
-                                className="w-full flex items-center space-x-3 p-2 rounded-xl hover:bg-slate-800/80 text-left transition-all group cursor-pointer"
+                                className="w-full flex items-center space-x-3 p-2.5 rounded-xl hover:bg-slate-800/80 text-left transition-all group cursor-pointer border border-transparent hover:border-pink-500/30"
                               >
-                                <div className="p-2 rounded-lg bg-pink-600/20 text-pink-400 group-hover:bg-pink-600 group-hover:text-white transition-all shrink-0">
+                                <div className="p-2.5 rounded-xl bg-pink-950/60 border border-pink-500/30 text-pink-400 group-hover:bg-pink-600 group-hover:text-white transition-all shrink-0 flex items-center justify-center">
                                   <Palette className="w-4 h-4" />
                                 </div>
                                 <div className="flex-1 min-w-0">
                                   <div className="text-xs font-bold text-slate-200 group-hover:text-white transition-colors">
                                     Theme & Colors Customizer
                                   </div>
-                                  <div className="text-[10px] text-slate-400 truncate">Accent colors, header & cards styling</div>
+                                  <div className="text-[10.5px] text-slate-400 truncate mt-0.5">
+                                    Accent colors, header & cards styling
+                                  </div>
                                 </div>
                               </button>
 
                               {/* 3. Column Titles & Visibility Editor */}
                               <button
+                                type="button"
                                 onClick={() => {
                                   setIsHeader3DotOpen(false);
                                   onOpenSuperAdminModal('columns');
                                 }}
-                                className="w-full flex items-center space-x-3 p-2 rounded-xl hover:bg-slate-800/80 text-left transition-all group cursor-pointer"
+                                className="w-full flex items-center space-x-3 p-2.5 rounded-xl hover:bg-slate-800/80 text-left transition-all group cursor-pointer border border-transparent hover:border-sky-500/30"
                               >
-                                <div className="p-2 rounded-lg bg-blue-600/20 text-blue-400 group-hover:bg-blue-600 group-hover:text-white transition-all shrink-0">
+                                <div className="p-2.5 rounded-xl bg-sky-950/60 border border-sky-500/30 text-sky-400 group-hover:bg-sky-600 group-hover:text-white transition-all shrink-0 flex items-center justify-center">
                                   <Type className="w-4 h-4" />
                                 </div>
                                 <div className="flex-1 min-w-0">
                                   <div className="text-xs font-bold text-slate-200 group-hover:text-white transition-colors">
                                     Column Titles & Visibility
                                   </div>
-                                  <div className="text-[10px] text-slate-400 truncate">Rename columns, rearrange & show/hide</div>
+                                  <div className="text-[10.5px] text-slate-400 truncate mt-0.5">
+                                    Rename columns, rearrange & show/hide
+                                  </div>
                                 </div>
                               </button>
 
                               {/* 4. Super Admin Control Center */}
                               <button
+                                type="button"
                                 onClick={() => {
                                   setIsHeader3DotOpen(false);
                                   onOpenSuperAdminModal('analytics');
                                 }}
-                                className="w-full flex items-center space-x-3 p-2 rounded-xl hover:bg-slate-800/80 text-left transition-all group cursor-pointer"
+                                className="w-full flex items-center space-x-3 p-2.5 rounded-xl hover:bg-slate-800/80 text-left transition-all group cursor-pointer border border-transparent hover:border-amber-500/30"
                               >
-                                <div className="p-2 rounded-lg bg-amber-500/20 text-amber-400 group-hover:bg-amber-500 group-hover:text-slate-950 transition-all shrink-0">
+                                <div className="p-2.5 rounded-xl bg-amber-950/60 border border-amber-500/30 text-amber-400 group-hover:bg-amber-500 group-hover:text-slate-950 transition-all shrink-0 flex items-center justify-center">
                                   <ShieldCheck className="w-4 h-4" />
                                 </div>
                                 <div className="flex-1 min-w-0">
                                   <div className="text-xs font-bold text-slate-200 group-hover:text-white transition-colors">
                                     Super Admin Control Center
                                   </div>
-                                  <div className="text-[10px] text-slate-400 truncate">Full dashboard with all 30+ panels</div>
+                                  <div className="text-[10.5px] text-slate-400 truncate mt-0.5">
+                                    Full dashboard with all 30+ panels
+                                  </div>
                                 </div>
                               </button>
                             </div>
@@ -487,42 +502,54 @@ export const Header: React.FC<HeaderProps> = ({
                         )}
                       </div>
 
+                      {/* 2. Shield (🛡️) Super Admin Control Center Button */}
                       <button
+                        type="button"
                         onClick={() => onOpenSuperAdminModal('analytics')}
-                        className="bg-[#1e1e48] hover:bg-blue-950 text-amber-400 h-full px-3 sm:px-4 flex items-center justify-center transition-colors border-l border-white/10"
+                        className="h-full px-2.5 sm:px-3.5 flex items-center justify-center transition-colors hover:bg-blue-950 text-amber-400 cursor-pointer"
                         title="Super Admin Control Center"
                       >
-                        <ShieldCheck className="w-5 h-5" />
+                        <ShieldCheck className="w-5 h-5 text-amber-400" />
                       </button>
                     </>
                   )}
+
                   {employeeName && !isSuperAdmin && (
-                    <div className="bg-[#1e1e48] text-amber-400 h-full px-3 sm:px-4 flex items-center justify-center transition-colors border-l border-white/10 text-xs font-bold">
-                      <span className="max-w-[80px] truncate">{employeeName}</span>
+                    <div className="text-amber-400 h-full px-2.5 sm:px-3.5 flex items-center justify-center text-xs font-bold bg-[#1e1e48]">
+                      <span className="max-w-[70px] truncate">{employeeName}</span>
                     </div>
                   )}
+
+                  {/* 3. Plus (+) Add Job Button */}
                   <button 
+                    type="button"
                     onClick={onAdminLoginClick} 
-                    className="bg-[#1e1e48] hover:bg-blue-950 text-amber-400 h-full px-3 flex items-center justify-center transition-colors border-l border-white/10"
-                    title="Add Job"
+                    className="h-full px-2.5 sm:px-3.5 flex items-center justify-center transition-colors hover:bg-blue-950 text-amber-400 cursor-pointer"
+                    title="Add Job / New Post"
                   >
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4"></path></svg>
+                    <svg className="w-5 h-5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 4v16m8-8H4"></path>
+                    </svg>
                   </button>
+
+                  {/* 4. Logout ([->) Exit Button */}
                   <button 
+                    type="button"
                     onClick={onLogout} 
-                    className="bg-rose-950 hover:bg-rose-900 text-rose-400 h-full px-3 sm:px-4 rounded-l-2xl flex items-center justify-center transition-colors border-l border-white/10"
+                    className="h-full px-2.5 sm:px-3.5 bg-rose-950/90 hover:bg-rose-900 text-rose-400 flex items-center justify-center transition-colors cursor-pointer rounded-r-xl sm:rounded-r-2xl"
                     title="Logout"
                   >
-                    <LogOut className="w-5 h-5" />
+                    <LogOut className="w-5 h-5 text-rose-400" />
                   </button>
-                </>
+                </div>
               ) : (
                 <button
                   onClick={onAdminLoginClick}
-                  className="bg-[#1e1e48] dark:bg-slate-800 hover:bg-[#2a2a5c] dark:hover:bg-slate-700 text-amber-400 h-full px-4 sm:px-5 lg:px-6 rounded-l-2xl flex items-center justify-center transition-colors"
+                  className="h-10 sm:h-11 px-3.5 sm:px-4 rounded-xl sm:rounded-2xl border border-amber-500/40 bg-[#1e1e48] hover:bg-blue-950 text-amber-400 shadow-md flex items-center justify-center transition-all cursor-pointer hover:scale-105 active:scale-95 gap-1.5"
                   title="Admin Login"
                 >
-                  <ShieldCheck className="w-5 h-5" />
+                  <ShieldCheck className="w-5 h-5 text-amber-400" />
+                  <span className="hidden sm:inline text-xs font-bold">Admin</span>
                 </button>
               )}
             </div>

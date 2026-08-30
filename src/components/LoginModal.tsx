@@ -62,9 +62,9 @@ export const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, employe
         setErrorMsg('⚠️ Invalid Super Admin ID or Password. Check your credentials or click "Edit / Reset Credentials".');
       }
     } else {
-      // Check Admin credentials
+      // Check Admin / Super Admin credentials
       if (username === activeSuperUser && password === activeSuperPass) {
-        onLoginSuccess('admin');
+        onLoginSuccess('superadmin');
         setUsername('');
         setPassword('');
         return;

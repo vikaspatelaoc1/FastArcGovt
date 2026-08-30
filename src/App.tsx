@@ -463,7 +463,12 @@ export default function App() {
       setSuperAdminTab('analytics');
     }
     setSuperAdminInitialColumnId(colId);
+    setSelectedJobId(null);
+    setActiveInfoPage(null);
+    setIsAdminPanelOpen(false);
+    setIsLoginOpen(false);
     setIsSuperAdminModalOpen(true);
+    window.scrollTo({ top: 0, behavior: 'instant' });
   };
 
   const [isSubscribeModalOpen, setIsSubscribeModalOpen] = useState(false);
@@ -1042,7 +1047,7 @@ export default function App() {
           onToggleDarkMode={toggleDarkMode}
           onAdminLoginClick={handleAdminAction}
           isLoggedIn={isAdminLoggedIn}
-          isSuperAdmin={isSuperAdminLoggedIn}
+          isSuperAdmin={isSuperAdminLoggedIn || currentUserRole === 'superadmin' || currentUserRole === 'admin' || (!currentEmployee && isAdminLoggedIn)}
           employeeName={currentEmployee?.name}
           onOpenSuperAdminModal={handleOpenSuperAdmin}
           onOpenNpmSystem={() => handleOpenSuperAdmin('npm')}
@@ -1075,7 +1080,7 @@ export default function App() {
             setIsAdminLoggedIn(true); 
             setIsLoginOpen(false); 
             setCurrentUserRole(userType);
-            if (userType === 'superadmin') {
+            if (userType === 'superadmin' || userType === 'admin') {
               setIsSuperAdminLoggedIn(true);
               setCurrentEmployee(null);
               triggerToast('👑 Super Admin Logged In Successfully!');
@@ -1103,7 +1108,6 @@ export default function App() {
           onConfirm={confirmLogout}
           onCancel={() => setIsLogoutConfirmOpen(false)}
         />
-        <SplashScreen siteLogo={siteLogo} />
       </div>
     );
   }
@@ -1121,7 +1125,7 @@ export default function App() {
           isDarkMode={isDarkMode} 
           onAdminLoginClick={handleAdminAction}
           isLoggedIn={isAdminLoggedIn}
-          isSuperAdmin={isSuperAdminLoggedIn}
+          isSuperAdmin={isSuperAdminLoggedIn || currentUserRole === 'superadmin' || currentUserRole === 'admin' || (!currentEmployee && isAdminLoggedIn)}
           employeeName={currentEmployee?.name}
           onOpenSuperAdminModal={handleOpenSuperAdmin}
           onLogout={handleLogout}

@@ -12,16 +12,34 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({
   onFinish,
   duration = 900
 }) => {
-  const [isVisible, setIsVisible] = useState(true);
+  const [isVisible, setIsVisible] = useState(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const hasShown = sessionStorage.getItem('fastarc_splash_shown');
+        if (hasShown === 'true') {
+          return false;
+        }
+      } catch (e) { /* ignore */ }
+    }
+    return true;
+  });
 
   useEffect(() => {
+    if (!isVisible) return;
     const timer = setTimeout(() => {
       setIsVisible(false);
+      if (typeof window !== 'undefined') {
+        try {
+          sessionStorage.setItem('fastarc_splash_shown', 'true');
+        } catch (e) { /* ignore */ }
+      }
       onFinish?.();
     }, duration);
 
     return () => clearTimeout(timer);
-  }, [duration, onFinish]);
+  }, [duration, onFinish, isVisible]);
+
+  if (!isVisible) return null;
 
   return (
     <AnimatePresence>
