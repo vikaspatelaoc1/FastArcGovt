@@ -117,13 +117,25 @@ export const ApiAnalyticsTab = ({ onToast }: { onToast?: (msg: string) => void }
 
 export const ActivityLogsTab = () => {
   const [search, setSearch] = useState('');
-  const logs = [
-    { time: 'Today, 11:20 AM', user: 'vikas.admin', action: 'UPDATE_PAGES', detail: 'Dynamic Pages & CMS saved', ip: '192.168.1.1' },
-    { time: 'Today, 10:42 AM', user: 'vikas.admin', action: 'CREATE_JOB', detail: 'SSC CGL 2026 Notification', ip: '192.168.1.1' },
-    { time: 'Today, 09:15 AM', user: 'rahul.staff', action: 'UPDATE_JOB', detail: 'RRB NTPC Admit Card Link', ip: '10.0.0.14' },
-    { time: 'Yesterday, 04:30 PM', user: 'vikas.admin', action: 'UPDATE_CONFIG', detail: 'Site Logo and Themes updated', ip: '192.168.1.1' },
-    { time: 'Yesterday, 11:00 AM', user: 'rahul.staff', action: 'LOGIN', detail: 'Employee portal sign-in', ip: '10.0.0.14' },
-  ];
+  const [logs, setLogs] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('fastarc_activity_audit_logs');
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            return parsed;
+          }
+        } catch (e) { /* ignore */ }
+      }
+    }
+    return [
+      { time: 'Today, 11:20 AM', user: 'vikas.admin', action: 'UPDATE_PAGES', detail: 'Dynamic Pages & CMS saved', ip: '192.168.1.1' },
+      { time: 'Today, 10:42 AM', user: 'vikas.admin', action: 'CREATE_JOB', detail: 'SSC CGL 2026 Notification', ip: '192.168.1.1' },
+      { time: 'Yesterday, 04:30 PM', user: 'vikas.admin', action: 'UPDATE_CONFIG', detail: 'Site Logo and Themes updated', ip: '192.168.1.1' },
+      { time: 'Yesterday, 10:00 AM', user: 'vikas.admin', action: 'LOGIN', detail: 'Super Admin portal sign-in', ip: '192.168.1.1' },
+    ];
+  });
 
   const filteredLogs = logs.filter(l => 
     l.user.toLowerCase().includes(search.toLowerCase()) || 
