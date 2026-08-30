@@ -88,11 +88,11 @@ export const SubscribeModal: React.FC<SubscribeModalProps> = ({
         {/* Header Govt Navy Bar */}
         <div className="bg-slate-50 dark:bg-slate-950/90 border-b border-slate-200 dark:border-slate-800 p-5 text-slate-900 dark:text-white flex items-center justify-between transition-colors">
           <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 rounded-full p-0.5 bg-black border-2 border-amber-500/80 shadow-md flex items-center justify-center overflow-hidden shrink-0">
+            <div className="w-10 h-10 rounded-full p-0.5 bg-black border-2 border-amber-500 shadow-md flex items-center justify-center overflow-hidden shrink-0">
               <img 
                 src={siteLogo || "/logo.png"} 
                 alt="FastArc Logo" 
-                className="w-full h-full object-cover rounded-full"
+                className="w-full h-full object-cover scale-125 rounded-full"
                 onError={(e) => {
                   (e.target as HTMLImageElement).src = "https://lh3.googleusercontent.com/d/1IE6MQ8EUwyKmGeXnpLTXx7d5HBLJiKb4";
                 }}

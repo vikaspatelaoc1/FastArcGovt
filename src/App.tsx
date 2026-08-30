@@ -19,6 +19,7 @@ import { InfoModal } from './components/InfoModal';
 import { SubscribeModal } from './components/SubscribeModal';
 import { LogoutConfirmModal } from './components/LogoutConfirmModal';
 import { FAQ } from './components/FAQ';
+import { SplashScreen } from './components/SplashScreen';
 import { getSocialTheme } from './components/SocialLinksManager';
 import { OfficialSocialLogo } from './components/SocialIcons';
 import { JobAlert, JobCategory, EmployeeUser, SocialLinkItem, SuperAdminTabType } from './types';
@@ -1097,12 +1098,14 @@ export default function App() {
           onConfirm={confirmLogout}
           onCancel={() => setIsLogoutConfirmOpen(false)}
         />
+        <SplashScreen siteLogo={siteLogo} />
       </div>
     );
   }
 
   return (
     <div className="bg-slate-50 text-slate-800 dark:bg-slate-950 dark:text-slate-100 min-h-screen flex flex-col transition-colors duration-300 w-full">
+      <SplashScreen siteLogo={siteLogo} />
       <div className="fixed top-0 left-0 right-0 z-50 w-full shadow-md bg-white dark:bg-slate-900">
         <Marquee text={marqueeText} />
         <Header 
@@ -1293,101 +1296,101 @@ export default function App() {
         </div>
       </div>
 
-      <main className="w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow">
-        <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2 mb-6">
-          <div onClick={() => handleTabChange('latest-jobs')} className={`bg-indigo-50/80 dark:bg-indigo-950/20 border ${activeTab === 'latest-jobs' ? 'border-indigo-400 dark:border-indigo-500 shadow ring-2 ring-indigo-200 dark:ring-indigo-900/50' : 'border-indigo-100/80 dark:border-indigo-900/40'} rounded-lg p-1.5 sm:p-2 flex items-center space-x-2 transition-all duration-200 cursor-pointer hover:shadow-sm hover:-translate-y-0.5 hover:border-indigo-300 dark:hover:border-indigo-700`}>
-            <div className="w-6 h-6 sm:w-7 sm:h-7 bg-indigo-500 rounded-md flex items-center justify-center text-white font-bold overflow-hidden p-0.5 shrink-0">
-              <CategoryIcon icon={columnConfigs['latest-jobs']?.icon || '💼'} className="w-3.5 h-3.5 sm:w-4 sm:h-4 object-contain" />
+      <main className="w-full mx-auto px-2 sm:px-4 lg:px-6 py-6 flex-grow">
+        <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2.5 sm:gap-3 mb-6">
+          <div onClick={() => handleTabChange('latest-jobs')} className={`bg-indigo-50/80 dark:bg-indigo-950/20 border ${activeTab === 'latest-jobs' ? 'border-indigo-400 dark:border-indigo-500 shadow-md ring-2 ring-indigo-200 dark:ring-indigo-900/50' : 'border-indigo-100/80 dark:border-indigo-900/40'} rounded-2xl p-3 sm:p-3.5 flex items-center space-x-3 transition-all duration-200 cursor-pointer hover:shadow-lg hover:-translate-y-0.5 hover:border-indigo-300 dark:hover:border-indigo-700`}>
+            <div className="w-9 h-9 sm:w-10 sm:h-10 bg-indigo-500 rounded-xl flex items-center justify-center text-white font-bold overflow-hidden p-1 shrink-0 shadow-sm">
+              <CategoryIcon icon={columnConfigs['latest-jobs']?.icon || '💼'} className="w-5 h-5 sm:w-5.5 sm:h-5.5 object-contain" />
             </div>
             <div className="min-w-0">
-              <h4 className="text-[9px] sm:text-[10px] text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider truncate">
+              <h4 className="text-[12px] sm:text-[13px] lg:text-[13.5px] text-slate-600 dark:text-slate-300 font-black uppercase tracking-tight truncate">
                 {columnConfigs['latest-jobs']?.title || 'Latest Jobs'}
               </h4>
-              <p className="text-xs sm:text-sm font-black text-slate-900 dark:text-white leading-none mt-0.5">{counts.latest}</p>
+              <p className="text-base sm:text-lg lg:text-xl font-black text-slate-900 dark:text-white leading-tight mt-0.5">{counts.latest}</p>
             </div>
           </div>
           
-          <div onClick={() => handleTabChange('admit-card')} className={`bg-amber-50/80 dark:bg-amber-950/20 border ${activeTab === 'admit-card' ? 'border-amber-400 dark:border-amber-500 shadow ring-2 ring-amber-200 dark:ring-amber-900/50' : 'border-amber-100/80 dark:border-amber-900/40'} rounded-lg p-1.5 sm:p-2 flex items-center space-x-2 transition-all duration-200 cursor-pointer hover:shadow-sm hover:-translate-y-0.5 hover:border-amber-300 dark:hover:border-amber-700`}>
-            <div className="w-6 h-6 sm:w-7 sm:h-7 bg-amber-500 rounded-md flex items-center justify-center text-white font-bold overflow-hidden p-0.5 shrink-0">
-              <CategoryIcon icon={columnConfigs['admit-cards']?.icon || '📄'} className="w-3.5 h-3.5 sm:w-4 sm:h-4 object-contain" />
+          <div onClick={() => handleTabChange('admit-card')} className={`bg-amber-50/80 dark:bg-amber-950/20 border ${activeTab === 'admit-card' ? 'border-amber-400 dark:border-amber-500 shadow-md ring-2 ring-amber-200 dark:ring-amber-900/50' : 'border-amber-100/80 dark:border-amber-900/40'} rounded-2xl p-3 sm:p-3.5 flex items-center space-x-3 transition-all duration-200 cursor-pointer hover:shadow-lg hover:-translate-y-0.5 hover:border-amber-300 dark:hover:border-amber-700`}>
+            <div className="w-9 h-9 sm:w-10 sm:h-10 bg-amber-500 rounded-xl flex items-center justify-center text-white font-bold overflow-hidden p-1 shrink-0 shadow-sm">
+              <CategoryIcon icon={columnConfigs['admit-cards']?.icon || '📄'} className="w-5 h-5 sm:w-5.5 sm:h-5.5 object-contain" />
             </div>
             <div className="min-w-0">
-              <h4 className="text-[9px] sm:text-[10px] text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider truncate">
+              <h4 className="text-[12px] sm:text-[13px] lg:text-[13.5px] text-slate-600 dark:text-slate-300 font-black uppercase tracking-tight truncate">
                 {columnConfigs['admit-cards']?.title || 'Admit Cards'}
               </h4>
-              <p className="text-xs sm:text-sm font-black text-slate-900 dark:text-white leading-none mt-0.5">{counts.admit}</p>
+              <p className="text-base sm:text-lg lg:text-xl font-black text-slate-900 dark:text-white leading-tight mt-0.5">{counts.admit}</p>
             </div>
           </div>
           
-          <div onClick={() => handleTabChange('results')} className={`bg-emerald-50/80 dark:bg-emerald-950/20 border ${activeTab === 'results' ? 'border-emerald-400 dark:border-emerald-500 shadow ring-2 ring-emerald-200 dark:ring-emerald-900/50' : 'border-emerald-100/80 dark:border-emerald-900/40'} rounded-lg p-1.5 sm:p-2 flex items-center space-x-2 transition-all duration-200 cursor-pointer hover:shadow-sm hover:-translate-y-0.5 hover:border-emerald-300 dark:hover:border-emerald-700`}>
-            <div className="w-6 h-6 sm:w-7 sm:h-7 bg-emerald-500 rounded-md flex items-center justify-center text-white font-bold overflow-hidden p-0.5 shrink-0">
-              <CategoryIcon icon={columnConfigs['results']?.icon || '🏆'} className="w-3.5 h-3.5 sm:w-4 sm:h-4 object-contain" />
+          <div onClick={() => handleTabChange('results')} className={`bg-emerald-50/80 dark:bg-emerald-950/20 border ${activeTab === 'results' ? 'border-emerald-400 dark:border-emerald-500 shadow-md ring-2 ring-emerald-200 dark:ring-emerald-900/50' : 'border-emerald-100/80 dark:border-emerald-900/40'} rounded-2xl p-3 sm:p-3.5 flex items-center space-x-3 transition-all duration-200 cursor-pointer hover:shadow-lg hover:-translate-y-0.5 hover:border-emerald-300 dark:hover:border-emerald-700`}>
+            <div className="w-9 h-9 sm:w-10 sm:h-10 bg-emerald-500 rounded-xl flex items-center justify-center text-white font-bold overflow-hidden p-1 shrink-0 shadow-sm">
+              <CategoryIcon icon={columnConfigs['results']?.icon || '🏆'} className="w-5 h-5 sm:w-5.5 sm:h-5.5 object-contain" />
             </div>
             <div className="min-w-0">
-              <h4 className="text-[9px] sm:text-[10px] text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider truncate">
+              <h4 className="text-[12px] sm:text-[13px] lg:text-[13.5px] text-slate-600 dark:text-slate-300 font-black uppercase tracking-tight truncate">
                 {columnConfigs['results']?.title || 'Results'}
               </h4>
-              <p className="text-xs sm:text-sm font-black text-slate-900 dark:text-white leading-none mt-0.5">{counts.results}</p>
+              <p className="text-base sm:text-lg lg:text-xl font-black text-slate-900 dark:text-white leading-tight mt-0.5">{counts.results}</p>
             </div>
           </div>
           
-          <div onClick={() => handleTabChange('answer-key')} className={`bg-cyan-50/80 dark:bg-cyan-950/20 border ${activeTab === 'answer-key' ? 'border-cyan-400 dark:border-cyan-500 shadow ring-2 ring-cyan-200 dark:ring-cyan-900/50' : 'border-cyan-100/80 dark:border-cyan-900/40'} rounded-lg p-1.5 sm:p-2 flex items-center space-x-2 transition-all duration-200 cursor-pointer hover:shadow-sm hover:-translate-y-0.5 hover:border-cyan-300 dark:hover:border-cyan-700`}>
-            <div className="w-6 h-6 sm:w-7 sm:h-7 bg-cyan-500 rounded-md flex items-center justify-center text-white font-bold overflow-hidden p-0.5 shrink-0">
-              <CategoryIcon icon={columnConfigs['answer-key']?.icon || '🔑'} className="w-3.5 h-3.5 sm:w-4 sm:h-4 object-contain" />
+          <div onClick={() => handleTabChange('answer-key')} className={`bg-cyan-50/80 dark:bg-cyan-950/20 border ${activeTab === 'answer-key' ? 'border-cyan-400 dark:border-cyan-500 shadow-md ring-2 ring-cyan-200 dark:ring-cyan-900/50' : 'border-cyan-100/80 dark:border-cyan-900/40'} rounded-2xl p-3 sm:p-3.5 flex items-center space-x-3 transition-all duration-200 cursor-pointer hover:shadow-lg hover:-translate-y-0.5 hover:border-cyan-300 dark:hover:border-cyan-700`}>
+            <div className="w-9 h-9 sm:w-10 sm:h-10 bg-cyan-500 rounded-xl flex items-center justify-center text-white font-bold overflow-hidden p-1 shrink-0 shadow-sm">
+              <CategoryIcon icon={columnConfigs['answer-key']?.icon || '🔑'} className="w-5 h-5 sm:w-5.5 sm:h-5.5 object-contain" />
             </div>
             <div className="min-w-0">
-              <h4 className="text-[9px] sm:text-[10px] text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider truncate">
+              <h4 className="text-[12px] sm:text-[13px] lg:text-[13.5px] text-slate-600 dark:text-slate-300 font-black uppercase tracking-tight truncate">
                 {columnConfigs['answer-key']?.title || 'Answer Key'}
               </h4>
-              <p className="text-xs sm:text-sm font-black text-slate-900 dark:text-white leading-none mt-0.5">{counts.answerKey}</p>
+              <p className="text-base sm:text-lg lg:text-xl font-black text-slate-900 dark:text-white leading-tight mt-0.5">{counts.answerKey}</p>
             </div>
           </div>
           
-          <div onClick={() => handleTabChange('syllabus')} className={`bg-fuchsia-50/80 dark:bg-fuchsia-950/20 border ${activeTab === 'syllabus' ? 'border-fuchsia-400 dark:border-fuchsia-500 shadow ring-2 ring-fuchsia-200 dark:ring-fuchsia-900/50' : 'border-fuchsia-100/80 dark:border-fuchsia-900/40'} rounded-lg p-1.5 sm:p-2 flex items-center space-x-2 transition-all duration-200 cursor-pointer hover:shadow-sm hover:-translate-y-0.5 hover:border-fuchsia-300 dark:hover:border-fuchsia-700`}>
-            <div className="w-6 h-6 sm:w-7 sm:h-7 bg-fuchsia-500 rounded-md flex items-center justify-center text-white font-bold overflow-hidden p-0.5 shrink-0">
-              <CategoryIcon icon={columnConfigs['syllabus']?.icon || '📚'} className="w-3.5 h-3.5 sm:w-4 sm:h-4 object-contain" />
+          <div onClick={() => handleTabChange('syllabus')} className={`bg-fuchsia-50/80 dark:bg-fuchsia-950/20 border ${activeTab === 'syllabus' ? 'border-fuchsia-400 dark:border-fuchsia-500 shadow-md ring-2 ring-fuchsia-200 dark:ring-fuchsia-900/50' : 'border-fuchsia-100/80 dark:border-fuchsia-900/40'} rounded-2xl p-3 sm:p-3.5 flex items-center space-x-3 transition-all duration-200 cursor-pointer hover:shadow-lg hover:-translate-y-0.5 hover:border-fuchsia-300 dark:hover:border-fuchsia-700`}>
+            <div className="w-9 h-9 sm:w-10 sm:h-10 bg-fuchsia-500 rounded-xl flex items-center justify-center text-white font-bold overflow-hidden p-1 shrink-0 shadow-sm">
+              <CategoryIcon icon={columnConfigs['syllabus']?.icon || '📚'} className="w-5 h-5 sm:w-5.5 sm:h-5.5 object-contain" />
             </div>
             <div className="min-w-0">
-              <h4 className="text-[9px] sm:text-[10px] text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider truncate">
+              <h4 className="text-[12px] sm:text-[13px] lg:text-[13.5px] text-slate-600 dark:text-slate-300 font-black uppercase tracking-tight truncate">
                 {columnConfigs['syllabus']?.title || 'Syllabus'}
               </h4>
-              <p className="text-xs sm:text-sm font-black text-slate-900 dark:text-white leading-none mt-0.5">{counts.syllabus}</p>
+              <p className="text-base sm:text-lg lg:text-xl font-black text-slate-900 dark:text-white leading-tight mt-0.5">{counts.syllabus}</p>
             </div>
           </div>
 
-          <div onClick={() => handleTabChange('admission')} className={`bg-rose-50/80 dark:bg-rose-950/20 border ${activeTab === 'admission' ? 'border-rose-400 dark:border-rose-500 shadow ring-2 ring-rose-200 dark:ring-rose-900/50' : 'border-rose-100/80 dark:border-rose-900/40'} rounded-lg p-1.5 sm:p-2 flex items-center space-x-2 transition-all duration-200 cursor-pointer hover:shadow-sm hover:-translate-y-0.5 hover:border-rose-300 dark:hover:border-rose-700`}>
-            <div className="w-6 h-6 sm:w-7 sm:h-7 bg-rose-500 rounded-md flex items-center justify-center text-white font-bold overflow-hidden p-0.5 shrink-0">
-              <CategoryIcon icon={columnConfigs['admission']?.icon || '🎓'} className="w-3.5 h-3.5 sm:w-4 sm:h-4 object-contain" />
+          <div onClick={() => handleTabChange('admission')} className={`bg-rose-50/80 dark:bg-rose-950/20 border ${activeTab === 'admission' ? 'border-rose-400 dark:border-rose-500 shadow-md ring-2 ring-rose-200 dark:ring-rose-900/50' : 'border-rose-100/80 dark:border-rose-900/40'} rounded-2xl p-3 sm:p-3.5 flex items-center space-x-3 transition-all duration-200 cursor-pointer hover:shadow-lg hover:-translate-y-0.5 hover:border-rose-300 dark:hover:border-rose-700`}>
+            <div className="w-9 h-9 sm:w-10 sm:h-10 bg-rose-500 rounded-xl flex items-center justify-center text-white font-bold overflow-hidden p-1 shrink-0 shadow-sm">
+              <CategoryIcon icon={columnConfigs['admission']?.icon || '🎓'} className="w-5 h-5 sm:w-5.5 sm:h-5.5 object-contain" />
             </div>
             <div className="min-w-0">
-              <h4 className="text-[9px] sm:text-[10px] text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider truncate">
+              <h4 className="text-[12px] sm:text-[13px] lg:text-[13.5px] text-slate-600 dark:text-slate-300 font-black uppercase tracking-tight truncate">
                 {columnConfigs['admission']?.title || 'Admission'}
               </h4>
-              <p className="text-xs sm:text-sm font-black text-slate-900 dark:text-white leading-none mt-0.5">{counts.admission}</p>
+              <p className="text-base sm:text-lg lg:text-xl font-black text-slate-900 dark:text-white leading-tight mt-0.5">{counts.admission}</p>
             </div>
           </div>
           
-          <div onClick={() => handleTabChange('documents')} className={`bg-orange-50/80 dark:bg-orange-950/20 border ${activeTab === 'documents' ? 'border-orange-400 dark:border-orange-500 shadow ring-2 ring-orange-200 dark:ring-orange-900/50' : 'border-orange-100/80 dark:border-orange-900/40'} rounded-lg p-1.5 sm:p-2 flex items-center space-x-2 transition-all duration-200 cursor-pointer hover:shadow-sm hover:-translate-y-0.5 hover:border-orange-300 dark:hover:border-orange-700`}>
-            <div className="w-6 h-6 sm:w-7 sm:h-7 bg-orange-500 rounded-md flex items-center justify-center text-white font-bold overflow-hidden p-0.5 shrink-0">
-              <CategoryIcon icon={columnConfigs['documents']?.icon || '📜'} className="w-3.5 h-3.5 sm:w-4 sm:h-4 object-contain" />
+          <div onClick={() => handleTabChange('documents')} className={`bg-orange-50/80 dark:bg-orange-950/20 border ${activeTab === 'documents' ? 'border-orange-400 dark:border-orange-500 shadow-md ring-2 ring-orange-200 dark:ring-orange-900/50' : 'border-orange-100/80 dark:border-orange-900/40'} rounded-2xl p-3 sm:p-3.5 flex items-center space-x-3 transition-all duration-200 cursor-pointer hover:shadow-lg hover:-translate-y-0.5 hover:border-orange-300 dark:hover:border-orange-700`}>
+            <div className="w-9 h-9 sm:w-10 sm:h-10 bg-orange-500 rounded-xl flex items-center justify-center text-white font-bold overflow-hidden p-1 shrink-0 shadow-sm">
+              <CategoryIcon icon={columnConfigs['documents']?.icon || '📜'} className="w-5 h-5 sm:w-5.5 sm:h-5.5 object-contain" />
             </div>
             <div className="min-w-0">
-              <h4 className="text-[9px] sm:text-[10px] text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider truncate">
+              <h4 className="text-[12px] sm:text-[13px] lg:text-[13.5px] text-slate-600 dark:text-slate-300 font-black uppercase tracking-tight truncate">
                 {columnConfigs['documents']?.title || 'Services'}
               </h4>
-              <p className="text-xs sm:text-sm font-black text-slate-900 dark:text-white leading-none mt-0.5">{counts.documents}</p>
+              <p className="text-base sm:text-lg lg:text-xl font-black text-slate-900 dark:text-white leading-tight mt-0.5">{counts.documents}</p>
             </div>
           </div>
           
-          <div onClick={() => handleTabChange('important')} className={`bg-pink-50/80 dark:bg-pink-950/20 border ${activeTab === 'important' ? 'border-pink-400 dark:border-pink-500 shadow ring-2 ring-pink-200 dark:ring-pink-900/50' : 'border-pink-100/80 dark:border-pink-900/40'} rounded-lg p-1.5 sm:p-2 flex items-center space-x-2 transition-all duration-200 cursor-pointer hover:shadow-sm hover:-translate-y-0.5 hover:border-pink-300 dark:hover:border-pink-700`}>
-            <div className="w-6 h-6 sm:w-7 sm:h-7 bg-pink-500 rounded-md flex items-center justify-center text-white font-bold overflow-hidden p-0.5 shrink-0">
-              <CategoryIcon icon={columnConfigs['important']?.icon || '⚠️'} className="w-3.5 h-3.5 sm:w-4 sm:h-4 object-contain" />
+          <div onClick={() => handleTabChange('important')} className={`bg-pink-50/80 dark:bg-pink-950/20 border ${activeTab === 'important' ? 'border-pink-400 dark:border-pink-500 shadow-md ring-2 ring-pink-200 dark:ring-pink-900/50' : 'border-pink-100/80 dark:border-pink-900/40'} rounded-2xl p-3 sm:p-3.5 flex items-center space-x-3 transition-all duration-200 cursor-pointer hover:shadow-lg hover:-translate-y-0.5 hover:border-pink-300 dark:hover:border-pink-700`}>
+            <div className="w-9 h-9 sm:w-10 sm:h-10 bg-pink-500 rounded-xl flex items-center justify-center text-white font-bold overflow-hidden p-1 shrink-0 shadow-sm">
+              <CategoryIcon icon={columnConfigs['important']?.icon || '⚠️'} className="w-5 h-5 sm:w-5.5 sm:h-5.5 object-contain" />
             </div>
             <div className="min-w-0">
-              <h4 className="text-[9px] sm:text-[10px] text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider truncate">
+              <h4 className="text-[12px] sm:text-[13px] lg:text-[13.5px] text-slate-600 dark:text-slate-300 font-black uppercase tracking-tight truncate">
                 {columnConfigs['important']?.title || 'Important'}
               </h4>
-              <p className="text-xs sm:text-sm font-black text-slate-900 dark:text-white leading-none mt-0.5">{counts.important}</p>
+              <p className="text-base sm:text-lg lg:text-xl font-black text-slate-900 dark:text-white leading-tight mt-0.5">{counts.important}</p>
             </div>
           </div>
         </div>
@@ -1461,10 +1464,10 @@ export default function App() {
               if (primaryCols.length === 0) return null;
 
               const gridClass = primaryCols.length === 3 
-                ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8' 
+                ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-2.5 lg:gap-3 mb-5' 
                 : primaryCols.length === 2 
-                  ? 'grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 max-w-5xl mx-auto' 
-                  : 'grid grid-cols-1 gap-6 mb-8 max-w-2xl mx-auto';
+                  ? 'grid grid-cols-1 md:grid-cols-2 gap-2 sm:gap-2.5 lg:gap-3 mb-5 max-w-6xl mx-auto' 
+                  : 'grid grid-cols-1 gap-3 mb-5 max-w-3xl mx-auto';
 
               return (
                 <div className={gridClass}>
@@ -1522,10 +1525,10 @@ export default function App() {
               if (secondaryCols.length === 0) return null;
 
               const gridClass = secondaryCols.length === 3 
-                ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8' 
+                ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-2.5 lg:gap-3 mb-5' 
                 : secondaryCols.length === 2 
-                  ? 'grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 max-w-5xl mx-auto' 
-                  : 'grid grid-cols-1 gap-6 mb-8 max-w-2xl mx-auto';
+                  ? 'grid grid-cols-1 md:grid-cols-2 gap-2 sm:gap-2.5 lg:gap-3 mb-5 max-w-6xl mx-auto' 
+                  : 'grid grid-cols-1 gap-3 mb-5 max-w-3xl mx-auto';
 
               return (
                 <div className={gridClass}>
@@ -1576,8 +1579,8 @@ export default function App() {
               if (additionalCols.length === 0) return null;
 
               const gridClass = additionalCols.length === 2 
-                ? 'grid grid-cols-1 md:grid-cols-2 gap-6' 
-                : 'grid grid-cols-1 max-w-2xl mx-auto gap-6';
+                ? 'grid grid-cols-1 md:grid-cols-2 gap-2 sm:gap-2.5 lg:gap-3 mb-5 max-w-6xl mx-auto' 
+                : 'grid grid-cols-1 max-w-3xl mx-auto gap-3 mb-5';
 
               return (
                 <div className={gridClass}>
@@ -1824,19 +1827,19 @@ export default function App() {
       <footer className="custom-footer-override bg-slate-900 border-t-4 border-amber-500 pt-4 sm:pt-5 pb-8 mt-12 transition-colors duration-300">
         <div className="w-full mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8 text-sm">
-            <div className="space-y-2.5">
+            <div className="space-y-3.5">
               <button
                 onClick={() => setIsSubscribeModalOpen(true)}
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-gradient-to-r from-blue-900 via-indigo-900 to-slate-900 hover:from-blue-800 hover:to-indigo-800 text-amber-300 text-xs font-black px-4 py-2 rounded-xl shadow-md shadow-blue-950/80 border border-amber-500/50 hover:scale-105 active:scale-95 transition-all cursor-pointer group"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-gradient-to-r from-blue-900 via-indigo-900 to-slate-900 hover:from-blue-800 hover:to-indigo-800 text-amber-300 text-sm sm:text-[15px] font-black px-4.5 py-2.5 rounded-xl shadow-md shadow-blue-950/80 border border-amber-500/50 hover:scale-105 active:scale-95 transition-all cursor-pointer group"
                 title="Click to subscribe for email notifications of all new job posts"
               >
-                <Bell className="w-4 h-4 fill-current text-amber-400 animate-bounce group-hover:rotate-12 transition-transform" />
+                <Bell className="w-4.5 h-4.5 fill-current text-amber-400 animate-bounce group-hover:rotate-12 transition-transform" />
                 <span>Subscribe</span>
               </button>
 
               <a 
                 href="#" 
-                className="flex items-center space-x-2 group cursor-pointer" 
+                className="flex items-center space-x-3 group cursor-pointer" 
                 onClick={(e) => {
                   e.preventDefault();
                   setActiveInfoPage(null);
@@ -1846,35 +1849,35 @@ export default function App() {
                 }}
                 title="FastArc Govt Jobs Portal - Back to Home"
               >
-                <div className="w-9 h-9 rounded-full p-0.5 bg-black border-2 border-amber-500/80 shadow-md flex items-center justify-center overflow-hidden shrink-0 transform group-hover:scale-105 transition-transform duration-200">
+                <div className="w-13 h-13 sm:w-15 sm:h-15 lg:w-16 lg:h-16 rounded-full p-0.5 bg-black border-2 border-amber-500 shadow-md flex items-center justify-center overflow-hidden shrink-0 transform group-hover:scale-105 transition-transform duration-200">
                   <img 
                     src={siteLogo || "/logo.png"} 
                     alt="FastArc Logo" 
-                    className="w-full h-full object-cover rounded-full"
+                    className="w-full h-full object-cover scale-125 rounded-full"
                     onError={(e) => {
                       (e.target as HTMLImageElement).src = "https://lh3.googleusercontent.com/d/1IE6MQ8EUwyKmGeXnpLTXx7d5HBLJiKb4";
                     }}
                   />
                 </div>
                 <div>
-                  <h4 className="text-xl font-black text-white tracking-tight leading-none group-hover:text-amber-400 transition-colors">
+                  <h4 className="text-2xl sm:text-3xl font-black text-white tracking-tight leading-none group-hover:text-amber-400 transition-colors">
                     Fast<span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-300">Arc</span>
                   </h4>
-                  <p className="text-[9px] text-amber-400/90 font-extrabold tracking-widest uppercase mt-0.5">Govt Jobs Portal</p>
+                  <p className="text-xs sm:text-[13px] text-amber-400 font-extrabold tracking-wider uppercase mt-1">Govt Jobs Portal</p>
                 </div>
               </a>
 
-              <p className="text-slate-400 text-xs leading-relaxed">
+              <p className="text-slate-300 text-sm sm:text-[14.5px] leading-relaxed">
                 FastArc Govt Jobs Portal offers lightning-fast notification updates for Central & State Government examinations, admit cards, answer keys, results, and curriculum PDF patterns.
               </p>
             </div>
             <div>
-              <h5 className="font-bold text-white mb-4 text-xs uppercase tracking-widest">Job Portals</h5>
-              <ul className="space-y-3 text-xs text-slate-400">
+              <h5 className="font-black text-white mb-4 text-sm sm:text-[15px] uppercase tracking-wider">Job Portals</h5>
+              <ul className="space-y-3.5 text-sm sm:text-[14.5px] text-slate-300">
                 <li>
                   <button 
                     onClick={() => handleSeeMoreCategory('results')} 
-                    className="hover:text-amber-400 text-left transition-colors cursor-pointer"
+                    className="hover:text-amber-400 text-left transition-colors cursor-pointer font-medium"
                   >
                     Results Alerts
                   </button>
@@ -1882,7 +1885,7 @@ export default function App() {
                 <li>
                   <button 
                     onClick={() => handleSeeMoreCategory('admit-cards')} 
-                    className="hover:text-amber-400 text-left transition-colors cursor-pointer"
+                    className="hover:text-amber-400 text-left transition-colors cursor-pointer font-medium"
                   >
                     Admit Card Alerts
                   </button>
@@ -1890,7 +1893,7 @@ export default function App() {
                 <li>
                   <button 
                     onClick={() => handleSeeMoreCategory('latest-jobs')} 
-                    className="hover:text-amber-400 text-left transition-colors cursor-pointer"
+                    className="hover:text-amber-400 text-left transition-colors cursor-pointer font-medium"
                   >
                     Latest Sarkari Jobs
                   </button>
@@ -1898,7 +1901,7 @@ export default function App() {
                 <li>
                   <button 
                     onClick={() => handleSeeMoreCategory('admission')} 
-                    className="hover:text-amber-400 text-left transition-colors cursor-pointer"
+                    className="hover:text-amber-400 text-left transition-colors cursor-pointer font-medium"
                   >
                     Admission Updates
                   </button>
@@ -1906,21 +1909,21 @@ export default function App() {
               </ul>
             </div>
             <div>
-              <h5 className="font-bold text-white mb-4 text-xs uppercase tracking-widest">Policy & Information</h5>
-              <ul className="space-y-2.5 text-xs text-slate-400">
+              <h5 className="font-black text-white mb-4 text-sm sm:text-[15px] uppercase tracking-wider">Policy & Information</h5>
+              <ul className="space-y-3.5 text-sm sm:text-[14.5px] text-slate-300">
                 <li>
                   <button 
                     onClick={() => setActiveInfoPage('privacy')} 
-                    className="hover:text-amber-400 text-left transition-colors flex items-center gap-1.5 cursor-pointer"
+                    className="hover:text-amber-400 text-left transition-colors flex items-center gap-1.5 cursor-pointer font-medium"
                   >
                     <span>Privacy Policy</span>
-                    <span className="text-[9px] bg-emerald-500/20 text-emerald-400 font-bold px-1 rounded">AdSense</span>
+                    <span className="text-[10px] bg-emerald-500/20 text-emerald-400 font-black px-1.5 py-0.5 rounded">AdSense</span>
                   </button>
                 </li>
                 <li>
                   <button 
                     onClick={() => setActiveInfoPage('disclaimer')} 
-                    className="hover:text-amber-400 text-left transition-colors flex items-center gap-1.5 cursor-pointer"
+                    className="hover:text-amber-400 text-left transition-colors flex items-center gap-1.5 cursor-pointer font-medium"
                   >
                     <span>Disclaimer (Non-Govt)</span>
                   </button>
@@ -1928,7 +1931,7 @@ export default function App() {
                 <li>
                   <button 
                     onClick={() => setActiveInfoPage('terms')} 
-                    className="hover:text-amber-400 text-left transition-colors flex items-center gap-1.5 cursor-pointer"
+                    className="hover:text-amber-400 text-left transition-colors flex items-center gap-1.5 cursor-pointer font-medium"
                   >
                     <span>Terms & Conditions</span>
                   </button>
@@ -1936,7 +1939,7 @@ export default function App() {
                 <li>
                   <button 
                     onClick={() => setActiveInfoPage('about')} 
-                    className="hover:text-amber-400 text-left transition-colors flex items-center gap-1.5 cursor-pointer"
+                    className="hover:text-amber-400 text-left transition-colors flex items-center gap-1.5 cursor-pointer font-medium"
                   >
                     <span>About Us & Editorial Team</span>
                   </button>
@@ -1944,7 +1947,7 @@ export default function App() {
                 <li>
                   <button 
                     onClick={() => setActiveInfoPage('contact')} 
-                    className="hover:text-amber-400 text-left transition-colors flex items-center gap-1.5 cursor-pointer"
+                    className="hover:text-amber-400 text-left transition-colors flex items-center gap-1.5 cursor-pointer font-medium"
                   >
                     <span>Contact Us & Grievance</span>
                   </button>
@@ -1952,24 +1955,24 @@ export default function App() {
               </ul>
             </div>
             <div>
-              <h5 className="font-bold text-amber-500 mb-4 text-xs uppercase tracking-widest flex items-center justify-between">
+              <h5 className="font-black text-amber-500 mb-4 text-sm sm:text-[15px] uppercase tracking-wider flex items-center justify-between">
                 <span>Disclaimer</span>
                 <button 
                   onClick={() => setActiveInfoPage('disclaimer')}
-                  className="text-[10px] text-amber-400 hover:underline font-normal cursor-pointer"
+                  className="text-xs text-amber-400 hover:underline font-bold cursor-pointer"
                 >
                   Read Policy →
                 </button>
               </h5>
-              <p className="text-xs text-slate-400 leading-relaxed">
+              <p className="text-sm sm:text-[14px] text-slate-300 leading-relaxed font-normal">
                 FastArc is an independent career news aggregator. We are NOT associated with UPSC, SSC, NTA, or any government agency. Always cross-verify exam details on official commission platforms before submitting application fees.
               </p>
             </div>
           </div>
           <div className="border-t border-slate-800 pt-6 flex flex-col md:flex-row items-center justify-between gap-4">
-            <p className="text-xs text-slate-500">&copy; 2026 FastArc Govt Jobs Portal. All Rights Reserved.</p>
+            <p className="text-sm text-slate-400 font-medium">&copy; 2026 FastArc Govt Jobs Portal. All Rights Reserved.</p>
             <div className="flex flex-col items-center gap-2">
-              <span className="text-[11px] font-bold text-slate-400 uppercase tracking-widest text-center">
+              <span className="text-xs sm:text-[13px] font-black text-slate-300 uppercase tracking-widest text-center">
                 Official Channels & Social Links
               </span>
               <div className="flex items-center justify-center flex-wrap gap-3">
@@ -1980,10 +1983,10 @@ export default function App() {
                       href={item.url}
                       
                       rel="noopener noreferrer"
-                      className="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 hover:scale-110 active:scale-95 transition-all shadow-md border border-slate-700/60 flex items-center justify-center group"
+                      className="p-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 hover:scale-110 active:scale-95 transition-all shadow-md border border-slate-700/60 flex items-center justify-center group"
                       title={`${item.title} (${item.handle || item.url}) - Click to Open`}
                     >
-                      <OfficialSocialLogo platform={item.platform} className="w-5 h-5 drop-shadow-sm group-hover:scale-110 transition-transform" />
+                      <OfficialSocialLogo platform={item.platform} className="w-5.5 h-5.5 drop-shadow-sm group-hover:scale-110 transition-transform" />
                     </a>
                   );
                 })}

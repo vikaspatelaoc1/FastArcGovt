@@ -162,74 +162,66 @@ export const Header: React.FC<HeaderProps> = ({
       iconBg: 'bg-indigo-50 dark:bg-indigo-950/50 border-indigo-200/80 dark:border-indigo-800/60',
       activeCard: 'bg-indigo-50/90 dark:bg-indigo-500/15 border-indigo-300 dark:border-indigo-500/40 text-indigo-900 dark:text-indigo-300 shadow-sm shadow-indigo-500/10'
     },
-    { 
-      id: 'history', 
-      label: 'Recent', 
-      icon: History,
-      iconColor: 'text-orange-600 dark:text-orange-400',
-      iconBg: 'bg-orange-50 dark:bg-orange-950/50 border-orange-200/80 dark:border-orange-800/60',
-      activeCard: 'bg-orange-50/90 dark:bg-orange-500/15 border-orange-300 dark:border-orange-500/40 text-orange-900 dark:text-orange-300 shadow-sm shadow-orange-500/10'
-    },
   ];
 
   return (
     <>
-      <header className="bg-white border-b border-slate-200 dark:bg-slate-900 dark:border-slate-800 w-full shadow-sm transition-colors duration-300">
+      <header className="bg-white border-b-2 border-slate-200 dark:bg-slate-900 dark:border-slate-800 w-full shadow-md transition-colors duration-300">
       <div className="w-full mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between h-12 items-center">
+        <div className="flex justify-between h-24 sm:h-28 items-center py-2 sm:py-3">
           
           {/* Left Side: All Options Hamburger Button + FastArc Logo */}
-          <div className="flex items-center space-x-2 sm:space-x-3">
+          <div className="flex items-center space-x-3 sm:space-x-4">
             <motion.button
               whileHover={{ scale: 1.08 }}
               whileTap={{ scale: 0.90, rotate: -6 }}
               onClick={() => setIsDrawerOpen(true)}
-              className="relative p-2 sm:p-2.5 rounded-xl text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-900 hover:bg-amber-50 dark:hover:bg-slate-800 hover:text-amber-600 dark:hover:text-amber-400 transition-all focus:outline-none cursor-pointer flex flex-col justify-center items-center gap-[3.5px] border border-slate-200 dark:border-slate-800 shadow-xs hover:shadow-md hover:border-amber-400/50 group overflow-hidden active:shadow-inner"
+              className="relative w-12 h-12 sm:w-14 sm:h-14 rounded-2xl text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-900 hover:bg-amber-50 dark:hover:bg-slate-800 hover:text-amber-600 dark:hover:text-amber-400 transition-all focus:outline-none cursor-pointer flex flex-col justify-center items-center gap-[5.5px] sm:gap-[6.5px] border-2 border-slate-200 dark:border-slate-800 shadow-md hover:shadow-lg hover:border-amber-400/70 group overflow-hidden active:shadow-inner shrink-0"
               title="All Options & Categories Menu"
               aria-label="Open Navigation Drawer"
             >
-              {/* 3-bar animated Hamburger Lines */}
+              {/* 3-bar animated Hamburger Lines (Doubled size) */}
               <motion.span 
-                className="w-4 sm:w-5 h-[2px] bg-slate-700 dark:bg-slate-200 group-hover:bg-amber-600 dark:group-hover:bg-amber-400 rounded-full transition-all duration-200 group-hover:w-5" 
+                className="w-6.5 sm:w-7.5 h-[3px] sm:h-[3.5px] bg-slate-800 dark:bg-slate-100 group-hover:bg-amber-600 dark:group-hover:bg-amber-400 rounded-full transition-all duration-200 group-hover:w-8" 
               />
               <motion.span 
-                className="w-3 sm:w-3.5 h-[2px] bg-slate-700 dark:bg-slate-200 group-hover:bg-amber-600 dark:group-hover:bg-amber-400 rounded-full transition-all duration-200 self-start ml-0.5 group-hover:w-5 group-hover:ml-0" 
+                className="w-5 sm:w-6 h-[3px] sm:h-[3.5px] bg-slate-800 dark:bg-slate-100 group-hover:bg-amber-600 dark:group-hover:bg-amber-400 rounded-full transition-all duration-200 self-start ml-1 group-hover:w-8 group-hover:ml-0" 
               />
               <motion.span 
-                className="w-4 sm:w-5 h-[2px] bg-slate-700 dark:bg-slate-200 group-hover:bg-amber-600 dark:group-hover:bg-amber-400 rounded-full transition-all duration-200 group-hover:w-5" 
+                className="w-6.5 sm:w-7.5 h-[3px] sm:h-[3.5px] bg-slate-800 dark:bg-slate-100 group-hover:bg-amber-600 dark:group-hover:bg-amber-400 rounded-full transition-all duration-200 group-hover:w-8" 
               />
             </motion.button>
 
-            <a href="#" className="flex items-center space-x-2 group" onClick={(e) => handleNavClick(e, 'home')}>
-              <div className="w-9 h-9 rounded-full p-0.5 bg-black border-2 border-amber-500/80 shadow-md flex items-center justify-center overflow-hidden shrink-0 transform group-hover:scale-105 transition-transform duration-200">
+            <a href="#" className="flex items-center space-x-3 sm:space-x-3.5 group" onClick={(e) => handleNavClick(e, 'home')}>
+              <div className="w-13 h-13 sm:w-15 sm:h-15 lg:w-16 lg:h-16 rounded-full p-0.5 bg-black border-2 border-amber-500 shadow-md flex items-center justify-center overflow-hidden shrink-0 transform group-hover:scale-105 transition-transform duration-200">
                 <img 
                   src={siteLogo} 
                   alt="FastArc Logo" 
-                  className="w-full h-full object-cover rounded-full"
+                  className="w-full h-full object-cover scale-125 rounded-full"
                   onError={(e) => {
                     (e.target as HTMLImageElement).src = "https://lh3.googleusercontent.com/d/1IE6MQ8EUwyKmGeXnpLTXx7d5HBLJiKb4";
                   }}
                 />
               </div>
               <div>
-                <h1 className="text-xl font-black text-slate-900 dark:text-white tracking-tight leading-none group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors">
+                <h1 className="text-2xl sm:text-3xl lg:text-[34px] font-black text-slate-900 dark:text-white tracking-tight leading-none group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors">
                   Fast<span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-600 via-amber-500 to-yellow-500 dark:from-amber-400 dark:via-yellow-400 dark:to-amber-300">Arc</span>
                 </h1>
-                <p className="text-[9px] text-amber-700 dark:text-amber-400/80 font-extrabold tracking-widest uppercase mt-0.5">Govt Jobs Portal</p>
+                <p className="text-xs sm:text-[13px] text-amber-700 dark:text-amber-400/90 font-extrabold tracking-wider uppercase mt-1">Govt Jobs Portal</p>
               </div>
             </a>
           </div>
           
-          <nav className="hidden md:flex space-x-6 text-sm font-semibold items-center">
+          <nav className="hidden md:flex space-x-5 lg:space-x-8 text-base sm:text-[17px] font-bold items-center">
             {navLinks.map((link) => (
               <a
                 key={link.id}
                 href="#"
                 onClick={(e) => handleNavClick(e, link.id)}
-                className={`transition-colors font-bold ${
+                className={`transition-colors font-extrabold text-[16px] lg:text-[18px] py-2 ${
                   activeTab === link.id
-                    ? 'text-amber-600 dark:text-amber-400 border-b-2 border-amber-500 pb-0.5'
-                    : 'text-slate-700 dark:text-slate-300 hover:text-amber-600 dark:hover:text-amber-400'
+                    ? 'text-amber-600 dark:text-amber-400 border-b-2 border-amber-500'
+                    : 'text-slate-700 dark:text-slate-200 hover:text-amber-600 dark:hover:text-amber-400'
                 }`}
               >
                 {link.label}
@@ -239,9 +231,9 @@ export const Header: React.FC<HeaderProps> = ({
             <div className="relative flex items-center group" ref={moreRef}>
               <button
                 onClick={() => setIsMoreOpen(!isMoreOpen)}
-                className="flex items-center text-slate-700 dark:text-slate-300 hover:text-amber-600 dark:hover:text-amber-400 transition-colors focus:outline-none outline-none font-bold"
+                className="flex items-center text-slate-700 dark:text-slate-200 hover:text-amber-600 dark:hover:text-amber-400 transition-colors focus:outline-none outline-none font-extrabold text-[16px] lg:text-[18px] py-2 cursor-pointer"
               >
-                More <ChevronDown className={`w-4 h-4 ml-1 transition-transform duration-200 ${isMoreOpen ? 'rotate-180' : ''}`} />
+                More <ChevronDown className={`w-4.5 h-4.5 ml-1.5 transition-transform duration-200 ${isMoreOpen ? 'rotate-180' : ''}`} />
               </button>
               <div 
                 className={`absolute top-full left-0 mt-2 w-56 bg-white dark:bg-[#1e293b] border border-slate-200 dark:border-slate-700/50 rounded-xl shadow-2xl py-2 z-50 flex-col transition-all duration-200 origin-top-left ${isMoreOpen ? 'opacity-100 scale-100 flex' : 'opacity-0 scale-95 hidden pointer-events-none'}`}
@@ -357,17 +349,17 @@ export const Header: React.FC<HeaderProps> = ({
                 { id: 'wa', platform: 'whatsapp' as const, title: 'WhatsApp Channel', url: 'https://whatsapp.com/channel/fastarcgovtofficial' }
               ];
               return (
-                <div className="flex items-center space-x-1.5 sm:space-x-2">
+                <div className="flex items-center space-x-2 sm:space-x-2.5">
                   {activeSocials.slice(0, 2).map((item) => (
                     <a
                       key={item.id}
                       href={item.url}
                       
                       rel="noopener noreferrer"
-                      className="hover:scale-110 active:scale-95 transition-transform flex items-center justify-center p-0.5 rounded-full"
+                      className="hover:scale-110 active:scale-95 transition-transform flex items-center justify-center p-1 rounded-full"
                       title={`${item.title} - Official Channel`}
                     >
-                      <OfficialSocialLogo platform={item.platform} className="w-[26px] h-[26px] drop-shadow-sm" />
+                      <OfficialSocialLogo platform={item.platform} className="w-[30px] h-[30px] sm:w-[32px] sm:h-[32px] drop-shadow-sm" />
                     </a>
                   ))}
                 </div>
@@ -375,7 +367,7 @@ export const Header: React.FC<HeaderProps> = ({
             })()}
             
             {/* The right-most flush Admin Login/Status Button */}
-            <div className="flex items-center space-x-0 ml-2 sm:ml-4 -mr-4 sm:-mr-6 lg:-mr-8 h-12">
+            <div className="flex items-center space-x-0 ml-2 sm:ml-4 -mr-4 sm:-mr-6 lg:-mr-8 h-24 sm:h-28">
               {isLoggedIn ? (
                 <>
                   {isSuperAdmin && onOpenSuperAdminModal && (
@@ -384,13 +376,13 @@ export const Header: React.FC<HeaderProps> = ({
                       <div className="relative h-full" ref={header3DotRef}>
                         <button
                           onClick={() => setIsHeader3DotOpen(!isHeader3DotOpen)}
-                          className={`bg-[#1e1e48] hover:bg-blue-950 text-amber-400 h-full px-2.5 sm:px-3.5 flex items-center justify-center transition-colors border-l border-white/10 cursor-pointer ${
+                          className={`bg-[#1e1e48] hover:bg-blue-950 text-amber-400 h-full px-3 sm:px-4 flex items-center justify-center transition-colors border-l border-white/10 cursor-pointer ${
                             isHeader3DotOpen ? 'bg-blue-950 text-amber-300 ring-1 ring-amber-400/50' : ''
                           }`}
                           title="Super Admin 3-Dot Menu (Website Control, Colors, Columns)"
                           aria-label="3-Dot Menu"
                         >
-                          <MoreVertical className="w-5 h-5" />
+                          <MoreVertical className="w-5.5 h-5.5 sm:w-6 sm:h-6" />
                         </button>
 
                         {/* 3-Dot Dropdown Menu */}
@@ -567,12 +559,12 @@ export const Header: React.FC<HeaderProps> = ({
 
               {/* Drawer Header */}
               <div className="px-3.5 py-2.5 bg-white dark:bg-slate-950 text-slate-900 dark:text-white flex items-center justify-between shadow-sm dark:shadow-md sticky top-1 z-10 border-b border-slate-200 dark:border-slate-800">
-                <div className="flex items-center space-x-2">
-                  <div className="w-8 h-8 rounded-full p-0.5 bg-black border-2 border-amber-500/80 shadow-md flex items-center justify-center overflow-hidden shrink-0">
+                <div className="flex items-center space-x-2.5">
+                  <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full p-0.5 bg-black border-2 border-amber-500 shadow-md flex items-center justify-center overflow-hidden shrink-0">
                     <img 
                       src={siteLogo} 
                       alt="FastArc Logo" 
-                      className="w-full h-full object-cover rounded-full"
+                      className="w-full h-full object-cover scale-125 rounded-full"
                       onError={(e) => {
                         (e.target as HTMLImageElement).src = "https://lh3.googleusercontent.com/d/1IE6MQ8EUwyKmGeXnpLTXx7d5HBLJiKb4";
                       }}

@@ -59,6 +59,7 @@ const parseJobTimestamp = (job: JobAlert): number => {
 
 interface JobColumnProps {
   id?: string;
+  className?: string;
   title: string;
   hindiTitle?: string;
   tagline?: string;
@@ -87,6 +88,7 @@ interface JobColumnProps {
 
 export const JobColumn: React.FC<JobColumnProps> = ({ 
   id,
+  className = '',
   title, 
   hindiTitle,
   tagline,
@@ -151,8 +153,10 @@ export const JobColumn: React.FC<JobColumnProps> = ({
   return (
     <section 
       id={id} 
-      className={`bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-md flex flex-col overflow-hidden transition-all duration-300 h-full scroll-mt-24 ${
-        isExpanded ? 'ring-2 ring-amber-500/20 dark:ring-amber-400/20 shadow-lg' : ''
+      className={`bg-white dark:bg-slate-900 flex flex-col overflow-hidden transition-all duration-300 h-full scroll-mt-24 rounded-2xl border border-slate-200/90 dark:border-slate-700/90 shadow-sm hover:shadow-md hover:border-slate-300 dark:hover:border-slate-600 ${
+        className
+      } ${
+        isExpanded ? 'ring-2 ring-amber-500/30 dark:ring-amber-400/30 shadow-lg z-10' : ''
       }`}
     >
       {/* Column Header */}
@@ -161,36 +165,36 @@ export const JobColumn: React.FC<JobColumnProps> = ({
           bgDark 
             ? 'bg-slate-800 dark:bg-slate-850' 
             : `bg-gradient-to-r ${gradientFrom} ${gradientTo}`
-        } p-3.5 sm:p-4 text-white flex justify-between items-center shrink-0 select-none`}
+        } p-3 sm:p-3.5 text-white flex justify-between items-center shrink-0 select-none`}
       >
-        <div className="flex items-center gap-2 min-w-0 flex-1 mr-2">
-          <span className="text-base sm:text-lg shrink-0 flex items-center justify-center">
-            <CategoryIcon icon={icon} className="w-5 h-5 object-contain shrink-0" />
+        <div className="flex items-center gap-2.5 min-w-0 flex-1 mr-2">
+          <span className="text-lg sm:text-xl shrink-0 flex items-center justify-center">
+            <CategoryIcon icon={icon} className="w-5.5 h-5.5 sm:w-6 sm:h-6 object-contain shrink-0" />
           </span>
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-1.5 flex-wrap sm:flex-nowrap">
-              <h3 className="font-extrabold tracking-tight text-xs sm:text-sm truncate">
+              <h3 className="font-black tracking-tight text-base sm:text-[17.5px] lg:text-[19px] truncate">
                 {title}
               </h3>
               {badgeText && (
-                <span className="bg-amber-400 text-slate-950 text-[9px] font-black px-1.5 py-0.2 rounded shadow-xs uppercase shrink-0">
+                <span className="bg-amber-400 text-slate-950 text-[11px] sm:text-xs font-black px-2 py-0.5 rounded shadow-xs uppercase shrink-0">
                   {badgeText}
                 </span>
               )}
             </div>
             {tagline && (
-              <p className="text-[9px] sm:text-[10px] text-white/80 truncate leading-none mt-0.5 font-normal">
+              <p className="text-xs sm:text-[13px] text-white/90 truncate leading-tight mt-0.5 font-medium">
                 {tagline}
               </p>
             )}
           </div>
-          <span className="inline-flex items-center px-1.5 sm:px-2 py-0.5 rounded-full text-[10px] font-bold bg-white/20 text-white backdrop-blur-xs shrink-0 ml-1">
+          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs sm:text-sm font-black bg-white/20 text-white backdrop-blur-xs shrink-0 ml-1">
             {sortedCategoryJobs.length}
           </span>
         </div>
 
         {/* Right side controls: Quick Edit, Sort Toggle, Tab switch & Down Arrow toggle */}
-        <div className="flex items-center gap-1 sm:gap-1.5 shrink-0">
+        <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
           {/* Sort Toggle Button */}
           <button
             onClick={handleToggleSort}
@@ -199,7 +203,7 @@ export const JobColumn: React.FC<JobColumnProps> = ({
                 ? 'Sorted by: Most Recent. Click to sort by Oldest.'
                 : 'Sorted by: Oldest first. Click to sort by Most Recent.'
             }
-            className={`p-1.5 rounded-lg transition-all text-xs font-semibold flex items-center gap-1 cursor-pointer focus:outline-none focus:ring-2 focus:ring-white/40 ${
+            className={`p-1.5 sm:p-2 rounded-lg transition-all text-xs sm:text-sm font-bold flex items-center gap-1 cursor-pointer focus:outline-none focus:ring-2 focus:ring-white/40 ${
               sortOrder === 'oldest'
                 ? 'bg-amber-400 text-slate-950 shadow-xs ring-1 ring-amber-300'
                 : 'bg-white/15 hover:bg-white/30 text-white'
@@ -208,8 +212,8 @@ export const JobColumn: React.FC<JobColumnProps> = ({
               sortOrder === 'recent' ? 'Most Recent' : 'Oldest'
             }`}
           >
-            <ArrowUpDown className="w-3.5 h-3.5" />
-            <span className="text-[10px] font-bold tracking-tight hidden sm:inline">
+            <ArrowUpDown className="w-4 h-4" />
+            <span className="text-xs sm:text-[13px] font-extrabold tracking-tight hidden sm:inline">
               {sortOrder === 'recent' ? 'Recent' : 'Oldest'}
             </span>
           </button>
@@ -221,10 +225,10 @@ export const JobColumn: React.FC<JobColumnProps> = ({
                 onQuickEditTitle();
               }}
               title={`Edit title & text for ${title}`}
-              className="p-1.5 rounded-lg bg-white/15 hover:bg-amber-400 hover:text-slate-950 text-white transition-all text-xs font-semibold flex items-center gap-1 cursor-pointer focus:outline-none focus:ring-2 focus:ring-amber-400"
+              className="p-1.5 sm:p-2 rounded-lg bg-white/15 hover:bg-amber-400 hover:text-slate-950 text-white transition-all text-xs sm:text-sm font-bold flex items-center gap-1 cursor-pointer focus:outline-none focus:ring-2 focus:ring-amber-400"
               aria-label={`Edit ${title} column`}
             >
-              <Edit2 className="w-3.5 h-3.5" />
+              <Edit2 className="w-4 h-4" />
             </button>
           )}
 
@@ -232,10 +236,10 @@ export const JobColumn: React.FC<JobColumnProps> = ({
             <button
               onClick={handleOpenTab}
               title={`Open all ${title} in dedicated tab`}
-              className="p-1.5 rounded-lg bg-white/15 hover:bg-white/30 text-white transition-all text-xs font-semibold flex items-center justify-center cursor-pointer focus:outline-none focus:ring-2 focus:ring-white/40"
+              className="p-1.5 sm:p-2 rounded-lg bg-white/15 hover:bg-white/30 text-white transition-all text-xs sm:text-sm font-bold flex items-center justify-center cursor-pointer focus:outline-none focus:ring-2 focus:ring-white/40"
               aria-label={`Open ${title} Tab`}
             >
-              <ExternalLink className="w-3.5 h-3.5" />
+              <ExternalLink className="w-4 h-4" />
             </button>
           )}
         </div>
@@ -243,10 +247,10 @@ export const JobColumn: React.FC<JobColumnProps> = ({
 
       {/* Column Items List */}
       <div 
-        className="p-3 divide-y divide-slate-100 dark:divide-slate-800 transition-all duration-300"
+        className="p-2 sm:p-2.5 divide-y divide-slate-100 dark:divide-slate-800 transition-all duration-300"
       >
         {sortedCategoryJobs.length === 0 ? (
-          <div className="py-8 text-center text-xs text-slate-400 dark:text-slate-500 italic">
+          <div className="py-8 text-center text-sm text-slate-400 dark:text-slate-500 italic">
             No items found in {title}.
           </div>
         ) : (
@@ -269,7 +273,7 @@ export const JobColumn: React.FC<JobColumnProps> = ({
             return (
               <div 
                 key={item.id} 
-                className={`py-3 px-2.5 hover:bg-slate-50 dark:hover:bg-slate-850/80 transition-all duration-200 transform hover:scale-[1.015] hover:shadow-xs active:scale-[0.99] flex items-start justify-between group rounded-xl will-change-transform ${
+                className={`py-2.5 px-2.5 sm:px-3 hover:bg-slate-50 dark:hover:bg-slate-850/80 transition-all duration-200 transform hover:scale-[1.008] hover:shadow-xs active:scale-[0.99] flex items-start justify-between group rounded-xl will-change-transform ${
                   isExpiringSoon ? 'bg-rose-50/50 dark:bg-rose-950/20 ring-1 ring-rose-500/40 dark:ring-rose-400/30 shadow-xs' : ''
                 }`}
               >
@@ -282,64 +286,60 @@ export const JobColumn: React.FC<JobColumnProps> = ({
                     e.preventDefault();
                     onJobClick(item.id);
                   }}
-                  className="flex-grow pr-3 cursor-pointer no-underline block"
+                  className="w-full min-w-0 cursor-pointer no-underline block"
                 >
-                  <span className="text-xs font-semibold text-slate-800 dark:text-slate-100 group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors leading-relaxed block">
-                    <HighlightText text={item.title} query={searchQuery?.trim()} />
-                  </span>
-                  <div className="flex items-center flex-wrap gap-1.5 mt-1.5">
-                    <span className="text-[9px] text-slate-400 font-medium">
+                  <div className="flex items-start justify-between gap-2.5">
+                    <span className="text-[16px] sm:text-[17.5px] lg:text-[18.5px] font-bold text-slate-900 dark:text-slate-100 group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors leading-snug flex-1 min-w-0 tracking-tight">
+                      <HighlightText text={item.title} query={searchQuery?.trim()} />
+                    </span>
+                    {(item.isNew || isAdmin) && (
+                      <div className="flex items-center space-x-1.5 shrink-0 ml-1">
+                        {isAdmin && (
+                          <>
+                            <button 
+                              onClick={(e) => onEdit(item.id, e)} 
+                              className="text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 p-1 rounded transition-all text-xs" 
+                              title="Edit Entry"
+                            >
+                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                            </button>
+                            <button 
+                              onClick={(e) => onDelete(item.id, e)} 
+                              className="text-slate-400 hover:text-rose-600 dark:hover:text-rose-500 p-1 rounded transition-all text-xs" 
+                              title="Delete Entry"
+                            >
+                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                            </button>
+                          </>
+                        )}
+                        {item.isNew && (
+                          <span className="bg-red-500 text-white text-[11px] sm:text-xs font-black tracking-wider px-2 py-0.5 rounded-md uppercase badge-pulse shadow-xs">
+                            NEW
+                          </span>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                  <div className="flex items-center flex-wrap gap-2 sm:gap-2.5 mt-1.5">
+                    <span className="text-[13px] sm:text-[14px] text-slate-500 dark:text-slate-400 font-semibold flex items-center gap-1">
                       📅 {item.postDate}
                     </span>
-                    <span className="text-[9px] bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 px-1.5 py-0.5 rounded font-medium uppercase tracking-wider">
+                    <span className="text-[12px] sm:text-[13px] bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 px-2 py-0.5 rounded-md font-bold uppercase tracking-wide border border-slate-200/60 dark:border-slate-700/60">
                       {item.state}
                     </span>
                     {lastDateStr && (
-                      <span className={`text-[9px] font-medium ${isExpiringSoon ? 'text-rose-600 dark:text-rose-400 font-bold' : 'text-slate-500 dark:text-slate-400'}`}>
+                      <span className={`text-[13px] sm:text-[14px] font-semibold ${isExpiringSoon ? 'text-rose-600 dark:text-rose-400 font-bold' : 'text-slate-500 dark:text-slate-400'}`}>
                         Last Date: {lastDateStr}
                       </span>
                     )}
                     {isExpiringSoon && (
-                      <span className="text-[9px] bg-rose-500 text-white px-1.5 py-0.5 rounded font-bold uppercase tracking-wider animate-pulse flex items-center gap-1 shadow-sm">
-                        <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                      <span className="text-[12px] sm:text-[13px] bg-rose-500 text-white px-2.5 py-0.5 rounded-md font-black uppercase tracking-wider animate-pulse flex items-center gap-1 shadow-sm">
+                        <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                         {daysUntil === 0 ? 'Expires Today' : `Expires in ${daysUntil} ${daysUntil === 1 ? 'Day' : 'Days'}`}
                       </span>
                     )}
                   </div>
                 </a>
-                <div className="flex items-center space-x-1.5 shrink-0 pt-0.5">
-                  {isAdmin && (
-                    <>
-                      <button 
-                        onClick={(e) => onEdit(item.id, e)} 
-                        className="text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 p-1 rounded transition-all text-[11px]" 
-                        title="Edit Entry"
-                      >
-                        <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
-                      </button>
-                      <button 
-                        onClick={(e) => onDelete(item.id, e)} 
-                        className="text-slate-400 hover:text-rose-600 dark:hover:text-rose-500 p-1 rounded transition-all text-[11px]" 
-                        title="Delete Entry"
-                      >
-                        <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-                      </button>
-                    </>
-                  )}
-                  {item.isNew && (
-                    <span className="bg-red-500 text-white text-[9px] font-extrabold tracking-wider px-1.5 py-0.5 rounded uppercase badge-pulse">
-                      NEW
-                    </span>
-                  )}
-                  <button
-                    type="button"
-                    onClick={() => onJobClick(item.id)}
-                    className="p-1 text-slate-300 hover:text-amber-500 transition-colors cursor-pointer"
-                    title="View Details"
-                  >
-                    <ArrowRight className="w-3.5 h-3.5" />
-                  </button>
-                </div>
               </div>
             );
           })
@@ -348,23 +348,23 @@ export const JobColumn: React.FC<JobColumnProps> = ({
 
       {/* Action footer: See More Tab and Expand / Show Less buttons */}
       {!disableFilter && (
-        <div className="pt-3 pb-2 px-3 flex flex-col sm:flex-row items-center justify-between gap-2 border-t border-slate-100 dark:border-slate-800/80 bg-slate-50/50 dark:bg-slate-900/50 rounded-b-xl shrink-0">
+        <div className="pt-3 pb-2.5 px-3 sm:px-4 flex flex-col sm:flex-row items-center justify-between gap-2.5 border-t border-slate-100 dark:border-slate-800/80 bg-slate-50/50 dark:bg-slate-900/50 rounded-b-xl shrink-0">
           
           {/* In-column Expand / Collapse toggle */}
           <div className="flex-1 w-full sm:w-auto">
             {hasMore && (
               <button 
                 onClick={handleToggleExpand}
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-1 px-3 py-2 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:text-amber-600 dark:hover:text-amber-400 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl transition-colors cursor-pointer shadow-sm"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 px-3.5 py-2 text-xs sm:text-sm font-bold text-slate-700 dark:text-slate-300 hover:text-amber-600 dark:hover:text-amber-400 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl transition-colors cursor-pointer shadow-sm"
               >
                 {isExpanded ? (
                   <>
-                    <ChevronUp className="w-3.5 h-3.5" />
+                    <ChevronUp className="w-4 h-4" />
                     <span>Show Less</span>
                   </>
                 ) : (
                   <>
-                    <ChevronDown className="w-3.5 h-3.5" />
+                    <ChevronDown className="w-4 h-4" />
                     <span>Expand All ({sortedCategoryJobs.length})</span>
                   </>
                 )}
@@ -377,10 +377,10 @@ export const JobColumn: React.FC<JobColumnProps> = ({
             <div className="flex justify-end">
               <button 
                 onClick={handleOpenTab}
-                className="inline-flex items-center justify-center gap-1 px-2 py-2 text-xs font-bold text-amber-600 hover:text-amber-700 dark:text-amber-500 dark:hover:text-amber-400 bg-transparent transition-colors cursor-pointer"
+                className="inline-flex items-center justify-center gap-1 px-2 py-2 text-xs sm:text-sm font-extrabold text-amber-600 hover:text-amber-700 dark:text-amber-500 dark:hover:text-amber-400 bg-transparent transition-colors cursor-pointer"
               >
                 <span>See More</span>
-                <ArrowRight className="w-3.5 h-3.5" />
+                <ArrowRight className="w-4 h-4" />
               </button>
             </div>
           )}

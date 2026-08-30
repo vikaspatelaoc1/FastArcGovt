@@ -153,11 +153,11 @@ export const LogoManager: React.FC<LogoManagerProps> = ({ currentLogo, onUpdateL
 
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
             {/* Current / Preview Logo Display */}
-            <div className="relative w-16 h-16 rounded-full bg-slate-900 border-2 border-amber-500/80 shadow-md flex items-center justify-center overflow-hidden shrink-0">
+            <div className="relative w-16 h-16 rounded-full bg-black border-2 border-amber-500 shadow-md flex items-center justify-center overflow-hidden shrink-0">
               <img 
                 src={preview || currentLogo} 
                 alt="Portal Logo Preview" 
-                className="w-full h-full object-cover rounded-full"
+                className="w-full h-full object-cover scale-125 rounded-full"
                 onError={(e) => {
                   (e.target as HTMLImageElement).src = "https://lh3.googleusercontent.com/d/1IE6MQ8EUwyKmGeXnpLTXx7d5HBLJiKb4";
                 }}
@@ -256,11 +256,11 @@ export const LogoManager: React.FC<LogoManagerProps> = ({ currentLogo, onUpdateL
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
               {logoHistory.map((backup) => (
                 <div key={backup.id} className="relative group bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl p-3 flex flex-col items-center justify-center gap-2 hover:border-blue-500 dark:hover:border-blue-500 transition-colors">
-                  <div className="w-12 h-12 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center overflow-hidden">
+                  <div className="w-12 h-12 rounded-full bg-black border border-amber-500/60 flex items-center justify-center overflow-hidden">
                     <img 
                       src={backup.logoData} 
                       alt="Backup Logo" 
-                      className="w-full h-full object-cover rounded-full" 
+                      className="w-full h-full object-cover scale-125 rounded-full" 
                     />
                   </div>
                   <span className="text-[9px] text-slate-400 text-center font-medium">
