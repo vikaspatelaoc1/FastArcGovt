@@ -229,7 +229,7 @@ export const JobDetailsPage: React.FC<JobDetailsPageProps> = ({
   return (
     <div className="min-h-screen bg-[#f8fafc] dark:bg-[#0b1120] text-slate-900 dark:text-slate-100 flex flex-col selection:bg-amber-500 selection:text-slate-950 font-sans print:bg-white print:text-black">
       {/* 1. Standard FastArc Full-width Responsive Header */}
-      <div className="print:hidden">
+      <div className="print:hidden sticky top-0 z-50">
         <Header 
           themeMode={themeMode}
           onSetThemeMode={onSetThemeMode}

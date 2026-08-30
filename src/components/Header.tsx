@@ -264,8 +264,7 @@ export const Header: React.FC<HeaderProps> = ({
                   onClick={() => setIsDesktopAdminOpen(!isDesktopAdminOpen)}
                   className="flex items-center px-3 py-1.5 rounded-lg bg-amber-50 dark:bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-500/30 hover:bg-amber-100 dark:hover:bg-amber-500/20 transition-all font-bold text-xs focus:outline-none"
                 >
-                  <ShieldCheck className="w-3.5 h-3.5 mr-1.5" />
-                  Admin
+                  <ShieldCheck className="w-3.5 h-3.5" />
                   <ChevronDown className={`w-3.5 h-3.5 ml-1 transition-transform duration-200 ${isDesktopAdminOpen ? 'rotate-180' : ''}`} />
                 </button>
                 
@@ -366,190 +365,16 @@ export const Header: React.FC<HeaderProps> = ({
               );
             })()}
             
-            {/* Admin Control Bar / Action Buttons Dock */}
+            {/* Admin Control Bar / Action Buttons Dock Placeholder */}
             <div className="flex items-center space-x-0 ml-1.5 sm:ml-3">
-              {isLoggedIn ? (
-                <div className="flex items-center h-10 sm:h-11 rounded-xl sm:rounded-2xl border border-amber-500/40 bg-[#1e1e48] shadow-md shadow-indigo-950/40 divide-x divide-white/10 relative">
-                  {(isSuperAdmin || !employeeName) && onOpenSuperAdminModal && (
-                    <>
-                      {/* 1. 3-Dot (⋮) More Options Menu Button */}
-                      <div className="relative h-full" ref={header3DotRef}>
-                        <button
-                          type="button"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setIsHeader3DotOpen(prev => !prev);
-                          }}
-                          className={`h-full px-2.5 sm:px-3.5 flex items-center justify-center transition-all hover:bg-blue-950 text-amber-400 cursor-pointer rounded-l-xl sm:rounded-l-2xl ${
-                            isHeader3DotOpen ? 'bg-blue-950 text-amber-300 ring-2 ring-amber-400 shadow-inner' : ''
-                          }`}
-                          title="3-Dot Quick Access Menu (Website Control, Colors, Columns, Control Center)"
-                          aria-label="3-Dot Menu"
-                        >
-                          <MoreVertical className="w-5 h-5 text-amber-400" />
-                        </button>
-
-                        {/* 3-Dot Dropdown Menu */}
-                        {isHeader3DotOpen && (
-                          <div 
-                            className="absolute left-0 top-full mt-2 w-72 sm:w-80 bg-[#090d16] border-2 border-amber-500 rounded-2xl shadow-2xl z-[9999] overflow-hidden animate-in fade-in zoom-in-95 duration-150 flex flex-col max-w-[90vw]"
-                            onClick={(e) => e.stopPropagation()}
-                          >
-                            {/* Header */}
-                            <div className="px-4 py-3 bg-[#060a12] border-b border-slate-800 flex items-center justify-between">
-                              <div className="flex items-center space-x-2.5">
-                                <div className="p-2 rounded-xl bg-amber-500 text-slate-950 font-black shadow-md flex items-center justify-center shrink-0">
-                                  <MoreVertical className="w-4 h-4 text-slate-950 stroke-[3]" />
-                                </div>
-                                <div>
-                                  <div className="text-xs sm:text-[13px] font-black text-white uppercase tracking-wider">3–DOT MENU OPTIONS</div>
-                                  <div className="text-[10.5px] text-amber-400 font-bold">Quick Access & Customizers</div>
-                                </div>
-                              </div>
-                            </div>
-
-                            {/* Dropdown Options List */}
-                            <div className="p-2.5 space-y-2 bg-[#090d16]">
-                              {/* 1. Website Control & Settings */}
-                              <button
-                                type="button"
-                                onClick={() => {
-                                  setIsHeader3DotOpen(false);
-                                  onOpenSuperAdminModal('websiteControl');
-                                }}
-                                className="w-full flex items-center space-x-3 p-2.5 rounded-xl bg-[#111936] hover:bg-[#18244d] border border-blue-500/40 text-left transition-all group cursor-pointer shadow-sm"
-                              >
-                                <div className="p-2.5 rounded-xl bg-blue-600 text-white group-hover:scale-105 transition-transform shadow-md shrink-0 flex items-center justify-center">
-                                  <SlidersHorizontal className="w-4 h-4 text-white" />
-                                </div>
-                                <div className="flex-1 min-w-0">
-                                  <div className="text-xs font-black text-white group-hover:text-amber-300 transition-colors">
-                                    Website Control
-                                  </div>
-                                  <div className="text-[10.5px] text-slate-400 truncate mt-0.5">
-                                    Logo, Layout, Sections, Header & Footer
-                                  </div>
-                                </div>
-                              </button>
-
-                              {/* 2. Theme & Colors Customizer */}
-                              <button
-                                type="button"
-                                onClick={() => {
-                                  setIsHeader3DotOpen(false);
-                                  onOpenSuperAdminModal('colors');
-                                }}
-                                className="w-full flex items-center space-x-3 p-2.5 rounded-xl hover:bg-slate-800/80 text-left transition-all group cursor-pointer border border-transparent hover:border-pink-500/30"
-                              >
-                                <div className="p-2.5 rounded-xl bg-pink-950/60 border border-pink-500/30 text-pink-400 group-hover:bg-pink-600 group-hover:text-white transition-all shrink-0 flex items-center justify-center">
-                                  <Palette className="w-4 h-4" />
-                                </div>
-                                <div className="flex-1 min-w-0">
-                                  <div className="text-xs font-bold text-slate-200 group-hover:text-white transition-colors">
-                                    Theme & Colors Customizer
-                                  </div>
-                                  <div className="text-[10.5px] text-slate-400 truncate mt-0.5">
-                                    Accent colors, header & cards styling
-                                  </div>
-                                </div>
-                              </button>
-
-                              {/* 3. Column Titles & Visibility Editor */}
-                              <button
-                                type="button"
-                                onClick={() => {
-                                  setIsHeader3DotOpen(false);
-                                  onOpenSuperAdminModal('columns');
-                                }}
-                                className="w-full flex items-center space-x-3 p-2.5 rounded-xl hover:bg-slate-800/80 text-left transition-all group cursor-pointer border border-transparent hover:border-sky-500/30"
-                              >
-                                <div className="p-2.5 rounded-xl bg-sky-950/60 border border-sky-500/30 text-sky-400 group-hover:bg-sky-600 group-hover:text-white transition-all shrink-0 flex items-center justify-center">
-                                  <Type className="w-4 h-4" />
-                                </div>
-                                <div className="flex-1 min-w-0">
-                                  <div className="text-xs font-bold text-slate-200 group-hover:text-white transition-colors">
-                                    Column Titles & Visibility
-                                  </div>
-                                  <div className="text-[10.5px] text-slate-400 truncate mt-0.5">
-                                    Rename columns, rearrange & show/hide
-                                  </div>
-                                </div>
-                              </button>
-
-                              {/* 4. Super Admin Control Center */}
-                              <button
-                                type="button"
-                                onClick={() => {
-                                  setIsHeader3DotOpen(false);
-                                  onOpenSuperAdminModal('analytics');
-                                }}
-                                className="w-full flex items-center space-x-3 p-2.5 rounded-xl hover:bg-slate-800/80 text-left transition-all group cursor-pointer border border-transparent hover:border-amber-500/30"
-                              >
-                                <div className="p-2.5 rounded-xl bg-amber-950/60 border border-amber-500/30 text-amber-400 group-hover:bg-amber-500 group-hover:text-slate-950 transition-all shrink-0 flex items-center justify-center">
-                                  <ShieldCheck className="w-4 h-4" />
-                                </div>
-                                <div className="flex-1 min-w-0">
-                                  <div className="text-xs font-bold text-slate-200 group-hover:text-white transition-colors">
-                                    Super Admin Control Center
-                                  </div>
-                                  <div className="text-[10.5px] text-slate-400 truncate mt-0.5">
-                                    Full dashboard with all 30+ panels
-                                  </div>
-                                </div>
-                              </button>
-                            </div>
-                          </div>
-                        )}
-                      </div>
-
-                      {/* 2. Shield (🛡️) Super Admin Control Center Button */}
-                      <button
-                        type="button"
-                        onClick={() => onOpenSuperAdminModal('analytics')}
-                        className="h-full px-2.5 sm:px-3.5 flex items-center justify-center transition-colors hover:bg-blue-950 text-amber-400 cursor-pointer"
-                        title="Super Admin Control Center"
-                      >
-                        <ShieldCheck className="w-5 h-5 text-amber-400" />
-                      </button>
-                    </>
-                  )}
-
-                  {employeeName && !isSuperAdmin && (
-                    <div className="text-amber-400 h-full px-2.5 sm:px-3.5 flex items-center justify-center text-xs font-bold bg-[#1e1e48]">
-                      <span className="max-w-[70px] truncate">{employeeName}</span>
-                    </div>
-                  )}
-
-                  {/* 3. Plus (+) Add Job Button */}
-                  <button 
-                    type="button"
-                    onClick={onAdminLoginClick} 
-                    className="h-full px-2.5 sm:px-3.5 flex items-center justify-center transition-colors hover:bg-blue-950 text-amber-400 cursor-pointer"
-                    title="Add Job / New Post"
-                  >
-                    <svg className="w-5 h-5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 4v16m8-8H4"></path>
-                    </svg>
-                  </button>
-
-                  {/* 4. Logout ([->) Exit Button */}
-                  <button 
-                    type="button"
-                    onClick={onLogout} 
-                    className="h-full px-2.5 sm:px-3.5 bg-rose-950/90 hover:bg-rose-900 text-rose-400 flex items-center justify-center transition-colors cursor-pointer rounded-r-xl sm:rounded-r-2xl"
-                    title="Logout"
-                  >
-                    <LogOut className="w-5 h-5 text-rose-400" />
-                  </button>
-                </div>
-              ) : (
+              {!isLoggedIn && (
                 <button
                   onClick={onAdminLoginClick}
-                  className="h-10 sm:h-11 px-3.5 sm:px-4 rounded-xl sm:rounded-2xl border border-amber-500/40 bg-[#1e1e48] hover:bg-blue-950 text-amber-400 shadow-md flex items-center justify-center transition-all cursor-pointer hover:scale-105 active:scale-95 gap-1.5"
+                  className="h-9 sm:h-10 px-3 rounded-lg sm:rounded-xl border border-amber-500/40 bg-[#1e1e48] hover:bg-blue-950 text-amber-400 shadow-md flex items-center justify-center transition-all cursor-pointer gap-1.5"
                   title="Admin Login"
                 >
-                  <ShieldCheck className="w-5 h-5 text-amber-400" />
-                  <span className="hidden sm:inline text-xs font-bold">Admin</span>
+                  <ShieldCheck className="w-4 h-4 text-amber-400" />
+                  <span className="hidden sm:inline text-[11px] font-bold">Admin</span>
                 </button>
               )}
             </div>
@@ -618,77 +443,159 @@ export const Header: React.FC<HeaderProps> = ({
             {/* Drawer Navigation Content */}
             <div className="p-3 space-y-5 flex-1 custom-scrollbar">
 
-              {/* SECTION 1: Super Admin Control Options (for Super Admin) */}
-              {isSuperAdmin && (
-                <div className="bg-gradient-to-br from-slate-900 to-[#070d18] p-2.5 rounded-xl text-white shadow-lg border border-amber-500/30 flex flex-col gap-2">
-                  <button 
-                    onClick={() => setIsSuperAdminMenuExpanded(!isSuperAdminMenuExpanded)}
-                    className="w-full flex items-center justify-between pb-1.5 border-b border-slate-800/60 cursor-pointer group"
-                  >
-                    <div className="flex items-center gap-1.5">
-                      <h3 className="text-[10px] font-black text-amber-400 uppercase tracking-wider flex items-center gap-1.5">
-                        <ShieldCheck className="w-3.5 h-3.5" /> Super Admin
-                      </h3>
-                      <span className="text-[8px] bg-amber-400/20 text-amber-400 font-bold px-1.5 py-0.5 rounded uppercase">
-                        {SUPER_ADMIN_MODULES.length} PANELS
-                      </span>
-                    </div>
-                    <div className={`p-1 rounded-md bg-slate-800 transition-colors group-hover:bg-slate-700 ${isSuperAdminMenuExpanded ? 'text-amber-400' : 'text-slate-400'}`}>
-                      <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${isSuperAdminMenuExpanded ? 'rotate-180' : ''}`} />
-                    </div>
-                  </button>
-                  
-                  {isSuperAdminMenuExpanded && (
-                    <div className="flex flex-col gap-1.5 animate-in fade-in slide-in-from-top-1 duration-200">
-                      {Object.entries(
-                        SUPER_ADMIN_MODULES.reduce((acc, mod) => {
-                          if (!acc[mod.category]) acc[mod.category] = { label: mod.categoryLabel, items: [] };
-                          acc[mod.category].items.push(mod);
-                          return acc;
-                        }, {} as Record<string, { label: string, items: typeof SUPER_ADMIN_MODULES }>)
-                      ).map(([category, { label, items }]) => {
-                        const isOpen = expandedCategories[category];
-                        return (
-                        <div key={category} className="bg-slate-900/60 rounded-lg p-1">
-                          <button 
-                            onClick={() => setExpandedCategories(prev => ({ [category]: !prev[category] }))}
-                            className="w-full px-2 py-1 flex items-center justify-between text-[9px] font-black text-slate-500 hover:text-slate-300 uppercase tracking-widest cursor-pointer group"
-                          >
-                            <span>{label}</span>
-                            <div className="p-0.5 rounded bg-slate-800 group-hover:bg-slate-700 transition-colors">
-                              <ChevronDown className={`w-3 h-3 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
+            {/* SECTION 1: Super Admin Control Options (for Super Admin) */}
+            {isSuperAdmin && (
+              <div className="bg-gradient-to-br from-slate-900 to-[#070d18] p-2.5 rounded-xl text-white shadow-lg border border-amber-500/30 flex flex-col gap-2">
+                
+                {/* Action Buttons Dock (Moved from Header) */}
+                <div className="flex items-center h-10 rounded-lg border border-amber-500/40 bg-[#1e1e48] shadow-md divide-x divide-white/10 relative text-xs mb-2">
+                  <div className="relative h-full" ref={header3DotRef}>
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setIsHeader3DotOpen(prev => !prev);
+                      }}
+                      className={`h-full px-3 flex items-center justify-center transition-all hover:bg-blue-950 text-amber-400 cursor-pointer rounded-l-lg ${
+                        isHeader3DotOpen ? 'bg-blue-950 text-amber-300 ring-1 ring-amber-400 shadow-inner' : ''
+                      }`}
+                      title="3-Dot Menu"
+                      aria-label="3-Dot Menu"
+                    >
+                      <MoreVertical className="w-4 h-4 text-amber-400" />
+                    </button>
+                    {isHeader3DotOpen && (
+                      <div 
+                        className="absolute left-0 top-full mt-2 w-64 bg-[#090d16] border border-amber-500 rounded-xl shadow-2xl z-[9999] overflow-hidden animate-in fade-in zoom-in-95 duration-150 flex flex-col"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <div className="px-4 py-3 bg-[#060a12] border-b border-slate-800 flex items-center justify-between">
+                          <div className="flex items-center space-x-2.5">
+                            <div className="p-2 rounded-xl bg-amber-500 text-slate-950 font-black shadow-md flex items-center justify-center shrink-0">
+                              <MoreVertical className="w-4 h-4 text-slate-950 stroke-[3]" />
                             </div>
-                          </button>
-                          {isOpen && (
-                            <div className="flex flex-col gap-0.5 mt-1 animate-in slide-in-from-top-1 fade-in duration-200">
-                              {items.map((mod) => {
-                                const IconComp = mod.icon;
-                                return (
-                                  <button
-                                    key={mod.id}
-                                    onClick={() => { setIsDrawerOpen(false); onOpenSuperAdminModal?.(mod.id); }}
-                                    className="w-full flex items-center justify-between px-2 py-1.5 rounded-md text-[11px] font-bold hover:bg-slate-800/80 text-slate-300 hover:text-amber-300 transition-all cursor-pointer group"
-                                  >
-                                    <span className="flex items-center gap-2 truncate">
-                                      <IconComp className="w-3 h-3 text-amber-500/70 group-hover:text-amber-400 group-hover:scale-110 transition-all shrink-0" />
-                                      <span className="truncate">{mod.shortLabel}</span>
-                                    </span>
-                                    {mod.tag && (
-                                      <span className="text-[7px] bg-amber-500/10 text-amber-300/80 font-bold px-1 rounded ml-1 shrink-0">
-                                        {mod.tag}
-                                      </span>
-                                    )}
-                                  </button>
-                                );
-                              })}
+                            <div>
+                              <div className="text-xs font-black text-white uppercase tracking-wider">3–DOT MENU OPTIONS</div>
+                              <div className="text-[10.5px] text-amber-400 font-bold">Quick Access</div>
                             </div>
-                          )}
+                          </div>
                         </div>
-                      )})}
-                    </div>
-                  )}
+                        <div className="p-2 space-y-2 bg-[#090d16]">
+                           <button onClick={() => { setIsHeader3DotOpen(false); setIsDrawerOpen(false); onOpenSuperAdminModal?.('websiteControl'); }} className="w-full flex items-center space-x-3 p-2 rounded-lg bg-[#111936] hover:bg-[#18244d] text-left text-xs font-bold text-white">
+                             <SlidersHorizontal className="w-4 h-4 text-white" />
+                             <span>Website Control</span>
+                           </button>
+                           <button onClick={() => { setIsHeader3DotOpen(false); setIsDrawerOpen(false); onOpenSuperAdminModal?.('colors'); }} className="w-full flex items-center space-x-3 p-2 hover:bg-slate-800 rounded-lg text-left text-xs font-bold text-slate-200">
+                             <Palette className="w-4 h-4 text-pink-400" />
+                             <span>Theme Customizer</span>
+                           </button>
+                           <button onClick={() => { setIsHeader3DotOpen(false); setIsDrawerOpen(false); onOpenSuperAdminModal?.('columns'); }} className="w-full flex items-center space-x-3 p-2 hover:bg-slate-800 rounded-lg text-left text-xs font-bold text-slate-200">
+                             <Type className="w-4 h-4 text-sky-400" />
+                             <span>Column Settings</span>
+                           </button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                  
+                  <button
+                    type="button"
+                    onClick={() => { setIsDrawerOpen(false); onOpenSuperAdminModal?.('analytics'); }}
+                    className="h-full px-3 flex items-center justify-center transition-colors hover:bg-blue-950 text-amber-400 cursor-pointer"
+                    title="Control Center"
+                  >
+                    <ShieldCheck className="w-4 h-4 text-amber-400" />
+                  </button>
+
+                  <button 
+                    type="button"
+                    onClick={() => { setIsDrawerOpen(false); onAdminLoginClick(); }}
+                    className="h-full px-3 flex items-center justify-center transition-colors hover:bg-blue-950 text-amber-400 cursor-pointer"
+                    title="Add Job"
+                  >
+                    <svg className="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 4v16m8-8H4"></path>
+                    </svg>
+                  </button>
+
+                  <button 
+                    type="button"
+                    onClick={onLogout} 
+                    className="h-full px-3 bg-rose-950/90 hover:bg-rose-900 text-rose-400 flex items-center justify-center transition-colors cursor-pointer rounded-r-lg"
+                    title="Logout"
+                  >
+                    <LogOut className="w-4 h-4 text-rose-400" />
+                  </button>
                 </div>
-              )}
+
+                <button 
+                  onClick={() => setIsSuperAdminMenuExpanded(!isSuperAdminMenuExpanded)}
+                  className="w-full flex items-center justify-between pb-1.5 border-b border-slate-800/60 cursor-pointer group"
+                >
+                  <div className="flex items-center gap-1.5">
+                    <h3 className="text-[10px] font-black text-amber-400 uppercase tracking-wider flex items-center gap-1.5">
+                      <ShieldCheck className="w-3.5 h-3.5" />
+                    </h3>
+                    <span className="text-[8px] bg-amber-400/20 text-amber-400 font-bold px-1.5 py-0.5 rounded uppercase">
+                      {SUPER_ADMIN_MODULES.length} PANELS
+                    </span>
+                  </div>
+                  <div className={`p-1 rounded-md bg-slate-800 transition-colors group-hover:bg-slate-700 ${isSuperAdminMenuExpanded ? 'text-amber-400' : 'text-slate-400'}`}>
+                    <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${isSuperAdminMenuExpanded ? 'rotate-180' : ''}`} />
+                  </div>
+                </button>
+                
+                {isSuperAdminMenuExpanded && (
+                  <div className="flex flex-col gap-1.5 animate-in fade-in slide-in-from-top-1 duration-200">
+                    {Object.entries(
+                      SUPER_ADMIN_MODULES.reduce((acc, mod) => {
+                        if (!acc[mod.category]) acc[mod.category] = { label: mod.categoryLabel, items: [] };
+                        acc[mod.category].items.push(mod);
+                        return acc;
+                      }, {} as Record<string, { label: string, items: typeof SUPER_ADMIN_MODULES }>)
+                    ).map(([category, { label, items }]) => {
+                      const isOpen = expandedCategories[category];
+                      return (
+                      <div key={category} className="bg-slate-900/60 rounded-lg p-1">
+                        <button 
+                          onClick={() => setExpandedCategories(prev => ({ [category]: !prev[category] }))}
+                          className="w-full px-2 py-1 flex items-center justify-between text-[9px] font-black text-slate-500 hover:text-slate-300 uppercase tracking-widest cursor-pointer group"
+                        >
+                          <span>{label}</span>
+                          <div className="p-0.5 rounded bg-slate-800 group-hover:bg-slate-700 transition-colors">
+                            <ChevronDown className={`w-3 h-3 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
+                          </div>
+                        </button>
+                        {isOpen && (
+                          <div className="flex flex-col gap-0.5 mt-1 animate-in slide-in-from-top-1 fade-in duration-200">
+                            {items.map((mod) => {
+                              const IconComp = mod.icon;
+                              return (
+                                <button
+                                  key={mod.id}
+                                  onClick={() => { setIsDrawerOpen(false); onOpenSuperAdminModal?.(mod.id); }}
+                                  className="w-full flex items-center justify-between px-2 py-1.5 rounded-md text-[11px] font-bold hover:bg-slate-800/80 text-slate-300 hover:text-amber-300 transition-all cursor-pointer group"
+                                >
+                                  <span className="flex items-center gap-2 truncate">
+                                    <IconComp className="w-3 h-3 text-amber-500/70 group-hover:text-amber-400 group-hover:scale-110 transition-all shrink-0" />
+                                    <span className="truncate">{mod.shortLabel}</span>
+                                  </span>
+                                  {mod.tag && (
+                                    <span className="text-[7px] bg-amber-500/10 text-amber-300/80 font-bold px-1 rounded ml-1 shrink-0">
+                                      {mod.tag}
+                                    </span>
+                                  )}
+                                </button>
+                              );
+                            })}
+                          </div>
+                        )}
+                      </div>
+                    )})}
+                  </div>
+                )}
+              </div>
+            )}
 
               {/* SECTION 2: Core Portal Sections (2-Column Grid) */}
               <div>
