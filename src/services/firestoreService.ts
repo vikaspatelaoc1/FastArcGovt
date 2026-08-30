@@ -112,6 +112,24 @@ export function subscribeToJobs(
   });
 }
 
+// Helper to sanitize data for Firestore (remove undefined, replace with safe defaults)
+function cleanForFirestore<T>(data: T): T {
+  if (data === null || data === undefined) return '' as unknown as T;
+  if (typeof data !== 'object') return data;
+  if (Array.isArray(data)) {
+    return data.map(item => cleanForFirestore(item)) as unknown as T;
+  }
+  const cleanObj: any = {};
+  for (const [key, value] of Object.entries(data as any)) {
+    if (value !== undefined) {
+      cleanObj[key] = cleanForFirestore(value);
+    } else {
+      cleanObj[key] = '';
+    }
+  }
+  return cleanObj as T;
+}
+
 // 2. Save / Add Job (with Duplicate Prevention)
 export async function saveJobToFirestore(job: JobAlert): Promise<void> {
   const initDocRef = doc(db, 'site_config', 'init');
@@ -132,12 +150,14 @@ export async function saveJobToFirestore(job: JobAlert): Promise<void> {
     });
   }
 
-  const jobRef = doc(db, 'jobs', targetDocId);
-  await setDoc(jobRef, {
+  const sanitizedJob = cleanForFirestore({
     ...job,
     id: targetDocId,
     updatedAt: new Date().toISOString()
-  }, { merge: true });
+  });
+
+  const jobRef = doc(db, 'jobs', targetDocId);
+  await setDoc(jobRef, sanitizedJob, { merge: true });
 }
 
 // 3. Delete Job (Immediate & Permanent)
@@ -235,11 +255,12 @@ export async function appendJobsToFirestore(jobs: JobAlert[]): Promise<void> {
     const batch = writeBatch(db);
     chunk.forEach(({ targetDocId, job }) => {
       const jobDoc = doc(db, 'jobs', targetDocId);
-      batch.set(jobDoc, {
+      const sanitized = cleanForFirestore({
         ...job,
         id: targetDocId,
         updatedAt: new Date().toISOString()
-      }, { merge: true });
+      });
+      batch.set(jobDoc, sanitized, { merge: true });
     });
     await batch.commit();
   }

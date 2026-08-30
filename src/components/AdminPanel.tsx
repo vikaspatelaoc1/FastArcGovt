@@ -171,20 +171,26 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose, onSave,
     
     const jobData: JobAlert = {
       id: editingJob?.id || `job-${Date.now()}`,
-      title: formData.title || '',
-      category: formData.category as any,
+      title: formData.title ? formData.title.trim() : '',
+      category: (formData.category as any) || 'latest-jobs',
       postDate: formData.postDate || formatInitialDate(),
       isNew: !!formData.isNew,
       state: formData.state || 'Central',
-      shortInfo: formData.shortInfo,
-      ageLimit: formData.ageLimit,
-      eligibility: formData.eligibility,
-      fees: formData.fees,
-      dates: formData.dates,
+      shortInfo: formData.shortInfo || '',
+      ageLimit: formData.ageLimit || '',
+      eligibility: formData.eligibility || '',
+      fees: {
+        general: formData.fees?.general || '',
+        scSt: formData.fees?.scSt || ''
+      },
+      dates: {
+        start: formData.dates?.start || '',
+        last: formData.dates?.last || ''
+      },
       links: {
-        apply: sanitizeUrl(formData.links?.apply),
-        official: sanitizeUrl(formData.links?.official),
-        notification: sanitizeUrl(formData.links?.notification),
+        apply: sanitizeUrl(formData.links?.apply) || 'https://india.gov.in',
+        official: sanitizeUrl(formData.links?.official) || 'https://india.gov.in',
+        notification: sanitizeUrl(formData.links?.notification) || 'https://india.gov.in',
       },
     };
 
