@@ -117,6 +117,8 @@ export const ApiAnalyticsTab = ({ onToast }: { onToast?: (msg: string) => void }
 
 export const ActivityLogsTab = () => {
   const [search, setSearch] = useState('');
+  const [selectedUser, setSelectedUser] = useState('ALL');
+  const [excludeSystem, setExcludeSystem] = useState(false);
   const [logs, setLogs] = useState(() => {
     if (typeof window !== 'undefined') {
       const saved = localStorage.getItem('fastarc_activity_audit_logs');
@@ -137,11 +139,22 @@ export const ActivityLogsTab = () => {
     ];
   });
 
-  const filteredLogs = logs.filter(l => 
-    l.user.toLowerCase().includes(search.toLowerCase()) || 
-    l.detail.toLowerCase().includes(search.toLowerCase()) ||
-    l.action.toLowerCase().includes(search.toLowerCase())
-  );
+  const filteredLogs = logs.filter(l => {
+    const matchesSearch = 
+      l.user.toLowerCase().includes(search.toLowerCase()) || 
+      l.detail.toLowerCase().includes(search.toLowerCase()) ||
+      l.action.toLowerCase().includes(search.toLowerCase());
+      
+    const matchesUser = selectedUser === 'ALL' || l.user === selectedUser;
+    
+    // Identifies automated, system, or unrecognized manual entries
+    const isSystemOrBot = l.user.toLowerCase().includes('system') || 
+                          l.user.toLowerCase().includes('bot') || 
+                          l.user.toLowerCase().includes('auto');
+    const matchesExclude = excludeSystem ? !isSystemOrBot : true;
+
+    return matchesSearch && matchesUser && matchesExclude;
+  });
 
   return (
     <div className="space-y-6">
@@ -154,15 +167,36 @@ export const ActivityLogsTab = () => {
             </h3>
             <p className="text-xs text-slate-500 dark:text-slate-400">Track employee modifications, CMS updates, and administrative sessions</p>
           </div>
-          <div className="relative">
-            <Search className="w-4 h-4 absolute left-3 top-2.5 text-slate-400" />
-            <input 
-              type="text" 
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search logs..." 
-              className="pl-9 pr-3 py-2 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-xs text-slate-900 dark:text-white w-64 outline-none focus:ring-2 focus:ring-teal-500" 
-            />
+          <div className="flex flex-wrap items-center gap-3">
+            <select
+              value={selectedUser}
+              onChange={(e) => setSelectedUser(e.target.value)}
+              className="px-3 py-2 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-xs text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-teal-500 font-medium"
+            >
+              <option value="ALL">All Users</option>
+              {Array.from(new Set(logs.map(l => l.user))).map(u => (
+                <option key={u} value={u}>{u}</option>
+              ))}
+            </select>
+            <label className="flex items-center gap-2 cursor-pointer text-xs font-medium text-slate-600 dark:text-slate-300 mr-2">
+              <input 
+                type="checkbox" 
+                checked={excludeSystem}
+                onChange={(e) => setExcludeSystem(e.target.checked)}
+                className="w-4 h-4 rounded border-slate-300 dark:border-slate-700 text-teal-500 focus:ring-teal-500 dark:bg-slate-900"
+              />
+              Exclude System/Bots
+            </label>
+            <div className="relative">
+              <Search className="w-4 h-4 absolute left-3 top-2.5 text-slate-400" />
+              <input 
+                type="text" 
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder="Search logs..." 
+                className="pl-9 pr-3 py-2 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-xs text-slate-900 dark:text-white w-56 outline-none focus:ring-2 focus:ring-teal-500" 
+              />
+            </div>
           </div>
         </div>
         

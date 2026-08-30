@@ -610,8 +610,8 @@ export const JobDetailModal: React.FC<JobDetailModalProps> = ({ job, onClose }) 
                         <span className="hidden xs:inline">{copiedLinkType === 'apply' ? 'Copied' : 'Copy'}</span>
                       </button>
                       <a
-                        href={applyUrl}
-                        target="_blank"
+                        href={applyUrl} target="_blank"
+                        
                         rel="noopener noreferrer"
                         className="flex-1 sm:flex-none bg-gradient-to-r from-amber-500 via-yellow-500 to-amber-600 hover:from-amber-600 hover:to-yellow-600 text-slate-950 font-black px-4 py-2 rounded-lg text-xs shadow-md transition-all flex items-center justify-center gap-1.5 active:scale-95 text-center"
                       >
@@ -653,8 +653,8 @@ export const JobDetailModal: React.FC<JobDetailModalProps> = ({ job, onClose }) 
                         <span className="hidden xs:inline">{copiedLinkType === 'notification' ? 'Copied' : 'Copy'}</span>
                       </button>
                       <a
-                        href={notifUrl}
-                        target="_blank"
+                        href={notifUrl} target="_blank"
+                        
                         rel="noopener noreferrer"
                         className="flex-1 sm:flex-none bg-red-600 hover:bg-red-700 text-white font-bold px-3.5 py-1.5 rounded-lg text-xs shadow transition-all flex items-center justify-center gap-1.5 active:scale-95 text-center"
                       >
@@ -696,8 +696,8 @@ export const JobDetailModal: React.FC<JobDetailModalProps> = ({ job, onClose }) 
                         <span className="hidden xs:inline">{copiedLinkType === 'official' ? 'Copied' : 'Copy'}</span>
                       </button>
                       <a
-                        href={officialUrl}
-                        target="_blank"
+                        href={officialUrl} target="_blank"
+                        
                         rel="noopener noreferrer"
                         className="flex-1 sm:flex-none bg-slate-800 hover:bg-slate-900 text-amber-300 border border-amber-500/40 font-bold px-3.5 py-1.5 rounded-lg text-xs shadow transition-all flex items-center justify-center gap-1.5 active:scale-95 text-center"
                       >

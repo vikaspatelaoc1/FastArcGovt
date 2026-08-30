@@ -18,11 +18,16 @@ import { ThemeColorConfig } from '../utils/themeColors';
 // Connection validation
 export async function validateFirestoreConnection() {
   try {
-    await getDocFromServer(doc(db, 'site_config', 'marquee'));
+    const timeoutPromise = new Promise((_, reject) => 
+      setTimeout(() => reject(new Error('Connection check timeout')), 3000)
+    );
+    await Promise.race([
+      getDocFromServer(doc(db, 'site_config', 'marquee')),
+      timeoutPromise
+    ]);
   } catch (error) {
-    if (error instanceof Error && error.message.includes('the client is offline')) {
-      console.warn("Firebase client is currently offline or connecting...");
-    }
+    // Graceful offline fallback - Firestore automatically operates in offline cache mode
+    console.info("Firestore connecting or operating in offline cache mode.");
   }
 }
 

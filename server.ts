@@ -6,8 +6,19 @@ import dotenv from 'dotenv';
 import { createServer as createViteServer } from 'vite';
 import mysql from 'mysql2/promise';
 import { generateSitemapXml } from './src/utils/sitemapGenerator';
+import { initializeApp } from 'firebase/app';
+import { getFirestore, collection, getDocs } from 'firebase/firestore/lite';
 
 dotenv.config();
+
+let firestoreDb: any = null;
+try {
+  const firebaseConfig = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'firebase-applet-config.json'), 'utf8'));
+  const firebaseApp = initializeApp(firebaseConfig);
+  firestoreDb = getFirestore(firebaseApp, firebaseConfig.firestoreDatabaseId);
+} catch (e) {
+  console.warn('Firebase config not found for server, falling back to local json for sitemap.');
+}
 
 const app = express();
 const PORT = 3000;
@@ -1063,13 +1074,27 @@ app.get('/api/v1/rss/preview', (req, res) => {
 // ==========================================
 
 // 1. Dynamic sitemap.xml endpoint for Googlebot & Search Crawlers
-app.get(['/sitemap.xml', '/sitemap'], (req, res) => {
+app.get(['/sitemap.xml', '/sitemap'], async (req, res) => {
   try {
     const host = req.get('host') || 'ais-dev-yws3bts5m2vzceidnhls6p-838850138676.asia-southeast1.run.app';
     const protocol = req.protocol === 'https' || req.headers['x-forwarded-proto'] === 'https' ? 'https' : 'http';
     const baseUrl = `${protocol}://${host}`;
 
-    const jobs = dbState.jobs || [];
+    let jobs = dbState.jobs || [];
+
+    if (firestoreDb) {
+      try {
+        const snapshot = await getDocs(collection(firestoreDb, 'jobs'));
+        const fbJobs: any[] = [];
+        snapshot.forEach(doc => fbJobs.push({ id: doc.id, ...doc.data() }));
+        if (fbJobs.length > 0) {
+          jobs = fbJobs;
+        }
+      } catch (err) {
+        console.error('Error fetching jobs from firestore for sitemap:', err);
+      }
+    }
+
     const xml = generateSitemapXml(jobs, baseUrl);
 
     res.set('Content-Type', 'application/xml; charset=utf-8');

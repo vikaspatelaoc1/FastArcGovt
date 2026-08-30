@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { ChevronDown, ChevronUp, ArrowRight, ExternalLink, Sparkles, Edit2, ArrowUpDown } from 'lucide-react';
 import { JobAlert, JobCategory } from '../types';
 import { CategoryIcon } from './CategoryIcon';
+import { getJobDetailUrl, openJobInNewTab } from '../utils/jobUrl';
 
 const HighlightText = ({ text, query }: { text: string; query?: string }) => {
   if (!query || !text) return <>{text}</>;
@@ -272,9 +273,15 @@ export const JobColumn: React.FC<JobColumnProps> = ({
                   isExpiringSoon ? 'bg-rose-50/50 dark:bg-rose-950/20 ring-1 ring-rose-500/40 dark:ring-rose-400/30 shadow-xs' : ''
                 }`}
               >
-                <div 
-                  onClick={() => onJobClick(item.id)} 
-                  className="flex-grow pr-3 cursor-pointer"
+                <a 
+                  href={getJobDetailUrl(item)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    openJobInNewTab(item);
+                  }}
+                  className="flex-grow pr-3 cursor-pointer no-underline block"
                 >
                   <span className="text-xs font-semibold text-slate-800 dark:text-slate-100 group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors leading-relaxed block">
                     <HighlightText text={item.title} query={searchQuery.trim()} />
@@ -298,7 +305,7 @@ export const JobColumn: React.FC<JobColumnProps> = ({
                       </span>
                     )}
                   </div>
-                </div>
+                </a>
                 <div className="flex items-center space-x-1.5 shrink-0 pt-0.5">
                   {isAdmin && (
                     <>
@@ -323,13 +330,19 @@ export const JobColumn: React.FC<JobColumnProps> = ({
                       NEW
                     </span>
                   )}
-                  <button
-                    onClick={() => onJobClick(item.id)}
+                  <a
+                    href={getJobDetailUrl(item)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      openJobInNewTab(item);
+                    }}
                     className="p-1 text-slate-300 group-hover:text-amber-500 transition-colors cursor-pointer"
-                    title="View Details"
+                    title="Open Job Details in New Tab"
                   >
                     <ArrowRight className="w-3.5 h-3.5" />
-                  </button>
+                  </a>
                 </div>
               </div>
             );

@@ -106,7 +106,7 @@ export const SuperAdminDashboardModal: React.FC<SuperAdminDashboardModalProps> =
   useEffect(() => {
     const activeCat = SUPER_ADMIN_MODULES.find(m => m.id === activeTab)?.category;
     if (activeCat) {
-      setOpenCategories(prev => ({ ...prev, [activeCat]: true }));
+      setOpenCategories({ [activeCat]: true });
     }
   }, [activeTab]);
 
@@ -649,7 +649,7 @@ export const SuperAdminDashboardModal: React.FC<SuperAdminDashboardModalProps> =
                             <button
                               onClick={(e) => {
                                 e.stopPropagation();
-                                setOpenCategories(prev => ({ ...prev, [category]: !prev[category] }));
+                                setOpenCategories(prev => ({ [category]: !prev[category] }));
                               }}
                               className="flex items-center justify-between px-2 py-2 text-[10px] font-black text-slate-400 hover:text-slate-200 uppercase tracking-wider transition-colors cursor-pointer group bg-slate-900/50 hover:bg-slate-800/50 rounded-lg"
                             >
@@ -837,7 +837,7 @@ export const SuperAdminDashboardModal: React.FC<SuperAdminDashboardModalProps> =
                 return (
                   <div key={category} className="flex flex-col gap-1">
                     <button
-                      onClick={() => setOpenCategories(prev => ({ ...prev, [category]: !prev[category] }))}
+                      onClick={() => setOpenCategories(prev => ({ [category]: !prev[category] }))}
                       className="flex items-center justify-between px-2 py-2 text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-wider hover:text-slate-900 dark:hover:text-slate-200 transition-colors cursor-pointer group"
                     >
                       <span>{label}</span>

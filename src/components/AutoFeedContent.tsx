@@ -696,7 +696,7 @@ if __name__ == "__main__":
                               {post.links?.apply && (
                                 <a 
                                   href={post.links.apply} 
-                                  target="_blank" 
+                                   
                                   rel="noreferrer" 
                                   className="text-amber-600 dark:text-amber-400 hover:underline flex items-center gap-0.5"
                                 >
@@ -774,7 +774,7 @@ if __name__ == "__main__":
                 <div className="flex items-center justify-between gap-2">
                   <a
                     href="/api/v1/rss/feed.xml"
-                    target="_blank"
+                    
                     rel="noreferrer"
                     className="px-3 py-1.5 bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 rounded-lg text-xs font-bold flex items-center gap-1 transition-all"
                   >
@@ -809,7 +809,7 @@ if __name__ == "__main__":
                 <div className="flex items-center justify-between gap-2">
                   <a
                     href="/api/v1/rss/feed.xml?category=latest-jobs"
-                    target="_blank"
+                    
                     rel="noreferrer"
                     className="px-3 py-1.5 bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 rounded-lg text-xs font-bold flex items-center gap-1 transition-all"
                   >
@@ -844,7 +844,7 @@ if __name__ == "__main__":
                 <div className="flex items-center justify-between gap-2">
                   <a
                     href="/api/v1/rss/feed.xml?category=admit-cards"
-                    target="_blank"
+                    
                     rel="noreferrer"
                     className="px-3 py-1.5 bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 rounded-lg text-xs font-bold flex items-center gap-1 transition-all"
                   >
@@ -879,7 +879,7 @@ if __name__ == "__main__":
                 <div className="flex items-center justify-between gap-2">
                   <a
                     href="/api/v1/rss/feed.xml?category=results"
-                    target="_blank"
+                    
                     rel="noreferrer"
                     className="px-3 py-1.5 bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 rounded-lg text-xs font-bold flex items-center gap-1 transition-all"
                   >

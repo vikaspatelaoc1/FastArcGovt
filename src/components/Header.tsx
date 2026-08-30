@@ -299,7 +299,7 @@ export const Header: React.FC<HeaderProps> = ({
                         <button 
                           onClick={(e) => {
                             e.stopPropagation();
-                            setExpandedCategories(prev => ({ ...prev, [category]: !prev[category] }));
+                            setExpandedCategories(prev => ({ [category]: !prev[category] }));
                           }}
                           className="w-full px-2.5 py-1 flex items-center justify-between text-[9px] font-black text-slate-500 hover:text-slate-400 uppercase tracking-widest cursor-pointer group"
                         >
@@ -362,7 +362,7 @@ export const Header: React.FC<HeaderProps> = ({
                     <a
                       key={item.id}
                       href={item.url}
-                      target="_blank"
+                      
                       rel="noopener noreferrer"
                       className="hover:scale-110 active:scale-95 transition-transform flex items-center justify-center p-0.5 rounded-full"
                       title={`${item.title} - Official Channel`}
@@ -632,7 +632,7 @@ export const Header: React.FC<HeaderProps> = ({
                         return (
                         <div key={category} className="bg-slate-900/60 rounded-lg p-1">
                           <button 
-                            onClick={() => setExpandedCategories(prev => ({ ...prev, [category]: !prev[category] }))}
+                            onClick={() => setExpandedCategories(prev => ({ [category]: !prev[category] }))}
                             className="w-full px-2 py-1 flex items-center justify-between text-[9px] font-black text-slate-500 hover:text-slate-300 uppercase tracking-widest cursor-pointer group"
                           >
                             <span>{label}</span>
@@ -674,7 +674,7 @@ export const Header: React.FC<HeaderProps> = ({
               {/* SECTION 2: Core Portal Sections (2-Column Grid) */}
               <div>
                 <button 
-                  onClick={() => setExpandedSidebarSections(prev => ({ ...prev, portal: !prev.portal }))}
+                  onClick={() => setExpandedSidebarSections(prev => ({ portal: !prev.portal }))}
                   className="w-full text-left flex items-center justify-between mb-2 px-1 cursor-pointer group"
                 >
                   <h3 className="text-[9px] font-extrabold text-slate-400 dark:text-slate-500 uppercase tracking-widest flex items-center gap-1.5 group-hover:text-slate-600 dark:group-hover:text-slate-300 transition-colors">
@@ -713,7 +713,7 @@ export const Header: React.FC<HeaderProps> = ({
               {/* SECTION 3: Community & Social Links (Compact Pills) */}
               <div>
                 <button 
-                  onClick={() => setExpandedSidebarSections(prev => ({ ...prev, connect: !prev.connect }))}
+                  onClick={() => setExpandedSidebarSections(prev => ({ connect: !prev.connect }))}
                   className="w-full text-left flex items-center justify-between mb-2 px-1 cursor-pointer group"
                 >
                   <h3 className="text-[9px] font-extrabold text-slate-400 dark:text-slate-500 uppercase tracking-widest flex items-center gap-1.5 group-hover:text-slate-600 dark:group-hover:text-slate-300 transition-colors">
@@ -730,7 +730,7 @@ export const Header: React.FC<HeaderProps> = ({
                       <a
                         key={item.id}
                         href={item.url}
-                        target="_blank"
+                        
                         rel="noopener noreferrer"
                         className="flex items-center gap-2 p-2 rounded-xl bg-slate-50 dark:bg-slate-800/50 hover:bg-white dark:hover:bg-slate-800 border border-slate-100 dark:border-slate-700/50 text-slate-700 dark:text-slate-200 font-bold text-[10px] transition-all shadow-sm hover:shadow-md"
                       >
@@ -745,7 +745,7 @@ export const Header: React.FC<HeaderProps> = ({
               {/* SECTION 4: Information & Help Pages (Compact List) */}
               <div>
                 <button 
-                  onClick={() => setExpandedSidebarSections(prev => ({ ...prev, pages: !prev.pages }))}
+                  onClick={() => setExpandedSidebarSections(prev => ({ pages: !prev.pages }))}
                   className="w-full text-left flex items-center justify-between mb-2 px-1 cursor-pointer group"
                 >
                   <h3 className="text-[9px] font-extrabold text-slate-400 dark:text-slate-500 uppercase tracking-widest flex items-center gap-1.5 group-hover:text-slate-600 dark:group-hover:text-slate-300 transition-colors">

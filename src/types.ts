@@ -29,29 +29,103 @@ export interface DeletedEmployeeLog {
   deletedBy: string;
 }
 
+export interface PostWiseVacancy {
+  postName: string;
+  total?: string | number;
+  eligibility?: string;
+  general?: string | number;
+  obc?: string | number;
+  ews?: string | number;
+  sc?: string | number;
+  st?: string | number;
+}
+
+export interface SubjectItem {
+  sno: number | string;
+  name: string;
+  code?: string;
+  eligibility?: string;
+}
+
 export interface JobAlert {
   id: string;
   title: string;
+  slug?: string;
   category: JobCategory;
   postDate: string; // e.g. "20-05-2026"
   isNew: boolean;
   isExpired?: boolean;
   state: string;
+  orgName?: string;
+  advtNo?: string;
+  postName?: string;
+  totalVacancies?: string | number;
   shortInfo?: string;
-  ageLimit?: string;
+  ageLimit?: string | {
+    min?: string | number;
+    max?: string | number;
+    asOn?: string;
+    relaxation?: string;
+    details?: string;
+  };
   eligibility?: string;
+  qualifications?: string[];
+  postWiseVacancies?: PostWiseVacancy[];
+  subjects?: SubjectItem[];
+  selectionProcess?: string[];
+  salary?: string;
+  payScale?: string;
+  payLevel?: string;
+  howToApply?: string[];
+  importantDocuments?: string[];
+  importantInstructions?: string[];
+  examPattern?: string;
+  syllabus?: string;
+  officialSource?: string;
+  lastUpdated?: string;
+  status?: 'Upcoming' | 'Application Open' | 'Last Date Near' | 'Application Closed' | 'Admit Card Released' | 'Result Released' | 'Answer Key Released' | string;
+  viewsCount?: number;
   fees?: {
     general?: string;
+    obc?: string;
+    ews?: string;
     scSt?: string;
+    ph?: string;
+    female?: string;
+    paymentMode?: string;
   };
   dates?: {
     start?: string;
     last?: string;
+    feeLast?: string;
+    correctionDate?: string;
+    examDate?: string;
+    admitCardDate?: string;
+    resultDate?: string;
+    answerKeyDate?: string;
+    reExamDate?: string;
+    cityAvailableDate?: string;
   };
   links?: {
     apply?: string;
+    applyServer2?: string;
     official?: string;
     notification?: string;
+    admitCard?: string;
+    admitCardNotice?: string;
+    result?: string;
+    resultServer2?: string;
+    resultNotice?: string;
+    cutoff?: string;
+    answerKey?: string;
+    answerKeyNotice?: string;
+    examCity?: string;
+    syllabus?: string;
+    videoHindi?: string;
+    extendedNotice?: string;
+    telegram?: string;
+    whatsapp?: string;
+    tools?: string;
   };
 }
 

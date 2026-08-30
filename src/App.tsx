@@ -11,6 +11,7 @@ import { Hero } from './components/Hero';
 import { JobColumn } from './components/JobColumn';
 import { CategoryIcon } from './components/CategoryIcon';
 import { JobDetailModal } from './components/JobDetailModal';
+import { JobDetailsPage } from './components/JobDetailsPage';
 import { AdminPanel } from './components/AdminPanel';
 import { LoginModal } from './components/LoginModal';
 import { SuperAdminDashboardModal } from './components/SuperAdminDashboardModal';
@@ -777,16 +778,14 @@ export default function App() {
   };
 
   const handleCloseJobModal = () => {
-    // If the modal was pushed to history, go back so history state stays in sync
-    if (window.history.state?.modal === 'jobDetail' || window.history.state?.jobId) {
-      window.history.back();
-    } else {
-      setSelectedJobId(null);
-      const currentUrl = new URL(window.location.href);
-      if (currentUrl.searchParams.has('jobId')) {
-        currentUrl.searchParams.delete('jobId');
-        window.history.replaceState({}, document.title, currentUrl.toString());
-      }
+    setSelectedJobId(null);
+    const currentUrl = new URL(window.location.href);
+    if (currentUrl.searchParams.has('jobId') || currentUrl.searchParams.has('id') || currentUrl.searchParams.has('slug') || currentUrl.searchParams.has('job')) {
+      currentUrl.searchParams.delete('jobId');
+      currentUrl.searchParams.delete('id');
+      currentUrl.searchParams.delete('slug');
+      currentUrl.searchParams.delete('job');
+      window.history.pushState({}, document.title, currentUrl.pathname);
     }
   };
 
@@ -794,7 +793,7 @@ export default function App() {
   useEffect(() => {
     const handlePopState = (event: PopStateEvent) => {
       const params = new URLSearchParams(window.location.search);
-      const jobIdParam = params.get('jobId') || (event.state?.modal === 'jobDetail' ? event.state?.jobId : null);
+      const jobIdParam = params.get('jobId') || params.get('id') || params.get('slug') || (event.state?.modal === 'jobDetail' ? event.state?.jobId : null);
       if (jobIdParam) {
         setSelectedJobId(jobIdParam);
       } else {
@@ -808,13 +807,29 @@ export default function App() {
     };
   }, []);
 
-  // Initial deep link detection from URL parameters (e.g. ?jobId=xyz)
+  // Initial deep link detection from URL parameters (e.g. ?jobId=xyz, ?slug=...)
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-    const jobIdParam = params.get('jobId');
-    if (jobIdParam && jobs.some(j => j.id === jobIdParam)) {
-      setSelectedJobId(jobIdParam);
-      window.history.replaceState({ modal: 'jobDetail', jobId: jobIdParam }, document.title, window.location.href);
+    const jobIdParam = params.get('jobId') || params.get('id');
+    const slugParam = params.get('slug') || params.get('job');
+    
+    if (jobIdParam) {
+      const match = jobs.find(j => j.id === jobIdParam);
+      if (match) {
+        setSelectedJobId(match.id);
+      } else if (jobs.length > 0) {
+        const slugMatch = jobs.find(j => j.slug === jobIdParam || j.title?.toLowerCase().includes(jobIdParam.toLowerCase()));
+        if (slugMatch) {
+          setSelectedJobId(slugMatch.id);
+        } else {
+          setSelectedJobId(jobIdParam);
+        }
+      }
+    } else if (slugParam && jobs.length > 0) {
+      const match = jobs.find(j => j.slug === slugParam || j.title?.toLowerCase().includes(slugParam.toLowerCase()));
+      if (match) {
+        setSelectedJobId(match.id);
+      }
     }
   }, [jobs]);
 
@@ -1003,6 +1018,87 @@ export default function App() {
       element.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   };
+
+  // If a job is selected (via direct URL deep-link, slug, or new tab open), render dedicated full JobDetailsPage!
+  if (selectedJobId) {
+    const selectedJob = jobs.find(j => j.id === selectedJobId) || jobs.find(j => j.slug === selectedJobId) || null;
+    return (
+      <div className={`min-h-screen flex flex-col ${isDarkMode ? 'dark bg-slate-950 text-slate-100' : 'bg-slate-50 text-slate-800'}`}>
+        <JobDetailsPage
+          job={selectedJob}
+          allJobs={jobs}
+          onBackToHome={handleCloseJobModal}
+          siteLogo={siteLogo}
+          socialLinks={socialLinks}
+          isDarkMode={isDarkMode}
+          themeMode={themeMode}
+          onSetThemeMode={setThemeMode}
+          onToggleDarkMode={toggleDarkMode}
+          onAdminLoginClick={handleAdminAction}
+          isLoggedIn={isAdminLoggedIn}
+          isSuperAdmin={isSuperAdminLoggedIn}
+          employeeName={currentEmployee?.name}
+          onOpenSuperAdminModal={handleOpenSuperAdmin}
+          onOpenNpmSystem={() => handleOpenSuperAdmin('npm')}
+          onLogout={handleLogout}
+          onInfoClick={setActiveInfoPage}
+          onSelectCategory={(cat) => {
+            setActiveTab(cat);
+            handleCloseJobModal();
+          }}
+        />
+
+        {activeInfoPage && (
+          <InfoModal pageId={activeInfoPage} onClose={() => setActiveInfoPage(null)} />
+        )}
+
+        {toastMessage && (
+          <div className="fixed bottom-5 right-5 z-50 bg-slate-900 dark:bg-slate-800 text-white text-xs font-bold px-4 py-3 rounded-lg shadow-2xl transition-all duration-300 flex items-center space-x-2">
+            <span className="text-emerald-400">✔</span>
+            <span>{toastMessage}</span>
+          </div>
+        )}
+
+        <AdminPanel isOpen={isAdminPanelOpen} onClose={() => setIsAdminPanelOpen(false)} onSave={handleSaveJob} editingJob={editingJob} />
+        <LoginModal 
+          isOpen={isLoginOpen} 
+          onClose={() => setIsLoginOpen(false)} 
+          employees={employees}
+          onLoginSuccess={(userType, emp) => { 
+            setIsAdminLoggedIn(true); 
+            setIsLoginOpen(false); 
+            setCurrentUserRole(userType);
+            if (userType === 'superadmin') {
+              setIsSuperAdminLoggedIn(true);
+              setCurrentEmployee(null);
+              triggerToast('👑 Super Admin Logged In Successfully!');
+            } else if (userType === 'employee' && emp) {
+              setIsSuperAdminLoggedIn(false);
+              setCurrentEmployee(emp);
+              triggerToast(`👤 Welcome ${emp.name}! Logged in as Staff.`);
+            } else {
+              setIsSuperAdminLoggedIn(false);
+              setCurrentEmployee(null);
+              triggerToast('👤 Admin Logged In Successfully!');
+            }
+          }} 
+        />
+        <SubscribeModal
+          isOpen={isSubscribeModalOpen}
+          onClose={() => setIsSubscribeModalOpen(false)}
+          siteLogo={siteLogo}
+          onSubscribeSuccess={(email) => {
+            triggerToast(`🎉 ${email} subscribed! Notifications enabled for all new job posts.`);
+          }}
+        />
+        <LogoutConfirmModal
+          isOpen={isLogoutConfirmOpen}
+          onConfirm={confirmLogout}
+          onCancel={() => setIsLogoutConfirmOpen(false)}
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="bg-slate-50 text-slate-800 dark:bg-slate-950 dark:text-slate-100 min-h-screen flex flex-col transition-colors duration-300 w-full">
@@ -1881,7 +1977,7 @@ export default function App() {
                     <a
                       key={item.id}
                       href={item.url}
-                      target="_blank"
+                      
                       rel="noopener noreferrer"
                       className="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 hover:scale-110 active:scale-95 transition-all shadow-md border border-slate-700/60 flex items-center justify-center group"
                       title={`${item.title} (${item.handle || item.url}) - Click to Open`}
@@ -1966,7 +2062,6 @@ export default function App() {
         </div>
       )}
 
-      <JobDetailModal job={jobs.find(j => j.id === selectedJobId) || null} onClose={handleCloseJobModal} />
       <AdminPanel isOpen={isAdminPanelOpen} onClose={() => setIsAdminPanelOpen(false)} onSave={handleSaveJob} editingJob={editingJob} />
       <LoginModal 
         isOpen={isLoginOpen} 
