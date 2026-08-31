@@ -71,6 +71,11 @@ export const AutoFeedContent: React.FC<AutoFeedContentProps> = ({
 
   useEffect(() => {
     fetchSources();
+    // Fetch initial watcher state
+    fetch('/api/v1/site-config') // Wait, is there a site config API? Let me check server.ts
+      .then(res => res.json())
+      .then(data => setIsAutoSyncActive(data.siteConfig?.autoWatcherEnabled || false))
+      .catch(err => console.warn('Failed to load watcher state:', err));
   }, []);
 
   // Fetch RSS Preview
@@ -426,9 +431,22 @@ if __name__ == "__main__":
             </button>
 
             <button
-              onClick={() => {
-                setIsAutoSyncActive(!isAutoSyncActive);
-                onToast(isAutoSyncActive ? "⏸️ Auto-Sync Paused" : "▶️ Automated Background Scraper Watcher Active!");
+              onClick={async () => {
+                const newStatus = !isAutoSyncActive;
+                try {
+                  const res = await fetch('/api/v1/scraper/toggle-watcher', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ enabled: newStatus })
+                  });
+                  const data = await res.json();
+                  if (data.success) {
+                    setIsAutoSyncActive(data.autoWatcherEnabled);
+                    onToast(data.autoWatcherEnabled ? "▶️ Automated Background Scraper Watcher Active!" : "⏸️ Auto-Sync Paused");
+                  }
+                } catch (e) {
+                  onToast("❌ Failed to toggle auto-watcher");
+                }
               }}
               className={`px-3.5 py-2.5 rounded-xl border text-xs font-bold flex items-center space-x-2 transition-all cursor-pointer shadow-md ${
                 isAutoSyncActive

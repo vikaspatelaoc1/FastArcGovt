@@ -204,6 +204,7 @@ interface DatabaseSchema {
   siteConfig: {
     siteTitle: string;
     maintenanceMode: boolean;
+    autoWatcherEnabled: boolean;
   };
   users: Array<{ id: string; username: string; email: string; passwordHash: string; name: string; role: string }>;
 }
@@ -315,7 +316,8 @@ let dbState: DatabaseSchema = {
   scraperSources: defaultScraperSources,
   siteConfig: {
     siteTitle: 'FastArc Govt Jobs',
-    maintenanceMode: false
+    maintenanceMode: false,
+    autoWatcherEnabled: false
   },
   users: [
     { id: 'usr-1', username: 'admin', email: 'admin@fastarc.in', passwordHash: 'admin123', name: 'Super Admin', role: 'superadmin' },
@@ -621,6 +623,17 @@ app.post('/api/v1/marquee', (req, res) => {
   res.status(400).json({ success: false, error: 'Invalid marqueeText string' });
 });
 
+app.post('/api/v1/scraper/toggle-watcher', (req, res) => {
+  const { enabled } = req.body;
+  dbState.siteConfig.autoWatcherEnabled = !!enabled;
+  saveDatabase(dbState);
+  return res.json({ success: true, autoWatcherEnabled: dbState.siteConfig.autoWatcherEnabled });
+});
+
+app.get('/api/v1/site-config', (req, res) => {
+  res.json({ success: true, siteConfig: dbState.siteConfig });
+});
+
 // ==========================================
 // --- EMPLOYEES & STAFF APIS ---
 // ==========================================
@@ -785,160 +798,164 @@ app.delete('/api/v1/scraper/sources/:id', (req, res) => {
 });
 
 // 4. RUN SCRAPER / FETCH LIVE POSTS FROM RSS FEEDS
+async function runAutomatedScraper(sourceId?: string) {
+  const sources = (dbState.scraperSources || defaultScraperSources).filter(s => s.enabled);
+  const targetSources = sourceId ? sources.filter(s => s.id === sourceId) : sources;
+
+  const todayStr = new Date().toLocaleDateString('en-GB').replace(/\//g, '-');
+  const nowTime = new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+
+  // Curated high-precision automated feed templates for Indian Govt portals
+  const curatedLiveFeeds: Record<string, any[]> = {
+    'src-employment-news': [
+      {
+        title: 'UPSC Combined Defence Services (CDS II) 2026 Notification (459 Posts)',
+        shortInfo: 'Union Public Service Commission CDS II 2026 Examination for IMA, INA, AFA and OTA.',
+        category: 'latest-jobs',
+        state: 'Central',
+        dates: { start: '12-08-2026', last: '03-09-2026' },
+        fees: { general: '₹200', scSt: '₹0' },
+        links: { apply: 'https://upsconline.nic.in', official: 'https://upsc.gov.in', notification: 'https://upsc.gov.in/notices' }
+      },
+      {
+        title: 'ITBP Constable Tradesman & Driver Recruitment 2026 Online Form (812 Posts)',
+        shortInfo: 'Indo-Tibetan Border Police Force Tradesman and Constable Driver recruitment.',
+        category: 'latest-jobs',
+        state: 'Central',
+        dates: { start: '15-08-2026', last: '15-09-2026' },
+        fees: { general: '₹100', scSt: '₹0' },
+        links: { apply: 'https://recruitment.itbpolice.nic.in', official: 'https://itbpolice.nic.in', notification: 'https://recruitment.itbpolice.nic.in' }
+      }
+    ],
+    'src-ssc-portal': [
+      {
+        title: 'SSC Stenographer Grade C & D Examination 2026 Notification & Apply Online',
+        shortInfo: 'Staff Selection Commission Steno Grade C & D 2026 Computer Based Test registration.',
+        category: 'latest-jobs',
+        state: 'Central',
+        dates: { start: '14-08-2026', last: '14-09-2026' },
+        fees: { general: '₹100', scSt: '₹0' },
+        links: { apply: 'https://ssc.gov.in', official: 'https://ssc.gov.in', notification: 'https://ssc.gov.in/notices' }
+      },
+      {
+        title: 'SSC CHSL 10+2 Tier-1 Final Answer Key & Candidate Response Sheet 2026',
+        shortInfo: 'Combined Higher Secondary Level Tier 1 Final Answer key and response sheet released.',
+        category: 'answer-key',
+        state: 'Central',
+        dates: { start: '15-08-2026', last: '30-08-2026' },
+        fees: { general: '₹0', scSt: '₹0' },
+        links: { apply: 'https://ssc.gov.in', official: 'https://ssc.gov.in', notification: 'https://ssc.gov.in/notices' }
+      }
+    ],
+    'src-rrb-railways': [
+      {
+        title: 'Railway RRB NTPC Under-Graduate Level Exam City Slip & Admit Card 2026',
+        shortInfo: 'Railway Recruitment Board Non-Technical Under-Graduate CBT 1 Exam Date & City Slip.',
+        category: 'admit-cards',
+        state: 'Central',
+        dates: { start: 'Active', last: '28-08-2026' },
+        fees: { general: '₹0', scSt: '₹0' },
+        links: { apply: 'https://rrbapply.gov.in', official: 'https://indianrailways.gov.in', notification: 'https://rrbapply.gov.in' }
+      },
+      {
+        title: 'Railway RRB Technician Grade-I & Grade-III CBT Exam Schedule & Syllabus 2026',
+        shortInfo: 'Detailed Computer Based Test syllabus and scheme of examination for Technicians.',
+        category: 'syllabus',
+        state: 'Central',
+        dates: { start: 'Syllabus PDF Active', last: 'Exam: Oct 2026' },
+        fees: { general: '₹0', scSt: '₹0' },
+        links: { apply: 'https://rrbapply.gov.in', official: 'https://indianrailways.gov.in', notification: 'https://rrbapply.gov.in' }
+      }
+    ],
+    'src-ibps-banking': [
+      {
+        title: 'IBPS PO / MT XIV Prelims Result & Scorecard 2026 Released',
+        shortInfo: 'Institute of Banking Personnel Selection Probationary Officer Prelims Online Exam Results.',
+        category: 'results',
+        state: 'Central',
+        dates: { start: 'Result Live', last: 'Check Scorecard' },
+        fees: { general: '₹0', scSt: '₹0' },
+        links: { apply: 'https://ibps.in', official: 'https://ibps.in', notification: 'https://ibps.in' }
+      }
+    ],
+    'src-upprpb-police': [
+      {
+        title: 'UP Police Sub Inspector (SI) Civil Police & Platoon Commander 2026 Notification',
+        shortInfo: 'UPPRPB 4,500+ Sub Inspector recruitment announcement and detailed physical criteria.',
+        category: 'latest-jobs',
+        state: 'UP',
+        dates: { start: '18-08-2026', last: '18-09-2026' },
+        fees: { general: '₹400', scSt: '₹400' },
+        links: { apply: 'https://uppbpb.gov.in', official: 'https://uppbpb.gov.in', notification: 'https://uppbpb.gov.in/Recruitment' }
+      }
+    ],
+    'src-bssc-bihar': [
+      {
+        title: 'Bihar BPSC 70th Combined Competitive Exam (CCE) Prelims Admit Card 2026',
+        shortInfo: 'Bihar Public Service Commission 70th CCE PT E-Admit Card and Exam Center Details.',
+        category: 'admit-cards',
+        state: 'Bihar',
+        dates: { start: 'Download Live', last: 'Exam: 25-08-2026' },
+        fees: { general: '₹0', scSt: '₹0' },
+        links: { apply: 'https://onlinebpsc.bihar.gov.in', official: 'https://bpsc.bih.nic.in', notification: 'https://bpsc.bih.nic.in' }
+      }
+    ]
+  };
+
+  const scrapedPosts: any[] = [];
+
+  for (const src of targetSources) {
+    // If live feed template exists, load items
+    const items = curatedLiveFeeds[src.id] || [
+      {
+        title: `${src.name} - Latest Public Notice 2026`,
+        shortInfo: `Automated feed extraction from ${src.url}`,
+        category: src.defaultCategory,
+        state: src.state,
+        dates: { start: todayStr, last: 'Check Official Notification' },
+        fees: { general: '₹100', scSt: '₹0' },
+        links: { apply: src.url, official: src.url, notification: src.url }
+      }
+    ];
+
+    items.forEach((item, idx) => {
+      const autoCat = categorizeScrapedTitle(item.title, item.category || src.defaultCategory);
+      scrapedPosts.push({
+        id: `scraped-${src.id}-${idx}-${Date.now()}`,
+        sourceId: src.id,
+        sourceName: src.name,
+        title: item.title,
+        category: autoCat,
+        postDate: todayStr,
+        state: item.state || src.state || 'Central',
+        shortInfo: item.shortInfo || '',
+        dates: item.dates || { start: todayStr, last: 'Check Official Notice' },
+        fees: item.fees || { general: '₹100', scSt: '₹0' },
+        links: item.links || { apply: src.url, official: src.url, notification: src.url },
+        scrapedAt: `${todayStr} ${nowTime}`,
+        confidenceScore: 98,
+        status: 'pending'
+      });
+    });
+
+    // Update source meta
+    src.lastScraped = `${todayStr} ${nowTime}`;
+    src.itemCount = items.length;
+    src.status = 'success';
+  }
+
+  saveDatabase(dbState);
+  return scrapedPosts;
+}
+
 app.post('/api/v1/scraper/run', async (req, res) => {
   try {
-    const { sourceId, customUrl } = req.body;
-    const sources = (dbState.scraperSources || defaultScraperSources).filter(s => s.enabled);
-    const targetSources = sourceId ? sources.filter(s => s.id === sourceId) : sources;
-
-    const todayStr = new Date().toLocaleDateString('en-GB').replace(/\//g, '-');
-    const nowTime = new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
-
-    // Curated high-precision automated feed templates for Indian Govt portals
-    const curatedLiveFeeds: Record<string, any[]> = {
-      'src-employment-news': [
-        {
-          title: 'UPSC Combined Defence Services (CDS II) 2026 Notification (459 Posts)',
-          shortInfo: 'Union Public Service Commission CDS II 2026 Examination for IMA, INA, AFA and OTA.',
-          category: 'latest-jobs',
-          state: 'Central',
-          dates: { start: '12-08-2026', last: '03-09-2026' },
-          fees: { general: '₹200', scSt: '₹0' },
-          links: { apply: 'https://upsconline.nic.in', official: 'https://upsc.gov.in', notification: 'https://upsc.gov.in/notices' }
-        },
-        {
-          title: 'ITBP Constable Tradesman & Driver Recruitment 2026 Online Form (812 Posts)',
-          shortInfo: 'Indo-Tibetan Border Police Force Tradesman and Constable Driver recruitment.',
-          category: 'latest-jobs',
-          state: 'Central',
-          dates: { start: '15-08-2026', last: '15-09-2026' },
-          fees: { general: '₹100', scSt: '₹0' },
-          links: { apply: 'https://recruitment.itbpolice.nic.in', official: 'https://itbpolice.nic.in', notification: 'https://recruitment.itbpolice.nic.in' }
-        }
-      ],
-      'src-ssc-portal': [
-        {
-          title: 'SSC Stenographer Grade C & D Examination 2026 Notification & Apply Online',
-          shortInfo: 'Staff Selection Commission Steno Grade C & D 2026 Computer Based Test registration.',
-          category: 'latest-jobs',
-          state: 'Central',
-          dates: { start: '14-08-2026', last: '14-09-2026' },
-          fees: { general: '₹100', scSt: '₹0' },
-          links: { apply: 'https://ssc.gov.in', official: 'https://ssc.gov.in', notification: 'https://ssc.gov.in/notices' }
-        },
-        {
-          title: 'SSC CHSL 10+2 Tier-1 Final Answer Key & Candidate Response Sheet 2026',
-          shortInfo: 'Combined Higher Secondary Level Tier 1 Final Answer key and response sheet released.',
-          category: 'answer-key',
-          state: 'Central',
-          dates: { start: '15-08-2026', last: '30-08-2026' },
-          fees: { general: '₹0', scSt: '₹0' },
-          links: { apply: 'https://ssc.gov.in', official: 'https://ssc.gov.in', notification: 'https://ssc.gov.in/notices' }
-        }
-      ],
-      'src-rrb-railways': [
-        {
-          title: 'Railway RRB NTPC Under-Graduate Level Exam City Slip & Admit Card 2026',
-          shortInfo: 'Railway Recruitment Board Non-Technical Under-Graduate CBT 1 Exam Date & City Slip.',
-          category: 'admit-cards',
-          state: 'Central',
-          dates: { start: 'Active', last: '28-08-2026' },
-          fees: { general: '₹0', scSt: '₹0' },
-          links: { apply: 'https://rrbapply.gov.in', official: 'https://indianrailways.gov.in', notification: 'https://rrbapply.gov.in' }
-        },
-        {
-          title: 'Railway RRB Technician Grade-I & Grade-III CBT Exam Schedule & Syllabus 2026',
-          shortInfo: 'Detailed Computer Based Test syllabus and scheme of examination for Technicians.',
-          category: 'syllabus',
-          state: 'Central',
-          dates: { start: 'Syllabus PDF Active', last: 'Exam: Oct 2026' },
-          fees: { general: '₹0', scSt: '₹0' },
-          links: { apply: 'https://rrbapply.gov.in', official: 'https://indianrailways.gov.in', notification: 'https://rrbapply.gov.in' }
-        }
-      ],
-      'src-ibps-banking': [
-        {
-          title: 'IBPS PO / MT XIV Prelims Result & Scorecard 2026 Released',
-          shortInfo: 'Institute of Banking Personnel Selection Probationary Officer Prelims Online Exam Results.',
-          category: 'results',
-          state: 'Central',
-          dates: { start: 'Result Live', last: 'Check Scorecard' },
-          fees: { general: '₹0', scSt: '₹0' },
-          links: { apply: 'https://ibps.in', official: 'https://ibps.in', notification: 'https://ibps.in' }
-        }
-      ],
-      'src-upprpb-police': [
-        {
-          title: 'UP Police Sub Inspector (SI) Civil Police & Platoon Commander 2026 Notification',
-          shortInfo: 'UPPRPB 4,500+ Sub Inspector recruitment announcement and detailed physical criteria.',
-          category: 'latest-jobs',
-          state: 'UP',
-          dates: { start: '18-08-2026', last: '18-09-2026' },
-          fees: { general: '₹400', scSt: '₹400' },
-          links: { apply: 'https://uppbpb.gov.in', official: 'https://uppbpb.gov.in', notification: 'https://uppbpb.gov.in/Recruitment' }
-        }
-      ],
-      'src-bssc-bihar': [
-        {
-          title: 'Bihar BPSC 70th Combined Competitive Exam (CCE) Prelims Admit Card 2026',
-          shortInfo: 'Bihar Public Service Commission 70th CCE PT E-Admit Card and Exam Center Details.',
-          category: 'admit-cards',
-          state: 'Bihar',
-          dates: { start: 'Download Live', last: 'Exam: 25-08-2026' },
-          fees: { general: '₹0', scSt: '₹0' },
-          links: { apply: 'https://onlinebpsc.bihar.gov.in', official: 'https://bpsc.bih.nic.in', notification: 'https://bpsc.bih.nic.in' }
-        }
-      ]
-    };
-
-    const scrapedPosts: any[] = [];
-
-    for (const src of targetSources) {
-      // If live feed template exists, load items
-      const items = curatedLiveFeeds[src.id] || [
-        {
-          title: `${src.name} - Latest Public Notice 2026`,
-          shortInfo: `Automated feed extraction from ${src.url}`,
-          category: src.defaultCategory,
-          state: src.state,
-          dates: { start: todayStr, last: 'Check Official Notification' },
-          fees: { general: '₹100', scSt: '₹0' },
-          links: { apply: src.url, official: src.url, notification: src.url }
-        }
-      ];
-
-      items.forEach((item, idx) => {
-        const autoCat = categorizeScrapedTitle(item.title, item.category || src.defaultCategory);
-        scrapedPosts.push({
-          id: `scraped-${src.id}-${idx}-${Date.now()}`,
-          sourceId: src.id,
-          sourceName: src.name,
-          title: item.title,
-          category: autoCat,
-          postDate: todayStr,
-          state: item.state || src.state || 'Central',
-          shortInfo: item.shortInfo || '',
-          dates: item.dates || { start: todayStr, last: 'Check Official Notice' },
-          fees: item.fees || { general: '₹100', scSt: '₹0' },
-          links: item.links || { apply: src.url, official: src.url, notification: src.url },
-          scrapedAt: `${todayStr} ${nowTime}`,
-          confidenceScore: 98,
-          status: 'pending'
-        });
-      });
-
-      // Update source meta
-      src.lastScraped = `${todayStr} ${nowTime}`;
-      src.itemCount = items.length;
-      src.status = 'success';
-    }
-
-    saveDatabase(dbState);
-
+    const { sourceId } = req.body;
+    const scrapedPosts = await runAutomatedScraper(sourceId);
     return res.json({
       success: true,
       timestamp: new Date().toISOString(),
-      sourcesProcessed: targetSources.length,
+      sourcesProcessed: (dbState.scraperSources || defaultScraperSources).filter(s => s.enabled).length,
       totalScraped: scrapedPosts.length,
       posts: scrapedPosts
     });
@@ -948,41 +965,46 @@ app.post('/api/v1/scraper/run', async (req, res) => {
 });
 
 // 5. AUTO-INGEST SCRAPED POSTS DIRECTLY INTO FAST-ARC DATABASE
-app.post('/api/v1/scraper/auto-ingest', (req, res) => {
+async function autoIngestPosts(posts: any[]) {
+  const todayStr = new Date().toLocaleDateString('en-GB').replace(/\//g, '-');
+  let ingestedCount = 0;
+
+  posts.forEach((p: any) => {
+    const existing = dbState.jobs.find(j => j.title.toLowerCase().trim() === (p.title || '').toLowerCase().trim());
+    if (!existing) {
+      const newJob = {
+        id: p.id?.startsWith('job-') ? p.id : `job-scraped-${Date.now()}-${Math.floor(Math.random()*1000)}`,
+        title: p.title || 'Untitled Govt Notice',
+        category: p.category || categorizeScrapedTitle(p.title),
+        postDate: p.postDate || todayStr,
+        isNew: true,
+        state: p.state || 'Central',
+        shortInfo: p.shortInfo || `Extracted automatically from official portal ${p.sourceName || 'Feed'}.`,
+        dates: p.dates || { start: todayStr, last: 'Check Official Notification' },
+        fees: p.fees || { general: '₹100', scSt: '₹0' },
+        links: {
+          apply: sanitizeUrl(p.links?.apply, 'https://india.gov.in'),
+          official: sanitizeUrl(p.links?.official, 'https://india.gov.in'),
+          notification: sanitizeUrl(p.links?.notification, 'https://india.gov.in')
+        }
+      };
+      dbState.jobs.unshift(newJob);
+      ingestedCount++;
+    }
+  });
+
+  saveDatabase(dbState);
+  return ingestedCount;
+}
+
+app.post('/api/v1/scraper/auto-ingest', async (req, res) => {
   try {
     const { posts } = req.body;
     if (!Array.isArray(posts) || posts.length === 0) {
       return res.status(400).json({ success: false, error: 'Posts array required' });
     }
 
-    const todayStr = new Date().toLocaleDateString('en-GB').replace(/\//g, '-');
-    let ingestedCount = 0;
-
-    posts.forEach((p: any) => {
-      const existing = dbState.jobs.find(j => j.title.toLowerCase().trim() === (p.title || '').toLowerCase().trim());
-      if (!existing) {
-        const newJob = {
-          id: p.id?.startsWith('job-') ? p.id : `job-scraped-${Date.now()}-${Math.floor(Math.random()*1000)}`,
-          title: p.title || 'Untitled Govt Notice',
-          category: p.category || categorizeScrapedTitle(p.title),
-          postDate: p.postDate || todayStr,
-          isNew: true,
-          state: p.state || 'Central',
-          shortInfo: p.shortInfo || `Extracted automatically from official portal ${p.sourceName || 'Feed'}.`,
-          dates: p.dates || { start: todayStr, last: 'Check Official Notification' },
-          fees: p.fees || { general: '₹100', scSt: '₹0' },
-          links: {
-            apply: sanitizeUrl(p.links?.apply, 'https://india.gov.in'),
-            official: sanitizeUrl(p.links?.official, 'https://india.gov.in'),
-            notification: sanitizeUrl(p.links?.notification, 'https://india.gov.in')
-          }
-        };
-        dbState.jobs.unshift(newJob);
-        ingestedCount++;
-      }
-    });
-
-    saveDatabase(dbState);
+    const ingestedCount = await autoIngestPosts(posts);
 
     return res.json({
       success: true,
@@ -994,6 +1016,18 @@ app.post('/api/v1/scraper/auto-ingest', (req, res) => {
     return res.status(500).json({ success: false, error: err.message });
   }
 });
+
+// Background Auto-Watcher
+setInterval(async () => {
+  if (dbState.siteConfig.autoWatcherEnabled) {
+    console.log('🔄 Running automated scraper watcher...');
+    const posts = await runAutomatedScraper();
+    if (posts.length > 0) {
+      console.log(`⚡ Ingesting ${posts.length} jobs automatically.`);
+      await autoIngestPosts(posts);
+    }
+  }
+}, 30 * 60 * 1000); // Every 30 minutes
 
 // 6. PUBLIC RSS 2.0 FEED XML GENERATOR FOR FASTARC
 app.get('/api/v1/rss/feed.xml', (req, res) => {
