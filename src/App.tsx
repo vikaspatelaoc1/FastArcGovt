@@ -1134,6 +1134,7 @@ export default function App() {
   return (
     <div className="bg-slate-50 text-slate-800 dark:bg-slate-950 dark:text-slate-100 min-h-screen flex flex-col transition-colors duration-300 w-full">
       <SplashScreen siteLogo={siteLogo} />
+      <InstallPrompt />
       <div className="fixed top-0 left-0 right-0 z-50 w-full shadow-md bg-white dark:bg-slate-900">
         <Marquee text={marqueeText} />
         <Header 

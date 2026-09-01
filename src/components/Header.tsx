@@ -4,7 +4,7 @@ import {
   Zap, ChevronDown, Sun, Moon, ShieldCheck, Menu, X, Briefcase, FileText, 
   Award, BookOpen, GraduationCap, CheckSquare, HelpCircle, Phone, 
   Info, Shield, AlertCircle, Send, Sparkles, MoreVertical, BarChart3, Megaphone, 
-  Settings, Database, Users, UserPlus, ChevronRight, Package, LogOut, Monitor, History, Palette, Type, SlidersHorizontal
+  Settings, Database, Users, UserPlus, ChevronRight, Package, LogOut, Monitor, History, Palette, Type, SlidersHorizontal, Download
 } from 'lucide-react';
 import { SocialLinkItem, SuperAdminTabType } from '../types';
 import { SUPER_ADMIN_MODULES } from '../config/superAdminConfig';
@@ -51,6 +51,8 @@ export const Header: React.FC<HeaderProps> = ({
 }) => {
   const [isMoreOpen, setIsMoreOpen] = useState(false);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+  const [isInstallable, setIsInstallable] = useState(false);
   const [isSuperAdminMenuExpanded, setIsSuperAdminMenuExpanded] = useState(false);
   const [expandedSidebarSections, setExpandedSidebarSections] = useState<Record<string, boolean>>({
     portal: true,
@@ -83,9 +85,30 @@ export const Header: React.FC<HeaderProps> = ({
       }
     };
 
+    const handleBeforeInstallPrompt = (e: any) => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+      setIsInstallable(true);
+    };
+
+    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
     document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    return () => {
+      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
   }, []);
+
+  const handleInstallClick = async () => {
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      if (outcome === 'accepted') {
+        setDeferredPrompt(null);
+        setIsInstallable(false);
+      }
+    }
+  };
 
   // Prevent background scroll when drawer is open
   useEffect(() => {
@@ -599,6 +622,13 @@ export const Header: React.FC<HeaderProps> = ({
 
               {/* SECTION 2: Core Portal Sections (2-Column Grid) */}
               <div>
+                <button
+                  onClick={handleInstallClick}
+                  className="flex items-center justify-center gap-2 w-full p-2.5 rounded-lg bg-amber-600 border border-amber-700 text-white font-bold text-sm mb-4 shadow-md hover:bg-amber-700 transition-all duration-200"
+                >
+                  <Download className="w-4 h-4" />
+                  App Install
+                </button>
                 <button 
                   onClick={() => setExpandedSidebarSections(prev => ({ portal: !prev.portal }))}
                   className="w-full text-left flex items-center justify-between mb-2 px-1 cursor-pointer group"
