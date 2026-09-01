@@ -5,6 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes" />
     <meta name="theme-color" content="#f59e0b" />
     
+    <!-- PWA / Mobile Native Meta Tags -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="FastArc" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <link rel="apple-touch-icon" href="/logo.png" />
+    
     <!-- Primary SEO Meta Tags -->
     <title>Fast_Arc Govt Result | Latest Online Form, Admit Card & Results 2026</title>
     <meta name="title" content="Fast_Arc Govt Result | Latest Online Form, Admit Card & Results 2026" />
@@ -62,6 +69,17 @@
       </div>
     </div>
     <script type="module" src="/src/main.tsx"></script>
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js').then(registration => {
+            console.log('SW registered: ', registration);
+          }).catch(registrationError => {
+            console.log('SW registration failed: ', registrationError);
+          });
+        });
+      }
+    </script>
   </body>
 </html>
 
