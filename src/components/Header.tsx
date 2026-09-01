@@ -622,13 +622,36 @@ export const Header: React.FC<HeaderProps> = ({
 
               {/* SECTION 2: Core Portal Sections (2-Column Grid) */}
               <div>
-                <button
-                  onClick={handleInstallClick}
-                  className="flex items-center justify-center gap-2 w-full p-2.5 rounded-lg bg-amber-600 border border-amber-700 text-white font-bold text-sm mb-4 shadow-md hover:bg-amber-700 transition-all duration-200"
-                >
-                  <Download className="w-4 h-4" />
-                  App Install
-                </button>
+                <div className="flex gap-2 mb-4">
+                  <button
+                    onClick={handleInstallClick}
+                    className="flex items-center justify-center gap-1.5 flex-1 px-2 py-1.5 rounded-md bg-transparent border border-amber-600 text-amber-600 font-bold text-xs shadow-none hover:bg-amber-50 transition-all duration-200"
+                  >
+                    <Download className="w-3 h-3" />
+                    App Install
+                  </button>
+                  <button
+                    onClick={async () => {
+                      if (navigator.share) {
+                        try {
+                          await navigator.share({
+                            title: 'FastArc',
+                            text: 'Check out FastArc Gov Jobs Portal!',
+                            url: window.location.href,
+                          });
+                        } catch (err) {
+                          console.error('Error sharing:', err);
+                        }
+                      }
+                    }}
+                    className="flex items-center justify-center gap-1.5 flex-1 px-2 py-1.5 rounded-md bg-transparent border border-slate-400 text-slate-700 dark:text-slate-300 font-bold text-xs shadow-none hover:bg-slate-100 dark:hover:bg-slate-800 transition-all duration-200"
+                  >
+                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342M8.684 13.342L4.032 15.668C3.396 15.986 3 16.634 3 17.342V19a1 1 0 001 1h16a1 1 0 001-1v-1.658c0-.708-.396-1.356-1.032-1.674l-4.652-2.326M8.684 13.342L12 10.5m0 0l3.316 2.842M12 10.5V3m0 0l-3 3m3-3l3 3" />
+                    </svg>
+                    Share App
+                  </button>
+                </div>
                 <button 
                   onClick={() => setExpandedSidebarSections(prev => ({ portal: !prev.portal }))}
                   className="w-full text-left flex items-center justify-between mb-2 px-1 cursor-pointer group"
