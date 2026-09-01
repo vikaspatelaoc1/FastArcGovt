@@ -19,6 +19,7 @@ import { ColumnEditorTab } from './ColumnEditorTab';
 import { SeoEditorTab } from './SeoEditorTab';
 import { CategorySeoEditorTab } from './CategorySeoEditorTab';
 import { WebsiteControlTab } from './WebsiteControlTab';
+import { JobsManagerTab } from './JobsManagerTab';
 import { PagesManagerTab, ApiAnalyticsTab, ActivityLogsTab, HelpdeskTab, AutoBroadcasterTab, AdsManagerTab, EmailNotificationsTab } from './NewAdminTabs';
 import { defaultSocialLinks } from '../data';
 import { 
@@ -58,6 +59,8 @@ interface SuperAdminDashboardModalProps {
   syncLogs?: Array<{ id: number; time: string; message: string; type: string }>;
   siteLogo?: string;
   setSiteLogo?: (logo: string) => void;
+  onEditJob?: (id: string, e: React.MouseEvent) => void;
+  onDeleteJob?: (id: string, e: React.MouseEvent) => void;
 }
 
 export const SuperAdminDashboardModal: React.FC<SuperAdminDashboardModalProps> = ({
@@ -86,7 +89,9 @@ export const SuperAdminDashboardModal: React.FC<SuperAdminDashboardModalProps> =
   setIsAutoSyncActive = () => {},
   syncLogs = [],
   siteLogo,
-  setSiteLogo
+  setSiteLogo,
+  onEditJob,
+  onDeleteJob
 }) => {
   const [activeTab, setActiveTab] = useState<SuperAdminTabType>(initialTab);
   const [show3DotMenu, setShow3DotMenu] = useState(false);
@@ -1047,7 +1052,16 @@ export const SuperAdminDashboardModal: React.FC<SuperAdminDashboardModalProps> =
               />
             )}
 
-            {/* TAB: EARNINGS & MONETIZATION HUB */}
+            {/* TAB: JOBS MANAGER & BULK DELETE */}
+            {activeTab === 'jobsManager' && (
+              <JobsManagerTab
+                jobs={jobs}
+                setJobs={setJobs}
+                onToast={onToast}
+                onEditJob={onEditJob || ((id, e) => {})}
+                onDeleteJob={onDeleteJob || ((id, e) => {})}
+              />
+            )}
             {activeTab === 'earnings' && (
               <EarningsTab onToast={onToast} />
             )}

@@ -1200,6 +1200,8 @@ export default function App() {
             isAutoSyncActive={isAutoSyncActive}
             setIsAutoSyncActive={setIsAutoSyncActive}
             syncLogs={syncLogs}
+            onEditJob={handleEditJob}
+            onDeleteJob={handleDeleteJob}
           />
         </div>
       ) : (

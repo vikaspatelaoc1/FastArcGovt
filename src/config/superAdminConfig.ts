@@ -17,6 +17,7 @@ import {
   SlidersHorizontal,
   Mail,
   Bell,
+  Trash2,
   LucideIcon 
 } from 'lucide-react';
 import { SuperAdminTabType } from '../types';
@@ -90,6 +91,19 @@ export const SUPER_ADMIN_MODULES: SuperAdminModuleConfig[] = [
     categoryLabel: 'Content & Updates',
     color: 'text-amber-400',
     hoverBg: 'hover:bg-amber-950/40'
+  },
+  {
+    id: 'jobsManager',
+    label: 'Manage & Bulk Delete Jobs',
+    shortLabel: 'Bulk Delete Jobs',
+    description: 'Select multiple job postings using checkboxes and execute instant batch deletion',
+    icon: Trash2,
+    category: 'content',
+    categoryLabel: 'Content & Updates',
+    color: 'text-rose-400',
+    hoverBg: 'hover:bg-rose-950/40',
+    tag: 'BULK-DELETE',
+    badge: (data) => data.jobsCount ? `${data.jobsCount} Jobs` : undefined
   },
   {
     id: 'colors',

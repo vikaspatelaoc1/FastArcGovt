@@ -185,7 +185,8 @@ export type SuperAdminTabType =
   | 'activityLogs'
   | 'helpdesk'
   | 'autoBroadcast'
-  | 'adsManager';
+  | 'adsManager'
+  | 'jobsManager';
 
 export interface EmailNotificationConfig {
   autoSendOnPublish: boolean;

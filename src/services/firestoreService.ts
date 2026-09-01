@@ -813,6 +813,18 @@ export async function saveEmailNotificationConfigToFirestore(config: EmailNotifi
   }, { merge: true });
 }
 
+export async function bulkDeleteJobsFromFirestore(jobIds: string[]): Promise<void> {
+  if (!jobIds || jobIds.length === 0) return;
+  const initDocRef = doc(db, 'site_config', 'init');
+  await setDoc(initDocRef, { initialized: true }, { merge: true });
+  const batch = writeBatch(db);
+  jobIds.forEach(id => {
+    const jobRef = doc(db, 'jobs', id);
+    batch.delete(jobRef);
+  });
+  await batch.commit();
+}
+
 // 19. Notification Dispatch History Logs
 export function subscribeToNotificationLogs(onUpdate: (logs: NotificationDispatchLog[]) => void) {
   const logsRef = doc(db, 'site_config', 'notification_logs');
