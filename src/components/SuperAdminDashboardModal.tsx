@@ -139,7 +139,62 @@ export const SuperAdminDashboardModal: React.FC<SuperAdminDashboardModalProps> =
 
   const [tickerInput, setTickerInput] = useState(marqueeText);
   const [siteTitle, setSiteTitle] = useState('FastArc Govt Jobs');
+  const [appName, setAppName] = useState('FastARC Result');
+  const [appVersion, setAppVersion] = useState('1.0.0');
   const [maintenanceMode, setMaintenanceMode] = useState(false);
+  const [isSavingConfig, setIsSavingConfig] = useState(false);
+
+  // Fetch site config
+  useEffect(() => {
+    fetch('/api/v1/site-config')
+      .then(res => res.json())
+      .then(data => {
+        if (data.siteConfig) {
+          setSiteTitle(data.siteConfig.siteTitle || 'FastArc Govt Jobs');
+          setMaintenanceMode(!!data.siteConfig.maintenanceMode);
+          setAppName(data.siteConfig.appName || 'FastARC Result');
+          setAppVersion(data.siteConfig.appVersion || '1.0.0');
+        }
+      })
+      .catch(console.error);
+  }, []);
+
+  const handleSaveConfig = async () => {
+    setIsSavingConfig(true);
+    try {
+      const res = await fetch('/api/v1/update-site-config', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ siteTitle, maintenanceMode, appName, appVersion })
+      });
+      if (res.ok) {
+        onToast('Portal configuration saved successfully!');
+      } else {
+        onToast('Failed to save configuration');
+      }
+    } catch (e) {
+      onToast('Error saving configuration');
+    }
+    setIsSavingConfig(false);
+  };
+
+  const handlePushAppUpdate = async () => {
+    const newVersion = appVersion.split('.').map((v, i) => i === 2 ? parseInt(v) + 1 : v).join('.');
+    setAppVersion(newVersion);
+    try {
+      const res = await fetch('/api/v1/update-site-config', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ siteTitle, maintenanceMode, appName, appVersion: newVersion })
+      });
+      if (res.ok) {
+        onToast(`App Update Pushed! New Version: ${newVersion}. Users will be prompted to update.`);
+      }
+    } catch (e) {
+      onToast('Error pushing update');
+    }
+  };
+
   const [subscribers, setSubscribers] = useState<SubscriberRecord[]>([
     { id: '1', email: 'vikas.patel@example.com', category: 'Latest Jobs', date: '11 Aug 2026' },
     { id: '2', email: 'rahul.kumar@gmail.com', category: 'Admit Card', date: '10 Aug 2026' },
@@ -1100,9 +1155,9 @@ export const SuperAdminDashboardModal: React.FC<SuperAdminDashboardModalProps> =
                   <p className="text-xs text-slate-500 dark:text-slate-400">Customize main portal branding and operational modes.</p>
                 </div>
 
-                <div className="space-y-4 text-xs font-semibold">
+                <div className="space-y-4 text-xs font-semibold pb-6">
                   <div>
-                    <label className="block text-slate-800 dark:text-slate-200 mb-1">Portal Name / Branding Title</label>
+                    <label className="block text-slate-800 dark:text-slate-200 mb-1">Portal Name / Branding Title (Website)</label>
                     <input
                       type="text"
                       value={siteTitle}
@@ -1110,6 +1165,43 @@ export const SuperAdminDashboardModal: React.FC<SuperAdminDashboardModalProps> =
                       className="w-full border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 rounded-lg p-2.5 text-slate-800 dark:text-slate-100 focus:outline-none focus:border-red-500"
                     />
                   </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-slate-800 dark:text-slate-200 mb-1">Mobile App Name (PWA)</label>
+                      <input
+                        type="text"
+                        value={appName}
+                        onChange={(e) => setAppName(e.target.value)}
+                        className="w-full border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 rounded-lg p-2.5 text-slate-800 dark:text-slate-100 focus:outline-none focus:border-red-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-slate-800 dark:text-slate-200 mb-1">App Version</label>
+                      <div className="flex gap-2">
+                        <input
+                          type="text"
+                          readOnly
+                          value={appVersion}
+                          className="w-full border border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-slate-800/50 rounded-lg p-2.5 text-slate-500 cursor-not-allowed focus:outline-none"
+                        />
+                        <button
+                          onClick={handlePushAppUpdate}
+                          className="px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg whitespace-nowrap transition-colors"
+                        >
+                          Push Update
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <button 
+                    onClick={handleSaveConfig}
+                    disabled={isSavingConfig}
+                    className="w-full py-3 bg-red-600 hover:bg-red-700 text-white font-bold rounded-xl transition-colors disabled:opacity-70"
+                  >
+                    {isSavingConfig ? 'Saving...' : 'Save All Configurations'}
+                  </button>
 
                   {setSiteLogo && (
                     <LogoManager 

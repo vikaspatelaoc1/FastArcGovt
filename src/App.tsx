@@ -21,6 +21,7 @@ import { LogoutConfirmModal } from './components/LogoutConfirmModal';
 import { FAQ } from './components/FAQ';
 import { SplashScreen } from './components/SplashScreen';
 import { InstallPrompt } from './components/InstallPrompt';
+import { UpdatePrompt } from './components/UpdatePrompt';
 import { getSocialTheme } from './components/SocialLinksManager';
 import { OfficialSocialLogo } from './components/SocialIcons';
 import { JobAlert, JobCategory, EmployeeUser, SocialLinkItem, SuperAdminTabType } from './types';
@@ -2121,6 +2122,7 @@ export default function App() {
         onCancel={() => setIsLogoutConfirmOpen(false)}
       />
       <InstallPrompt />
+      <UpdatePrompt />
     </div>
   );
 }

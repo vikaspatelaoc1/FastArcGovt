@@ -6,8 +6,19 @@ export function InstallPrompt() {
   const [isInstallable, setIsInstallable] = useState(false);
   const [isIOS, setIsIOS] = useState(false);
   const [showPrompt, setShowPrompt] = useState(false);
+  const [appName, setAppName] = useState('FastARC Result');
 
   useEffect(() => {
+    // Fetch appName from config
+    fetch('/api/v1/site-config')
+      .then(res => res.json())
+      .then(data => {
+        if (data.siteConfig?.appName) {
+          setAppName(data.siteConfig.appName);
+        }
+      })
+      .catch(console.warn);
+
     // Check if the user is on iOS
     const userAgent = window.navigator.userAgent.toLowerCase();
     const isIosDevice = /iphone|ipad|ipod/.test(userAgent);
@@ -54,7 +65,7 @@ export function InstallPrompt() {
       <div className="flex items-center gap-4 w-full">
         <img src="/logo.png" alt="FastArc App Icon" className="w-12 h-12 rounded-xl object-cover bg-black" />
         <div className="flex-1">
-          <h4 className="text-sm font-black text-slate-900 dark:text-white uppercase tracking-tight">Install FastArc App</h4>
+          <h4 className="text-sm font-black text-slate-900 dark:text-white uppercase tracking-tight">Install {appName} App</h4>
           <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 leading-snug">
             {isIOS ? 'Tap Share and select "Add to Home Screen" to install.' : 'Get the app on your home screen for a better experience.'}
           </p>

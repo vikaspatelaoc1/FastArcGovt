@@ -13,11 +13,18 @@ dotenv.config();
 
 let firestoreDb: any = null;
 try {
-  const firebaseConfig = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'firebase-applet-config.json'), 'utf8'));
-  const firebaseApp = initializeApp(firebaseConfig);
-  firestoreDb = getFirestore(firebaseApp, firebaseConfig.firestoreDatabaseId);
+  // Check if file exists first to avoid unnecessary errors
+  // Using process.cwd() is safer here because it points to the workspace root where the json is injected
+  const configPath = path.join(process.cwd(), 'firebase-applet-config.json');
+  if (fs.existsSync(configPath)) {
+    const firebaseConfig = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+    const firebaseApp = initializeApp(firebaseConfig);
+    firestoreDb = getFirestore(firebaseApp, firebaseConfig.firestoreDatabaseId);
+  } else {
+    console.warn('Firebase config not found for server.');
+  }
 } catch (e) {
-  console.warn('Firebase config not found for server, falling back to local json for sitemap.');
+  console.warn('Error reading Firebase config:', e);
 }
 
 const app = express();
@@ -205,6 +212,8 @@ interface DatabaseSchema {
     siteTitle: string;
     maintenanceMode: boolean;
     autoWatcherEnabled: boolean;
+    appName: string;
+    appVersion: string;
   };
   users: Array<{ id: string; username: string; email: string; passwordHash: string; name: string; role: string }>;
 }
@@ -317,7 +326,9 @@ let dbState: DatabaseSchema = {
   siteConfig: {
     siteTitle: 'FastArc Govt Jobs',
     maintenanceMode: false,
-    autoWatcherEnabled: false
+    autoWatcherEnabled: false,
+    appName: 'FastARC Result',
+    appVersion: '1.0.0'
   },
   users: [
     { id: 'usr-1', username: 'admin', email: 'admin@fastarc.in', passwordHash: 'admin123', name: 'Super Admin', role: 'superadmin' },
@@ -632,6 +643,43 @@ app.post('/api/v1/scraper/toggle-watcher', (req, res) => {
 
 app.get('/api/v1/site-config', (req, res) => {
   res.json({ success: true, siteConfig: dbState.siteConfig });
+});
+
+app.post('/api/v1/update-site-config', (req, res) => {
+  const { siteTitle, maintenanceMode, appName, appVersion } = req.body;
+  if (siteTitle !== undefined) dbState.siteConfig.siteTitle = siteTitle;
+  if (maintenanceMode !== undefined) dbState.siteConfig.maintenanceMode = !!maintenanceMode;
+  if (appName !== undefined) dbState.siteConfig.appName = appName;
+  if (appVersion !== undefined) dbState.siteConfig.appVersion = appVersion;
+  saveDatabase(dbState);
+  return res.json({ success: true, siteConfig: dbState.siteConfig });
+});
+
+app.get('/manifest.json', (req, res) => {
+  const manifest = {
+    "name": dbState.siteConfig.appName || "FastARC Result",
+    "short_name": dbState.siteConfig.appName || "FastArc",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#ffffff",
+    "theme_color": "#f59e0b",
+    "icons": [
+      {
+        "src": "/logo.png",
+        "sizes": "192x192",
+        "type": "image/png",
+        "purpose": "any maskable"
+      },
+      {
+        "src": "/logo.png",
+        "sizes": "512x512",
+        "type": "image/png",
+        "purpose": "any maskable"
+      }
+    ]
+  };
+  res.setHeader('Content-Type', 'application/json');
+  res.send(JSON.stringify(manifest));
 });
 
 // ==========================================
