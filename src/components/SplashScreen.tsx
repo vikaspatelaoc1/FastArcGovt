@@ -49,7 +49,7 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({
           initial={{ opacity: 1 }}
           exit={{ opacity: 0, scale: 1.05 }}
           transition={{ duration: 0.35, ease: 'easeInOut' }}
-          className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-slate-950 text-white select-none overflow-hidden"
+          className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-[#0b1120] text-white select-none overflow-hidden"
           style={{ willChange: 'opacity, transform' }}
         >
           {/* Subtle Ambient Glow */}
@@ -71,7 +71,7 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({
               <img
                 src={siteLogo}
                 alt="FastArc Logo"
-                className="w-full h-full object-cover scale-125 rounded-full"
+                className="w-full h-full object-contain rounded-full"
                 onError={(e) => {
                   (e.target as HTMLImageElement).src =
                     'https://lh3.googleusercontent.com/d/1IE6MQ8EUwyKmGeXnpLTXx7d5HBLJiKb4';
