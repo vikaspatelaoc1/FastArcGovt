@@ -4,7 +4,7 @@
   "description": "Latest Govt Jobs, Admit Cards, and Results updates.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#0b1120",
+  "background_color": "#ffffff",
   "theme_color": "#f59e0b",
   "orientation": "portrait-primary",
   "icons": [
