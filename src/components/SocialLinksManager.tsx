@@ -307,8 +307,8 @@ export const SocialLinksManager: React.FC<SocialLinksManagerProps> = ({
               {/* Top Row: Icon & Status */}
               <div className="flex items-center justify-between gap-2 mb-3">
                 <div className="flex items-center gap-2.5">
-                  <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${theme.bg} text-white flex items-center justify-center shadow-md shrink-0 group-hover:scale-105 transition-transform`}>
-                    {getSocialIcon(item.platform, "w-5 h-5")}
+                  <div className="w-10 h-10 rounded-xl bg-slate-100/60 dark:bg-slate-800/60 border border-slate-200/60 dark:border-slate-700/60 flex items-center justify-center shadow-xs shrink-0 group-hover:scale-105 transition-transform">
+                    {getSocialIcon(item.platform, "w-6 h-6")}
                   </div>
                   <div>
                     <h4 className="text-xs font-black text-slate-900 dark:text-white flex items-center gap-1.5">

@@ -1855,7 +1855,9 @@ export default function App() {
         </>
       )}
 
-      <footer className="custom-footer-override bg-slate-900 border-t-4 border-amber-500 pt-4 sm:pt-5 pb-8 mt-12 transition-colors duration-300">
+      <footer className="custom-footer-override relative bg-slate-900 pt-0 pb-8 mt-12 transition-colors duration-300 overflow-hidden">
+        {/* Tricolor Border Line matching image (Saffron -> White -> Green) */}
+        <div className="h-1.5 w-full bg-gradient-to-r from-[#FF671F] via-[#FFFFFF] to-[#046A38] shadow-sm mb-4 sm:mb-5" />
         <div className="w-full mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8 text-sm">
             <div className="space-y-3.5">
@@ -2012,12 +2014,11 @@ export default function App() {
                     <a
                       key={item.id}
                       href={item.url}
-                      
                       rel="noopener noreferrer"
-                      className="p-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 hover:scale-110 active:scale-95 transition-all shadow-md border border-slate-700/60 flex items-center justify-center group"
+                      className="p-2.5 rounded-xl bg-slate-800/40 hover:bg-slate-700/60 backdrop-blur-md hover:scale-110 active:scale-95 transition-all border border-slate-700/50 flex items-center justify-center group"
                       title={`${item.title} (${item.handle || item.url}) - Click to Open`}
                     >
-                      <OfficialSocialLogo platform={item.platform} className="w-5.5 h-5.5 drop-shadow-sm group-hover:scale-110 transition-transform" />
+                      <OfficialSocialLogo platform={item.platform} className="w-5.5 h-5.5 group-hover:scale-110 transition-transform" />
                     </a>
                   );
                 })}

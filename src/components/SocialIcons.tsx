@@ -24,10 +24,15 @@ export const OfficialSocialLogo: React.FC<SocialIconProps> = ({
           fill="none" 
           xmlns="http://www.w3.org/2000/svg"
         >
-          <circle cx="12" cy="12" r="12" fill="#29B6F6"/>
+          <defs>
+            <linearGradient id="ios-tg-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#38BDF8" />
+              <stop offset="100%" stopColor="#0284C7" />
+            </linearGradient>
+          </defs>
           <path 
-            d="M5.4 11.6L17.2 7c.6-.2 1.1.3.9.9l-2 9.5c-.1.7-.6.9-1.2.6l-3.3-2.4-1.6 1.5c-.2.2-.4.2-.6.4l.2-3.4 6.2-5.6c.3-.2-.1-.4-.4-.2l-7.7 4.8-3.3-1c-.7-.2-.7-.7.2-1.1z" 
-            fill="white"
+            d="M21.6 3.4a1.2 1.2 0 0 0-1.3-.2L2.8 10.4a1.2 1.2 0 0 0 .1 2.2l4.8 1.6 1.8 5.6a1.2 1.2 0 0 0 2 .4l2.8-2.6 4.9 3.6a1.2 1.2 0 0 0 1.9-.7l3.2-15.5a1.2 1.2 0 0 0-.9-1.6zM9.5 13.7l8.7-6.2-7 7.6-.4 3.7-1.3-5.1z" 
+            fill="url(#ios-tg-grad)"
           />
         </svg>
       );
@@ -41,10 +46,15 @@ export const OfficialSocialLogo: React.FC<SocialIconProps> = ({
           fill="none" 
           xmlns="http://www.w3.org/2000/svg"
         >
-          <circle cx="12" cy="12" r="12" fill="#25D366"/>
+          <defs>
+            <linearGradient id="ios-wa-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#4ADE80" />
+              <stop offset="100%" stopColor="#16A34A" />
+            </linearGradient>
+          </defs>
           <path 
-            d="M17.5 14.4c-.3-.1-1.8-.9-2-1-.3-.1-.5-.1-.7.2-.2.3-.8 1-1 1.2-.2.2-.3.2-.6.1-.3-.1-1.3-.5-2.4-1.5-.9-.8-1.5-1.8-1.7-2.1-.2-.3 0-.5.1-.6.1-.1.3-.3.4-.5.1-.2.2-.3.3-.5.1-.2.1-.4 0-.5-.1-.1-.7-1.6-.9-2.2-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.5 0 1.5 1.1 2.9 1.2 3.1.1.2 2.1 3.2 5.1 4.5.7.3 1.3.5 1.7.6.7.2 1.4.2 1.9.1.6-.1 1.8-.7 2-1.4.2-.7.2-1.3.2-1.4-.1-.1-.3-.2-.6-.3z" 
-            fill="white"
+            d="M12 2C6.48 2 2 6.48 2 12c0 1.85.5 3.58 1.38 5.08L2 22l5.08-1.34A9.94 9.94 0 0 0 12 22c5.52 0 10-4.48 10-10S17.52 2 12 2zm0 18.2a8.17 8.17 0 0 1-4.21-1.16l-.3-.18-3.08.81.82-3-.2-.32A8.18 8.18 0 0 1 3.8 12c0-4.52 3.68-8.2 8.2-8.2 4.52 0 8.2 3.68 8.2 8.2 0 4.52-3.68 8.2-8.2 8.2zm4.64-6.13c-.25-.13-1.5-.74-1.74-.82-.23-.09-.4-.13-.57.13-.17.25-.66.82-.81.99-.15.17-.3.19-.55.06-.25-.13-1.07-.4-2.04-1.26-.76-.68-1.27-1.52-1.42-1.77-.15-.25-.02-.39.11-.51.11-.11.25-.3.38-.44.13-.15.17-.25.25-.42.09-.17.04-.32-.02-.44-.06-.13-.57-1.38-.78-1.89-.21-.5-.42-.43-.57-.44h-.49c-.17 0-.44.06-.67.32-.23.25-.88.86-.88 2.1 0 1.24.9 2.44 1.03 2.61.13.17 1.78 2.72 4.31 3.81.6.26 1.07.42 1.44.54.61.19 1.16.17 1.6.1.49-.07 1.5-.61 1.71-1.21.21-.59.21-1.1.15-1.21-.06-.11-.23-.17-.48-.3z" 
+            fill="url(#ios-wa-grad)"
           />
         </svg>
       );
@@ -58,15 +68,20 @@ export const OfficialSocialLogo: React.FC<SocialIconProps> = ({
           fill="none" 
           xmlns="http://www.w3.org/2000/svg"
         >
-          <rect width="24" height="24" rx="6" fill="#FF0000"/>
+          <defs>
+            <linearGradient id="ios-yt-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#F87171" />
+              <stop offset="100%" stopColor="#DC2626" />
+            </linearGradient>
+          </defs>
           <path 
-            d="M21.5 8.2c-.2-.8-.8-1.4-1.6-1.6C18.5 6.2 12 6.2 12 6.2s-6.5 0-7.9.4c-.8.2-1.4.8-1.6 1.6C2.1 9.6 2.1 12 2.1 12s0 2.4.4 3.8c.2.8.8 1.4 1.6 1.6 1.4.4 7.9.4 7.9.4s6.5 0 7.9-.4c.8-.2 1.4-.8 1.6-1.6.4-1.4.4-3.8.4-3.8s0-2.4-.4-3.8z" 
-            fill="#FF0000"
+            d="M21.58 7.19a2.5 2.5 0 0 0-1.76-1.77C18.26 5 12 5 12 5s-6.26 0-7.82.42A2.5 2.5 0 0 0 2.42 7.2 26.24 26.24 0 0 0 2 12c0 1.64.14 3.25.42 4.81a2.5 2.5 0 0 0 1.76 1.77C5.74 19 12 19 12 19s6.26 0 7.82-.42a2.5 2.5 0 0 0 1.76-1.77c.28-1.56.42-3.17.42-4.81 0-1.64-.14-3.25-.42-4.81z" 
+            stroke="url(#ios-yt-grad)"
+            strokeWidth="1.8"
+            strokeLinecap="round"
+            strokeLinejoin="round"
           />
-          <path 
-            d="M10 15.2l5.5-3.2L10 8.8v6.4z" 
-            fill="white"
-          />
+          <polygon points="10,15 15.5,12 10,9" fill="url(#ios-yt-grad)" />
         </svg>
       );
 
@@ -80,18 +95,30 @@ export const OfficialSocialLogo: React.FC<SocialIconProps> = ({
           xmlns="http://www.w3.org/2000/svg"
         >
           <defs>
-            <linearGradient id="ig-grad" x1="0%" y1="100%" x2="100%" y2="0%">
-              <stop offset="0%" stopColor="#fdf497" />
-              <stop offset="5%" stopColor="#fdf497" />
-              <stop offset="45%" stopColor="#fd5949" />
-              <stop offset="60%" stopColor="#d6249f" />
-              <stop offset="90%" stopColor="#285AEB" />
+            <linearGradient id="ios-ig-grad" x1="0%" y1="100%" x2="100%" y2="0%">
+              <stop offset="0%" stopColor="#FBBF24" />
+              <stop offset="35%" stopColor="#F43F5E" />
+              <stop offset="70%" stopColor="#D946EF" />
+              <stop offset="100%" stopColor="#8B5CF6" />
             </linearGradient>
           </defs>
-          <rect width="24" height="24" rx="6" fill="url(#ig-grad)"/>
-          <rect x="4.5" y="4.5" width="15" height="15" rx="4.5" stroke="white" strokeWidth="1.8" fill="none"/>
-          <circle cx="12" cy="12" r="3.5" stroke="white" strokeWidth="1.8" fill="none"/>
-          <circle cx="16.3" cy="7.7" r="1.1" fill="white"/>
+          <rect 
+            x="3" 
+            y="3" 
+            width="18" 
+            height="18" 
+            rx="5.5" 
+            stroke="url(#ios-ig-grad)" 
+            strokeWidth="2" 
+          />
+          <circle 
+            cx="12" 
+            cy="12" 
+            r="4" 
+            stroke="url(#ios-ig-grad)" 
+            strokeWidth="2" 
+          />
+          <circle cx="17.2" cy="6.8" r="1.2" fill="url(#ios-ig-grad)" />
         </svg>
       );
 
@@ -104,10 +131,15 @@ export const OfficialSocialLogo: React.FC<SocialIconProps> = ({
           fill="none" 
           xmlns="http://www.w3.org/2000/svg"
         >
-          <rect width="24" height="24" rx="6" fill="#000000"/>
+          <defs>
+            <linearGradient id="ios-tw-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#38BDF8" />
+              <stop offset="100%" stopColor="#0284C7" />
+            </linearGradient>
+          </defs>
           <path 
             d="M18.244 4.5h2.528l-5.522 6.311 6.496 8.589h-5.088l-3.985-5.211-4.561 5.211H5.584l5.908-6.753L5.256 4.5h5.217l3.603 4.764L18.244 4.5zm-.887 13.385h1.401L9.043 5.942H7.54l9.817 11.943z" 
-            fill="white"
+            fill="url(#ios-tw-grad)"
           />
         </svg>
       );
@@ -121,10 +153,16 @@ export const OfficialSocialLogo: React.FC<SocialIconProps> = ({
           fill="none" 
           xmlns="http://www.w3.org/2000/svg"
         >
-          <circle cx="12" cy="12" r="12" fill="#1877F2"/>
+          <defs>
+            <linearGradient id="ios-fb-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#60A5FA" />
+              <stop offset="100%" stopColor="#2563EB" />
+            </linearGradient>
+          </defs>
+          <circle cx="12" cy="12" r="9.5" stroke="url(#ios-fb-grad)" strokeWidth="1.8" />
           <path 
-            d="M14.5 12.8l.5-3.3h-3.2V7.4c0-.9.3-1.6 1.6-1.6H15V2.9c-.3 0-1.4-.1-2.6-.1-2.6 0-4.4 1.6-4.4 4.5v2.2H5.1v3.3H8v8.3c.6.1 1.3.1 2 .1s1.4 0 2-.1v-8.3h2.5z" 
-            fill="white"
+            d="M13.5 12h2l.4-2.5h-2.4V8c0-.7.2-1.2 1.2-1.2h1.3V4.6c-.3 0-1.1-.1-2.1-.1-2.1 0-3.5 1.3-3.5 3.6V9.5H8.2V12h2.2v6.5h3.1V12z" 
+            fill="url(#ios-fb-grad)"
           />
         </svg>
       );
@@ -138,10 +176,16 @@ export const OfficialSocialLogo: React.FC<SocialIconProps> = ({
           fill="none" 
           xmlns="http://www.w3.org/2000/svg"
         >
-          <rect width="24" height="24" rx="6" fill="#0A66C2"/>
+          <defs>
+            <linearGradient id="ios-li-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#38BDF8" />
+              <stop offset="100%" stopColor="#0369A1" />
+            </linearGradient>
+          </defs>
+          <rect x="3" y="3" width="18" height="18" rx="5" stroke="url(#ios-li-grad)" strokeWidth="1.8" />
           <path 
-            d="M6.5 9.5H9v8.5H6.5V9.5zm1.25-4c.8 0 1.45.65 1.45 1.45S8.55 8.4 7.75 8.4 6.3 7.75 6.3 6.95 6.95 5.5 7.75 5.5zM11 9.5h2.4v1.2h.03c.33-.63 1.14-1.3 2.37-1.3 2.53 0 3 1.66 3 3.83V18h-2.5v-3.95c0-.94-.02-2.15-1.31-2.15-1.31 0-1.51 1.02-1.51 2.08V18H11V9.5z" 
-            fill="white"
+            d="M7 10h2.5v7H7v-7zm1.25-3.5a1.25 1.25 0 1 1 0 2.5 1.25 1.25 0 0 1 0-2.5zM11.5 10H14v1h.03c.35-.6 1.15-1.2 2.37-1.2 2.5 0 3 1.6 3 3.7V17h-2.5v-3.7c0-.9-.02-2-1.25-2s-1.45 1-1.45 2V17h-2.7V10z" 
+            fill="url(#ios-li-grad)"
           />
         </svg>
       );
@@ -155,10 +199,15 @@ export const OfficialSocialLogo: React.FC<SocialIconProps> = ({
           fill="none" 
           xmlns="http://www.w3.org/2000/svg"
         >
-          <rect width="24" height="24" rx="6" fill="#5865F2"/>
+          <defs>
+            <linearGradient id="ios-dc-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#A5B4FC" />
+              <stop offset="100%" stopColor="#6366F1" />
+            </linearGradient>
+          </defs>
           <path 
-            d="M17.4 6.7a13.3 13.3 0 0 0-3.3-1 .1.1 0 0 0-.1.05c-.14.26-.3.6-.4.86a12.3 12.3 0 0 0-3.6 0c-.12-.26-.28-.6-.42-.86a.1.1 0 0 0-.1-.05 13.3 13.3 0 0 0-3.3 1 .1.1 0 0 0-.05.04C4.1 9.9 3.5 13 3.8 16.1a.1.1 0 0 0 .04.08 13.4 13.4 0 0 0 4 2 .1.1 0 0 0 .12-.04c.3-.42.58-.87.82-1.34a.1.1 0 0 0-.06-.14 8.8 8.8 0 0 1-1.25-.6.1.1 0 0 1 0-.16c.09-.06.17-.13.25-.2a.1.1 0 0 1 .1 0 9.5 9.5 0 0 0 8.36 0 .1.1 0 0 1 .1 0c.08.07.16.14.25.2a.1.1 0 0 1 0 .16 8.8 8.8 0 0 1-1.25.6.1.1 0 0 0-.06.14c.24.47.52.92.82 1.34a.1.1 0 0 0 .12.04 13.4 13.4 0 0 0 4.04-2 .1.1 0 0 0 .04-.08c.36-3.6-.62-6.7-2.3-9.36a.1.1 0 0 0-.04-.04zM8.8 14.1c-.8 0-1.45-.73-1.45-1.63 0-.9.64-1.63 1.45-1.63.82 0 1.47.74 1.45 1.63 0 .9-.63 1.63-1.45 1.63zm6.4 0c-.8 0-1.45-.73-1.45-1.63 0-.9.64-1.63 1.45-1.63.82 0 1.47.74 1.45 1.63 0 .9-.63 1.63-1.45 1.63z" 
-            fill="white"
+            d="M18.9 5.8a14.2 14.2 0 0 0-3.5-1.1c-.2.3-.3.7-.5 1-1.3-.2-2.6-.2-3.8 0-.2-.3-.3-.7-.5-1A14.2 14.2 0 0 0 7.1 5.8C4.5 9.7 3.8 13.5 4.1 17.2a14.3 14.3 0 0 0 4.4 2.2c.4-.5.7-1 1-1.5-.5-.2-1-.4-1.4-.7.1-.1.2-.2.3-.3 2.8 1.3 5.8 1.3 8.6 0 .1.1.2.2.3.3-.4.3-.9.5-1.4.7.3.5.6 1 1 1.5a14.3 14.3 0 0 0 4.4-2.2c.5-4.4-.7-8.1-3.4-11.4zM9.5 14.5c-.8 0-1.5-.7-1.5-1.6s.7-1.6 1.5-1.6 1.5.7 1.5 1.6-.7 1.6-1.5 1.6zm5 0c-.8 0-1.5-.7-1.5-1.6s.7-1.6 1.5-1.6 1.5.7 1.5 1.6-.7 1.6-1.5 1.6z" 
+            fill="url(#ios-dc-grad)"
           />
         </svg>
       );
@@ -172,12 +221,22 @@ export const OfficialSocialLogo: React.FC<SocialIconProps> = ({
           fill="none" 
           xmlns="http://www.w3.org/2000/svg"
         >
-          <circle cx="12" cy="12" r="12" fill="#F59E0B"/>
+          <defs>
+            <linearGradient id="ios-def-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#FDE68A" />
+              <stop offset="50%" stopColor="#F59E0B" />
+              <stop offset="100%" stopColor="#D97706" />
+            </linearGradient>
+          </defs>
+          <circle cx="12" cy="12" r="9.5" stroke="url(#ios-def-grad)" strokeWidth="1.8" />
           <path 
-            d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm1 17.93V18c0-.55-.45-1-1-1h-2v-2h2c1.1 0 2-.9 2-2v-1l4.07-2.03A8.006 8.006 0 0 1 13 19.93zM6.07 14.5A7.97 7.97 0 0 1 4 12c0-2.22.9-4.22 2.36-5.68l1.41 1.41C6.67 8.82 6 10.33 6 12c0 .88.22 1.7.6 2.43L6.07 14.5z" 
-            fill="white"
+            d="M12 2.5a14 14 0 0 0 0 19M12 2.5a14 14 0 0 1 0 19M2.5 12h19M4 7.5h16M4 16.5h16" 
+            stroke="url(#ios-def-grad)" 
+            strokeWidth="1.5" 
+            strokeLinecap="round" 
           />
         </svg>
       );
   }
 };
+

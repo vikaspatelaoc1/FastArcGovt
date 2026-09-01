@@ -9,6 +9,8 @@ import {
 import { SocialLinkItem, SuperAdminTabType } from '../types';
 import { SUPER_ADMIN_MODULES } from '../config/superAdminConfig';
 import { OfficialSocialLogo } from './SocialIcons';
+import { LanguageModal, HindiEnglishIcon, SUPPORTED_LANGUAGES, changeSiteLanguage } from './LanguageModal';
+
 
 interface HeaderProps {
   themeMode?: 'light' | 'dark' | 'system';
@@ -53,6 +55,7 @@ export const Header: React.FC<HeaderProps> = ({
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
   const [isInstallable, setIsInstallable] = useState(false);
+  const [isCopied, setIsCopied] = useState(false);
   const [isSuperAdminMenuExpanded, setIsSuperAdminMenuExpanded] = useState(false);
   const [expandedSidebarSections, setExpandedSidebarSections] = useState<Record<string, boolean>>({
     portal: true,
@@ -68,9 +71,21 @@ export const Header: React.FC<HeaderProps> = ({
   });
   const [isDesktopAdminOpen, setIsDesktopAdminOpen] = useState(false);
   const [isHeader3DotOpen, setIsHeader3DotOpen] = useState(false);
+  const [isLanguageModalOpen, setIsLanguageModalOpen] = useState(false);
+  const [currentLangCode, setCurrentLangCode] = useState<string>('en');
   const moreRef = useRef<HTMLDivElement>(null);
   const adminRef = useRef<HTMLDivElement>(null);
   const header3DotRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const match = document.cookie.match(/(?:^|;\s*)googtrans=\/(?:auto|en)\/([a-zA-Z-]+)/);
+    const cookieLang = match ? match[1] : null;
+    const saved = localStorage.getItem('fastarc_preferred_language');
+    setCurrentLangCode(cookieLang || saved || 'en');
+  }, []);
+
+  const activeLangObj = SUPPORTED_LANGUAGES.find(l => l.code === currentLangCode) || SUPPORTED_LANGUAGES[1];
+
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -106,6 +121,36 @@ export const Header: React.FC<HeaderProps> = ({
       if (outcome === 'accepted') {
         setDeferredPrompt(null);
         setIsInstallable(false);
+      }
+    }
+  };
+
+  const handleShareClick = async () => {
+    const shareUrl = window.location.href;
+    const shareData = {
+      title: 'FastArc - Govt Jobs Portal',
+      text: 'FastArc - Sarkari Result, Latest Govt Jobs, Admit Card & Answer Key',
+      url: shareUrl
+    };
+
+    if (navigator.share) {
+      try {
+        await navigator.share(shareData);
+        return;
+      } catch (err: any) {
+        if (err && err.name === 'AbortError') {
+          return;
+        }
+      }
+    }
+
+    if (navigator.clipboard) {
+      try {
+        await navigator.clipboard.writeText(shareUrl);
+        setIsCopied(true);
+        setTimeout(() => setIsCopied(false), 2500);
+      } catch (e) {
+        console.error('Clipboard copy failed', e);
       }
     }
   };
@@ -199,19 +244,19 @@ export const Header: React.FC<HeaderProps> = ({
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.92, rotate: -4 }}
               onClick={() => setIsDrawerOpen(true)}
-              className="relative w-9 h-9 sm:w-10 sm:h-10 rounded-xl text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-900 hover:bg-amber-50 dark:hover:bg-slate-800 hover:text-amber-600 dark:hover:text-amber-400 transition-all focus:outline-none cursor-pointer flex flex-col justify-center items-center gap-[4px] border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow hover:border-amber-400/70 group overflow-hidden shrink-0"
+              className="relative w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all focus:outline-none cursor-pointer flex flex-col justify-center items-center gap-[4.5px] border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow hover:border-amber-400/70 group overflow-hidden shrink-0"
               title="All Options & Categories Menu"
               aria-label="Open Navigation Drawer"
             >
-              {/* 3-bar animated Hamburger Lines */}
+              {/* 3-bar Tiranga / Tricolor Hamburger Lines (Saffron, White/Silver, Green) */}
               <motion.span 
-                className="w-4.5 sm:w-5 h-[2px] bg-slate-800 dark:bg-slate-100 group-hover:bg-amber-600 dark:group-hover:bg-amber-400 rounded-full transition-all duration-200 group-hover:w-6" 
+                className="w-5 sm:w-5.5 h-[2.5px] bg-[#EA580C] dark:bg-[#F97316] rounded-xs transition-all duration-200 group-hover:scale-x-110" 
               />
               <motion.span 
-                className="w-3.5 sm:w-4 h-[2px] bg-slate-800 dark:bg-slate-100 group-hover:bg-amber-600 dark:group-hover:bg-amber-400 rounded-full transition-all duration-200 self-start ml-0.5 group-hover:w-6 group-hover:ml-0" 
+                className="w-5 sm:w-5.5 h-[2.5px] bg-slate-300 dark:bg-white border border-slate-300/80 dark:border-transparent rounded-xs transition-all duration-200 group-hover:scale-x-110" 
               />
               <motion.span 
-                className="w-4.5 sm:w-5 h-[2px] bg-slate-800 dark:bg-slate-100 group-hover:bg-amber-600 dark:group-hover:bg-amber-400 rounded-full transition-all duration-200 group-hover:w-6" 
+                className="w-5 sm:w-5.5 h-[2.5px] bg-[#046A38] dark:bg-[#16A34A] rounded-xs transition-all duration-200 group-hover:scale-x-110" 
               />
             </motion.button>
 
@@ -353,7 +398,7 @@ export const Header: React.FC<HeaderProps> = ({
           <div className="flex items-center space-x-2">
             <button 
               onClick={onToggleDarkMode} 
-              className="p-2 text-slate-600 hover:text-red-600 dark:text-slate-300 dark:hover:text-red-500 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-all focus:outline-none cursor-pointer" 
+              className="p-2 text-slate-600 hover:text-red-600 dark:text-slate-300 dark:hover:text-red-500 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-all focus:outline-none cursor-pointer shrink-0" 
               title={isDarkMode ? "Switch to Light Mode" : "Switch to Dark Mode"}
               aria-label="Toggle Theme"
             >
@@ -622,34 +667,46 @@ export const Header: React.FC<HeaderProps> = ({
 
               {/* SECTION 2: Core Portal Sections (2-Column Grid) */}
               <div>
-                <div className="flex gap-2 mb-4">
+                <div className="flex gap-2 mb-2.5">
                   <button
                     onClick={handleInstallClick}
-                    className="flex items-center justify-center gap-1.5 flex-1 px-2 py-1.5 rounded-md bg-transparent border border-amber-600 text-amber-600 font-bold text-xs shadow-none hover:bg-amber-50 transition-all duration-200"
+                    className="flex items-center justify-center gap-1.5 flex-1 px-2 py-1.5 rounded-md bg-transparent border border-amber-600/80 text-amber-600 dark:text-amber-400 font-bold text-xs shadow-none hover:bg-amber-500/10 active:scale-[0.98] transition-all duration-200 cursor-pointer"
+                    title="Install App"
                   >
-                    <Download className="w-3 h-3" />
-                    App Install
+                    <Download className="w-3 h-3 text-amber-600 dark:text-amber-400" />
+                    <span>App Install</span>
                   </button>
+
                   <button
-                    onClick={async () => {
-                      if (navigator.share) {
-                        try {
-                          await navigator.share({
-                            title: 'FastArc',
-                            text: 'Check out FastArc Gov Jobs Portal!',
-                            url: window.location.href,
-                          });
-                        } catch (err) {
-                          console.error('Error sharing:', err);
-                        }
-                      }
-                    }}
-                    className="flex items-center justify-center gap-1.5 flex-1 px-2 py-1.5 rounded-md bg-transparent border border-slate-400 text-slate-700 dark:text-slate-300 font-bold text-xs shadow-none hover:bg-slate-100 dark:hover:bg-slate-800 transition-all duration-200"
+                    onClick={handleShareClick}
+                    className="flex items-center justify-center gap-1.5 flex-1 px-2 py-1.5 rounded-md bg-transparent border border-amber-600/80 text-amber-600 dark:text-amber-400 font-bold text-xs shadow-none hover:bg-amber-500/10 active:scale-[0.98] transition-all duration-200 cursor-pointer"
+                    title="Share App"
                   >
-                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342M8.684 13.342L4.032 15.668C3.396 15.986 3 16.634 3 17.342V19a1 1 0 001 1h16a1 1 0 001-1v-1.658c0-.708-.396-1.356-1.032-1.674l-4.652-2.326M8.684 13.342L12 10.5m0 0l3.316 2.842M12 10.5V3m0 0l-3 3m3-3l3 3" />
+                    <svg className="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <defs>
+                        <linearGradient id="goldShareIconGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                          <stop offset="0%" stopColor="#FDE68A" />
+                          <stop offset="35%" stopColor="#FBBF24" />
+                          <stop offset="75%" stopColor="#F59E0B" />
+                          <stop offset="100%" stopColor="#D97706" />
+                        </linearGradient>
+                      </defs>
+                      <path
+                        d="M9 5H6C4.89543 5 4 5.89543 4 7V18C4 19.1046 4.89543 20 6 20H17C18.1046 20 19 19.1046 19 18V14"
+                        stroke="url(#goldShareIconGrad)"
+                        strokeWidth="2.4"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                      <path
+                        d="M8.5 15.5C8.5 11 11.5 7.5 20.5 6.5M20.5 6.5L15 2M20.5 6.5L15.5 11"
+                        stroke="url(#goldShareIconGrad)"
+                        strokeWidth="2.4"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
                     </svg>
-                    Share App
+                    <span>{isCopied ? 'Link Copied!' : 'Share App'}</span>
                   </button>
                 </div>
                 <button 
@@ -709,11 +766,10 @@ export const Header: React.FC<HeaderProps> = ({
                       <a
                         key={item.id}
                         href={item.url}
-                        
                         rel="noopener noreferrer"
-                        className="flex items-center gap-2 p-2 rounded-xl bg-slate-50 dark:bg-slate-800/50 hover:bg-white dark:hover:bg-slate-800 border border-slate-100 dark:border-slate-700/50 text-slate-700 dark:text-slate-200 font-bold text-[10px] transition-all shadow-sm hover:shadow-md"
+                        className="flex items-center gap-2 p-2 rounded-xl bg-slate-100/50 dark:bg-slate-800/40 hover:bg-slate-200/60 dark:hover:bg-slate-700/60 backdrop-blur-sm border border-slate-200/50 dark:border-slate-700/50 text-slate-700 dark:text-slate-200 font-bold text-[10px] transition-all shadow-none hover:scale-[1.02]"
                       >
-                        <OfficialSocialLogo platform={item.platform} className="w-4 h-4 shrink-0 drop-shadow-sm" />
+                        <OfficialSocialLogo platform={item.platform} className="w-4 h-4 shrink-0" />
                         <span className="truncate leading-tight">{item.title}</span>
                       </a>
                     ))}
@@ -771,8 +827,40 @@ export const Header: React.FC<HeaderProps> = ({
                 )}
               </div>
 
+              {/* SECTION: Language Selector (Added directly above Theme Mode button) */}
+              <div className="pt-2">
+                <div className="w-full bg-slate-50 dark:bg-slate-800/50 p-1.5 rounded-xl border border-slate-100 dark:border-slate-800">
+                  <button
+                    type="button"
+                    onClick={() => setIsLanguageModalOpen(true)}
+                    className="w-full flex items-center justify-between p-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700/80 shadow-2xs hover:border-amber-400 dark:hover:border-amber-500/60 hover:bg-amber-50/50 dark:hover:bg-slate-750 transition-all cursor-pointer group"
+                    title="Change Website Language / भाषा बदलें"
+                  >
+                    <div className="flex items-center gap-2.5 min-w-0">
+                      <div className="w-8 h-8 rounded-lg bg-amber-500/10 dark:bg-amber-400/10 border border-amber-500/30 flex items-center justify-center text-amber-600 dark:text-amber-400 shrink-0">
+                        <HindiEnglishIcon className="w-5 h-5" />
+                      </div>
+                      <div className="text-left truncate">
+                        <div className="text-xs font-black text-slate-800 dark:text-slate-100 flex items-center gap-1.5">
+                          <span>Language</span>
+                          <span className="text-[10px] px-1.5 py-0.2 rounded bg-amber-100 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 font-bold">भाषा</span>
+                        </div>
+                        <div className="text-[10px] text-slate-500 dark:text-slate-400 font-semibold truncate">
+                          {activeLangObj.flag} {activeLangObj.nativeName} ({activeLangObj.name})
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-1 text-xs font-bold text-amber-600 dark:text-amber-400 group-hover:translate-x-0.5 transition-transform shrink-0 ml-2">
+                      <span className="text-[11px]">Change</span>
+                      <ChevronRight className="w-3.5 h-3.5" />
+                    </div>
+                  </button>
+                </div>
+              </div>
+
               {/* SECTION: Theme Mode Selection (Light, Dark, System) */}
-              <div className="pt-2 flex justify-center pb-4">
+              <div className="pt-1.5 flex justify-center pb-4">
                 <div className="w-full bg-slate-50 dark:bg-slate-800/50 p-1 rounded-xl border border-slate-100 dark:border-slate-800">
                   <div className="flex items-center justify-between gap-1">
                     <button
@@ -853,6 +941,17 @@ export const Header: React.FC<HeaderProps> = ({
         </div>
       )}
     </AnimatePresence>
+
+    {/* Language Modal */}
+    <LanguageModal
+      isOpen={isLanguageModalOpen}
+      onClose={() => setIsLanguageModalOpen(false)}
+      currentLangCode={currentLangCode}
+      onSelectLanguage={(code) => {
+        setCurrentLangCode(code);
+        changeSiteLanguage(code);
+      }}
+    />
   </>
 );
 };

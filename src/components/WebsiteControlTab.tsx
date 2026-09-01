@@ -592,13 +592,13 @@ export const WebsiteControlTab: React.FC<WebsiteControlTabProps> = ({
                         jobLinkLineHeight: STANDARD_JOB_LINK_LINE_HEIGHT
                       }
                     }));
-                    onToast('🎯 Job Links Font Size reset to Standard (Desktop: 16px, Mobile: 15px, Bold: 700)!');
+                    onToast('🎯 Job Links Font Size reset to Standard (Desktop: 14.5px, Mobile: 13px, Medium-Bold: 600)!');
                   }}
                   className="inline-flex items-center justify-center gap-2 px-3.5 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-black text-xs transition-all shadow-sm hover:shadow-md cursor-pointer shrink-0 active:scale-95"
                   title="Reset all job links font size to standard default values"
                 >
                   <RotateCcw className="w-3.5 h-3.5" />
-                  <span>🎯 Standard Size (16px / 15px)</span>
+                  <span>🎯 Standard Size (14.5px / 13px)</span>
                 </button>
               </div>
             </div>
@@ -608,19 +608,19 @@ export const WebsiteControlTab: React.FC<WebsiteControlTabProps> = ({
               <label className="text-xs font-black text-slate-800 dark:text-slate-200 flex items-center justify-between">
                 <span>⚡ Quick Size Presets (त्वरित साइज चुनें):</span>
                 <span className="text-[11px] font-normal text-slate-500">
-                  Current: <strong className="text-amber-600 dark:text-amber-400 font-bold">{config.typography?.jobLinkFontSize || 16}px</strong> Desktop / <strong className="text-amber-600 dark:text-amber-400 font-bold">{config.typography?.jobLinkFontSizeMobile || 15}px</strong> Mobile
+                  Current: <strong className="text-amber-600 dark:text-amber-400 font-bold">{config.typography?.jobLinkFontSize || 14.5}px</strong> Desktop / <strong className="text-amber-600 dark:text-amber-400 font-bold">{config.typography?.jobLinkFontSizeMobile || 13}px</strong> Mobile
                 </span>
               </label>
 
               <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
                 {[
-                  { label: 'Compact', desktop: 14, mobile: 13, desc: 'Small / Dense', isStandard: false },
-                  { label: 'Standard (Default)', desktop: 16, mobile: 15, desc: 'Official Standard', isStandard: true },
-                  { label: 'Medium', desktop: 17.5, mobile: 16, desc: 'Clear & Crisp', isStandard: false },
-                  { label: 'Large', desktop: 19, mobile: 17, desc: 'Bold & Prominent', isStandard: false },
-                  { label: 'Extra Large', desktop: 21, mobile: 18.5, desc: 'Maximum Size', isStandard: false },
+                  { label: 'Compact', desktop: 13, mobile: 12, desc: 'Small / Dense', isStandard: false },
+                  { label: 'Standard (Default)', desktop: 14.5, mobile: 13, desc: 'Clean & Balanced', isStandard: true },
+                  { label: 'Medium', desktop: 16, mobile: 14.5, desc: 'Clear & Crisp', isStandard: false },
+                  { label: 'Large', desktop: 17.5, mobile: 15.5, desc: 'Bold & Prominent', isStandard: false },
+                  { label: 'Extra Large', desktop: 19, mobile: 16.5, desc: 'Maximum Size', isStandard: false },
                 ].map((preset) => {
-                  const isCurrent = (config.typography?.jobLinkFontSize || 16) === preset.desktop;
+                  const isCurrent = (config.typography?.jobLinkFontSize || 14.5) === preset.desktop;
                   return (
                     <button
                       key={preset.label}

@@ -72,7 +72,7 @@ const VirtualJobRow: React.FC<VirtualJobRowProps> = ({
   return (
     <div
       ref={rowRef}
-      className={`py-1.5 sm:py-2 px-2 sm:px-2.5 hover:bg-slate-50 dark:hover:bg-slate-850/80 transition-all duration-150 transform hover:scale-[1.006] hover:shadow-xs active:scale-[0.99] flex items-start justify-between group rounded-lg border-b border-slate-100 dark:border-slate-800/80 last:border-b-0 will-change-transform ${
+      className={`py-2 sm:py-2.5 px-2.5 sm:px-3 hover:bg-slate-50 dark:hover:bg-slate-850/90 transition-all duration-150 transform hover:scale-[1.004] hover:shadow-xs active:scale-[0.99] flex items-start justify-between group rounded-xl border-b border-slate-100 dark:border-slate-800/80 last:border-b-0 will-change-transform ${
         isExpiringSoon ? 'bg-rose-50/50 dark:bg-rose-950/20 ring-1 ring-rose-500/40 dark:ring-rose-400/30 shadow-xs' : ''
       }`}
     >
@@ -87,12 +87,12 @@ const VirtualJobRow: React.FC<VirtualJobRowProps> = ({
         }}
         className="w-full min-w-0 cursor-pointer no-underline block"
       >
-        <div className="flex items-start justify-between gap-1.5">
-          <span className="job-link-title-text text-[10px] sm:text-[11px] font-semibold text-slate-900 dark:text-slate-100 group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors leading-snug flex-1 min-w-0 tracking-tight">
+        <div className="flex items-start justify-between gap-2">
+          <span className="job-link-title-text text-[13px] sm:text-[13.5px] md:text-[14px] lg:text-[14.5px] font-bold text-slate-900 dark:text-slate-100 group-hover:text-blue-600 dark:group-hover:text-amber-400 group-hover:underline transition-colors leading-snug flex-1 min-w-0 tracking-tight">
             <HighlightText text={item.title} query={searchQuery?.trim()} />
           </span>
           {(item.isNew || isAdmin) && (
-            <div className="flex items-center space-x-1 shrink-0 ml-1">
+            <div className="flex items-center space-x-1.5 shrink-0 ml-1.5 mt-0.5">
               {isAdmin && (
                 <>
                   <button
@@ -100,7 +100,7 @@ const VirtualJobRow: React.FC<VirtualJobRowProps> = ({
                     className="text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 p-0.5 rounded transition-all text-xs cursor-pointer"
                     title="Edit Entry"
                   >
-                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                     </svg>
                   </button>
@@ -109,35 +109,35 @@ const VirtualJobRow: React.FC<VirtualJobRowProps> = ({
                     className="text-slate-400 hover:text-rose-600 dark:hover:text-rose-500 p-0.5 rounded transition-all text-xs cursor-pointer"
                     title="Delete Entry"
                   >
-                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                     </svg>
                   </button>
                 </>
               )}
               {item.isNew && (
-                <span className="bg-red-500 text-white text-[8.5px] sm:text-[9px] font-black tracking-wider px-1.5 py-0.2 rounded uppercase badge-pulse shadow-xs">
+                <span className="bg-red-500 text-white text-[9.5px] sm:text-[10px] md:text-[10.5px] font-black tracking-wider px-1.5 py-0.5 rounded uppercase badge-pulse shadow-xs">
                   NEW
                 </span>
               )}
             </div>
           )}
         </div>
-        <div className="flex items-center flex-wrap gap-1 sm:gap-1.5 mt-0.5">
-          <span className="text-[9px] sm:text-[9.5px] text-slate-500 dark:text-slate-400 font-medium flex items-center gap-0.5">
+        <div className="flex items-center flex-wrap gap-1.5 sm:gap-2 mt-1 sm:mt-1.5">
+          <span className="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 font-medium flex items-center gap-1">
             📅 {item.postDate}
           </span>
-          <span className="text-[8.5px] sm:text-[9px] bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 px-1 py-0.2 rounded font-bold uppercase tracking-wide border border-slate-200/60 dark:border-slate-700/60">
+          <span className="text-[10px] sm:text-[11px] bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 px-1.5 py-0.5 rounded font-bold uppercase tracking-wide border border-slate-200/80 dark:border-slate-700/80">
             {item.state}
           </span>
           {lastDateStr && (
-            <span className={`text-[9px] sm:text-[9.5px] ${isExpiringSoon ? 'text-rose-600 dark:text-rose-400 font-bold' : 'text-slate-500 dark:text-slate-400 font-medium'}`}>
+            <span className={`text-[11px] sm:text-xs ${isExpiringSoon ? 'text-rose-600 dark:text-rose-400 font-bold' : 'text-slate-500 dark:text-slate-400 font-medium'}`}>
               Last Date: {lastDateStr}
             </span>
           )}
           {isExpiringSoon && (
-            <span className="text-[8.5px] sm:text-[9px] bg-rose-500 text-white px-1.5 py-0.2 rounded font-black uppercase tracking-wider animate-pulse flex items-center gap-0.5 shadow-sm">
-              <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <span className="text-[9.5px] sm:text-[10px] bg-rose-500 text-white px-2 py-0.5 rounded font-black uppercase tracking-wider animate-pulse flex items-center gap-1 shadow-xs">
+              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
               {daysUntil === 0 ? 'Expires Today' : `Expires in ${daysUntil} ${daysUntil === 1 ? 'Day' : 'Days'}`}
@@ -181,9 +181,9 @@ export const VirtualizedJobList: React.FC<VirtualizedJobListProps> = ({
     scrollToTop
   } = useVirtualList({
     itemCount: jobs.length,
-    estimatedItemHeight: 48,
+    estimatedItemHeight: 58,
     overscan: 4,
-    containerHeightFallback: 460
+    containerHeightFallback: 480
   });
 
   if (jobs.length === 0) {

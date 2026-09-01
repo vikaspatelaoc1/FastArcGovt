@@ -26,10 +26,10 @@ export interface WebsiteCustomColorConfig {
   errorColor: string;
 }
 
-export const STANDARD_JOB_LINK_FONT_SIZE = 16;
-export const STANDARD_JOB_LINK_FONT_SIZE_MOBILE = 15;
-export const STANDARD_JOB_LINK_FONT_WEIGHT: '500' | '600' | '700' | '800' = '700';
-export const STANDARD_JOB_LINK_LINE_HEIGHT = '1.45';
+export const STANDARD_JOB_LINK_FONT_SIZE = 14.5;
+export const STANDARD_JOB_LINK_FONT_SIZE_MOBILE = 13;
+export const STANDARD_JOB_LINK_FONT_WEIGHT: '500' | '600' | '700' | '800' = '600';
+export const STANDARD_JOB_LINK_LINE_HEIGHT = '1.4';
 
 export interface WebsiteTypographyConfig {
   fontFamily: string;

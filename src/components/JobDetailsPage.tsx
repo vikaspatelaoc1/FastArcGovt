@@ -1020,7 +1020,9 @@ export const JobDetailsPage: React.FC<JobDetailsPageProps> = ({
       )}
 
       {/* 17. Standard Full-width FastArc Footer */}
-      <footer className="custom-footer-override bg-slate-900 border-t-4 border-amber-500 pt-4 sm:pt-5 pb-8 mt-12 transition-colors duration-300 print:hidden">
+      <footer className="custom-footer-override relative bg-slate-900 pt-0 pb-8 mt-12 transition-colors duration-300 print:hidden overflow-hidden">
+        {/* Tricolor Border Line matching image (Saffron -> White -> Green) */}
+        <div className="h-1.5 w-full bg-gradient-to-r from-[#FF671F] via-[#FFFFFF] to-[#046A38] shadow-sm mb-4 sm:mb-5" />
         <div className="w-full mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8 text-sm">
             <div className="space-y-3.5">
