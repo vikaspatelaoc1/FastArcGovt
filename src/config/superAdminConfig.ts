@@ -15,6 +15,8 @@ import {
   Type,
   Globe,
   SlidersHorizontal,
+  Mail,
+  Bell,
   LucideIcon 
 } from 'lucide-react';
 import { SuperAdminTabType } from '../types';
@@ -126,6 +128,18 @@ export const SUPER_ADMIN_MODULES: SuperAdminModuleConfig[] = [
     tag: 'GOOGLE-SEO'
   },
   {
+    id: 'categorySeo',
+    label: 'Category SEO & Meta Tags Manager',
+    shortLabel: 'Category SEO',
+    description: 'Bulk edit Meta Description, Keywords, Title & Open Graph social cards for each job category',
+    icon: Globe,
+    category: 'core',
+    categoryLabel: 'Core Operations',
+    color: 'text-teal-400',
+    hoverBg: 'hover:bg-teal-950/40',
+    tag: 'BULK-SEO'
+  },
+  {
     id: 'social',
     label: 'Social Media & Official Channels',
     shortLabel: 'Social Media Links',
@@ -183,6 +197,19 @@ export const SUPER_ADMIN_MODULES: SuperAdminModuleConfig[] = [
     color: 'text-amber-400',
     hoverBg: 'hover:bg-amber-950/40',
     badge: (data) => data.subscribersCount !== undefined ? `${data.subscribersCount}` : undefined
+  },
+  {
+    id: 'emailNotifications',
+    label: 'Automated Email Notifications & Alerts Dispatcher',
+    shortLabel: 'Automated Notifications',
+    description: 'Auto-dispatch email alerts on new job publish, custom SMTP/API configuration, live email preview & dispatch history',
+    icon: Mail,
+    category: 'tools',
+    categoryLabel: 'Automation Tools',
+    color: 'text-rose-400',
+    hoverBg: 'hover:bg-rose-950/40',
+    tag: 'AUTO-ALERTS',
+    badge: (data) => data.subscribersCount !== undefined ? `${data.subscribersCount} Subs` : 'ACTIVE'
   },
   {
     id: 'employees',

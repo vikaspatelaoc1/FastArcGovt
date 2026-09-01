@@ -17,8 +17,9 @@ import { EarningsTab } from './EarningsTab';
 import { ThemeColorCustomizerTab } from './ThemeColorCustomizerTab';
 import { ColumnEditorTab } from './ColumnEditorTab';
 import { SeoEditorTab } from './SeoEditorTab';
+import { CategorySeoEditorTab } from './CategorySeoEditorTab';
 import { WebsiteControlTab } from './WebsiteControlTab';
-import { PagesManagerTab, ApiAnalyticsTab, ActivityLogsTab, HelpdeskTab, AutoBroadcasterTab, AdsManagerTab } from './NewAdminTabs';
+import { PagesManagerTab, ApiAnalyticsTab, ActivityLogsTab, HelpdeskTab, AutoBroadcasterTab, AdsManagerTab, EmailNotificationsTab } from './NewAdminTabs';
 import { defaultSocialLinks } from '../data';
 import { 
   saveEmployeeToFirestore, 
@@ -1113,6 +1114,13 @@ export const SuperAdminDashboardModal: React.FC<SuperAdminDashboardModalProps> =
               </div>
             )}
 
+            {/* TAB: CATEGORY SEO & META TAGS MANAGER */}
+            {activeTab === 'categorySeo' && (
+              <div className="space-y-6 animate-in fade-in duration-200">
+                <CategorySeoEditorTab onShowToast={onToast} />
+              </div>
+            )}
+
             {/* TAB: SOCIAL MEDIA & CHANNELS */}
             {activeTab === 'social' && (
               <div className="space-y-6 animate-in fade-in duration-200">
@@ -1961,6 +1969,16 @@ export const SuperAdminDashboardModal: React.FC<SuperAdminDashboardModalProps> =
             {activeTab === 'adsManager' && (
               <div className="animate-in fade-in duration-200">
                 <AdsManagerTab onToast={onToast} />
+              </div>
+            )}
+
+            {activeTab === 'emailNotifications' && (
+              <div className="animate-in fade-in duration-200">
+                <EmailNotificationsTab
+                  subscribers={subscribers}
+                  jobs={jobs}
+                  onToast={onToast}
+                />
               </div>
             )}
 

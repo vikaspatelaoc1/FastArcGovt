@@ -46,6 +46,10 @@ import {
   DEFAULT_WEBSITE_SECTIONS,
   GLOBAL_THEME_PRESETS, 
   AVAILABLE_GOOGLE_FONTS, 
+  STANDARD_JOB_LINK_FONT_SIZE,
+  STANDARD_JOB_LINK_FONT_SIZE_MOBILE,
+  STANDARD_JOB_LINK_FONT_WEIGHT,
+  STANDARD_JOB_LINK_LINE_HEIGHT,
   loadWebsiteControlConfig, 
   saveWebsiteControlConfig, 
   applyWebsiteControlToDOM,
@@ -82,6 +86,9 @@ export const WebsiteControlTab: React.FC<WebsiteControlTabProps> = ({
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
   const [isPublishing, setIsPublishing] = useState(false);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+  const [jobLinkPreviewCategory, setJobLinkPreviewCategory] = useState<'all' | 'results' | 'admit' | 'latest' | 'syllabus'>('all');
+  const [jobLinkPreviewDevice, setJobLinkPreviewDevice] = useState<'desktop' | 'mobile' | 'split'>('desktop');
+  const [jobLinkPreviewLayout, setJobLinkPreviewLayout] = useState<'multi-column' | 'single-list'>('multi-column');
 
   // Subscribe to real-time Cloud updates from Firestore
   useEffect(() => {
@@ -540,6 +547,650 @@ export const WebsiteControlTab: React.FC<WebsiteControlTabProps> = ({
               <p className="text-xs text-slate-600 dark:text-slate-400">
                 Candidates can check the latest examination notifications, eligibility criteria, age limits, syllabus pattern, and answer key updates in real-time.
               </p>
+            </div>
+          </div>
+
+          {/* DEDICATED JOB LINKS FONT TEXT SIZE CONTROLLER WITH REAL-TIME PREVIEW */}
+          <div className="bg-white dark:bg-slate-900 rounded-2xl p-5 border-2 border-amber-500/40 dark:border-amber-400/30 shadow-md space-y-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-200 dark:border-slate-800">
+              <div>
+                <div className="flex items-center gap-2">
+                  <div className="p-2 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400">
+                    <Type className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h3 className="text-base font-black text-slate-900 dark:text-white flex items-center gap-2">
+                      Job Links Font Text Size Control
+                      <span className="text-[11px] font-bold px-2 py-0.5 rounded-md bg-amber-500/20 text-amber-700 dark:text-amber-300 uppercase tracking-wider">
+                        सभी जॉब लिंक्स
+                      </span>
+                    </h3>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                      Set custom font text size for all job titles and links across Result, Admit Card, Latest Jobs, Syllabus, and all categories.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Real-time Indicator & Reset Button */}
+              <div className="flex items-center gap-2 flex-wrap">
+                <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 text-[11px] font-bold">
+                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
+                  <span>Real-Time Live Preview Active</span>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    handleUpdate(prev => ({
+                      ...prev,
+                      typography: {
+                        ...prev.typography,
+                        jobLinkFontSize: STANDARD_JOB_LINK_FONT_SIZE,
+                        jobLinkFontSizeMobile: STANDARD_JOB_LINK_FONT_SIZE_MOBILE,
+                        jobLinkFontWeight: STANDARD_JOB_LINK_FONT_WEIGHT,
+                        jobLinkLineHeight: STANDARD_JOB_LINK_LINE_HEIGHT
+                      }
+                    }));
+                    onToast('🎯 Job Links Font Size reset to Standard (Desktop: 16px, Mobile: 15px, Bold: 700)!');
+                  }}
+                  className="inline-flex items-center justify-center gap-2 px-3.5 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-black text-xs transition-all shadow-sm hover:shadow-md cursor-pointer shrink-0 active:scale-95"
+                  title="Reset all job links font size to standard default values"
+                >
+                  <RotateCcw className="w-3.5 h-3.5" />
+                  <span>🎯 Standard Size (16px / 15px)</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Quick Preset Buttons */}
+            <div className="space-y-2">
+              <label className="text-xs font-black text-slate-800 dark:text-slate-200 flex items-center justify-between">
+                <span>⚡ Quick Size Presets (त्वरित साइज चुनें):</span>
+                <span className="text-[11px] font-normal text-slate-500">
+                  Current: <strong className="text-amber-600 dark:text-amber-400 font-bold">{config.typography?.jobLinkFontSize || 16}px</strong> Desktop / <strong className="text-amber-600 dark:text-amber-400 font-bold">{config.typography?.jobLinkFontSizeMobile || 15}px</strong> Mobile
+                </span>
+              </label>
+
+              <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
+                {[
+                  { label: 'Compact', desktop: 14, mobile: 13, desc: 'Small / Dense', isStandard: false },
+                  { label: 'Standard (Default)', desktop: 16, mobile: 15, desc: 'Official Standard', isStandard: true },
+                  { label: 'Medium', desktop: 17.5, mobile: 16, desc: 'Clear & Crisp', isStandard: false },
+                  { label: 'Large', desktop: 19, mobile: 17, desc: 'Bold & Prominent', isStandard: false },
+                  { label: 'Extra Large', desktop: 21, mobile: 18.5, desc: 'Maximum Size', isStandard: false },
+                ].map((preset) => {
+                  const isCurrent = (config.typography?.jobLinkFontSize || 16) === preset.desktop;
+                  return (
+                    <button
+                      key={preset.label}
+                      type="button"
+                      onClick={() => {
+                        handleUpdate(prev => ({
+                          ...prev,
+                          typography: {
+                            ...prev.typography,
+                            jobLinkFontSize: preset.desktop,
+                            jobLinkFontSizeMobile: preset.mobile
+                          }
+                        }));
+                        onToast(`✨ Set Job Links font size to ${preset.label} (${preset.desktop}px)!`);
+                      }}
+                      className={`p-2.5 rounded-xl border text-left transition-all cursor-pointer flex flex-col justify-between ${
+                        isCurrent
+                          ? 'border-amber-500 bg-amber-50 dark:bg-amber-950/40 text-amber-900 dark:text-amber-200 ring-2 ring-amber-400/40 shadow-xs'
+                          : 'border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-700 dark:text-slate-300 hover:border-amber-300 dark:hover:border-amber-700'
+                      }`}
+                    >
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-black truncate">{preset.label}</span>
+                        {preset.isStandard && (
+                          <span className="text-[9px] bg-amber-500 text-slate-950 px-1 rounded font-black">STD</span>
+                        )}
+                      </div>
+                      <div className="mt-1 flex items-center justify-between text-[10px] text-slate-500 dark:text-slate-400">
+                        <span>{preset.desktop}px / {preset.mobile}px</span>
+                        <span>{preset.desc}</span>
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Fine Tuning Sliders with Steppers */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5 p-4 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800">
+              {/* Desktop Font Size Slider */}
+              <div className="space-y-2">
+                <div className="flex justify-between items-center">
+                  <label className="text-xs font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
+                    <Monitor className="w-3.5 h-3.5 text-indigo-500" />
+                    <span>Desktop / Tablet Job Links Font Size</span>
+                  </label>
+                  <div className="flex items-center gap-1">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const cur = config.typography?.jobLinkFontSize || 16;
+                        if (cur > 12) {
+                          handleUpdate(prev => ({
+                            ...prev,
+                            typography: { ...prev.typography, jobLinkFontSize: Math.max(12, cur - 0.5) }
+                          }));
+                        }
+                      }}
+                      className="w-6 h-6 rounded bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-black text-xs flex items-center justify-center hover:bg-amber-500 hover:text-white transition-colors"
+                      title="Decrease font size by 0.5px"
+                    >
+                      -
+                    </button>
+                    <span className="px-2 py-0.5 rounded-md bg-indigo-500/15 text-indigo-700 dark:text-indigo-300 font-mono font-black text-xs min-w-[48px] text-center">
+                      {config.typography?.jobLinkFontSize || 16}px
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const cur = config.typography?.jobLinkFontSize || 16;
+                        if (cur < 26) {
+                          handleUpdate(prev => ({
+                            ...prev,
+                            typography: { ...prev.typography, jobLinkFontSize: Math.min(26, cur + 0.5) }
+                          }));
+                        }
+                      }}
+                      className="w-6 h-6 rounded bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-black text-xs flex items-center justify-center hover:bg-amber-500 hover:text-white transition-colors"
+                      title="Increase font size by 0.5px"
+                    >
+                      +
+                    </button>
+                  </div>
+                </div>
+                <input
+                  type="range"
+                  min="12"
+                  max="26"
+                  step="0.5"
+                  value={config.typography?.jobLinkFontSize || 16}
+                  onInput={(e: any) => handleUpdate(prev => ({
+                    ...prev,
+                    typography: { ...prev.typography, jobLinkFontSize: Number(e.target.value) }
+                  }))}
+                  onChange={(e) => handleUpdate(prev => ({
+                    ...prev,
+                    typography: { ...prev.typography, jobLinkFontSize: Number(e.target.value) }
+                  }))}
+                  className="w-full accent-amber-500 cursor-pointer"
+                />
+                <div className="flex justify-between text-[10px] text-slate-400">
+                  <span>12px (Small)</span>
+                  <span className="font-bold text-amber-600 dark:text-amber-400">16px (Standard Default)</span>
+                  <span>26px (Large)</span>
+                </div>
+              </div>
+
+              {/* Mobile Phone Font Size Slider */}
+              <div className="space-y-2">
+                <div className="flex justify-between items-center">
+                  <label className="text-xs font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
+                    <Smartphone className="w-3.5 h-3.5 text-emerald-500" />
+                    <span>Mobile Phones Job Links Font Size</span>
+                  </label>
+                  <div className="flex items-center gap-1">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const cur = config.typography?.jobLinkFontSizeMobile || 15;
+                        if (cur > 12) {
+                          handleUpdate(prev => ({
+                            ...prev,
+                            typography: { ...prev.typography, jobLinkFontSizeMobile: Math.max(12, cur - 0.5) }
+                          }));
+                        }
+                      }}
+                      className="w-6 h-6 rounded bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-black text-xs flex items-center justify-center hover:bg-emerald-500 hover:text-white transition-colors"
+                      title="Decrease mobile font size by 0.5px"
+                    >
+                      -
+                    </button>
+                    <span className="px-2 py-0.5 rounded-md bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 font-mono font-black text-xs min-w-[48px] text-center">
+                      {config.typography?.jobLinkFontSizeMobile || 15}px
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const cur = config.typography?.jobLinkFontSizeMobile || 15;
+                        if (cur < 22) {
+                          handleUpdate(prev => ({
+                            ...prev,
+                            typography: { ...prev.typography, jobLinkFontSizeMobile: Math.min(22, cur + 0.5) }
+                          }));
+                        }
+                      }}
+                      className="w-6 h-6 rounded bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-black text-xs flex items-center justify-center hover:bg-emerald-500 hover:text-white transition-colors"
+                      title="Increase mobile font size by 0.5px"
+                    >
+                      +
+                    </button>
+                  </div>
+                </div>
+                <input
+                  type="range"
+                  min="12"
+                  max="22"
+                  step="0.5"
+                  value={config.typography?.jobLinkFontSizeMobile || 15}
+                  onInput={(e: any) => handleUpdate(prev => ({
+                    ...prev,
+                    typography: { ...prev.typography, jobLinkFontSizeMobile: Number(e.target.value) }
+                  }))}
+                  onChange={(e) => handleUpdate(prev => ({
+                    ...prev,
+                    typography: { ...prev.typography, jobLinkFontSizeMobile: Number(e.target.value) }
+                  }))}
+                  className="w-full accent-amber-500 cursor-pointer"
+                />
+                <div className="flex justify-between text-[10px] text-slate-400">
+                  <span>12px (Small)</span>
+                  <span className="font-bold text-emerald-600 dark:text-emerald-400">15px (Standard Default)</span>
+                  <span>22px (Large)</span>
+                </div>
+              </div>
+
+              {/* Font Weight Dropdown */}
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-slate-800 dark:text-slate-200">
+                  Font Weight (फॉन्ट की मोटाई / Boldness)
+                </label>
+                <select
+                  value={config.typography?.jobLinkFontWeight || '700'}
+                  onChange={(e) => handleUpdate(prev => ({
+                    ...prev,
+                    typography: { ...prev.typography, jobLinkFontWeight: e.target.value as any }
+                  }))}
+                  className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-2 text-xs font-bold text-slate-900 dark:text-white cursor-pointer"
+                >
+                  <option value="500">Medium (500) — Normal Readability</option>
+                  <option value="600">Semi-Bold (600) — High Clarity</option>
+                  <option value="700">Bold (700) — Standard Default Official</option>
+                  <option value="800">Extra Bold (800) — Ultra Prominent</option>
+                </select>
+              </div>
+
+              {/* Line Height Dropdown */}
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-slate-800 dark:text-slate-200">
+                  Line Height / Spacing (लाइनों के बीच की दूरी)
+                </label>
+                <select
+                  value={config.typography?.jobLinkLineHeight || '1.45'}
+                  onChange={(e) => handleUpdate(prev => ({
+                    ...prev,
+                    typography: { ...prev.typography, jobLinkLineHeight: e.target.value }
+                  }))}
+                  className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-2 text-xs font-bold text-slate-900 dark:text-white cursor-pointer"
+                >
+                  <option value="1.3">1.3 — Compact Lines</option>
+                  <option value="1.45">1.45 — Standard Default Spacing</option>
+                  <option value="1.6">1.6 — Relaxed Spacing</option>
+                  <option value="1.75">1.75 — Spacious Lines</option>
+                </select>
+              </div>
+            </div>
+
+            {/* REAL-TIME MULTI-VIEW INTERACTIVE JOB LIST PREVIEW */}
+            <div className="space-y-3 pt-2">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+                <div className="flex items-center gap-2">
+                  <Eye className="w-4 h-4 text-amber-500 animate-pulse" />
+                  <span className="text-xs font-black text-slate-900 dark:text-white">
+                    Real-Time Live Job List Specimen Preview
+                  </span>
+                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-700 dark:text-amber-300 font-bold border border-amber-500/30">
+                    Live Reactive
+                  </span>
+                </div>
+
+                {/* Device and Layout Switcher Controls */}
+                <div className="flex items-center gap-2 flex-wrap">
+                  {/* Device Simulation Selector */}
+                  <div className="flex items-center bg-slate-100 dark:bg-slate-800 p-0.5 rounded-xl border border-slate-200 dark:border-slate-700">
+                    <button
+                      type="button"
+                      onClick={() => setJobLinkPreviewDevice('desktop')}
+                      className={`px-2.5 py-1 rounded-lg text-[11px] font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
+                        jobLinkPreviewDevice === 'desktop'
+                          ? 'bg-white dark:bg-slate-700 text-indigo-600 dark:text-white shadow-xs'
+                          : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'
+                      }`}
+                      title="Preview with Desktop Font Size"
+                    >
+                      <Monitor className="w-3 h-3" />
+                      <span>Desktop ({config.typography?.jobLinkFontSize || 16}px)</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setJobLinkPreviewDevice('mobile')}
+                      className={`px-2.5 py-1 rounded-lg text-[11px] font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
+                        jobLinkPreviewDevice === 'mobile'
+                          ? 'bg-white dark:bg-slate-700 text-emerald-600 dark:text-white shadow-xs'
+                          : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'
+                      }`}
+                      title="Preview with Mobile Phone Font Size"
+                    >
+                      <Smartphone className="w-3 h-3" />
+                      <span>Mobile ({config.typography?.jobLinkFontSizeMobile || 15}px)</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setJobLinkPreviewDevice('split')}
+                      className={`px-2.5 py-1 rounded-lg text-[11px] font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
+                        jobLinkPreviewDevice === 'split'
+                          ? 'bg-white dark:bg-slate-700 text-amber-600 dark:text-white shadow-xs'
+                          : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'
+                      }`}
+                      title="Side-by-side comparison"
+                    >
+                      <SlidersHorizontal className="w-3 h-3" />
+                      <span>Split Compare</span>
+                    </button>
+                  </div>
+
+                  {/* Column Layout Toggle */}
+                  <div className="flex items-center bg-slate-100 dark:bg-slate-800 p-0.5 rounded-xl border border-slate-200 dark:border-slate-700">
+                    <button
+                      type="button"
+                      onClick={() => setJobLinkPreviewLayout('multi-column')}
+                      className={`px-2.5 py-1 rounded-lg text-[11px] font-bold transition-all cursor-pointer ${
+                        jobLinkPreviewLayout === 'multi-column'
+                          ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-xs'
+                          : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'
+                      }`}
+                    >
+                      Columns Grid (3)
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setJobLinkPreviewLayout('single-list')}
+                      className={`px-2.5 py-1 rounded-lg text-[11px] font-bold transition-all cursor-pointer ${
+                        jobLinkPreviewLayout === 'single-list'
+                          ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-xs'
+                          : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'
+                      }`}
+                    >
+                      Focus List
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              {/* Interactive Live Render Container */}
+              {jobLinkPreviewDevice === 'split' ? (
+                /* Split Comparison: Desktop vs Mobile side-by-side */
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {/* Desktop Preview Card */}
+                  <div className="border border-indigo-200 dark:border-indigo-900/60 rounded-2xl p-3.5 bg-slate-50/70 dark:bg-slate-950/80 space-y-3">
+                    <div className="flex items-center justify-between pb-2 border-b border-indigo-100 dark:border-indigo-950">
+                      <span className="text-xs font-black text-indigo-700 dark:text-indigo-400 flex items-center gap-1.5">
+                        <Monitor className="w-3.5 h-3.5" /> Desktop Render ({config.typography?.jobLinkFontSize || 16}px)
+                      </span>
+                      <span className="text-[10px] text-slate-400">Standard: 16px</span>
+                    </div>
+
+                    <div className="divide-y divide-slate-200 dark:divide-slate-800">
+                      <div className="py-2.5 px-2 hover:bg-white dark:hover:bg-slate-900 rounded-xl transition-all">
+                        <div className="flex items-start justify-between gap-2">
+                          <span
+                            style={{
+                              fontSize: `${config.typography?.jobLinkFontSize || 16}px`,
+                              fontWeight: config.typography?.jobLinkFontWeight || '700',
+                              lineHeight: config.typography?.jobLinkLineHeight || '1.45'
+                            }}
+                            className="text-slate-900 dark:text-slate-100 font-bold hover:text-amber-600 transition-colors flex-1"
+                          >
+                            SSC Combined Graduate Level CGL 2026 Tier-I Final Result & Cutoff
+                          </span>
+                          <span className="bg-red-500 text-white text-[10px] font-black px-1.5 py-0.5 rounded shrink-0">NEW</span>
+                        </div>
+                        <div className="flex items-center gap-2 mt-1 text-[12px] text-slate-500">
+                          <span>📅 12/08/2026</span>
+                          <span className="px-1.5 py-0.5 bg-slate-200 dark:bg-slate-800 rounded font-semibold text-slate-700 dark:text-slate-300">All India</span>
+                        </div>
+                      </div>
+
+                      <div className="py-2.5 px-2 hover:bg-white dark:hover:bg-slate-900 rounded-xl transition-all">
+                        <div className="flex items-start justify-between gap-2">
+                          <span
+                            style={{
+                              fontSize: `${config.typography?.jobLinkFontSize || 16}px`,
+                              fontWeight: config.typography?.jobLinkFontWeight || '700',
+                              lineHeight: config.typography?.jobLinkLineHeight || '1.45'
+                            }}
+                            className="text-slate-900 dark:text-slate-100 font-bold hover:text-amber-600 transition-colors flex-1"
+                          >
+                            UPSC Civil Services IAS / IPS Preliminary Examination Admit Card
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-2 mt-1 text-[12px] text-slate-500">
+                          <span>📅 11/08/2026</span>
+                          <span className="text-rose-600 font-bold">Exam Date: 28/08/2026</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Mobile Preview Card */}
+                  <div className="border border-emerald-200 dark:border-emerald-900/60 rounded-2xl p-3.5 bg-slate-50/70 dark:bg-slate-950/80 space-y-3">
+                    <div className="flex items-center justify-between pb-2 border-b border-emerald-100 dark:border-emerald-950">
+                      <span className="text-xs font-black text-emerald-700 dark:text-emerald-400 flex items-center gap-1.5">
+                        <Smartphone className="w-3.5 h-3.5" /> Mobile Render ({config.typography?.jobLinkFontSizeMobile || 15}px)
+                      </span>
+                      <span className="text-[10px] text-slate-400">Standard: 15px</span>
+                    </div>
+
+                    <div className="divide-y divide-slate-200 dark:divide-slate-800">
+                      <div className="py-2.5 px-2 hover:bg-white dark:hover:bg-slate-900 rounded-xl transition-all">
+                        <div className="flex items-start justify-between gap-2">
+                          <span
+                            style={{
+                              fontSize: `${config.typography?.jobLinkFontSizeMobile || 15}px`,
+                              fontWeight: config.typography?.jobLinkFontWeight || '700',
+                              lineHeight: config.typography?.jobLinkLineHeight || '1.45'
+                            }}
+                            className="text-slate-900 dark:text-slate-100 font-bold hover:text-amber-600 transition-colors flex-1"
+                          >
+                            SSC Combined Graduate Level CGL 2026 Tier-I Final Result & Cutoff
+                          </span>
+                          <span className="bg-red-500 text-white text-[10px] font-black px-1.5 py-0.5 rounded shrink-0">NEW</span>
+                        </div>
+                        <div className="flex items-center gap-2 mt-1 text-[11px] text-slate-500">
+                          <span>📅 12/08/2026</span>
+                          <span className="px-1.5 py-0.5 bg-slate-200 dark:bg-slate-800 rounded font-semibold text-slate-700 dark:text-slate-300">All India</span>
+                        </div>
+                      </div>
+
+                      <div className="py-2.5 px-2 hover:bg-white dark:hover:bg-slate-900 rounded-xl transition-all">
+                        <div className="flex items-start justify-between gap-2">
+                          <span
+                            style={{
+                              fontSize: `${config.typography?.jobLinkFontSizeMobile || 15}px`,
+                              fontWeight: config.typography?.jobLinkFontWeight || '700',
+                              lineHeight: config.typography?.jobLinkLineHeight || '1.45'
+                            }}
+                            className="text-slate-900 dark:text-slate-100 font-bold hover:text-amber-600 transition-colors flex-1"
+                          >
+                            UPSC Civil Services IAS / IPS Preliminary Examination Admit Card
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-2 mt-1 text-[11px] text-slate-500">
+                          <span>📅 11/08/2026</span>
+                          <span className="text-rose-600 font-bold">Exam Date: 28/08/2026</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ) : jobLinkPreviewLayout === 'multi-column' ? (
+                /* Multi-Column 3-Box Portal Replica Preview */
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                  {/* Column 1: Results */}
+                  <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 overflow-hidden shadow-xs">
+                    <div className="bg-gradient-to-r from-emerald-600 to-teal-700 px-3 py-2 text-white flex items-center justify-between">
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-sm">🏆</span>
+                        <span className="text-xs font-black uppercase tracking-wider">Result</span>
+                      </div>
+                      <span className="text-[10px] bg-white/20 px-1.5 py-0.5 rounded font-bold">LIVE</span>
+                    </div>
+
+                    <div className="p-2.5 divide-y divide-slate-100 dark:divide-slate-800/80">
+                      {[
+                        { title: 'SSC CGL 2026 Tier-I Examination Result Declared', date: '12/08/2026', tag: 'Central', isNew: true },
+                        { title: 'UP Police Constable 60,244 Post Result & Cut Off Marks', date: '10/08/2026', tag: 'UP', isNew: false },
+                        { title: 'Railway RRB ALP Stage-I Result & Score Card Released', date: '08/08/2026', tag: 'Railways', isNew: false }
+                      ].map((item, idx) => (
+                        <div key={idx} className="py-2 px-1 hover:bg-slate-50 dark:hover:bg-slate-900 rounded-lg transition-all">
+                          <div className="flex items-start justify-between gap-1.5">
+                            <span
+                              style={{
+                                fontSize: `${jobLinkPreviewDevice === 'mobile' ? (config.typography?.jobLinkFontSizeMobile || 15) : (config.typography?.jobLinkFontSize || 16)}px`,
+                                fontWeight: config.typography?.jobLinkFontWeight || '700',
+                                lineHeight: config.typography?.jobLinkLineHeight || '1.45'
+                              }}
+                              className="text-slate-900 dark:text-slate-100 font-bold hover:text-amber-600 transition-colors flex-1"
+                            >
+                              {item.title}
+                            </span>
+                            {item.isNew && (
+                              <span className="bg-red-500 text-white text-[9px] font-black px-1.5 py-0.2 rounded uppercase shrink-0">NEW</span>
+                            )}
+                          </div>
+                          <div className="flex items-center gap-1.5 mt-1 text-[11px] text-slate-500">
+                            <span>📅 {item.date}</span>
+                            <span className="px-1 py-0.2 bg-slate-100 dark:bg-slate-800 rounded font-semibold text-slate-600 dark:text-slate-300">{item.tag}</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Column 2: Admit Card */}
+                  <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 overflow-hidden shadow-xs">
+                    <div className="bg-gradient-to-r from-blue-600 to-indigo-700 px-3 py-2 text-white flex items-center justify-between">
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-sm">🎫</span>
+                        <span className="text-xs font-black uppercase tracking-wider">Admit Card</span>
+                      </div>
+                      <span className="text-[10px] bg-white/20 px-1.5 py-0.5 rounded font-bold">HOT</span>
+                    </div>
+
+                    <div className="p-2.5 divide-y divide-slate-100 dark:divide-slate-800/80">
+                      {[
+                        { title: 'NTA NEET UG 2026 City Intimation Slip & Admit Card', date: '11/08/2026', tag: 'All India', isNew: true },
+                        { title: 'CTET July 2026 Pre Admit Card / Exam Center City Details', date: '09/08/2026', tag: 'CBSE', isNew: false },
+                        { title: 'SBI PO 2026 Mains Examination Call Letter Download', date: '07/08/2026', tag: 'Banking', isNew: false }
+                      ].map((item, idx) => (
+                        <div key={idx} className="py-2 px-1 hover:bg-slate-50 dark:hover:bg-slate-900 rounded-lg transition-all">
+                          <div className="flex items-start justify-between gap-1.5">
+                            <span
+                              style={{
+                                fontSize: `${jobLinkPreviewDevice === 'mobile' ? (config.typography?.jobLinkFontSizeMobile || 15) : (config.typography?.jobLinkFontSize || 16)}px`,
+                                fontWeight: config.typography?.jobLinkFontWeight || '700',
+                                lineHeight: config.typography?.jobLinkLineHeight || '1.45'
+                              }}
+                              className="text-slate-900 dark:text-slate-100 font-bold hover:text-amber-600 transition-colors flex-1"
+                            >
+                              {item.title}
+                            </span>
+                            {item.isNew && (
+                              <span className="bg-red-500 text-white text-[9px] font-black px-1.5 py-0.2 rounded uppercase shrink-0">NEW</span>
+                            )}
+                          </div>
+                          <div className="flex items-center gap-1.5 mt-1 text-[11px] text-slate-500">
+                            <span>📅 {item.date}</span>
+                            <span className="px-1 py-0.2 bg-slate-100 dark:bg-slate-800 rounded font-semibold text-slate-600 dark:text-slate-300">{item.tag}</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Column 3: Latest Jobs */}
+                  <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 overflow-hidden shadow-xs">
+                    <div className="bg-gradient-to-r from-amber-600 to-orange-700 px-3 py-2 text-white flex items-center justify-between">
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-sm">💼</span>
+                        <span className="text-xs font-black uppercase tracking-wider">Latest Jobs</span>
+                      </div>
+                      <span className="text-[10px] bg-white/20 px-1.5 py-0.5 rounded font-bold">ACTIVE</span>
+                    </div>
+
+                    <div className="p-2.5 divide-y divide-slate-100 dark:divide-slate-800/80">
+                      {[
+                        { title: 'SSC CHSL 10+2 Online Form 2026 Apply for 3,712 Posts', date: '12/08/2026', tag: '10+2', isNew: true },
+                        { title: 'IBPS PO / MT XIV Recruitment 2026 Online Application', date: '10/08/2026', tag: 'Graduate', isNew: false },
+                        { title: 'Indian Army Agniveer Rally 2026 Online Form Notification', date: '08/08/2026', tag: 'Defence', isNew: false }
+                      ].map((item, idx) => (
+                        <div key={idx} className="py-2 px-1 hover:bg-slate-50 dark:hover:bg-slate-900 rounded-lg transition-all">
+                          <div className="flex items-start justify-between gap-1.5">
+                            <span
+                              style={{
+                                fontSize: `${jobLinkPreviewDevice === 'mobile' ? (config.typography?.jobLinkFontSizeMobile || 15) : (config.typography?.jobLinkFontSize || 16)}px`,
+                                fontWeight: config.typography?.jobLinkFontWeight || '700',
+                                lineHeight: config.typography?.jobLinkLineHeight || '1.45'
+                              }}
+                              className="text-slate-900 dark:text-slate-100 font-bold hover:text-amber-600 transition-colors flex-1"
+                            >
+                              {item.title}
+                            </span>
+                            {item.isNew && (
+                              <span className="bg-red-500 text-white text-[9px] font-black px-1.5 py-0.2 rounded uppercase shrink-0">NEW</span>
+                            )}
+                          </div>
+                          <div className="flex items-center gap-1.5 mt-1 text-[11px] text-slate-500">
+                            <span>📅 {item.date}</span>
+                            <span className="px-1 py-0.2 bg-slate-100 dark:bg-slate-800 rounded font-semibold text-slate-600 dark:text-slate-300">{item.tag}</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                /* Focus Single List View */
+                <div className="p-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-100/70 dark:bg-slate-950/80 divide-y divide-slate-200 dark:divide-slate-800/80">
+                  {[
+                    { title: 'SSC Combined Graduate Level CGL 2026 Online Application Form Released', date: '12/08/2026', tag: 'All India', last: '25/08/2026', isNew: true },
+                    { title: 'UPSC Civil Services Examination IAS / IPS 2026 Pre Admit Card Download', date: '11/08/2026', tag: 'Central', last: 'Exam: 28/08/2026', isNew: false },
+                    { title: 'Railway RRB Non-Technical Popular Categories NTPC 2026 Recruitment', date: '09/08/2026', tag: 'Railways', last: '30/08/2026', isNew: false },
+                    { title: 'NTA UGC NET December 2026 Online Application Registration Open', date: '07/08/2026', tag: 'NTA', last: '15/09/2026', isNew: false }
+                  ].map((job, idx) => (
+                    <div key={idx} className="py-2.5 px-2 hover:bg-white dark:hover:bg-slate-900 rounded-xl transition-all">
+                      <div className="flex items-start justify-between gap-2">
+                        <span 
+                          style={{
+                            fontSize: `${jobLinkPreviewDevice === 'mobile' ? (config.typography?.jobLinkFontSizeMobile || 15) : (config.typography?.jobLinkFontSize || 16)}px`,
+                            fontWeight: config.typography?.jobLinkFontWeight || '700',
+                            lineHeight: config.typography?.jobLinkLineHeight || '1.45'
+                          }}
+                          className="text-slate-900 dark:text-slate-100 font-bold hover:text-amber-600 transition-colors flex-1"
+                        >
+                          {job.title}
+                        </span>
+                        {job.isNew && (
+                          <span className="bg-red-500 text-white text-[10px] font-black px-2 py-0.5 rounded uppercase shrink-0">
+                            NEW
+                          </span>
+                        )}
+                      </div>
+                      <div className="flex items-center gap-2 mt-1 text-[12px] text-slate-500">
+                        <span>📅 {job.date}</span>
+                        <span className="px-1.5 py-0.5 bg-slate-200 dark:bg-slate-800 rounded font-semibold text-slate-700 dark:text-slate-300">{job.tag}</span>
+                        <span>{job.last}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         </div>

@@ -1,5 +1,5 @@
 import { JobAlert } from '../types';
-import { saveSeoConfigToFirestore } from '../services/firestoreService';
+import { saveSeoConfigToFirestore, saveCategorySeoConfigToFirestore } from '../services/firestoreService';
 
 export interface GlobalSeoConfig {
   siteTitle: string;
@@ -10,6 +10,25 @@ export interface GlobalSeoConfig {
   robotsDirective: string;
 }
 
+export interface CategorySeoItem {
+  id: string; // e.g. 'latest-jobs'
+  name: string; // 'Latest Jobs'
+  hindiName: string; // 'सरकारी नौकरी'
+  metaTitle: string;
+  metaDescription: string;
+  metaKeywords: string;
+  ogTitle: string;
+  ogDescription: string;
+  ogImageUrl: string;
+  ogType: 'website' | 'article' | 'collection';
+  canonicalUrl?: string;
+  robotsDirective: string;
+  schemaType?: string;
+  lastUpdated?: string;
+}
+
+export type CategorySeoConfigMap = Record<string, CategorySeoItem>;
+
 export const DEFAULT_GLOBAL_SEO: GlobalSeoConfig = {
   siteTitle: "Fast_Arc Govt Result | Latest Online Form, Admit Card & Results 2026",
   metaDescription: "FastArc Government Jobs Portal: Get instant updates for latest Sarkari Naukri, Online Forms, Admit Cards, Exam Results, Answer Keys, Syllabus & Admissions 2026.",
@@ -19,7 +38,123 @@ export const DEFAULT_GLOBAL_SEO: GlobalSeoConfig = {
   robotsDirective: "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"
 };
 
+export const DEFAULT_CATEGORY_SEO: CategorySeoConfigMap = {
+  'latest-jobs': {
+    id: 'latest-jobs',
+    name: 'Latest Jobs',
+    hindiName: 'सरकारी नौकरी',
+    metaTitle: 'Latest Govt Jobs 2026 - Apply Online for 50,000+ Sarkari Naukri Vacancies | FastArc',
+    metaDescription: 'Explore all latest Central & State Govt Job vacancies 2026. Get instant notifications, eligibility criteria, online application links & exam dates on FastArc.',
+    metaKeywords: 'Latest Govt Jobs 2026, Sarkari Naukri, Online Form 2026, Railway Recruitment, SSC CGL, UPSC, Bank PO, Police Bharti, FastArc',
+    ogTitle: 'Latest Govt Jobs & Sarkari Online Forms 2026 - FastArc',
+    ogDescription: 'Daily updated government job vacancies with direct online apply links and notifications.',
+    ogImageUrl: '/logo.png',
+    ogType: 'collection',
+    robotsDirective: 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1',
+    schemaType: 'CollectionPage'
+  },
+  'admit-cards': {
+    id: 'admit-cards',
+    name: 'Admit Card',
+    hindiName: 'प्रवेश पत्र',
+    metaTitle: 'Admit Card 2026 - Download Hall Ticket, Call Letter & Exam City Slip | FastArc',
+    metaDescription: 'Download official Admit Cards, Hall Tickets & Exam City Intimation Slips for SSC, UPSC, Railway, State PSC & Banking Exams 2026 at FastArc.',
+    metaKeywords: 'Admit Card 2026, Hall Ticket Download, Exam City Slip, Call Letter, SSC Admit Card, Railway Hall Ticket, Sarkari Admit Card, FastArc',
+    ogTitle: 'Official Exam Admit Cards & Hall Tickets 2026 - FastArc',
+    ogDescription: 'Instant direct server links to download exam admit cards and view examination center.',
+    ogImageUrl: '/logo.png',
+    ogType: 'collection',
+    robotsDirective: 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1',
+    schemaType: 'CollectionPage'
+  },
+  'results': {
+    id: 'results',
+    name: 'Results',
+    hindiName: 'परीक्षा परिणाम',
+    metaTitle: 'Sarkari Exam Results 2026 - Merit List, Score Card & Cut Off Marks | FastArc',
+    metaDescription: 'Check Sarkari Exam Results, Merit Lists, Final Selection Lists & Cut-Off Marks 2026. Direct server links with roll number search on FastArc.',
+    metaKeywords: 'Sarkari Result 2026, Exam Results, Merit List PDF, Cut Off Marks, Score Card Download, Final Result, FastArc',
+    ogTitle: 'Latest Sarkari Exam Results & Merit Lists 2026 - FastArc',
+    ogDescription: 'Fastest exam result publication with direct download servers and cut-off lists.',
+    ogImageUrl: '/logo.png',
+    ogType: 'collection',
+    robotsDirective: 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1',
+    schemaType: 'CollectionPage'
+  },
+  'answer-key': {
+    id: 'answer-key',
+    name: 'Answer Key',
+    hindiName: 'उत्तर कुंजी',
+    metaTitle: 'Official Answer Key 2026 - Download Solved Question Papers & Challenge Objections | FastArc',
+    metaDescription: 'Download official provisional & final Answer Keys 2026 with question papers. Submit online objections & calculate expected scores on FastArc.',
+    metaKeywords: 'Answer Key 2026, Official Answer Sheet, Question Paper Solution, Objection Link, Response Sheet, FastArc',
+    ogTitle: 'Official Answer Keys & Solved Papers 2026 - FastArc',
+    ogDescription: 'Download official response sheets, answer keys, and submit objection forms.',
+    ogImageUrl: '/logo.png',
+    ogType: 'collection',
+    robotsDirective: 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1',
+    schemaType: 'CollectionPage'
+  },
+  'syllabus': {
+    id: 'syllabus',
+    name: 'Syllabus',
+    hindiName: 'पाठ्यक्रम',
+    metaTitle: 'Exam Syllabus & Exam Pattern PDF 2026 - Download Previous Year Question Papers | FastArc',
+    metaDescription: 'Download updated subject-wise Exam Syllabus & latest Exam Pattern PDFs 2026 for SSC, Railway, UPSC, Teaching, Defence & Police exams on FastArc.',
+    metaKeywords: 'Exam Syllabus 2026, Syllabus PDF Download, Exam Pattern, Marking Scheme, Previous Year Papers, FastArc',
+    ogTitle: 'Updated Exam Syllabus & Question Patterns 2026 - FastArc',
+    ogDescription: 'Comprehensive subject-wise syllabus PDFs, test patterns, and previous papers.',
+    ogImageUrl: '/logo.png',
+    ogType: 'collection',
+    robotsDirective: 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1',
+    schemaType: 'CollectionPage'
+  },
+  'admission': {
+    id: 'admission',
+    name: 'Admission',
+    hindiName: 'प्रवेश',
+    metaTitle: 'Admission 2026 - Entrance Exams, College Admissions & Counselling Forms | FastArc',
+    metaDescription: 'Find university admissions, college entrance examination forms, counseling schedules, eligibility & prospectus downloads 2026 on FastArc.',
+    metaKeywords: 'Admission 2026, University Admission, Entrance Exam, CUET, NEET, JEE, College Counselling, FastArc',
+    ogTitle: 'University Admission & Entrance Exam Forms 2026 - FastArc',
+    ogDescription: 'Apply online for top universities, diploma courses, and entrance exam forms.',
+    ogImageUrl: '/logo.png',
+    ogType: 'collection',
+    robotsDirective: 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1',
+    schemaType: 'CollectionPage'
+  },
+  'documents': {
+    id: 'documents',
+    name: 'Certificate & Documents',
+    hindiName: 'प्रमाण पत्र व सेवाएं',
+    metaTitle: 'Certificate & Online Services 2026 - Pan Card, Voter ID, Aadhar & Certificates | FastArc',
+    metaDescription: 'Official links for online government citizen services: Pan Card, Aadhar update, Voter ID, Domicile, Caste & Income Certificate verification on FastArc.',
+    metaKeywords: 'Online Services, Certificate Verification, Pan Card Apply, Voter Card, Aadhar Card, Caste Certificate, Domicile, FastArc',
+    ogTitle: 'Government Certificates & Online Citizen Services - FastArc',
+    ogDescription: 'Access direct citizen online verification links, identity cards, and certificates.',
+    ogImageUrl: '/logo.png',
+    ogType: 'collection',
+    robotsDirective: 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1',
+    schemaType: 'CollectionPage'
+  },
+  'important': {
+    id: 'important',
+    name: 'Important Links',
+    hindiName: 'आवश्यक सूचना',
+    metaTitle: 'Important Links & Official Notices 2026 - FastArc Govt Portal Alerts',
+    metaDescription: 'Check critical government alerts, recruitment notices, application deadline extensions, OTP corrections & official portals on FastArc.',
+    metaKeywords: 'Important Notices, Govt Alerts, Date Extension, Correction Window, Official Portals, FastArc',
+    ogTitle: 'Important Government Notices & Alert Bulletins - FastArc',
+    ogDescription: 'Crucial alerts, date extensions, correction links, and government announcements.',
+    ogImageUrl: '/logo.png',
+    ogType: 'collection',
+    robotsDirective: 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1',
+    schemaType: 'CollectionPage'
+  }
+};
+
 const SEO_STORAGE_KEY = 'fastarc_global_seo_config';
+const CATEGORY_SEO_STORAGE_KEY = 'fastarc_category_seo_config';
 
 /**
  * Loads custom global SEO configuration from LocalStorage or returns defaults.
@@ -53,6 +188,41 @@ export function saveGlobalSeoConfig(config: GlobalSeoConfig) {
     });
   } catch (err) {
     console.warn('Failed to save SEO config to localStorage:', err);
+  }
+}
+
+/**
+ * Loads custom Category SEO configurations from LocalStorage or returns defaults.
+ */
+export function loadCategorySeoConfig(): CategorySeoConfigMap {
+  if (typeof window === 'undefined') return DEFAULT_CATEGORY_SEO;
+  try {
+    const saved = localStorage.getItem(CATEGORY_SEO_STORAGE_KEY);
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      return { ...DEFAULT_CATEGORY_SEO, ...parsed };
+    }
+  } catch (err) {
+    console.warn('Failed to parse saved Category SEO config from localStorage:', err);
+  }
+  return DEFAULT_CATEGORY_SEO;
+}
+
+/**
+ * Saves Category SEO configurations to LocalStorage and triggers live update event.
+ */
+export function saveCategorySeoConfig(configs: CategorySeoConfigMap) {
+  if (typeof window === 'undefined') return;
+  try {
+    localStorage.setItem(CATEGORY_SEO_STORAGE_KEY, JSON.stringify(configs));
+    window.dispatchEvent(new CustomEvent('fastarc_category_seo_updated', { detail: configs }));
+
+    // Asynchronously save to Firestore database
+    saveCategorySeoConfigToFirestore(configs).catch(err => {
+      console.warn('Firestore Category SEO config sync error:', err);
+    });
+  } catch (err) {
+    console.warn('Failed to save Category SEO config to localStorage:', err);
   }
 }
 
@@ -192,10 +362,98 @@ export function updateJobDetailSeo(job: JobAlert) {
 }
 
 /**
+ * Injects dedicated Category SEO metadata for a given Category tab.
+ */
+export function updateCategorySeo(categoryId: string) {
+  if (typeof window === 'undefined' || typeof document === 'undefined') return;
+
+  const categoryConfigs = loadCategorySeoConfig();
+  const globalSeo = loadGlobalSeoConfig();
+  const baseUrl = window.location.origin;
+
+  // Normalized key check (e.g. 'latest-jobs', 'services' -> 'documents')
+  const normKey = categoryId === 'services' ? 'documents' : categoryId;
+  const catConfig = categoryConfigs[normKey] || DEFAULT_CATEGORY_SEO[normKey];
+
+  if (!catConfig) {
+    resetDefaultSeo(categoryId);
+    return;
+  }
+
+  const title = catConfig.metaTitle || `${catConfig.name} 2026 - Latest Notifications & Updates | FastArc`;
+  const description = catConfig.metaDescription || globalSeo.metaDescription;
+  const keywords = catConfig.metaKeywords || globalSeo.metaKeywords;
+  const canonicalUrl = catConfig.canonicalUrl || `${baseUrl}/?tab=${encodeURIComponent(categoryId)}`;
+  const imageUrl = catConfig.ogImageUrl?.startsWith('http')
+    ? catConfig.ogImageUrl
+    : `${baseUrl}${catConfig.ogImageUrl || globalSeo.ogImageUrl || '/logo.png'}`;
+  const ogTitle = catConfig.ogTitle || title;
+  const ogDescription = catConfig.ogDescription || description;
+  const robots = catConfig.robotsDirective || globalSeo.robotsDirective || 'index, follow, max-image-preview:large';
+
+  // 1. Browser Title
+  document.title = title;
+
+  // 2. Primary Meta Tags
+  setMetaTag('name', 'title', title);
+  setMetaTag('name', 'description', description);
+  setMetaTag('name', 'keywords', keywords);
+  setMetaTag('name', 'author', globalSeo.authorName || 'FastArc');
+  setMetaTag('name', 'robots', robots);
+
+  // 3. Canonical Link
+  setCanonicalUrl(canonicalUrl);
+
+  // 4. OpenGraph Meta Tags
+  setMetaTag('property', 'og:type', catConfig.ogType || 'website');
+  setMetaTag('property', 'og:url', canonicalUrl);
+  setMetaTag('property', 'og:title', ogTitle);
+  setMetaTag('property', 'og:description', ogDescription);
+  setMetaTag('property', 'og:image', imageUrl);
+  setMetaTag('property', 'og:site_name', "FastArc Govt Result");
+
+  // 5. Twitter Meta Tags
+  setMetaTag('name', 'twitter:card', 'summary_large_image');
+  setMetaTag('name', 'twitter:url', canonicalUrl);
+  setMetaTag('name', 'twitter:title', ogTitle);
+  setMetaTag('name', 'twitter:description', ogDescription);
+  setMetaTag('name', 'twitter:image', imageUrl);
+
+  // 6. Category Collection Schema.org
+  const categorySchema = {
+    "@context": "https://schema.org",
+    "@type": catConfig.schemaType || "CollectionPage",
+    "name": title,
+    "description": description,
+    "url": canonicalUrl,
+    "publisher": {
+      "@type": "Organization",
+      "name": globalSeo.authorName || "FastArc",
+      "logo": {
+        "@type": "ImageObject",
+        "url": imageUrl
+      }
+    }
+  };
+
+  setJsonLdSchema('seo-schema', categorySchema);
+}
+
+/**
  * Resets or applies the default homepage / category SEO metadata based on Super Admin custom settings.
  */
 export function resetDefaultSeo(activeTab = 'home') {
   if (typeof window === 'undefined' || typeof document === 'undefined') return;
+
+  // If a category tab is active (not 'home'), prioritize Category SEO configuration
+  if (activeTab && activeTab !== 'home') {
+    const categoryConfigs = loadCategorySeoConfig();
+    const normKey = activeTab === 'services' ? 'documents' : activeTab;
+    if (categoryConfigs[normKey] || DEFAULT_CATEGORY_SEO[normKey]) {
+      updateCategorySeo(normKey);
+      return;
+    }
+  }
 
   const globalSeo = loadGlobalSeoConfig();
   const baseUrl = window.location.origin;
@@ -265,3 +523,4 @@ export function resetDefaultSeo(activeTab = 'home') {
 
   setJsonLdSchema('seo-schema', baseSchema);
 }
+

@@ -10,6 +10,7 @@ import {
 
 export { PagesManagerTab } from './PagesManagerTab';
 export { HelpdeskTab } from './HelpdeskTab';
+export { EmailNotificationsTab } from './EmailNotificationsTab';
 
 export const ApiAnalyticsTab = ({ onToast }: { onToast?: (msg: string) => void }) => {
   const [config, setConfig] = useState({

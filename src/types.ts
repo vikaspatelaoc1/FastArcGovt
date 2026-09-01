@@ -169,12 +169,14 @@ export type SuperAdminTabType =
   | 'colors'
   | 'columns'
   | 'seo'
+  | 'categorySeo'
   | 'social' 
   | 'earnings'
   | 'site' 
   | 'versions' 
   | 'database' 
-  | 'subscribers' 
+  | 'subscribers'
+  | 'emailNotifications'
   | 'employees' 
   | 'autofeed' 
   | 'npm'
@@ -184,6 +186,45 @@ export type SuperAdminTabType =
   | 'helpdesk'
   | 'autoBroadcast'
   | 'adsManager';
+
+export interface EmailNotificationConfig {
+  autoSendOnPublish: boolean;
+  provider: 'built-in' | 'smtp' | 'resend' | 'sendgrid' | 'webhook';
+  fromName: string;
+  fromEmail: string;
+  replyToEmail?: string;
+  smtpHost?: string;
+  smtpPort?: number;
+  smtpUser?: string;
+  smtpPassword?: string;
+  smtpSecure?: boolean;
+  apiKey?: string;
+  webhookUrl?: string;
+  subjectTemplate: string;
+  preheaderText: string;
+  bannerTitle: string;
+  callToActionText: string;
+  footerNote: string;
+  sendCategories: string[];
+  sendDelaySeconds?: number;
+  includePdfLink: boolean;
+  includeApplyLink: boolean;
+  updatedAt?: string;
+}
+
+export interface NotificationDispatchLog {
+  id: string;
+  jobId: string;
+  jobTitle: string;
+  category: string;
+  sentAt: string;
+  recipientCount: number;
+  provider: string;
+  status: 'delivered' | 'processing' | 'partial' | 'failed';
+  subject: string;
+  details?: string;
+  sampleRecipients?: string[];
+}
 
 export interface SocialLinkItem {
   id: string;

@@ -45,6 +45,7 @@ import {
   saveSiteLogoToFirestore,
   subscribeToColumnConfigs,
   subscribeToSeoConfig,
+  subscribeToCategorySeoConfig,
   subscribeToThemeColors,
   subscribeToWebsiteControlConfig,
   validateFirestoreConnection,
@@ -102,6 +103,7 @@ export default function App() {
 
     applyTheme();
     applyThemeColorsToDOM(loadThemeColors());
+    applyWebsiteControlToDOM(loadWebsiteControlConfig());
 
     if (themeMode === 'system') {
       const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
@@ -400,6 +402,18 @@ export default function App() {
       }
     });
 
+    const unsubscribeCategorySeo = subscribeToCategorySeoConfig((liveCategorySeo) => {
+      if (liveCategorySeo) {
+        localStorage.setItem('fastarc_category_seo_config', JSON.stringify(liveCategorySeo));
+        if (typeof window !== 'undefined') {
+          const urlParams = new URLSearchParams(window.location.search);
+          if (!urlParams.get('jobId')) {
+            resetDefaultSeo(urlParams.get('tab') || 'home');
+          }
+        }
+      }
+    });
+
     const unsubscribeTheme = subscribeToThemeColors((liveColors) => {
       if (liveColors) {
         localStorage.setItem('fastarc_theme_colors', JSON.stringify(liveColors));
@@ -423,6 +437,7 @@ export default function App() {
       unsubscribeSiteLogo();
       unsubscribeColumns();
       unsubscribeSeo();
+      unsubscribeCategorySeo();
       unsubscribeTheme();
       unsubscribeWebsiteControl();
     };
@@ -521,8 +536,10 @@ export default function App() {
       }
     };
     window.addEventListener('fastarc_seo_updated', handleSeoUpdate);
+    window.addEventListener('fastarc_category_seo_updated', handleSeoUpdate);
     return () => {
       window.removeEventListener('fastarc_seo_updated', handleSeoUpdate);
+      window.removeEventListener('fastarc_category_seo_updated', handleSeoUpdate);
     };
   }, [selectedJobId, activeTab]);
   const [isMoreStatesOpen, setIsMoreStatesOpen] = useState(false);
@@ -1307,101 +1324,101 @@ export default function App() {
         </div>
       </div>
 
-      <main className="w-full mx-auto px-2 sm:px-4 lg:px-6 py-6 flex-grow">
-        <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2.5 sm:gap-3 mb-6">
-          <div onClick={() => handleTabChange('latest-jobs')} className={`bg-indigo-50/80 dark:bg-indigo-950/20 border ${activeTab === 'latest-jobs' ? 'border-indigo-400 dark:border-indigo-500 shadow-md ring-2 ring-indigo-200 dark:ring-indigo-900/50' : 'border-indigo-100/80 dark:border-indigo-900/40'} rounded-2xl p-3 sm:p-3.5 flex items-center space-x-3 transition-all duration-200 cursor-pointer hover:shadow-lg hover:-translate-y-0.5 hover:border-indigo-300 dark:hover:border-indigo-700`}>
-            <div className="w-9 h-9 sm:w-10 sm:h-10 bg-indigo-500 rounded-xl flex items-center justify-center text-white font-bold overflow-hidden p-1 shrink-0 shadow-sm">
-              <CategoryIcon icon={columnConfigs['latest-jobs']?.icon || '💼'} className="w-5 h-5 sm:w-5.5 sm:h-5.5 object-contain" />
+      <main className="w-full mx-auto px-2 sm:px-4 lg:px-6 py-4 flex-grow">
+        <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-1.5 sm:gap-2 mb-4">
+          <div onClick={() => handleTabChange('latest-jobs')} className={`bg-indigo-50/80 dark:bg-indigo-950/20 border ${activeTab === 'latest-jobs' ? 'border-indigo-400 dark:border-indigo-500 shadow-sm ring-1 ring-indigo-200 dark:ring-indigo-900/50' : 'border-indigo-100/80 dark:border-indigo-900/40'} rounded-xl py-1.5 px-2 sm:py-2 sm:px-2.5 flex items-center space-x-2 transition-all duration-200 cursor-pointer hover:shadow-md hover:-translate-y-0.5 hover:border-indigo-300 dark:hover:border-indigo-700`}>
+            <div className="w-6 h-6 sm:w-7 sm:h-7 bg-indigo-500 rounded-lg flex items-center justify-center text-white font-bold overflow-hidden p-0.5 shrink-0 shadow-xs">
+              <CategoryIcon icon={columnConfigs['latest-jobs']?.icon || '💼'} className="w-3.5 h-3.5 sm:w-4 sm:h-4 object-contain" />
             </div>
             <div className="min-w-0">
-              <h4 className="text-[12px] sm:text-[13px] lg:text-[13.5px] text-slate-600 dark:text-slate-300 font-black uppercase tracking-tight truncate">
+              <h4 className="text-[10px] sm:text-[11px] text-slate-600 dark:text-slate-300 font-extrabold uppercase tracking-tight truncate leading-none">
                 {columnConfigs['latest-jobs']?.title || 'Latest Jobs'}
               </h4>
-              <p className="text-base sm:text-lg lg:text-xl font-black text-slate-900 dark:text-white leading-tight mt-0.5">{counts.latest}</p>
+              <p className="text-xs sm:text-sm font-black text-slate-900 dark:text-white leading-tight mt-0.5">{counts.latest}</p>
             </div>
           </div>
           
-          <div onClick={() => handleTabChange('admit-card')} className={`bg-amber-50/80 dark:bg-amber-950/20 border ${activeTab === 'admit-card' ? 'border-amber-400 dark:border-amber-500 shadow-md ring-2 ring-amber-200 dark:ring-amber-900/50' : 'border-amber-100/80 dark:border-amber-900/40'} rounded-2xl p-3 sm:p-3.5 flex items-center space-x-3 transition-all duration-200 cursor-pointer hover:shadow-lg hover:-translate-y-0.5 hover:border-amber-300 dark:hover:border-amber-700`}>
-            <div className="w-9 h-9 sm:w-10 sm:h-10 bg-amber-500 rounded-xl flex items-center justify-center text-white font-bold overflow-hidden p-1 shrink-0 shadow-sm">
-              <CategoryIcon icon={columnConfigs['admit-cards']?.icon || '📄'} className="w-5 h-5 sm:w-5.5 sm:h-5.5 object-contain" />
+          <div onClick={() => handleTabChange('admit-card')} className={`bg-amber-50/80 dark:bg-amber-950/20 border ${activeTab === 'admit-card' ? 'border-amber-400 dark:border-amber-500 shadow-sm ring-1 ring-amber-200 dark:ring-amber-900/50' : 'border-amber-100/80 dark:border-amber-900/40'} rounded-xl py-1.5 px-2 sm:py-2 sm:px-2.5 flex items-center space-x-2 transition-all duration-200 cursor-pointer hover:shadow-md hover:-translate-y-0.5 hover:border-amber-300 dark:hover:border-amber-700`}>
+            <div className="w-6 h-6 sm:w-7 sm:h-7 bg-amber-500 rounded-lg flex items-center justify-center text-white font-bold overflow-hidden p-0.5 shrink-0 shadow-xs">
+              <CategoryIcon icon={columnConfigs['admit-cards']?.icon || '📄'} className="w-3.5 h-3.5 sm:w-4 sm:h-4 object-contain" />
             </div>
             <div className="min-w-0">
-              <h4 className="text-[12px] sm:text-[13px] lg:text-[13.5px] text-slate-600 dark:text-slate-300 font-black uppercase tracking-tight truncate">
+              <h4 className="text-[10px] sm:text-[11px] text-slate-600 dark:text-slate-300 font-extrabold uppercase tracking-tight truncate leading-none">
                 {columnConfigs['admit-cards']?.title || 'Admit Cards'}
               </h4>
-              <p className="text-base sm:text-lg lg:text-xl font-black text-slate-900 dark:text-white leading-tight mt-0.5">{counts.admit}</p>
+              <p className="text-xs sm:text-sm font-black text-slate-900 dark:text-white leading-tight mt-0.5">{counts.admit}</p>
             </div>
           </div>
           
-          <div onClick={() => handleTabChange('results')} className={`bg-emerald-50/80 dark:bg-emerald-950/20 border ${activeTab === 'results' ? 'border-emerald-400 dark:border-emerald-500 shadow-md ring-2 ring-emerald-200 dark:ring-emerald-900/50' : 'border-emerald-100/80 dark:border-emerald-900/40'} rounded-2xl p-3 sm:p-3.5 flex items-center space-x-3 transition-all duration-200 cursor-pointer hover:shadow-lg hover:-translate-y-0.5 hover:border-emerald-300 dark:hover:border-emerald-700`}>
-            <div className="w-9 h-9 sm:w-10 sm:h-10 bg-emerald-500 rounded-xl flex items-center justify-center text-white font-bold overflow-hidden p-1 shrink-0 shadow-sm">
-              <CategoryIcon icon={columnConfigs['results']?.icon || '🏆'} className="w-5 h-5 sm:w-5.5 sm:h-5.5 object-contain" />
+          <div onClick={() => handleTabChange('results')} className={`bg-emerald-50/80 dark:bg-emerald-950/20 border ${activeTab === 'results' ? 'border-emerald-400 dark:border-emerald-500 shadow-sm ring-1 ring-emerald-200 dark:ring-emerald-900/50' : 'border-emerald-100/80 dark:border-emerald-900/40'} rounded-xl py-1.5 px-2 sm:py-2 sm:px-2.5 flex items-center space-x-2 transition-all duration-200 cursor-pointer hover:shadow-md hover:-translate-y-0.5 hover:border-emerald-300 dark:hover:border-emerald-700`}>
+            <div className="w-6 h-6 sm:w-7 sm:h-7 bg-emerald-500 rounded-lg flex items-center justify-center text-white font-bold overflow-hidden p-0.5 shrink-0 shadow-xs">
+              <CategoryIcon icon={columnConfigs['results']?.icon || '🏆'} className="w-3.5 h-3.5 sm:w-4 sm:h-4 object-contain" />
             </div>
             <div className="min-w-0">
-              <h4 className="text-[12px] sm:text-[13px] lg:text-[13.5px] text-slate-600 dark:text-slate-300 font-black uppercase tracking-tight truncate">
+              <h4 className="text-[10px] sm:text-[11px] text-slate-600 dark:text-slate-300 font-extrabold uppercase tracking-tight truncate leading-none">
                 {columnConfigs['results']?.title || 'Results'}
               </h4>
-              <p className="text-base sm:text-lg lg:text-xl font-black text-slate-900 dark:text-white leading-tight mt-0.5">{counts.results}</p>
+              <p className="text-xs sm:text-sm font-black text-slate-900 dark:text-white leading-tight mt-0.5">{counts.results}</p>
             </div>
           </div>
           
-          <div onClick={() => handleTabChange('answer-key')} className={`bg-cyan-50/80 dark:bg-cyan-950/20 border ${activeTab === 'answer-key' ? 'border-cyan-400 dark:border-cyan-500 shadow-md ring-2 ring-cyan-200 dark:ring-cyan-900/50' : 'border-cyan-100/80 dark:border-cyan-900/40'} rounded-2xl p-3 sm:p-3.5 flex items-center space-x-3 transition-all duration-200 cursor-pointer hover:shadow-lg hover:-translate-y-0.5 hover:border-cyan-300 dark:hover:border-cyan-700`}>
-            <div className="w-9 h-9 sm:w-10 sm:h-10 bg-cyan-500 rounded-xl flex items-center justify-center text-white font-bold overflow-hidden p-1 shrink-0 shadow-sm">
-              <CategoryIcon icon={columnConfigs['answer-key']?.icon || '🔑'} className="w-5 h-5 sm:w-5.5 sm:h-5.5 object-contain" />
+          <div onClick={() => handleTabChange('answer-key')} className={`bg-cyan-50/80 dark:bg-cyan-950/20 border ${activeTab === 'answer-key' ? 'border-cyan-400 dark:border-cyan-500 shadow-sm ring-1 ring-cyan-200 dark:ring-cyan-900/50' : 'border-cyan-100/80 dark:border-cyan-900/40'} rounded-xl py-1.5 px-2 sm:py-2 sm:px-2.5 flex items-center space-x-2 transition-all duration-200 cursor-pointer hover:shadow-md hover:-translate-y-0.5 hover:border-cyan-300 dark:hover:border-cyan-700`}>
+            <div className="w-6 h-6 sm:w-7 sm:h-7 bg-cyan-500 rounded-lg flex items-center justify-center text-white font-bold overflow-hidden p-0.5 shrink-0 shadow-xs">
+              <CategoryIcon icon={columnConfigs['answer-key']?.icon || '🔑'} className="w-3.5 h-3.5 sm:w-4 sm:h-4 object-contain" />
             </div>
             <div className="min-w-0">
-              <h4 className="text-[12px] sm:text-[13px] lg:text-[13.5px] text-slate-600 dark:text-slate-300 font-black uppercase tracking-tight truncate">
+              <h4 className="text-[10px] sm:text-[11px] text-slate-600 dark:text-slate-300 font-extrabold uppercase tracking-tight truncate leading-none">
                 {columnConfigs['answer-key']?.title || 'Answer Key'}
               </h4>
-              <p className="text-base sm:text-lg lg:text-xl font-black text-slate-900 dark:text-white leading-tight mt-0.5">{counts.answerKey}</p>
+              <p className="text-xs sm:text-sm font-black text-slate-900 dark:text-white leading-tight mt-0.5">{counts.answerKey}</p>
             </div>
           </div>
           
-          <div onClick={() => handleTabChange('syllabus')} className={`bg-fuchsia-50/80 dark:bg-fuchsia-950/20 border ${activeTab === 'syllabus' ? 'border-fuchsia-400 dark:border-fuchsia-500 shadow-md ring-2 ring-fuchsia-200 dark:ring-fuchsia-900/50' : 'border-fuchsia-100/80 dark:border-fuchsia-900/40'} rounded-2xl p-3 sm:p-3.5 flex items-center space-x-3 transition-all duration-200 cursor-pointer hover:shadow-lg hover:-translate-y-0.5 hover:border-fuchsia-300 dark:hover:border-fuchsia-700`}>
-            <div className="w-9 h-9 sm:w-10 sm:h-10 bg-fuchsia-500 rounded-xl flex items-center justify-center text-white font-bold overflow-hidden p-1 shrink-0 shadow-sm">
-              <CategoryIcon icon={columnConfigs['syllabus']?.icon || '📚'} className="w-5 h-5 sm:w-5.5 sm:h-5.5 object-contain" />
+          <div onClick={() => handleTabChange('syllabus')} className={`bg-fuchsia-50/80 dark:bg-fuchsia-950/20 border ${activeTab === 'syllabus' ? 'border-fuchsia-400 dark:border-fuchsia-500 shadow-sm ring-1 ring-fuchsia-200 dark:ring-fuchsia-900/50' : 'border-fuchsia-100/80 dark:border-fuchsia-900/40'} rounded-xl py-1.5 px-2 sm:py-2 sm:px-2.5 flex items-center space-x-2 transition-all duration-200 cursor-pointer hover:shadow-md hover:-translate-y-0.5 hover:border-fuchsia-300 dark:hover:border-fuchsia-700`}>
+            <div className="w-6 h-6 sm:w-7 sm:h-7 bg-fuchsia-500 rounded-lg flex items-center justify-center text-white font-bold overflow-hidden p-0.5 shrink-0 shadow-xs">
+              <CategoryIcon icon={columnConfigs['syllabus']?.icon || '📚'} className="w-3.5 h-3.5 sm:w-4 sm:h-4 object-contain" />
             </div>
             <div className="min-w-0">
-              <h4 className="text-[12px] sm:text-[13px] lg:text-[13.5px] text-slate-600 dark:text-slate-300 font-black uppercase tracking-tight truncate">
+              <h4 className="text-[10px] sm:text-[11px] text-slate-600 dark:text-slate-300 font-extrabold uppercase tracking-tight truncate leading-none">
                 {columnConfigs['syllabus']?.title || 'Syllabus'}
               </h4>
-              <p className="text-base sm:text-lg lg:text-xl font-black text-slate-900 dark:text-white leading-tight mt-0.5">{counts.syllabus}</p>
+              <p className="text-xs sm:text-sm font-black text-slate-900 dark:text-white leading-tight mt-0.5">{counts.syllabus}</p>
             </div>
           </div>
 
-          <div onClick={() => handleTabChange('admission')} className={`bg-rose-50/80 dark:bg-rose-950/20 border ${activeTab === 'admission' ? 'border-rose-400 dark:border-rose-500 shadow-md ring-2 ring-rose-200 dark:ring-rose-900/50' : 'border-rose-100/80 dark:border-rose-900/40'} rounded-2xl p-3 sm:p-3.5 flex items-center space-x-3 transition-all duration-200 cursor-pointer hover:shadow-lg hover:-translate-y-0.5 hover:border-rose-300 dark:hover:border-rose-700`}>
-            <div className="w-9 h-9 sm:w-10 sm:h-10 bg-rose-500 rounded-xl flex items-center justify-center text-white font-bold overflow-hidden p-1 shrink-0 shadow-sm">
-              <CategoryIcon icon={columnConfigs['admission']?.icon || '🎓'} className="w-5 h-5 sm:w-5.5 sm:h-5.5 object-contain" />
+          <div onClick={() => handleTabChange('admission')} className={`bg-rose-50/80 dark:bg-rose-950/20 border ${activeTab === 'admission' ? 'border-rose-400 dark:border-rose-500 shadow-md ring-1 ring-rose-200 dark:ring-rose-900/50' : 'border-rose-100/80 dark:border-rose-900/40'} rounded-xl py-1.5 px-2 sm:py-2 sm:px-2.5 flex items-center space-x-2 transition-all duration-200 cursor-pointer hover:shadow-md hover:-translate-y-0.5 hover:border-rose-300 dark:hover:border-rose-700`}>
+            <div className="w-6 h-6 sm:w-7 sm:h-7 bg-rose-500 rounded-lg flex items-center justify-center text-white font-bold overflow-hidden p-0.5 shrink-0 shadow-xs">
+              <CategoryIcon icon={columnConfigs['admission']?.icon || '🎓'} className="w-3.5 h-3.5 sm:w-4 sm:h-4 object-contain" />
             </div>
             <div className="min-w-0">
-              <h4 className="text-[12px] sm:text-[13px] lg:text-[13.5px] text-slate-600 dark:text-slate-300 font-black uppercase tracking-tight truncate">
+              <h4 className="text-[10px] sm:text-[11px] text-slate-600 dark:text-slate-300 font-extrabold uppercase tracking-tight truncate leading-none">
                 {columnConfigs['admission']?.title || 'Admission'}
               </h4>
-              <p className="text-base sm:text-lg lg:text-xl font-black text-slate-900 dark:text-white leading-tight mt-0.5">{counts.admission}</p>
+              <p className="text-xs sm:text-sm font-black text-slate-900 dark:text-white leading-tight mt-0.5">{counts.admission}</p>
             </div>
           </div>
           
-          <div onClick={() => handleTabChange('documents')} className={`bg-orange-50/80 dark:bg-orange-950/20 border ${activeTab === 'documents' ? 'border-orange-400 dark:border-orange-500 shadow-md ring-2 ring-orange-200 dark:ring-orange-900/50' : 'border-orange-100/80 dark:border-orange-900/40'} rounded-2xl p-3 sm:p-3.5 flex items-center space-x-3 transition-all duration-200 cursor-pointer hover:shadow-lg hover:-translate-y-0.5 hover:border-orange-300 dark:hover:border-orange-700`}>
-            <div className="w-9 h-9 sm:w-10 sm:h-10 bg-orange-500 rounded-xl flex items-center justify-center text-white font-bold overflow-hidden p-1 shrink-0 shadow-sm">
-              <CategoryIcon icon={columnConfigs['documents']?.icon || '📜'} className="w-5 h-5 sm:w-5.5 sm:h-5.5 object-contain" />
+          <div onClick={() => handleTabChange('documents')} className={`bg-orange-50/80 dark:bg-orange-950/20 border ${activeTab === 'documents' ? 'border-orange-400 dark:border-orange-500 shadow-sm ring-1 ring-orange-200 dark:ring-orange-900/50' : 'border-orange-100/80 dark:border-orange-900/40'} rounded-xl py-1.5 px-2 sm:py-2 sm:px-2.5 flex items-center space-x-2 transition-all duration-200 cursor-pointer hover:shadow-md hover:-translate-y-0.5 hover:border-orange-300 dark:hover:border-orange-700`}>
+            <div className="w-6 h-6 sm:w-7 sm:h-7 bg-orange-500 rounded-lg flex items-center justify-center text-white font-bold overflow-hidden p-0.5 shrink-0 shadow-xs">
+              <CategoryIcon icon={columnConfigs['documents']?.icon || '📜'} className="w-3.5 h-3.5 sm:w-4 sm:h-4 object-contain" />
             </div>
             <div className="min-w-0">
-              <h4 className="text-[12px] sm:text-[13px] lg:text-[13.5px] text-slate-600 dark:text-slate-300 font-black uppercase tracking-tight truncate">
+              <h4 className="text-[10px] sm:text-[11px] text-slate-600 dark:text-slate-300 font-extrabold uppercase tracking-tight truncate leading-none">
                 {columnConfigs['documents']?.title || 'Services'}
               </h4>
-              <p className="text-base sm:text-lg lg:text-xl font-black text-slate-900 dark:text-white leading-tight mt-0.5">{counts.documents}</p>
+              <p className="text-xs sm:text-sm font-black text-slate-900 dark:text-white leading-tight mt-0.5">{counts.documents}</p>
             </div>
           </div>
           
-          <div onClick={() => handleTabChange('important')} className={`bg-pink-50/80 dark:bg-pink-950/20 border ${activeTab === 'important' ? 'border-pink-400 dark:border-pink-500 shadow-md ring-2 ring-pink-200 dark:ring-pink-900/50' : 'border-pink-100/80 dark:border-pink-900/40'} rounded-2xl p-3 sm:p-3.5 flex items-center space-x-3 transition-all duration-200 cursor-pointer hover:shadow-lg hover:-translate-y-0.5 hover:border-pink-300 dark:hover:border-pink-700`}>
-            <div className="w-9 h-9 sm:w-10 sm:h-10 bg-pink-500 rounded-xl flex items-center justify-center text-white font-bold overflow-hidden p-1 shrink-0 shadow-sm">
-              <CategoryIcon icon={columnConfigs['important']?.icon || '⚠️'} className="w-5 h-5 sm:w-5.5 sm:h-5.5 object-contain" />
+          <div onClick={() => handleTabChange('important')} className={`bg-pink-50/80 dark:bg-pink-950/20 border ${activeTab === 'important' ? 'border-pink-400 dark:border-pink-500 shadow-sm ring-1 ring-pink-200 dark:ring-pink-900/50' : 'border-pink-100/80 dark:border-pink-900/40'} rounded-xl py-1.5 px-2 sm:py-2 sm:px-2.5 flex items-center space-x-2 transition-all duration-200 cursor-pointer hover:shadow-md hover:-translate-y-0.5 hover:border-pink-300 dark:hover:border-pink-700`}>
+            <div className="w-6 h-6 sm:w-7 sm:h-7 bg-pink-500 rounded-lg flex items-center justify-center text-white font-bold overflow-hidden p-0.5 shrink-0 shadow-xs">
+              <CategoryIcon icon={columnConfigs['important']?.icon || '⚠️'} className="w-3.5 h-3.5 sm:w-4 sm:h-4 object-contain" />
             </div>
             <div className="min-w-0">
-              <h4 className="text-[12px] sm:text-[13px] lg:text-[13.5px] text-slate-600 dark:text-slate-300 font-black uppercase tracking-tight truncate">
+              <h4 className="text-[10px] sm:text-[11px] text-slate-600 dark:text-slate-300 font-extrabold uppercase tracking-tight truncate leading-none">
                 {columnConfigs['important']?.title || 'Important'}
               </h4>
-              <p className="text-base sm:text-lg lg:text-xl font-black text-slate-900 dark:text-white leading-tight mt-0.5">{counts.important}</p>
+              <p className="text-xs sm:text-sm font-black text-slate-900 dark:text-white leading-tight mt-0.5">{counts.important}</p>
             </div>
           </div>
         </div>

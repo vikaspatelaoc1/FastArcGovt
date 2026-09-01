@@ -289,7 +289,7 @@ export const JobColumn: React.FC<JobColumnProps> = ({
                   className="w-full min-w-0 cursor-pointer no-underline block"
                 >
                   <div className="flex items-start justify-between gap-2.5">
-                    <span className="text-[16px] sm:text-[17.5px] lg:text-[18.5px] font-bold text-slate-900 dark:text-slate-100 group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors leading-snug flex-1 min-w-0 tracking-tight">
+                    <span className="job-link-title-text text-[15px] sm:text-[16px] font-bold text-slate-900 dark:text-slate-100 group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors leading-snug flex-1 min-w-0 tracking-tight">
                       <HighlightText text={item.title} query={searchQuery?.trim()} />
                     </span>
                     {(item.isNew || isAdmin) && (

@@ -10,7 +10,7 @@ import {
   writeBatch
 } from 'firebase/firestore';
 import { db } from '../firebase';
-import { JobAlert, EmployeeUser, SocialLinkItem } from '../types';
+import { JobAlert, EmployeeUser, SocialLinkItem, EmailNotificationConfig, NotificationDispatchLog } from '../types';
 import { defaultJobsDatabase, defaultSocialLinks } from '../data';
 import { ThemeColorConfig } from '../utils/themeColors';
 
@@ -637,6 +637,27 @@ export async function saveSeoConfigToFirestore(config: any): Promise<void> {
   }, { merge: true });
 }
 
+// 12b. Category SEO & Meta Tags Realtime Sync
+export function subscribeToCategorySeoConfig(onUpdate: (configs: any) => void) {
+  const catSeoRef = doc(db, 'site_config', 'category_seo_config');
+  return onSnapshot(catSeoRef, (docSnap) => {
+    if (docSnap.exists()) {
+      const data = docSnap.data();
+      if (data && data.configs) {
+        onUpdate(data.configs);
+      }
+    }
+  });
+}
+
+export async function saveCategorySeoConfigToFirestore(configs: any): Promise<void> {
+  const catSeoRef = doc(db, 'site_config', 'category_seo_config');
+  await setDoc(catSeoRef, {
+    configs,
+    updatedAt: new Date().toISOString()
+  }, { merge: true });
+}
+
 // 13. Dynamic Pages & CMS Sync
 export function subscribeToDynamicPages(onUpdate: (pages: Record<string, any>) => void) {
   const pagesRef = doc(db, 'site_config', 'dynamic_pages');
@@ -741,4 +762,87 @@ export async function saveWebsiteControlConfigToFirestore(config: any): Promise<
     updatedAt: new Date().toISOString()
   }, { merge: true });
 }
+
+// 18. Automated Email Notifications & Alerts Config Sync
+export const defaultEmailNotificationConfig: EmailNotificationConfig = {
+  autoSendOnPublish: true,
+  provider: 'built-in',
+  fromName: 'FastArc Govt Job Alerts',
+  fromEmail: 'alerts@fastarc.in',
+  replyToEmail: 'support@fastarc.in',
+  smtpHost: 'smtp.gmail.com',
+  smtpPort: 587,
+  smtpUser: '',
+  smtpPassword: '',
+  smtpSecure: false,
+  apiKey: '',
+  webhookUrl: '',
+  subjectTemplate: '⚡ [FastArc Alert] {job_title} - {state} Apply Online',
+  preheaderText: 'New Government Job Notification has been published on FastArc Portal. Check eligibility and apply now.',
+  bannerTitle: 'OFFICIAL GOVERNMENT JOB NOTIFICATION RELEASED',
+  callToActionText: 'View Full Job Details & Apply Online',
+  footerNote: 'You received this official alert because you subscribed on FastArc Govt Jobs Portal.',
+  sendCategories: ['all', 'latest-jobs', 'admit-cards', 'results', 'answer-key', 'syllabus', 'admission'],
+  sendDelaySeconds: 0,
+  includePdfLink: true,
+  includeApplyLink: true,
+};
+
+export function subscribeToEmailNotificationConfig(onUpdate: (config: EmailNotificationConfig) => void) {
+  const configRef = doc(db, 'site_config', 'email_notifications');
+  return onSnapshot(configRef, (docSnap) => {
+    if (docSnap.exists()) {
+      const data = docSnap.data();
+      if (data && data.config) {
+        onUpdate({
+          ...defaultEmailNotificationConfig,
+          ...data.config
+        });
+        return;
+      }
+    }
+    onUpdate(defaultEmailNotificationConfig);
+  });
+}
+
+export async function saveEmailNotificationConfigToFirestore(config: EmailNotificationConfig): Promise<void> {
+  const configRef = doc(db, 'site_config', 'email_notifications');
+  await setDoc(configRef, {
+    config,
+    updatedAt: new Date().toISOString()
+  }, { merge: true });
+}
+
+// 19. Notification Dispatch History Logs
+export function subscribeToNotificationLogs(onUpdate: (logs: NotificationDispatchLog[]) => void) {
+  const logsRef = doc(db, 'site_config', 'notification_logs');
+  return onSnapshot(logsRef, (docSnap) => {
+    if (docSnap.exists()) {
+      const data = docSnap.data();
+      if (data && Array.isArray(data.logs)) {
+        onUpdate(data.logs);
+        return;
+      }
+    }
+    onUpdate([]);
+  });
+}
+
+export async function saveNotificationLogToFirestore(log: NotificationDispatchLog): Promise<void> {
+  const logsRef = doc(db, 'site_config', 'notification_logs');
+  const snap = await getDoc(logsRef);
+  let existingLogs: NotificationDispatchLog[] = [];
+  if (snap.exists()) {
+    const data = snap.data();
+    if (data && Array.isArray(data.logs)) {
+      existingLogs = data.logs;
+    }
+  }
+  const updatedLogs = [log, ...existingLogs.filter(l => l.id !== log.id)].slice(0, 100);
+  await setDoc(logsRef, {
+    logs: updatedLogs,
+    updatedAt: new Date().toISOString()
+  }, { merge: true });
+}
+
 

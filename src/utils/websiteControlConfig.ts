@@ -26,6 +26,11 @@ export interface WebsiteCustomColorConfig {
   errorColor: string;
 }
 
+export const STANDARD_JOB_LINK_FONT_SIZE = 16;
+export const STANDARD_JOB_LINK_FONT_SIZE_MOBILE = 15;
+export const STANDARD_JOB_LINK_FONT_WEIGHT: '500' | '600' | '700' | '800' = '700';
+export const STANDARD_JOB_LINK_LINE_HEIGHT = '1.45';
+
 export interface WebsiteTypographyConfig {
   fontFamily: string;
   headingFontFamily: string;
@@ -34,6 +39,11 @@ export interface WebsiteTypographyConfig {
   lineHeight: string; // e.g. '1.5', '1.6', '1.7'
   letterSpacing: string; // e.g. '0px', '-0.02em', '0.03em'
   textTransform: 'none' | 'uppercase' | 'capitalize';
+  // Job links specific font size control
+  jobLinkFontSize?: number; // in px, e.g. 16 (Standard desktop font size)
+  jobLinkFontSizeMobile?: number; // in px, e.g. 15 (Standard mobile font size)
+  jobLinkFontWeight?: '500' | '600' | '700' | '800'; // Standard '700'
+  jobLinkLineHeight?: string; // Standard '1.45'
 }
 
 export interface WebsiteLayoutConfig {
@@ -240,7 +250,11 @@ export const DEFAULT_WEBSITE_CONTROL_CONFIG: WebsiteControlConfig = {
     fontWeight: '500',
     lineHeight: '1.6',
     letterSpacing: '-0.01em',
-    textTransform: 'none'
+    textTransform: 'none',
+    jobLinkFontSize: STANDARD_JOB_LINK_FONT_SIZE,
+    jobLinkFontSizeMobile: STANDARD_JOB_LINK_FONT_SIZE_MOBILE,
+    jobLinkFontWeight: STANDARD_JOB_LINK_FONT_WEIGHT,
+    jobLinkLineHeight: STANDARD_JOB_LINK_LINE_HEIGHT
   },
   layout: {
     containerMaxWidth: '1440px',
@@ -534,6 +548,11 @@ export const applyWebsiteControlToDOM = (config: WebsiteControlConfig) => {
   const cardRadius = radiusMap[config.layout?.cardBorderRadius || 'xl'] || '1rem';
   const cardShadow = shadowMap[config.layout?.cardShadow || 'sm'] || '0 1px 2px 0 rgba(0, 0, 0, 0.05)';
   const scale = (config.typography?.fontSizeScale || 100) / 100;
+  
+  const jobLinkFontSize = config.typography?.jobLinkFontSize || STANDARD_JOB_LINK_FONT_SIZE;
+  const jobLinkFontSizeMobile = config.typography?.jobLinkFontSizeMobile || STANDARD_JOB_LINK_FONT_SIZE_MOBILE;
+  const jobLinkFontWeight = config.typography?.jobLinkFontWeight || STANDARD_JOB_LINK_FONT_WEIGHT;
+  const jobLinkLineHeight = config.typography?.jobLinkLineHeight || STANDARD_JOB_LINK_LINE_HEIGHT;
 
   // 3. Inject CSS Variables
   const styleId = 'fastarc-master-website-control-style';
@@ -580,6 +599,11 @@ export const applyWebsiteControlToDOM = (config: WebsiteControlConfig) => {
       --wc-line-height: ${typography?.lineHeight || '1.6'};
       --wc-letter-spacing: ${typography?.letterSpacing || '-0.01em'};
       
+      --wc-job-link-font-size: ${jobLinkFontSize}px;
+      --wc-job-link-font-size-mobile: ${jobLinkFontSizeMobile}px;
+      --wc-job-link-font-weight: ${jobLinkFontWeight};
+      --wc-job-link-line-height: ${jobLinkLineHeight};
+
       --wc-container-max: ${layout?.containerMaxWidth || '1440px'};
       --wc-card-radius: ${cardRadius};
       --wc-card-shadow: ${cardShadow};
@@ -594,6 +618,23 @@ export const applyWebsiteControlToDOM = (config: WebsiteControlConfig) => {
 
     h1, h2, h3, h4, h5, h6 {
       font-family: var(--wc-heading-font) !important;
+    }
+
+    /* Standardized & Customizable Job Link Title Typography Across Portal */
+    .job-link-title-text,
+    .job-link-item-title,
+    .job-title-custom-font {
+      font-size: var(--wc-job-link-font-size-mobile) !important;
+      font-weight: var(--wc-job-link-font-weight) !important;
+      line-height: var(--wc-job-link-line-height) !important;
+    }
+
+    @media (min-width: 640px) {
+      .job-link-title-text,
+      .job-link-item-title,
+      .job-title-custom-font {
+        font-size: var(--wc-job-link-font-size) !important;
+      }
     }
 
     .custom-master-header {

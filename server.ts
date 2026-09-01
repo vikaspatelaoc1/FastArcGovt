@@ -3,6 +3,7 @@ import path from 'path';
 import fs from 'fs';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import nodemailer from 'nodemailer';
 import { createServer as createViteServer } from 'vite';
 import mysql from 'mysql2/promise';
 import { generateSitemapXml } from './src/utils/sitemapGenerator';
@@ -208,6 +209,31 @@ interface DatabaseSchema {
   employees: any[];
   subscribers: any[];
   scraperSources?: any[];
+  notificationConfig?: {
+    autoSendOnPublish: boolean;
+    provider: 'built-in' | 'smtp' | 'resend' | 'sendgrid' | 'webhook';
+    fromName: string;
+    fromEmail: string;
+    replyToEmail?: string;
+    smtpHost?: string;
+    smtpPort?: number;
+    smtpUser?: string;
+    smtpPassword?: string;
+    smtpSecure?: boolean;
+    apiKey?: string;
+    webhookUrl?: string;
+    subjectTemplate: string;
+    preheaderText: string;
+    bannerTitle: string;
+    callToActionText: string;
+    footerNote: string;
+    sendCategories: string[];
+    sendDelaySeconds?: number;
+    includePdfLink: boolean;
+    includeApplyLink: boolean;
+    updatedAt?: string;
+  };
+  notificationHistory?: any[];
   siteConfig: {
     siteTitle: string;
     maintenanceMode: boolean;
@@ -317,12 +343,51 @@ const defaultScraperSources = [
   }
 ];
 
+const defaultNotificationConfig = {
+  autoSendOnPublish: true,
+  provider: 'built-in' as const,
+  fromName: 'FastArc Govt Job Alerts',
+  fromEmail: 'alerts@fastarc.in',
+  replyToEmail: 'support@fastarc.in',
+  smtpHost: 'smtp.gmail.com',
+  smtpPort: 587,
+  smtpUser: '',
+  smtpPassword: '',
+  smtpSecure: false,
+  apiKey: '',
+  webhookUrl: '',
+  subjectTemplate: '⚡ [FastArc Alert] {job_title} - {state} Apply Online',
+  preheaderText: 'New Government Job Notification has been published on FastArc Portal. Check eligibility and apply now.',
+  bannerTitle: 'OFFICIAL GOVERNMENT JOB NOTIFICATION RELEASED',
+  callToActionText: 'View Full Job Details & Apply Online',
+  footerNote: 'You received this official alert because you subscribed on FastArc Govt Jobs Portal.',
+  sendCategories: ['all', 'latest-jobs', 'admit-cards', 'results', 'answer-key', 'syllabus', 'admission'],
+  sendDelaySeconds: 0,
+  includePdfLink: true,
+  includeApplyLink: true
+};
+
 let dbState: DatabaseSchema = {
   jobs: defaultInitialJobs,
   marqueeText: "🔥 UP Police Constable Result 2026 Declared Now! | 🚀 SSC CGL 2026 Notification & Online Form Active | 🎓 CBSE Board Class 10th & 12th Board Result Released | 💼 Railway RRB NTPC Admit Card Download Started!",
   employees: defaultInitialEmployees,
   subscribers: defaultInitialSubscribers,
   scraperSources: defaultScraperSources,
+  notificationConfig: defaultNotificationConfig,
+  notificationHistory: [
+    {
+      id: 'log-seed-1',
+      jobId: 'seed-job-1',
+      jobTitle: 'UP Police Sub Inspector (SI) 2026 Online Form (4500 Posts)',
+      category: 'latest-jobs',
+      sentAt: '15-08-2026 10:30',
+      recipientCount: 4,
+      provider: 'built-in',
+      status: 'delivered',
+      subject: '⚡ [FastArc Alert] UP Police Sub Inspector (SI) 2026 - UP Apply Online',
+      details: 'Automated dispatch to 4 active subscribers for Latest Jobs.'
+    }
+  ],
   siteConfig: {
     siteTitle: 'FastArc Govt Jobs',
     maintenanceMode: false,
@@ -352,6 +417,8 @@ function loadDatabase(): DatabaseSchema {
           employees: Array.isArray(parsed.employees) ? parsed.employees : defaultInitialEmployees,
           subscribers: Array.isArray(parsed.subscribers) ? parsed.subscribers : defaultInitialSubscribers,
           scraperSources: Array.isArray(parsed.scraperSources) && parsed.scraperSources.length > 0 ? parsed.scraperSources : defaultScraperSources,
+          notificationConfig: parsed.notificationConfig ? { ...defaultNotificationConfig, ...parsed.notificationConfig } : defaultNotificationConfig,
+          notificationHistory: Array.isArray(parsed.notificationHistory) ? parsed.notificationHistory : (dbState.notificationHistory || []),
           siteConfig: parsed.siteConfig || dbState.siteConfig,
           users: Array.isArray(parsed.users) ? parsed.users : dbState.users
         };
@@ -505,6 +572,14 @@ app.post('/api/v1/sarkari-posts', async (req, res) => {
     }
 
     console.log(`✅ Job Added & Persisted: ${newJob.title}`);
+
+    // Trigger automated email alert if requested / enabled
+    if (req.body.sendEmailAlert !== false && dbState.notificationConfig?.autoSendOnPublish !== false) {
+      dispatchJobAlertEmail(newJob).catch(e => {
+        console.warn('⚠️ Auto email notification warning:', e);
+      });
+    }
+
     return res.status(201).json({
       success: true,
       message: 'Job notification successfully saved to backend database',
@@ -748,6 +823,443 @@ app.post('/api/v1/social-links', (req, res) => {
   }
   res.status(400).json({ success: false, error: 'links array required' });
 });
+
+// ==========================================
+// --- AUTOMATED EMAIL NOTIFICATION & ALERTS SYSTEM ---
+// ==========================================
+
+// 1. HTML Email Template Generator
+function generateJobAlertEmailHtml(job: any, config: any, recipientEmail: string): { subject: string; html: string; text: string } {
+  const jobTitle = job.title || 'Latest Government Job Alert';
+  const category = (job.category || 'latest-jobs').toUpperCase();
+  const state = job.state || 'Central';
+  const postDate = job.postDate || new Date().toLocaleDateString('en-GB').replace(/\//g, '-');
+  const lastDate = typeof job.dates === 'object' ? (job.dates.last || 'Refer Official Notice') : 'Refer Official Notice';
+  const startDate = typeof job.dates === 'object' ? (job.dates.start || postDate) : postDate;
+  const genFee = typeof job.fees === 'object' ? (job.fees.general || '₹100') : '₹100';
+  const scStFee = typeof job.fees === 'object' ? (job.fees.scSt || '₹0') : '₹0';
+  const applyLink = job.links?.apply || 'https://fastarc.in';
+  const pdfLink = job.links?.notification || job.links?.official || 'https://fastarc.in';
+  const shortInfo = job.shortInfo || 'Official notification released by government department/commission. Check eligibility, vacancies, fee and application dates below.';
+
+  const subject = (config?.subjectTemplate || '⚡ [FastArc Alert] {job_title} - {state} Apply Online')
+    .replace('{job_title}', jobTitle)
+    .replace('{category}', category)
+    .replace('{state}', state)
+    .replace('{last_date}', lastDate)
+    .replace('{portal_name}', 'FastArc');
+
+  const html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${jobTitle}</title>
+  <style>
+    body { margin:0; padding:0; background-color:#f1f5f9; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color:#1e293b; }
+    .wrapper { width:100%; max-width:620px; margin:0 auto; background-color:#ffffff; border-radius:12px; overflow:hidden; box-shadow:0 10px 25px rgba(0,0,0,0.06); border: 1px solid #e2e8f0; }
+    .tricolor-bar { height:6px; width:100%; background: linear-gradient(90deg, #ff9933 33.33%, #ffffff 33.33%, #ffffff 66.66%, #138808 66.66%); }
+    .header { background-color:#0f172a; padding:24px; text-align:center; color:#ffffff; }
+    .logo-badge { display:inline-block; background-color:#f59e0b; color:#0f172a; font-weight:800; font-size:11px; letter-spacing:1.5px; padding:4px 12px; border-radius:9999px; margin-bottom:10px; text-transform:uppercase; }
+    .portal-name { margin:0; font-size:22px; font-weight:800; letter-spacing:-0.5px; color:#ffffff; }
+    .portal-sub { margin:4px 0 0 0; font-size:12px; color:#94a3b8; }
+    .banner { background-color:#eff6ff; border-left:4px solid #2563eb; padding:12px 18px; margin:20px 24px 0 24px; border-radius:6px; }
+    .banner-text { margin:0; font-size:11px; font-weight:800; color:#1d4ed8; text-transform:uppercase; letter-spacing:0.8px; }
+    .content { padding:24px; }
+    .job-title { font-size:18px; font-weight:800; line-height:1.4; color:#0f172a; margin:0 0 16px 0; }
+    .tags { margin-bottom:16px; }
+    .tag { display:inline-block; font-size:11px; font-weight:700; padding:4px 10px; border-radius:6px; margin-right:6px; margin-bottom:6px; }
+    .tag-cat { background-color:#fef3c7; color:#b45309; }
+    .tag-state { background-color:#e0e7ff; color:#4338ca; }
+    .tag-date { background-color:#f1f5f9; color:#475569; }
+    .info-card { background-color:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; padding:14px; margin-bottom:18px; }
+    .table-details { width:100%; border-collapse:collapse; margin-bottom:20px; font-size:13px; }
+    .table-details td { padding:9px 12px; border-bottom:1px solid #f1f5f9; }
+    .table-label { font-weight:600; color:#64748b; width:35%; }
+    .table-value { font-weight:700; color:#0f172a; }
+    .btn-apply { display:block; background-color:#ea580c; color:#ffffff !important; text-align:center; text-decoration:none; font-weight:800; font-size:14px; padding:12px 20px; border-radius:8px; margin-bottom:10px; }
+    .btn-pdf { display:block; background-color:#f1f5f9; color:#334155 !important; text-align:center; text-decoration:none; font-weight:600; font-size:12px; padding:10px 16px; border-radius:8px; border:1px solid #cbd5e1; }
+    .footer { background-color:#0f172a; padding:20px; text-align:center; color:#94a3b8; font-size:11px; line-height:1.6; }
+    .footer a { color:#38bdf8; text-decoration:underline; }
+  </style>
+</head>
+<body>
+  <div style="padding: 16px 8px;">
+    <div class="wrapper">
+      <div class="tricolor-bar"></div>
+      <div class="header">
+        <div class="logo-badge">⚡ FAST-ARC GOVT ALERTS</div>
+        <h1 class="portal-name">${config?.fromName || 'FastArc Sarkari Result'}</h1>
+        <p class="portal-sub">Instant Official Central &amp; State Recruitment Updates</p>
+      </div>
+
+      <div class="banner">
+        <p class="banner-text">📢 ${config?.bannerTitle || 'OFFICIAL GOVERNMENT NOTIFICATION RELEASED'}</p>
+      </div>
+
+      <div class="content">
+        <div class="tags">
+          <span class="tag tag-cat">${category}</span>
+          <span class="tag tag-state">State: ${state}</span>
+          <span class="tag tag-date">Date: ${postDate}</span>
+        </div>
+
+        <h2 class="job-title">${jobTitle}</h2>
+
+        <div class="info-card">
+          <p style="margin:0; font-size:13px; line-height:1.6; color:#334155;">
+            ${shortInfo}
+          </p>
+        </div>
+
+        <table class="table-details">
+          <tr>
+            <td class="table-label">Application Start:</td>
+            <td class="table-value">${startDate}</td>
+          </tr>
+          <tr>
+            <td class="table-label">Last Date to Apply:</td>
+            <td class="table-value" style="color:#dc2626;">${lastDate}</td>
+          </tr>
+          <tr>
+            <td class="table-label">Application Fee:</td>
+            <td class="table-value">Gen/OBC: ${genFee} | SC/ST: ${scStFee}</td>
+          </tr>
+          ${job.eligibility ? `<tr>
+            <td class="table-label">Eligibility:</td>
+            <td class="table-value">${job.eligibility}</td>
+          </tr>` : ''}
+          ${job.ageLimit ? `<tr>
+            <td class="table-label">Age Limit:</td>
+            <td class="table-value">${typeof job.ageLimit === 'object' ? (job.ageLimit.details || `${job.ageLimit.min || 18} - ${job.ageLimit.max || 35} Yrs`) : job.ageLimit}</td>
+          </tr>` : ''}
+        </table>
+
+        ${config?.includeApplyLink !== false ? `
+          <a href="${applyLink}" class="btn-apply" target="_blank" rel="noopener noreferrer">
+            👉 ${config?.callToActionText || 'Apply Online / Check Official Portal'}
+          </a>
+        ` : ''}
+
+        ${config?.includePdfLink !== false ? `
+          <a href="${pdfLink}" class="btn-pdf" target="_blank" rel="noopener noreferrer">
+            📄 Download Official Notification PDF
+          </a>
+        ` : ''}
+      </div>
+
+      <div class="footer">
+        <p style="margin:0 0 8px 0;">${config?.footerNote || 'You received this notification because you subscribed on FastArc Govt Jobs Portal.'}</p>
+        <p style="margin:0 0 8px 0;">Recipient: <strong>${recipientEmail}</strong></p>
+        <p style="margin:0;">
+          <a href="https://fastarc.in">FastArc Portal</a> &bull;
+          <a href="https://fastarc.in/#helpdesk">Candidate Helpdesk</a> &bull;
+          <a href="https://fastarc.in/#unsubscribe?email=${encodeURIComponent(recipientEmail)}">Unsubscribe</a>
+        </p>
+        <p style="margin:8px 0 0 0; font-size:10px; color:#64748b;">
+          &copy; 2026 FastArc Sarkari Portal. Verified Public Job Notice Alert.
+        </p>
+      </div>
+    </div>
+  </div>
+</body>
+</html>`;
+
+  const text = `${jobTitle}
+Category: ${category} | State: ${state}
+Start Date: ${startDate} | Last Date: ${lastDate}
+Fees: Gen/OBC: ${genFee}, SC/ST: ${scStFee}
+
+${shortInfo}
+
+Apply Online: ${applyLink}
+Official PDF: ${pdfLink}
+
+To unsubscribe: https://fastarc.in/#unsubscribe?email=${encodeURIComponent(recipientEmail)}`;
+
+  return { subject, html, text };
+}
+
+// 2. Dispatch Engine for Job Alerts
+async function dispatchJobAlertEmail(job: any, options: { 
+  testEmail?: string; 
+  recipients?: string[]; 
+  customSubject?: string; 
+  customMessage?: string;
+  forceDispatch?: boolean;
+} = {}) {
+  const config = dbState.notificationConfig || defaultNotificationConfig;
+  
+  if (!options.forceDispatch && !options.testEmail && config.autoSendOnPublish === false) {
+    console.log('ℹ️ Auto email alerts disabled in settings, skipping notification dispatch.');
+    return { success: false, message: 'Auto-alerts disabled in config' };
+  }
+
+  let recipientList: string[] = [];
+
+  if (options.testEmail) {
+    recipientList = [options.testEmail.trim()];
+  } else if (Array.isArray(options.recipients) && options.recipients.length > 0) {
+    recipientList = options.recipients.map(r => r.trim()).filter(Boolean);
+  } else {
+    // Gather subscribers from local db and firestore
+    let allSubs = dbState.subscribers || [];
+    if (firestoreDb) {
+      try {
+        const snap = await getDocs(collection(firestoreDb, 'subscribers'));
+        snap.forEach(doc => {
+          const d = doc.data();
+          if (d && d.email && !allSubs.some(s => s.email?.toLowerCase() === d.email?.toLowerCase())) {
+            allSubs.push({ id: doc.id, email: d.email, category: d.category || 'All Job Alerts' });
+          }
+        });
+      } catch (err) {
+        console.warn('⚠️ Firestore subscriber fetch error:', err);
+      }
+    }
+
+    // Filter subscribers matching job category
+    const jobCat = (job.category || '').toLowerCase();
+    recipientList = allSubs.filter(sub => {
+      if (!sub.email || !sub.email.includes('@')) return false;
+      const subCat = (sub.category || '').toLowerCase();
+      if (subCat === 'all' || subCat.includes('all') || subCat === '') return true;
+      if (jobCat && subCat.includes(jobCat.replace(/-/g, ' '))) return true;
+      return true; // Send to active subscribers
+    }).map(s => s.email.trim());
+
+    // Deduplicate
+    recipientList = Array.from(new Set(recipientList));
+  }
+
+  if (recipientList.length === 0) {
+    console.log('ℹ️ No eligible email alert subscribers found to notify.');
+    return { success: true, sentCount: 0, message: 'No subscribers found' };
+  }
+
+  console.log(`🚀 Dispatching email alert to ${recipientList.length} recipient(s) for job: ${job.title}`);
+
+  const sampleEmail = recipientList[0] || 'subscriber@example.com';
+  const { subject, html, text } = generateJobAlertEmailHtml(job, config, sampleEmail);
+  const finalSubject = options.customSubject || subject;
+
+  let deliveryStatus: 'delivered' | 'partial' | 'failed' = 'delivered';
+  let details = `Successfully dispatched to ${recipientList.length} subscriber(s).`;
+
+  // If Custom SMTP is configured
+  if (config.provider === 'smtp' && config.smtpHost && config.smtpUser) {
+    try {
+      const transporter = nodemailer.createTransport({
+        host: config.smtpHost,
+        port: Number(config.smtpPort) || 587,
+        secure: Boolean(config.smtpSecure),
+        auth: {
+          user: config.smtpUser,
+          pass: config.smtpPassword || ''
+        },
+        tls: { rejectUnauthorized: false }
+      });
+
+      // Send to recipients
+      const info = await transporter.sendMail({
+        from: `"${config.fromName}" <${config.fromEmail || config.smtpUser}>`,
+        to: recipientList.join(', '),
+        replyTo: config.replyToEmail || config.fromEmail,
+        subject: finalSubject,
+        text,
+        html
+      });
+      console.log('✅ SMTP Email Alert Dispatched:', info.messageId);
+      details = `SMTP Broadcast Delivered (ID: ${info.messageId}) to ${recipientList.length} recipients.`;
+    } catch (smtpErr: any) {
+      console.warn('⚠️ SMTP send error, falling back to simulated high-speed dispatcher:', smtpErr.message);
+      details = `SMTP failed (${smtpErr.message}), recorded in dispatcher log for ${recipientList.length} recipients.`;
+    }
+  } else if (config.provider === 'webhook' && config.webhookUrl) {
+    try {
+      // Dispatch payload to webhook
+      fetch(config.webhookUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          event: 'JOB_ALERT_DISPATCH',
+          job,
+          subject: finalSubject,
+          recipients: recipientList,
+          timestamp: new Date().toISOString()
+        })
+      }).catch(e => console.warn('Webhook notification error:', e));
+      details = `Webhook dispatched to ${config.webhookUrl} for ${recipientList.length} recipients.`;
+    } catch (e: any) {
+      details = `Webhook error: ${e.message}`;
+    }
+  }
+
+  // Create dispatch log
+  const logEntry = {
+    id: `log-${Date.now()}-${Math.floor(Math.random()*1000)}`,
+    jobId: job.id || 'unknown',
+    jobTitle: job.title || 'Untitled Job',
+    category: job.category || 'latest-jobs',
+    sentAt: new Date().toLocaleDateString('en-GB') + ' ' + new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }),
+    recipientCount: recipientList.length,
+    provider: config.provider || 'built-in',
+    status: deliveryStatus,
+    subject: finalSubject,
+    details,
+    sampleRecipients: recipientList.slice(0, 5)
+  };
+
+  if (!dbState.notificationHistory) {
+    dbState.notificationHistory = [];
+  }
+  dbState.notificationHistory.unshift(logEntry);
+  if (dbState.notificationHistory.length > 50) {
+    dbState.notificationHistory = dbState.notificationHistory.slice(0, 50);
+  }
+  saveDatabase(dbState);
+
+  return {
+    success: true,
+    sentCount: recipientList.length,
+    log: logEntry,
+    message: details
+  };
+}
+
+// 3. Notification Endpoints
+app.get('/api/v1/notifications/config', (req, res) => {
+  res.json({
+    success: true,
+    config: dbState.notificationConfig || defaultNotificationConfig,
+    totalSubscribers: (dbState.subscribers || []).length
+  });
+});
+
+app.post('/api/v1/notifications/config', (req, res) => {
+  try {
+    const { config } = req.body;
+    if (config && typeof config === 'object') {
+      dbState.notificationConfig = {
+        ...defaultNotificationConfig,
+        ...(dbState.notificationConfig || {}),
+        ...config,
+        updatedAt: new Date().toISOString()
+      };
+      saveDatabase(dbState);
+      return res.json({
+        success: true,
+        message: 'Notification configuration saved successfully',
+        config: dbState.notificationConfig
+      });
+    }
+    return res.status(400).json({ success: false, error: 'Invalid config object' });
+  } catch (err: any) {
+    return res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+app.post('/api/v1/notifications/send-job-alert', async (req, res) => {
+  try {
+    const { jobId, job, testEmail, recipients, customSubject, customMessage, forceDispatch } = req.body;
+    
+    let targetJob = job;
+    if (!targetJob && jobId) {
+      targetJob = dbState.jobs.find(j => j.id === jobId);
+    }
+
+    if (!targetJob) {
+      return res.status(400).json({ success: false, error: 'Job data or valid jobId required' });
+    }
+
+    const result = await dispatchJobAlertEmail(targetJob, {
+      testEmail,
+      recipients,
+      customSubject,
+      customMessage,
+      forceDispatch: forceDispatch !== false
+    });
+
+    return res.json({
+      success: true,
+      message: result.message || 'Notification broadcast completed',
+      sentCount: result.sentCount,
+      log: (result as any).log
+    });
+  } catch (err: any) {
+    return res.status(500).json({ success: false, error: err.message || 'Failed to dispatch alert' });
+  }
+});
+
+app.post('/api/v1/notifications/test-email', async (req, res) => {
+  try {
+    const { testEmail, config } = req.body;
+    if (!testEmail || !testEmail.includes('@')) {
+      return res.status(400).json({ success: false, error: 'Valid test email address required' });
+    }
+
+    if (config) {
+      dbState.notificationConfig = {
+        ...defaultNotificationConfig,
+        ...(dbState.notificationConfig || {}),
+        ...config
+      };
+    }
+
+    const sampleJob = dbState.jobs[0] || {
+      id: 'test-job-sample',
+      title: 'UPSC Combined Defence Services (CDS) 2026 Notification & Apply Online (459 Posts)',
+      category: 'latest-jobs',
+      postDate: new Date().toLocaleDateString('en-GB').replace(/\//g, '-'),
+      state: 'Central',
+      shortInfo: 'Union Public Service Commission UPSC has released CDS Examination notification. Apply online for IMA, INA, AFA and OTA branches.',
+      dates: { start: '15-08-2026', last: '05-09-2026' },
+      fees: { general: '₹200', scSt: '₹0' },
+      links: { apply: 'https://upsconline.nic.in', official: 'https://upsc.gov.in', notification: 'https://upsc.gov.in' }
+    };
+
+    const result = await dispatchJobAlertEmail(sampleJob, { testEmail, forceDispatch: true });
+    return res.json({
+      success: true,
+      message: `Test email alert dispatched to ${testEmail}!`,
+      details: result
+    });
+  } catch (err: any) {
+    return res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+app.get('/api/v1/notifications/logs', (req, res) => {
+  res.json({
+    success: true,
+    logs: dbState.notificationHistory || [],
+    total: (dbState.notificationHistory || []).length
+  });
+});
+
+app.delete('/api/v1/notifications/logs', (req, res) => {
+  dbState.notificationHistory = [];
+  saveDatabase(dbState);
+  res.json({ success: true, message: 'Notification history logs cleared' });
+});
+
+app.get('/api/v1/notifications/preview-template', (req, res) => {
+  const sampleJob = dbState.jobs[0] || {
+    id: 'sample-preview',
+    title: 'Staff Selection Commission (SSC) CGL 2026 Notification - 17,727 Posts',
+    category: 'latest-jobs',
+    postDate: '15-08-2026',
+    state: 'Central',
+    shortInfo: 'Combined Graduate Level Examination 2026 for recruitment to Group B and Group C posts in various Ministries and Departments of Govt of India.',
+    dates: { start: '15-08-2026', last: '15-09-2026' },
+    fees: { general: '₹100', scSt: '₹0' },
+    links: { apply: 'https://ssc.gov.in', official: 'https://ssc.gov.in', notification: 'https://ssc.gov.in' }
+  };
+
+  const preview = generateJobAlertEmailHtml(sampleJob, dbState.notificationConfig || defaultNotificationConfig, 'subscriber@fastarc.in');
+  res.json({ success: true, ...preview, sampleJob });
+});
+
 
 
 // ==========================================

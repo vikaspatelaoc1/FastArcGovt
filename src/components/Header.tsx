@@ -366,15 +366,15 @@ export const Header: React.FC<HeaderProps> = ({
             })()}
             
             {/* Admin Control Bar / Action Buttons Dock Placeholder */}
-            <div className="flex items-center space-x-0 ml-1.5 sm:ml-3">
+            <div className="flex items-center space-x-0 ml-1.5 sm:ml-2">
               {!isLoggedIn && (
                 <button
                   onClick={onAdminLoginClick}
-                  className="h-9 sm:h-10 px-3 rounded-lg sm:rounded-xl border border-amber-500/40 bg-[#1e1e48] hover:bg-blue-950 text-amber-400 shadow-md flex items-center justify-center transition-all cursor-pointer gap-1.5"
-                  title="Admin Login"
+                  className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl border border-amber-500/40 bg-[#1e1e48] hover:bg-blue-950 text-amber-400 shadow-md flex items-center justify-center transition-all cursor-pointer hover:scale-105 active:scale-95"
+                  title="Portal Login"
+                  aria-label="Portal Login"
                 >
-                  <ShieldCheck className="w-4 h-4 text-amber-400" />
-                  <span className="hidden sm:inline text-[11px] font-bold">Admin</span>
+                  <ShieldCheck className="w-4 h-4 sm:w-4.5 sm:h-4.5 text-amber-400" />
                 </button>
               )}
             </div>
