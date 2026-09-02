@@ -1,5 +1,5 @@
-import React, { useState, useMemo } from 'react';
-import { ChevronDown, ChevronUp, ArrowRight, ExternalLink, Sparkles, Edit2, ArrowUpDown } from 'lucide-react';
+import React, { useState, useMemo, useEffect } from 'react';
+import { ChevronDown, ChevronUp, ArrowRight, Sparkles, Edit2, ArrowUpDown } from 'lucide-react';
 import { JobAlert, JobCategory } from '../types';
 import { CategoryIcon } from './CategoryIcon';
 import { VirtualizedJobList } from './VirtualizedJobList';
@@ -97,6 +97,15 @@ export const JobColumn: React.FC<JobColumnProps> = ({
   maxHeightExpandedClass = 'max-h-[700px]'
 }) => {
   const [isExpanded, setIsExpanded] = useState(defaultExpanded);
+  const [isPwaMode, setIsPwaMode] = useState(false);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(display-mode: standalone)");
+    setIsPwaMode(mediaQuery.matches);
+    const handler = (e: MediaQueryListEvent) => setIsPwaMode(e.matches);
+    mediaQuery.addEventListener("change", handler);
+    return () => mediaQuery.removeEventListener("change", handler);
+  }, []);
   const [sortOrder, setSortOrder] = useState<'recent' | 'oldest'>(defaultSort);
 
   const sortedCategoryJobs = useMemo(() => {
@@ -111,8 +120,9 @@ export const JobColumn: React.FC<JobColumnProps> = ({
     });
   }, [jobs, categoryId, disableFilter, sortOrder]);
 
-  const displayJobs = isExpanded || disableFilter ? sortedCategoryJobs : sortedCategoryJobs.slice(0, initialLimit);
-  const hasMore = sortedCategoryJobs.length > initialLimit;
+  const effectiveLimit = isPwaMode ? 5 : initialLimit;
+  const displayJobs = isExpanded || disableFilter ? sortedCategoryJobs : sortedCategoryJobs.slice(0, effectiveLimit);
+  const hasMore = sortedCategoryJobs.length > effectiveLimit;
 
   const handleToggleExpand = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -149,7 +159,13 @@ export const JobColumn: React.FC<JobColumnProps> = ({
             : `bg-gradient-to-r ${gradientFrom} ${gradientTo}`
         } p-3 sm:p-3.5 text-white flex justify-between items-center shrink-0`}
       >
-        <div className="flex items-center gap-2.5 min-w-0 flex-1 mr-2">
+        <div 
+          className={`flex items-center gap-2.5 min-w-0 flex-1 mr-2 ${onSeeMore && !disableFilter ? 'cursor-pointer hover:opacity-80 transition-opacity' : ''}`}
+          onClick={onSeeMore && !disableFilter ? handleOpenTab : undefined}
+          title={onSeeMore && !disableFilter ? `Open all ${title} in dedicated tab` : undefined}
+          role={onSeeMore && !disableFilter ? "button" : undefined}
+          tabIndex={onSeeMore && !disableFilter ? 0 : undefined}
+        >
           <span className="text-lg sm:text-xl shrink-0 flex items-center justify-center">
             <CategoryIcon icon={icon} className="w-5.5 h-5.5 sm:w-6 sm:h-6 object-contain shrink-0" />
           </span>
@@ -211,16 +227,6 @@ export const JobColumn: React.FC<JobColumnProps> = ({
             </button>
           )}
 
-          {onSeeMore && !disableFilter && (
-            <button
-              onClick={handleOpenTab}
-              title={`Open all ${title} in dedicated tab`}
-              className="p-1.5 sm:p-2 rounded-lg bg-white/15 hover:bg-white/30 text-white transition-all text-xs sm:text-sm font-bold flex items-center justify-center cursor-pointer focus:outline-none focus:ring-2 focus:ring-white/40"
-              aria-label={`Open ${title} Tab`}
-            >
-              <ExternalLink className="w-4 h-4" />
-            </button>
-          )}
         </div>
       </div>
 
@@ -237,21 +243,24 @@ export const JobColumn: React.FC<JobColumnProps> = ({
         isExpanded={isExpanded}
       />
 
-      {/* Action footer: See More Tab and Expand / Show Less buttons */}
+      {/* Action footer: See More Tab */}
       {!disableFilter && (
-        <div className="pt-3 pb-2.5 px-3 sm:px-4 flex flex-col sm:flex-row items-center justify-between gap-2.5 border-t border-slate-100 dark:border-slate-800/80 bg-slate-50/50 dark:bg-slate-900/50 rounded-b-xl shrink-0">
-          
-          {/* Primary 'See More' button that opens the dedicated tab */}
+        <div className={`pt-2 pb-3 px-3 flex items-center shrink-0 ${isPwaMode ? 'justify-center bg-transparent rounded-b-xl' : 'sm:px-4 sm:justify-between border-t border-slate-100 dark:border-slate-800/80 bg-slate-50/50 dark:bg-slate-900/50 rounded-b-xl'}`}>
           {onSeeMore && (
-            <div className="flex justify-end">
-              <button 
-                onClick={handleOpenTab}
-                className="inline-flex items-center justify-center gap-1 px-2 py-2 text-xs sm:text-sm font-extrabold text-amber-600 hover:text-amber-700 dark:text-amber-500 dark:hover:text-amber-400 bg-transparent transition-colors cursor-pointer"
-              >
-                <span>See More</span>
-                <ArrowRight className="w-4 h-4" />
-              </button>
-            </div>
+            <button 
+              onClick={handleOpenTab}
+              className={isPwaMode 
+                ? "inline-flex items-center justify-center px-6 py-1.5 text-[13px] font-medium text-black dark:text-white border border-[#b01a33] rounded-full hover:bg-rose-50 dark:hover:bg-rose-900/20 transition-colors cursor-pointer"
+                : "inline-flex items-center justify-center gap-1 px-2 py-2 text-xs sm:text-sm font-extrabold text-amber-600 hover:text-amber-700 dark:text-amber-500 dark:hover:text-amber-400 bg-transparent transition-colors cursor-pointer ml-auto"
+              }
+            >
+              {isPwaMode ? 'View More' : (
+                <>
+                  <span>See More</span>
+                  <ArrowRight className="w-4 h-4" />
+                </>
+              )}
+            </button>
           )}
         </div>
       )}

@@ -178,3 +178,29 @@ body {
   box-shadow: none !important;
 }
 
+
+
+/* =========================================================================
+   PWA Mobile Application Mode Override (Job Box Size & Style)
+   Applies ONLY in installed standalone PWA on mobile/tablet screens
+   ========================================================================= */
+@media all and (display-mode: standalone) and (max-width: 1024px) {
+  /* 1. Job Box Grid - Force 2 Columns for Size Match */
+  .grid.grid-cols-1.md\:grid-cols-2.lg\:grid-cols-3,
+  .grid.grid-cols-1.md\:grid-cols-2,
+  .grid.grid-cols-1 {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 8px !important;
+    padding: 4px !important;
+  }
+  
+  /* Make 1 column only on very very tiny screens */
+  @media (max-width: 350px) {
+    .grid.grid-cols-1.md\:grid-cols-2.lg\:grid-cols-3,
+    .grid.grid-cols-1.md\:grid-cols-2,
+    .grid.grid-cols-1 {
+      grid-template-columns: repeat(1, minmax(0, 1fr)) !important;
+    }
+  }
+
+}
