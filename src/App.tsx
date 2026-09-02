@@ -1161,7 +1161,7 @@ export default function App() {
         />
       </div>
       {isSuperAdminModalOpen ? (
-        <div className="pt-[84px] flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div className="pt-[72px] lg:pt-[84px] flex-1 w-full flex flex-col mx-auto px-2 sm:px-4 lg:px-6 py-4 lg:py-6 min-h-[calc(100vh-80px)]">
           <SuperAdminDashboardModal
             siteLogo={siteLogo}
             setSiteLogo={async (logo) => { setSiteLogo(logo); await saveSiteLogoToFirestore(logo); }}

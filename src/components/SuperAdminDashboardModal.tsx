@@ -524,7 +524,7 @@ export const SuperAdminDashboardModal: React.FC<SuperAdminDashboardModalProps> =
   };
 
   return (
-    <div className="bg-white dark:bg-slate-900 w-full rounded-2xl shadow-2xl border-2 border-amber-500/50 flex flex-col overflow-hidden animate-in fade-in duration-200 min-h-[700px]">
+    <div className="bg-white dark:bg-slate-900 w-full flex-1 rounded-2xl shadow-2xl border-2 border-amber-500/50 flex flex-col overflow-hidden animate-in fade-in duration-200 min-h-[700px] h-full">
         
         {/* Top Official India Tricolor Accent Line */}
         <div className="h-1.5 w-full bg-gradient-to-r from-amber-600 via-white to-emerald-600 shrink-0" />
