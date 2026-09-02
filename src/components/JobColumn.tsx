@@ -157,42 +157,36 @@ export const JobColumn: React.FC<JobColumnProps> = ({
           bgDark 
             ? 'bg-slate-800 dark:bg-slate-850' 
             : `bg-gradient-to-r ${gradientFrom} ${gradientTo}`
-        } p-3 sm:p-3.5 text-white flex justify-between items-center shrink-0`}
-      >
+        } px-3 py-2.5 sm:px-4 sm:py-3 text-white flex justify-between items-center shrink-0 min-h-[48px] sm:min-h-[52px]`}>
         <div 
-          className={`flex items-center gap-2.5 min-w-0 flex-1 mr-2 ${onSeeMore && !disableFilter ? 'cursor-pointer hover:opacity-80 transition-opacity' : ''}`}
+          className={`flex items-center gap-2 sm:gap-2.5 min-w-0 flex-1 mr-2 ${onSeeMore && !disableFilter ? 'cursor-pointer hover:opacity-90 transition-opacity' : ''}`}
           onClick={onSeeMore && !disableFilter ? handleOpenTab : undefined}
           title={onSeeMore && !disableFilter ? `Open all ${title} in dedicated tab` : undefined}
           role={onSeeMore && !disableFilter ? "button" : undefined}
           tabIndex={onSeeMore && !disableFilter ? 0 : undefined}
         >
-          <span className="text-lg sm:text-xl shrink-0 flex items-center justify-center">
-            <CategoryIcon icon={icon} className="w-5.5 h-5.5 sm:w-6 sm:h-6 object-contain shrink-0" />
+          <span className="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-white/15 flex items-center justify-center shrink-0 overflow-hidden shadow-xs">
+            <CategoryIcon icon={icon} className="w-4 h-4 sm:w-4.5 sm:h-4.5 object-contain shrink-0" />
           </span>
-          <div className="min-w-0 flex-1">
-            <div className="flex items-center gap-1.5 flex-wrap sm:flex-nowrap">
-              <h3 className="font-black tracking-tight text-base sm:text-[17.5px] lg:text-[19px] truncate">
+          <div className="min-w-0 flex-1 flex items-center justify-center">
+            <div className="flex items-center justify-center gap-1.5 min-w-0">
+              <h3 className="font-bold sm:font-extrabold tracking-tight text-sm sm:text-[15px] md:text-base truncate leading-tight text-center">
                 {title}
               </h3>
               {badgeText && (
-                <span className="bg-amber-400 text-slate-950 text-[11px] sm:text-xs font-black px-2 py-0.5 rounded shadow-xs uppercase shrink-0">
+                <span className="bg-amber-400 text-slate-950 text-[10px] sm:text-[11px] font-black px-1.5 py-0.5 rounded shadow-xs uppercase shrink-0 leading-none tracking-wide">
                   {badgeText}
                 </span>
               )}
             </div>
-            {tagline && (
-              <p className="text-xs sm:text-[13px] text-white/90 truncate leading-tight mt-0.5 font-medium">
-                {tagline}
-              </p>
-            )}
           </div>
-          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs sm:text-sm font-black bg-white/20 text-white backdrop-blur-xs shrink-0 ml-1">
+          <span className="inline-flex items-center justify-center min-w-[24px] px-2 py-0.5 rounded-full text-xs font-bold bg-white/20 text-white backdrop-blur-xs shadow-xs shrink-0 ml-1">
             {sortedCategoryJobs.length}
           </span>
         </div>
 
-        {/* Right side controls: Quick Edit, Sort Toggle, Tab switch & Down Arrow toggle */}
-        <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+        {/* Right side controls: Quick Edit, Sort Toggle */}
+        <div className="flex items-center gap-1 sm:gap-1.5 shrink-0">
           {/* Sort Toggle Button */}
           <button
             onClick={handleToggleSort}
@@ -201,16 +195,16 @@ export const JobColumn: React.FC<JobColumnProps> = ({
                 ? 'Sorted by: Most Recent. Click to sort by Oldest.'
                 : 'Sorted by: Oldest first. Click to sort by Most Recent.'
             }
-            className={`p-1.5 sm:p-2 rounded-lg transition-all text-xs sm:text-sm font-bold flex items-center justify-center cursor-pointer focus:outline-none focus:ring-2 focus:ring-white/40 ${
+            className={`p-1.5 sm:p-2 rounded-lg transition-all text-xs font-bold flex items-center justify-center cursor-pointer focus:outline-none focus:ring-2 focus:ring-white/40 ${
               sortOrder === 'oldest'
                 ? 'bg-amber-400 text-slate-950 shadow-xs ring-1 ring-amber-300'
-                : 'bg-white/15 hover:bg-white/30 text-white'
+                : 'bg-white/15 hover:bg-white/25 text-white'
             }`}
             aria-label={`Toggle sort order for ${title}: currently ${
               sortOrder === 'recent' ? 'Most Recent' : 'Oldest'
             }`}
           >
-            <ArrowUpDown className="w-4 h-4" />
+            <ArrowUpDown className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
           </button>
 
           {isSuperAdmin && onQuickEditTitle && (
@@ -220,13 +214,12 @@ export const JobColumn: React.FC<JobColumnProps> = ({
                 onQuickEditTitle();
               }}
               title={`Edit title & text for ${title}`}
-              className="p-1.5 sm:p-2 rounded-lg bg-white/15 hover:bg-amber-400 hover:text-slate-950 text-white transition-all text-xs sm:text-sm font-bold flex items-center gap-1 cursor-pointer focus:outline-none focus:ring-2 focus:ring-amber-400"
+              className="p-1.5 sm:p-2 rounded-lg bg-white/15 hover:bg-amber-400 hover:text-slate-950 text-white transition-all text-xs font-bold flex items-center justify-center cursor-pointer focus:outline-none focus:ring-2 focus:ring-amber-400"
               aria-label={`Edit ${title} column`}
             >
-              <Edit2 className="w-4 h-4" />
+              <Edit2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
             </button>
           )}
-
         </div>
       </div>
 

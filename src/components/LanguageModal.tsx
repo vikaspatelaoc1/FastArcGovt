@@ -133,6 +133,32 @@ export function changeSiteLanguage(langCode: string) {
       window.location.reload();
     }, 200);
   }
+
+  // Hide top toolbar / banner if injected by Google Translate
+  const cleanupBanner = () => {
+    if (document.body) {
+      document.body.style.top = '0px';
+      document.body.style.position = 'static';
+    }
+    if (document.documentElement) {
+      document.documentElement.style.top = '0px';
+    }
+    const elements = document.querySelectorAll(
+      '.goog-te-banner-frame, iframe.skiptranslate, .VIpgJd-ZVi9od-ORHb-OJu5Fn, .goog-te-banner, iframe[class*="goog"], body > .skiptranslate:not(#google_translate_element)'
+    );
+    elements.forEach((el) => {
+      const htmlEl = el as HTMLElement;
+      htmlEl.style.setProperty('display', 'none', 'important');
+      htmlEl.style.setProperty('visibility', 'hidden', 'important');
+      htmlEl.style.setProperty('height', '0px', 'important');
+    });
+  };
+
+  cleanupBanner();
+  setTimeout(cleanupBanner, 50);
+  setTimeout(cleanupBanner, 200);
+  setTimeout(cleanupBanner, 500);
+  setTimeout(cleanupBanner, 1200);
 }
 
 export const LanguageModal: React.FC<{
