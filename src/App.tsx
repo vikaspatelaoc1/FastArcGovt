@@ -1471,20 +1471,20 @@ export default function App() {
                   bgDark: false
                 },
                 {
-                  id: 'admit-cards',
-                  domId: 'section-admit-cards',
-                  gradientFrom: 'from-indigo-500',
-                  gradientTo: 'to-purple-500',
+                  id: 'latest-jobs',
+                  domId: 'section-latest-jobs',
+                  gradientFrom: 'from-rose-500',
+                  gradientTo: 'to-red-500',
                   initialLimit: 30,
                   maxHeightClass: 'max-h-[920px]',
                   maxHeightExpandedClass: 'max-h-[1400px]',
                   bgDark: false
                 },
                 {
-                  id: 'latest-jobs',
-                  domId: 'section-latest-jobs',
-                  gradientFrom: 'from-rose-500',
-                  gradientTo: 'to-red-500',
+                  id: 'admit-cards',
+                  domId: 'section-admit-cards',
+                  gradientFrom: 'from-indigo-500',
+                  gradientTo: 'to-purple-500',
                   initialLimit: 30,
                   maxHeightClass: 'max-h-[920px]',
                   maxHeightExpandedClass: 'max-h-[1400px]',
