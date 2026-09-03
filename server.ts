@@ -48,8 +48,8 @@ const PORT = 3000;
 app.use(cors());
 app.use(express.json({ limit: '10mb' }));
 
-// Persistent JSON file database path
-const DATA_DIR = path.join(process.cwd(), 'data');
+// Persistent JSON file database path (with Vercel /tmp fallback for writable filesystem)
+const DATA_DIR = process.env.VERCEL ? path.join('/tmp', 'data') : path.join(process.cwd(), 'data');
 const DB_FILE = path.join(DATA_DIR, 'fastarc_database.json');
 
 // URL sanitizer helper
@@ -484,8 +484,40 @@ async function loadDatabase(): Promise<DatabaseSchema> {
       }
     }
   } catch (err) {
-    console.warn('⚠️ Could not load database from Firebase, falling back to default:', err);
+    console.warn('⚠️ Could not load database from Firebase, checking local disk backup:', err);
   }
+
+  // Fallback to read from local/bundled JSON file if Firebase is not connected or empty
+  try {
+    const candidatePaths = [
+      DB_FILE,
+      path.join(process.cwd(), 'data', 'fastarc_database.json')
+    ];
+    for (const p of candidatePaths) {
+      if (fs.existsSync(p)) {
+        const fileContent = fs.readFileSync(p, 'utf-8');
+        const parsed = JSON.parse(fileContent);
+        if (parsed && typeof parsed === 'object' && Array.isArray(parsed.jobs) && parsed.jobs.length > 0) {
+          dbState = {
+            jobs: parsed.jobs,
+            marqueeText: typeof parsed.marqueeText === 'string' ? parsed.marqueeText : dbState.marqueeText,
+            employees: Array.isArray(parsed.employees) ? parsed.employees : defaultInitialEmployees,
+            subscribers: Array.isArray(parsed.subscribers) ? parsed.subscribers : defaultInitialSubscribers,
+            scraperSources: Array.isArray(parsed.scraperSources) ? parsed.scraperSources : defaultScraperSources,
+            notificationConfig: parsed.notificationConfig ? { ...defaultNotificationConfig, ...parsed.notificationConfig } : defaultNotificationConfig,
+            notificationHistory: Array.isArray(parsed.notificationHistory) ? parsed.notificationHistory : (dbState.notificationHistory || []),
+            siteConfig: parsed.siteConfig || dbState.siteConfig,
+            users: Array.isArray(parsed.users) ? parsed.users : dbState.users
+          };
+          console.log(`📂 Loaded database from disk (${dbState.jobs.length} jobs ready).`);
+          break;
+        }
+      }
+    }
+  } catch (fileErr) {
+    console.warn('⚠️ Could not load local database file:', fileErr);
+  }
+
   // Initialize in Firebase if not present
   if (firestoreDb) {
     await saveDatabase(dbState);
@@ -1657,17 +1689,20 @@ app.post('/api/v1/scraper/auto-ingest', async (req, res) => {
   }
 });
 
-// Background Auto-Watcher
-setInterval(async () => {
-  if (dbState.siteConfig.autoWatcherEnabled) {
-    console.log('🔄 Running automated scraper watcher...');
-    const posts = await runAutomatedScraper();
-    if (posts.length > 0) {
-      console.log(`⚡ Ingesting ${posts.length} jobs automatically.`);
-      await autoIngestPosts(posts);
+// Background Auto-Watcher (disabled inside Vercel serverless functions, triggered via cron instead)
+if (!process.env.VERCEL) {
+  const watcherTimer = setInterval(async () => {
+    if (dbState.siteConfig.autoWatcherEnabled) {
+      console.log('🔄 Running automated scraper watcher...');
+      const posts = await runAutomatedScraper();
+      if (posts.length > 0) {
+        console.log(`⚡ Ingesting ${posts.length} jobs automatically.`);
+        await autoIngestPosts(posts);
+      }
     }
-  }
-}, 30 * 60 * 1000); // Every 30 minutes
+  }, 30 * 60 * 1000); // Every 30 minutes
+  watcherTimer.unref?.();
+}
 
 // 6. PUBLIC RSS 2.0 FEED XML GENERATOR FOR FASTARC
 app.get('/api/v1/rss/feed.xml', async (req, res) => {
@@ -1845,6 +1880,15 @@ app.get('/api/v1/cron/auto-watcher', async (req, res) => {
   } catch (err: any) {
     return res.status(500).json({ success: false, error: err.message });
   }
+});
+
+app.get('/api', (req, res) => {
+  res.json({
+    status: 'ok',
+    service: 'FastArc Government Results Portal API',
+    totalJobs: dbState.jobs.length,
+    timestamp: new Date().toISOString()
+  });
 });
 
 app.get('/api/health', async (req, res) => {

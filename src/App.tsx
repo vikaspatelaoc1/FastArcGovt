@@ -333,7 +333,12 @@ export default function App() {
 
     // 4. Fallback/Initial sync with Express server if available
     fetch('/api/v1/sarkari-posts')
-      .then(res => res.json())
+      .then(res => {
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const ct = res.headers.get('content-type') || '';
+        if (!ct.includes('application/json')) throw new Error('Non-JSON response received');
+        return res.json();
+      })
       .then(data => {
         if (data.success && Array.isArray(data.jobs) && data.jobs.length > 0) {
           const serverJobs: JobAlert[] = data.jobs.map((j: any) => ({
