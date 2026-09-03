@@ -8,5 +8,11 @@
       "source": "/(.*)",
       "destination": "/index.html"
     }
+  ],
+  "crons": [
+    {
+      "path": "/api/v1/cron/auto-watcher",
+      "schedule": "0 * * * *"
+    }
   ]
 }

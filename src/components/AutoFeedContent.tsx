@@ -112,6 +112,13 @@ export const AutoFeedContent: React.FC<AutoFeedContentProps> = ({
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ sourceId })
       });
+      
+      if (!res.ok) {
+        let errorText = await res.text();
+        console.error('API Error Response:', errorText);
+        throw new Error(`Server returned ${res.status} ${res.statusText}. Possibly a timeout on Vercel.`);
+      }
+      
       const data = await res.json();
       if (data.success && Array.isArray(data.posts)) {
         setScrapedQueue(prev => {
@@ -126,6 +133,7 @@ export const AutoFeedContent: React.FC<AutoFeedContentProps> = ({
         onToast(`⚠️ Scraper responded: ${data.error || 'No new alerts found'}`);
       }
     } catch (err: any) {
+      console.error("Scraper Error:", err);
       onToast(`❌ Scraper failed: ${err.message}`);
     } finally {
       setIsScraping(false);
@@ -444,6 +452,10 @@ if __name__ == "__main__":
                   if (data.success) {
                     setIsAutoSyncActive(data.autoWatcherEnabled);
                     onToast(data.autoWatcherEnabled ? "▶️ Automated Background Scraper Watcher Active!" : "⏸️ Auto-Sync Paused");
+                    if (data.autoWatcherEnabled) {
+                      // Trigger an initial background scrape for immediate feedback
+                      handleTriggerScraper();
+                    }
                   }
                 } catch (e) {
                   onToast("❌ Failed to toggle auto-watcher");

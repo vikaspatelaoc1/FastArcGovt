@@ -16,14 +16,26 @@ let firestoreDb: any = null;
 try {
   // Check if file exists first to avoid unnecessary errors
   // Using process.cwd() is safer here because it points to the workspace root where the json is injected
-  const configPath = path.join(process.cwd(), 'firebase-applet-config.json');
-  if (fs.existsSync(configPath)) {
-    const firebaseConfig = JSON.parse(fs.readFileSync(configPath, 'utf8'));
-    const firebaseApp = initializeApp(firebaseConfig);
-    firestoreDb = getFirestore(firebaseApp, firebaseConfig.firestoreDatabaseId);
-  } else {
-    console.warn('Firebase config not found for server.');
-  }
+  
+let firebaseConfig = null;
+try {
+  firebaseConfig = {
+  "projectId": "direct-stone-dxctm",
+  "appId": "1:993642021377:web:98bdd8dc2f5d577e283600",
+  "apiKey": "AIzaSyBPobsHpRVFbi4PKiomkK-46hYr1ylhSec",
+  "authDomain": "direct-stone-dxctm.firebaseapp.com",
+  "firestoreDatabaseId": "ai-studio-fastarcgovtresul-21912eff-20ad-4387-bde5-7cb20bed357a",
+  "storageBucket": "direct-stone-dxctm.firebasestorage.app",
+  "messagingSenderId": "993642021377",
+  "measurementId": "",
+  "recaptchaSiteKey": ""
+};
+  const firebaseApp = initializeApp(firebaseConfig);
+  firestoreDb = getFirestore(firebaseApp, firebaseConfig.firestoreDatabaseId);
+} catch (e) {
+  console.warn('Error reading Firebase config:', e);
+}
+
 } catch (e) {
   console.warn('Error reading Firebase config:', e);
 }
@@ -1827,6 +1839,23 @@ app.post('/api/v1/database/import', async (req, res) => {
 });
 
 // --- HEALTH CHECK API ---
+
+app.get('/api/v1/cron/auto-watcher', async (req, res) => {
+  try {
+    if (dbState.siteConfig.autoWatcherEnabled) {
+      const posts = await runAutomatedScraper();
+      if (posts.length > 0) {
+        await autoIngestPosts(posts);
+        return res.json({ success: true, message: `Ingested ${posts.length} jobs` });
+      }
+      return res.json({ success: true, message: 'No new jobs found' });
+    }
+    return res.json({ success: true, message: 'Auto-watcher disabled' });
+  } catch (err: any) {
+    return res.status(500).json({ success: false, error: err.message });
+  }
+});
+
 app.get('/api/health', async (req, res) => {
   res.json({
     status: 'ok',
