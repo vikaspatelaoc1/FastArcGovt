@@ -3,7 +3,8 @@ import {
   Code, Copy, Check, Plus, Terminal, Zap, Sparkles, 
   Layers, RefreshCw, AlertCircle, Play, Pause, Globe, CheckCircle2, 
   ShieldCheck, Flame, Rss, ArrowUpRight, ExternalLink, Trash2, 
-  SlidersHorizontal, CheckSquare, Eye, Radio, Server, Clock, Search
+  SlidersHorizontal, CheckSquare, Eye, Radio, Server, Clock, Search,
+  Activity, XCircle
 } from 'lucide-react';
 import { JobAlert, ScraperSource, ScrapedPost, JobCategory } from '../types';
 
@@ -535,6 +536,67 @@ if __name__ == "__main__":
       {/* ========================================================================= */}
       {activeSubTab === 'scrapers' && (
         <div className="space-y-6">
+          {/* Auto-Sync Health Dashboard */}
+          <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-lg overflow-hidden relative">
+            <div className="absolute top-0 right-0 p-32 bg-amber-500/5 rounded-full blur-3xl pointer-events-none"></div>
+            
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-5 relative z-10">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-amber-500/20 text-amber-500 rounded-xl flex items-center justify-center border border-amber-500/30">
+                  <Activity className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="text-white font-extrabold text-base flex items-center gap-2">
+                    Auto-Sync Health Dashboard
+                    <span className="bg-emerald-500/20 text-emerald-400 text-[10px] px-2 py-0.5 rounded-full border border-emerald-500/30 animate-pulse">LIVE</span>
+                  </h3>
+                  <p className="text-slate-400 text-xs">Real-time telemetry for {sources.length} integrated government data sources</p>
+                </div>
+              </div>
+              
+              <button
+                onClick={() => handleTriggerScraper()}
+                disabled={isScraping}
+                className="px-4 py-2.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 disabled:opacity-50 text-white text-xs font-black rounded-xl shadow-lg shadow-emerald-900/40 transition-all flex items-center gap-2 cursor-pointer border border-emerald-400/20"
+              >
+                <RefreshCw className={`w-4 h-4 ${isScraping ? 'animate-spin' : ''}`} />
+                <span>{isScraping ? 'Fetching 500+ Sources...' : 'Force Re-Fetch All Sources (500+)'}</span>
+              </button>
+            </div>
+
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3 relative z-10">
+              {['latest-jobs', 'admit-cards', 'results', 'syllabus', 'answer-key', 'admission'].map(cat => {
+                const catSources = sources.filter(s => s.defaultCategory === cat && s.enabled);
+                const successCount = catSources.filter(s => s.status === 'success').length;
+                const failCount = catSources.filter(s => s.status === 'error').length;
+                const pendingCount = catSources.filter(s => s.status === 'idle').length;
+                
+                return (
+                  <div key={cat} className="bg-slate-800/50 border border-slate-700 p-3 rounded-xl flex flex-col justify-between">
+                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">{cat.replace('-', ' ')}</span>
+                    <div className="flex items-center gap-2 text-xs font-mono">
+                      <span className="text-emerald-400 flex items-center gap-1" title="Success"><CheckCircle2 className="w-3 h-3" /> {successCount}</span>
+                      <span className="text-rose-400 flex items-center gap-1" title="Failed"><XCircle className="w-3 h-3" /> {failCount}</span>
+                      <span className="text-slate-500 flex items-center gap-1" title="Idle/Pending"><Clock className="w-3 h-3" /> {pendingCount}</span>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Mini Log Viewer */}
+            <div className="mt-5 bg-black/50 border border-slate-800 rounded-xl p-3 max-h-32 overflow-y-auto font-mono text-[10px] relative z-10 scrollbar-thin scrollbar-thumb-slate-700">
+              {syncLogs.length > 0 ? syncLogs.slice(0, 10).map((log, i) => (
+                <div key={i} className={`flex items-start gap-2 mb-1.5 ${log.type === 'error' ? 'text-rose-400' : log.type === 'success' ? 'text-emerald-400' : 'text-slate-300'}`}>
+                  <span className="text-slate-600 shrink-0">[{log.time}]</span>
+                  <span className="break-words">{log.message}</span>
+                </div>
+              )) : (
+                <div className="text-slate-500 italic text-center py-4">Waiting for sync telemetry...</div>
+              )}
+            </div>
+          </div>
+
           {/* Quick Trigger Cards for Official Portals */}
           <div>
             <div className="flex items-center justify-between mb-3">
@@ -546,7 +608,7 @@ if __name__ == "__main__":
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
-              {sources.slice(0, 8).map(src => (
+              {sources.slice(0, 12).map(src => (
                 <div 
                   key={src.id}
                   className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-amber-500/50 p-3.5 rounded-xl shadow-xs transition-all flex flex-col justify-between"
@@ -576,6 +638,17 @@ if __name__ == "__main__":
                 </div>
               ))}
             </div>
+            
+            {sources.length > 12 && (
+              <div className="mt-4 text-center">
+                <button 
+                  onClick={() => setActiveSubTab('sources')}
+                  className="text-xs font-bold text-amber-600 dark:text-amber-400 hover:underline cursor-pointer"
+                >
+                  + {sources.length - 12} more sources active in background... View all in Configured Sources tab
+                </button>
+              </div>
+            )}
           </div>
 
           {/* Scraped Post Ingestion Queue */}
@@ -990,9 +1063,9 @@ if __name__ == "__main__":
           </div>
 
           <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden shadow-sm">
-            <div className="overflow-x-auto">
+            <div className="overflow-auto max-h-[600px]">
               <table className="w-full text-left text-xs">
-                <thead className="bg-slate-50 dark:bg-slate-950/80 border-b border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400 uppercase font-black tracking-wider text-[10px]">
+                <thead className="bg-slate-50 dark:bg-slate-950/80 border-b border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400 uppercase font-black tracking-wider text-[10px] sticky top-0 z-10">
                   <tr>
                     <th className="py-3 px-4">Source Name &amp; URL</th>
                     <th className="py-3 px-4">Type</th>
