@@ -14,30 +14,21 @@ dotenv.config();
 
 let firestoreDb: any = null;
 try {
-  // Check if file exists first to avoid unnecessary errors
-  // Using process.cwd() is safer here because it points to the workspace root where the json is injected
-  
-let firebaseConfig = null;
-try {
-  firebaseConfig = {
-  "projectId": "direct-stone-dxctm",
-  "appId": "1:993642021377:web:98bdd8dc2f5d577e283600",
-  "apiKey": "AIzaSyBPobsHpRVFbi4PKiomkK-46hYr1ylhSec",
-  "authDomain": "direct-stone-dxctm.firebaseapp.com",
-  "firestoreDatabaseId": "ai-studio-fastarcgovtresul-21912eff-20ad-4387-bde5-7cb20bed357a",
-  "storageBucket": "direct-stone-dxctm.firebasestorage.app",
-  "messagingSenderId": "993642021377",
-  "measurementId": "",
-  "recaptchaSiteKey": ""
-};
+  const firebaseConfig = {
+    projectId: process.env.FIREBASE_PROJECT_ID || "direct-stone-dxctm",
+    appId: process.env.FIREBASE_APP_ID || "1:993642021377:web:98bdd8dc2f5d577e283600",
+    apiKey: process.env.FIREBASE_API_KEY || "AIzaSyBPobsHpRVFbi4PKiomkK-46hYr1ylhSec",
+    authDomain: process.env.FIREBASE_AUTH_DOMAIN || "direct-stone-dxctm.firebaseapp.com",
+    firestoreDatabaseId: process.env.FIREBASE_DATABASE_ID || "ai-studio-fastarcgovtresul-21912eff-20ad-4387-bde5-7cb20bed357a",
+    storageBucket: process.env.FIREBASE_STORAGE_BUCKET || "direct-stone-dxctm.firebasestorage.app",
+    messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID || "993642021377",
+    measurementId: "",
+    recaptchaSiteKey: ""
+  };
   const firebaseApp = initializeApp(firebaseConfig);
   firestoreDb = getFirestore(firebaseApp, firebaseConfig.firestoreDatabaseId);
 } catch (e) {
-  console.warn('Error reading Firebase config:', e);
-}
-
-} catch (e) {
-  console.warn('Error reading Firebase config:', e);
+  console.warn('Error initializing Firebase in server:', e);
 }
 
 const app = express();
