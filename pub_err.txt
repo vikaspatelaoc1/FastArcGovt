@@ -1,0 +1,77 @@
+Note: Unnecessary use of -X or --request, POST is already inferred.
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0*   Trying [2600:1901:81d5:200::]:443...
+* Connected to ais-dev-yws3bts5m2vzceidnhls6p-838850138676.asia-southeast1.run.app (2600:1901:81d5:200::) port 443 (#0)
+* ALPN: offers h2,http/1.1
+} [5 bytes data]
+* TLSv1.3 (OUT), TLS handshake, Client hello (1):
+} [512 bytes data]
+*  CAfile: /etc/ssl/certs/ca-certificates.crt
+*  CApath: /etc/ssl/certs
+{ [5 bytes data]
+* TLSv1.3 (IN), TLS handshake, Server hello (2):
+{ [122 bytes data]
+* TLSv1.3 (IN), TLS handshake, Encrypted Extensions (8):
+{ [15 bytes data]
+* TLSv1.3 (IN), TLS handshake, Certificate (11):
+{ [6560 bytes data]
+* TLSv1.3 (IN), TLS handshake, CERT verify (15):
+{ [80 bytes data]
+* TLSv1.3 (IN), TLS handshake, Finished (20):
+{ [52 bytes data]
+* TLSv1.3 (OUT), TLS change cipher, Change cipher spec (1):
+} [1 bytes data]
+* TLSv1.3 (OUT), TLS handshake, Finished (20):
+} [52 bytes data]
+* SSL connection using TLSv1.3 / TLS_AES_256_GCM_SHA384
+* ALPN: server accepted h2
+* Server certificate:
+*  subject: CN=*.a.run.app
+*  start date: Aug 10 08:37:16 2026 GMT
+*  expire date: Nov  2 08:37:15 2026 GMT
+*  subjectAltName: host "ais-dev-yws3bts5m2vzceidnhls6p-838850138676.asia-southeast1.run.app" matched cert's "*.asia-southeast1.run.app"
+*  issuer: C=US; O=Google Trust Services; CN=WR2
+*  SSL certificate verify ok.
+} [5 bytes data]
+* using HTTP/2
+* h2h3 [:method: POST]
+* h2h3 [:path: /api/v1/scraper/run]
+* h2h3 [:scheme: https]
+* h2h3 [:authority: ais-dev-yws3bts5m2vzceidnhls6p-838850138676.asia-southeast1.run.app]
+* h2h3 [user-agent: curl/7.88.1]
+* h2h3 [accept: */*]
+* h2h3 [content-type: application/json]
+* h2h3 [content-length: 2]
+* Using Stream ID: 1 (easy handle 0x561a84286980)
+} [5 bytes data]
+> POST /api/v1/scraper/run HTTP/2
+> Host: ais-dev-yws3bts5m2vzceidnhls6p-838850138676.asia-southeast1.run.app
+> user-agent: curl/7.88.1
+> accept: */*
+> content-type: application/json
+> content-length: 2
+> 
+} [5 bytes data]
+* We are completely uploaded and fine
+{ [5 bytes data]
+* TLSv1.3 (IN), TLS handshake, Newsession Ticket (4):
+{ [282 bytes data]
+* TLSv1.3 (IN), TLS handshake, Newsession Ticket (4):
+{ [282 bytes data]
+* old SSL session ID is stale, removing
+{ [5 bytes data]
+< HTTP/2 302 
+< content-type: text/html
+< set-cookie: __SECURE-aistudio_auth_flow_may_set_cookies=true; Path=/; Secure; SameSite=None; Domain=ais-dev-yws3bts5m2vzceidnhls6p-838850138676.asia-southeast1.run.app; Partitioned; Max-Age=60;
+< location: /__cookie_check.html?return_url=https%3A%2F%2Fais-dev-yws3bts5m2vzceidnhls6p-838850138676.asia-southeast1.run.app%2Fapi%2Fv1%2Fscraper%2Frun
+< content-security-policy: frame-ancestors 'self' https://*.google.com https://localhost.corp.google.com:26001;
+< x-cloud-trace-context: 878586cafa656a6d338f785ec7c424b5
+< date: Thu, 03 Sep 2026 15:28:16 GMT
+< server: Google Frontend
+< content-length: 200
+< alt-svc: h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+< 
+{ [5 bytes data]
+100   202  100   200  100     2   2468     24 --:--:-- --:--:-- --:--:--  2525
+* Connection #0 to host ais-dev-yws3bts5m2vzceidnhls6p-838850138676.asia-southeast1.run.app left intact

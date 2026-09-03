@@ -1563,12 +1563,20 @@ app.post('/api/v1/scraper/run', async (req, res) => {
   try {
     const { sourceId } = req.body;
     const scrapedPosts = await runAutomatedScraper(sourceId);
+    
+    // To prevent payload timeouts/errors on massive feed fetch, we return a randomly selected 
+    // batch of 30 items for the UI queue if fetching all 500+ sources.
+    let postsToReturn = scrapedPosts;
+    if (!sourceId && scrapedPosts.length > 30) {
+       postsToReturn = scrapedPosts.sort(() => 0.5 - Math.random()).slice(0, 30);
+    }
+
     return res.json({
       success: true,
       timestamp: new Date().toISOString(),
       sourcesProcessed: (dbState.scraperSources || defaultScraperSources).filter(s => s.enabled).length,
       totalScraped: scrapedPosts.length,
-      posts: scrapedPosts
+      posts: postsToReturn
     });
   } catch (err: any) {
     return res.status(500).json({ success: false, error: err.message || 'Scraper run failure' });
