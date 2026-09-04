@@ -23,13 +23,13 @@ const isServerless = Boolean(
 let firestoreDb: any = null;
 try {
   const firebaseConfig = {
-    projectId: process.env.FIREBASE_PROJECT_ID || "direct-stone-dxctm",
-    appId: process.env.FIREBASE_APP_ID || "1:993642021377:web:98bdd8dc2f5d577e283600",
-    apiKey: process.env.FIREBASE_API_KEY || "AIzaSyBPobsHpRVFbi4PKiomkK-46hYr1ylhSec",
-    authDomain: process.env.FIREBASE_AUTH_DOMAIN || "direct-stone-dxctm.firebaseapp.com",
-    firestoreDatabaseId: process.env.FIREBASE_DATABASE_ID || "ai-studio-fastarcgovtresul-21912eff-20ad-4387-bde5-7cb20bed357a",
-    storageBucket: process.env.FIREBASE_STORAGE_BUCKET || "direct-stone-dxctm.firebasestorage.app",
-    messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID || "993642021377",
+    projectId: process.env.FIREBASE_PROJECT_ID || process.env.VITE_FIREBASE_PROJECT_ID || "direct-stone-dxctm",
+    appId: process.env.FIREBASE_APP_ID || process.env.VITE_FIREBASE_APP_ID || "1:993642021377:web:98bdd8dc2f5d577e283600",
+    apiKey: process.env.FIREBASE_API_KEY || process.env.VITE_FIREBASE_API_KEY || "AIzaSyBPobsHpRVFbi4PKiomkK-46hYr1ylhSec",
+    authDomain: process.env.FIREBASE_AUTH_DOMAIN || process.env.VITE_FIREBASE_AUTH_DOMAIN || "direct-stone-dxctm.firebaseapp.com",
+    firestoreDatabaseId: process.env.FIREBASE_DATABASE_ID || process.env.VITE_FIREBASE_DATABASE_ID || "ai-studio-fastarcgovtresul-21912eff-20ad-4387-bde5-7cb20bed357a",
+    storageBucket: process.env.FIREBASE_STORAGE_BUCKET || process.env.VITE_FIREBASE_STORAGE_BUCKET || "direct-stone-dxctm.firebasestorage.app",
+    messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID || process.env.VITE_FIREBASE_MESSAGING_SENDER_ID || "993642021377",
     measurementId: "",
     recaptchaSiteKey: ""
   };
@@ -45,8 +45,39 @@ const PORT = 3000;
 app.use(cors());
 app.use(express.json({ limit: '10mb' }));
 
-// Persistent JSON file database path
-const DATA_DIR = path.join(process.cwd(), 'data');
+// URL Normalization Middleware for Vercel Serverless and Reverse Proxies
+app.use((req, res, next) => {
+  try {
+    let url = req.url || '/';
+
+    // If Vercel rewrote the URL to /api/index, check original forwarded headers
+    if (url === '/api/index' || url.startsWith('/api/index?') || url === '/api' || url === '/api/') {
+      const forwarded = req.headers['x-forwarded-uri'] || req.headers['x-matched-path'];
+      if (forwarded && typeof forwarded === 'string' && forwarded !== '/api/index') {
+        url = forwarded;
+      } else if (req.headers['x-now-route-matches']) {
+        const matches = String(req.headers['x-now-route-matches']);
+        const match = matches.match(/1=([^&]+)/);
+        if (match && match[1]) {
+          url = `/api/${decodeURIComponent(match[1]).replace(/^\//, '')}`;
+        }
+      }
+    }
+
+    if (!url.startsWith('/api') && (req.headers['x-forwarded-uri'] || req.headers['x-matched-path'] || process.env.VERCEL)) {
+      url = `/api${url.startsWith('/') ? '' : '/'}${url}`;
+    }
+
+    req.url = url;
+    (req as any).originalUrl = url;
+  } catch (err) {
+    console.warn('URL normalization error:', err);
+  }
+  next();
+});
+
+// Persistent JSON file database path (with Vercel /tmp fallback for writable filesystem)
+const DATA_DIR = process.env.VERCEL ? path.join('/tmp', 'data') : path.join(process.cwd(), 'data');
 const DB_FILE = path.join(DATA_DIR, 'fastarc_database.json');
 
 // URL sanitizer helper
