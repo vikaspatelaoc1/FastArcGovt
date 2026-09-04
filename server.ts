@@ -4,43 +4,28 @@ import fs from 'fs';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import nodemailer from 'nodemailer';
+import { createServer as createViteServer } from 'vite';
 import mysql from 'mysql2/promise';
 import { generateSitemapXml } from './src/utils/sitemapGenerator';
 import { initializeApp } from 'firebase/app';
-import { getFirestore, collection, getDocs, doc, setDoc, getDoc, deleteDoc, writeBatch } from 'firebase/firestore/lite';
-import { defaultScraperSources } from './src/data/defaultScraperSources';
+import { getFirestore, collection, getDocs } from 'firebase/firestore/lite';
 
 dotenv.config();
 
-// Determine if running in a serverless environment (e.g. Vercel, AWS Lambda)
-const isServerless = Boolean(
-  process.env.IS_SERVERLESS === '1' ||
-  process.env.VERCEL ||
-  process.env.AWS_LAMBDA_FUNCTION_NAME ||
-  process.env.NOW_REGION
-);
-
 let firestoreDb: any = null;
 try {
-  // Defensive check: If the user accidentally set all env vars to their name "Vikaspatelaoc" or similar invalid strings, 
-  // we fallback to the default correct configuration provided by AI Studio.
-  const isEnvValid = process.env.VITE_FIREBASE_API_KEY && process.env.VITE_FIREBASE_API_KEY.startsWith('AIza');
-  
-  const firebaseConfig = {
-    projectId: isEnvValid ? (process.env.FIREBASE_PROJECT_ID || process.env.VITE_FIREBASE_PROJECT_ID) : "direct-stone-dxctm",
-    appId: isEnvValid ? (process.env.FIREBASE_APP_ID || process.env.VITE_FIREBASE_APP_ID) : "1:993642021377:web:98bdd8dc2f5d577e283600",
-    apiKey: isEnvValid ? (process.env.FIREBASE_API_KEY || process.env.VITE_FIREBASE_API_KEY) : "AIzaSyBPobsHpRVFbi4PKiomkK-46hYr1ylhSec",
-    authDomain: isEnvValid ? (process.env.FIREBASE_AUTH_DOMAIN || process.env.VITE_FIREBASE_AUTH_DOMAIN) : "direct-stone-dxctm.firebaseapp.com",
-    firestoreDatabaseId: isEnvValid ? (process.env.FIREBASE_DATABASE_ID || process.env.VITE_FIREBASE_DATABASE_ID) : "ai-studio-fastarcgovtresul-21912eff-20ad-4387-bde5-7cb20bed357a",
-    storageBucket: isEnvValid ? (process.env.FIREBASE_STORAGE_BUCKET || process.env.VITE_FIREBASE_STORAGE_BUCKET) : "direct-stone-dxctm.firebasestorage.app",
-    messagingSenderId: isEnvValid ? (process.env.FIREBASE_MESSAGING_SENDER_ID || process.env.VITE_FIREBASE_MESSAGING_SENDER_ID) : "993642021377",
-    measurementId: "",
-    recaptchaSiteKey: ""
-  };
-  const firebaseApp = initializeApp(firebaseConfig);
-  firestoreDb = getFirestore(firebaseApp, firebaseConfig.firestoreDatabaseId);
+  // Check if file exists first to avoid unnecessary errors
+  // Using process.cwd() is safer here because it points to the workspace root where the json is injected
+  const configPath = path.join(process.cwd(), 'firebase-applet-config.json');
+  if (fs.existsSync(configPath)) {
+    const firebaseConfig = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+    const firebaseApp = initializeApp(firebaseConfig);
+    firestoreDb = getFirestore(firebaseApp, firebaseConfig.firestoreDatabaseId);
+  } else {
+    console.warn('Firebase config not found for server.');
+  }
 } catch (e) {
-  console.warn('Error initializing Firebase in server:', e);
+  console.warn('Error reading Firebase config:', e);
 }
 
 const app = express();
@@ -49,39 +34,8 @@ const PORT = 3000;
 app.use(cors());
 app.use(express.json({ limit: '10mb' }));
 
-// URL Normalization Middleware for Vercel Serverless and Reverse Proxies
-app.use((req, res, next) => {
-  try {
-    let url = req.url || '/';
-
-    // If Vercel rewrote the URL to /api/index, check original forwarded headers
-    if (url === '/api/index' || url.startsWith('/api/index?') || url === '/api' || url === '/api/') {
-      const forwarded = req.headers['x-forwarded-uri'] || req.headers['x-matched-path'];
-      if (forwarded && typeof forwarded === 'string' && forwarded !== '/api/index') {
-        url = forwarded;
-      } else if (req.headers['x-now-route-matches']) {
-        const matches = String(req.headers['x-now-route-matches']);
-        const match = matches.match(/1=([^&]+)/);
-        if (match && match[1]) {
-          url = `/api/${decodeURIComponent(match[1]).replace(/^\//, '')}`;
-        }
-      }
-    }
-
-    if (!url.startsWith('/api') && (req.headers['x-forwarded-uri'] || req.headers['x-matched-path'] || process.env.VERCEL)) {
-      url = `/api${url.startsWith('/') ? '' : '/'}${url}`;
-    }
-
-    req.url = url;
-    (req as any).originalUrl = url;
-  } catch (err) {
-    console.warn('URL normalization error:', err);
-  }
-  next();
-});
-
-// Persistent JSON file database path (with Vercel /tmp fallback for writable filesystem)
-const DATA_DIR = process.env.VERCEL ? path.join('/tmp', 'data') : path.join(process.cwd(), 'data');
+// Persistent JSON file database path
+const DATA_DIR = path.join(process.cwd(), 'data');
 const DB_FILE = path.join(DATA_DIR, 'fastarc_database.json');
 
 // URL sanitizer helper
@@ -290,6 +244,105 @@ interface DatabaseSchema {
   users: Array<{ id: string; username: string; email: string; passwordHash: string; name: string; role: string }>;
 }
 
+const defaultScraperSources = [
+  {
+    id: 'src-employment-news',
+    name: 'Employment News (Govt of India Official)',
+    url: 'https://employmentnews.gov.in/feed.rss',
+    type: 'rss',
+    defaultCategory: 'latest-jobs',
+    state: 'Central',
+    enabled: true,
+    lastScraped: '15-08-2026 12:00',
+    itemCount: 8,
+    status: 'idle'
+  },
+  {
+    id: 'src-ssc-portal',
+    name: 'SSC (Staff Selection Commission) Central Notifications',
+    url: 'https://ssc.gov.in/notices/rss.xml',
+    type: 'rss',
+    defaultCategory: 'latest-jobs',
+    state: 'Central',
+    enabled: true,
+    lastScraped: '15-08-2026 11:45',
+    itemCount: 6,
+    status: 'idle'
+  },
+  {
+    id: 'src-rrb-railways',
+    name: 'Railway RRB (Indian Railways Recruitment)',
+    url: 'https://rrbapply.gov.in/updates.rss',
+    type: 'rss',
+    defaultCategory: 'admit-cards',
+    state: 'Central',
+    enabled: true,
+    lastScraped: '15-08-2026 11:30',
+    itemCount: 5,
+    status: 'idle'
+  },
+  {
+    id: 'src-upsc-portal',
+    name: 'UPSC (Union Public Service Commission) Active Examinations',
+    url: 'https://upsc.gov.in/rss-feed',
+    type: 'html_scraper',
+    defaultCategory: 'latest-jobs',
+    state: 'Central',
+    enabled: true,
+    lastScraped: '15-08-2026 11:15',
+    itemCount: 4,
+    status: 'idle'
+  },
+  {
+    id: 'src-pib-jobs',
+    name: 'PIB (Press Information Bureau) Central Govt Notices',
+    url: 'https://pib.gov.in/rss/recruitment.xml',
+    type: 'rss',
+    defaultCategory: 'latest-jobs',
+    state: 'Central',
+    enabled: true,
+    lastScraped: '15-08-2026 10:30',
+    itemCount: 7,
+    status: 'idle'
+  },
+  {
+    id: 'src-ibps-banking',
+    name: 'IBPS (Institute of Banking Personnel Selection)',
+    url: 'https://ibps.in/notifications.xml',
+    type: 'rss',
+    defaultCategory: 'results',
+    state: 'Central',
+    enabled: true,
+    lastScraped: '15-08-2026 09:50',
+    itemCount: 4,
+    status: 'idle'
+  },
+  {
+    id: 'src-upprpb-police',
+    name: 'UP Police Recruitment Promotion Board (UPPRPB)',
+    url: 'https://uppbpb.gov.in/notices.rss',
+    type: 'html_scraper',
+    defaultCategory: 'results',
+    state: 'UP',
+    enabled: true,
+    lastScraped: '15-08-2026 09:20',
+    itemCount: 3,
+    status: 'idle'
+  },
+  {
+    id: 'src-bssc-bihar',
+    name: 'Bihar Staff Selection Commission (BSSC / BPSC)',
+    url: 'https://bssc.bihar.gov.in/rss.xml',
+    type: 'rss',
+    defaultCategory: 'latest-jobs',
+    state: 'Bihar',
+    enabled: true,
+    lastScraped: '15-08-2026 08:45',
+    itemCount: 4,
+    status: 'idle'
+  }
+];
+
 const defaultNotificationConfig = {
   autoSendOnPublish: true,
   provider: 'built-in' as const,
@@ -348,154 +401,55 @@ let dbState: DatabaseSchema = {
   ]
 };
 
-// Helper to load DB from disk / Firestore with maximum 8-sec guarantee
-export async function ensureDatabaseLoaded(timeoutMs = 8000): Promise<DatabaseSchema> {
-  if (isDbLoaded) return dbState;
-
-  const loadPromise = (async () => {
-    try {
-      if (firestoreDb) {
-        // Individual 6s timeout for Firestore request
-        const dbRef = doc(firestoreDb, 'config', 'app_state');
-        const docSnapPromise = getDoc(dbRef);
-        const fsTimeout = new Promise<null>((_, reject) =>
-          setTimeout(() => reject(new Error('Firestore connection timeout')), 6000)
-        );
-
-        const docSnap: any = await Promise.race([docSnapPromise, fsTimeout]);
-        if (docSnap && docSnap.exists()) {
-          const parsed = docSnap.data();
-          if (parsed && typeof parsed === 'object') {
-            let loadedSources = Array.isArray(parsed.scraperSources) ? parsed.scraperSources : [];
-            if (loadedSources.length < 500) {
-              const existingIds = new Set(loadedSources.map((s: any) => s.id));
-              const newSources = defaultScraperSources.filter(s => !existingIds.has(s.id));
-              loadedSources = [...loadedSources, ...newSources];
-            }
-            dbState = {
-              jobs: Array.isArray(parsed.jobs) && parsed.jobs.length > 0 ? parsed.jobs : defaultInitialJobs,
-              marqueeText: typeof parsed.marqueeText === 'string' ? parsed.marqueeText : dbState.marqueeText,
-              employees: Array.isArray(parsed.employees) ? parsed.employees : defaultInitialEmployees,
-              subscribers: Array.isArray(parsed.subscribers) ? parsed.subscribers : defaultInitialSubscribers,
-              scraperSources: loadedSources,
-              notificationConfig: parsed.notificationConfig ? { ...defaultNotificationConfig, ...parsed.notificationConfig } : defaultNotificationConfig,
-              notificationHistory: Array.isArray(parsed.notificationHistory) ? parsed.notificationHistory : (dbState.notificationHistory || []),
-              siteConfig: parsed.siteConfig || dbState.siteConfig,
-              users: Array.isArray(parsed.users) ? parsed.users : dbState.users
-            };
-            console.log(`🔥 Database loaded from Firebase Firestore: ${dbState.jobs.length} jobs available.`);
-            return dbState;
-          }
-        }
-      }
-    } catch (err: any) {
-      console.warn('⚠️ Could not load database from Firebase, checking local disk backup:', err?.message || err);
-    }
-
-    // Fallback to read from local/bundled JSON file if Firebase is not connected or empty
-    try {
-      const candidatePaths = [
-        DB_FILE,
-        path.join(process.cwd(), 'data', 'fastarc_database.json')
-      ];
-      for (const p of candidatePaths) {
-        if (fs.existsSync(p)) {
-          const fileContent = fs.readFileSync(p, 'utf-8');
-          const parsed = JSON.parse(fileContent);
-          if (parsed && typeof parsed === 'object' && Array.isArray(parsed.jobs) && parsed.jobs.length > 0) {
-            let loadedSources = Array.isArray(parsed.scraperSources) ? parsed.scraperSources : [];
-            if (loadedSources.length < 500) {
-              const existingIds = new Set(loadedSources.map((s: any) => s.id));
-              const newSources = defaultScraperSources.filter(s => !existingIds.has(s.id));
-              loadedSources = [...loadedSources, ...newSources];
-            }
-            dbState = {
-              jobs: parsed.jobs,
-              marqueeText: typeof parsed.marqueeText === 'string' ? parsed.marqueeText : dbState.marqueeText,
-              employees: Array.isArray(parsed.employees) ? parsed.employees : defaultInitialEmployees,
-              subscribers: Array.isArray(parsed.subscribers) ? parsed.subscribers : defaultInitialSubscribers,
-              scraperSources: loadedSources,
-              notificationConfig: parsed.notificationConfig ? { ...defaultNotificationConfig, ...parsed.notificationConfig } : defaultNotificationConfig,
-              notificationHistory: Array.isArray(parsed.notificationHistory) ? parsed.notificationHistory : (dbState.notificationHistory || []),
-              siteConfig: parsed.siteConfig || dbState.siteConfig,
-              users: Array.isArray(parsed.users) ? parsed.users : dbState.users
-            };
-            console.log(`📂 Loaded database from disk (${dbState.jobs.length} jobs ready).`);
-            break;
-          }
-        }
-      }
-    } catch (fileErr) {
-      console.warn('⚠️ Could not load local database file:', fileErr);
-    }
-
-    return dbState;
-  })();
-
-  const timeoutPromise = new Promise<DatabaseSchema>((resolve) => {
-    setTimeout(() => {
-      console.warn(`⏱️ Database load reached ${timeoutMs}ms limit. Operating with in-memory default state.`);
-      resolve(dbState);
-    }, timeoutMs);
-  });
-
+// Helper to load DB from disk
+function loadDatabase(): DatabaseSchema {
   try {
-    dbState = await Promise.race([loadPromise, timeoutPromise]);
+    if (!fs.existsSync(DATA_DIR)) {
+      fs.mkdirSync(DATA_DIR, { recursive: true });
+    }
+    if (fs.existsSync(DB_FILE)) {
+      const fileData = fs.readFileSync(DB_FILE, 'utf-8');
+      const parsed = JSON.parse(fileData);
+      if (parsed && typeof parsed === 'object') {
+        dbState = {
+          jobs: Array.isArray(parsed.jobs) && parsed.jobs.length > 0 ? parsed.jobs : defaultInitialJobs,
+          marqueeText: typeof parsed.marqueeText === 'string' ? parsed.marqueeText : dbState.marqueeText,
+          employees: Array.isArray(parsed.employees) ? parsed.employees : defaultInitialEmployees,
+          subscribers: Array.isArray(parsed.subscribers) ? parsed.subscribers : defaultInitialSubscribers,
+          scraperSources: Array.isArray(parsed.scraperSources) && parsed.scraperSources.length > 0 ? parsed.scraperSources : defaultScraperSources,
+          notificationConfig: parsed.notificationConfig ? { ...defaultNotificationConfig, ...parsed.notificationConfig } : defaultNotificationConfig,
+          notificationHistory: Array.isArray(parsed.notificationHistory) ? parsed.notificationHistory : (dbState.notificationHistory || []),
+          siteConfig: parsed.siteConfig || dbState.siteConfig,
+          users: Array.isArray(parsed.users) ? parsed.users : dbState.users
+        };
+        console.log(`💾 Database loaded from disk: ${dbState.jobs.length} jobs available.`);
+        return dbState;
+      }
+    }
   } catch (err) {
-    console.warn('⚠️ Database init error, using in-memory state:', err);
-  } finally {
-    isDbLoaded = true;
+    console.warn('⚠️ Could not load database from disk, creating fresh DB file:', err);
   }
 
+  // If file doesn't exist, write default
+  saveDatabase(dbState);
   return dbState;
 }
 
-// Alias loadDatabase for internal calls
-const loadDatabase = () => ensureDatabaseLoaded(8000);
-
-// Circuit-breaker for Firestore daily quota limit
-let isFirestoreQuotaExhausted = false;
-
-// Helper to save DB to disk immediately with resilient cloud sync
-async function saveDatabase(data: DatabaseSchema) {
-  // 1. Always persist to resilient local disk database first
+// Helper to save DB to disk immediately
+function saveDatabase(data: DatabaseSchema) {
   try {
     if (!fs.existsSync(DATA_DIR)) {
       fs.mkdirSync(DATA_DIR, { recursive: true });
     }
     fs.writeFileSync(DB_FILE, JSON.stringify(data, null, 2), 'utf-8');
-  } catch (diskErr) {
-    console.warn('⚠️ Failed saving to local disk:', diskErr);
-  }
-
-  // 2. Persist state to Firestore asynchronously in background (non-blocking for serverless)
-  if (firestoreDb && !isFirestoreQuotaExhausted) {
-    (async () => {
-      try {
-        const stateRef = doc(firestoreDb, 'config', 'app_state');
-        await setDoc(stateRef, {
-          marqueeText: data.marqueeText,
-          siteConfig: data.siteConfig,
-          notificationConfig: data.notificationConfig,
-          updatedAt: new Date().toISOString()
-        }, { merge: true });
-        
-        // Note: Aggressive 50-job sync removed to prevent free tier quota exhaustion.
-        // Individual job updates should be handled selectively where jobs are ingested.
-      } catch (fsErr: any) {
-        if (fsErr?.message?.includes('Quota') || fsErr?.code === 'resource-exhausted') {
-          isFirestoreQuotaExhausted = true;
-          console.warn('⚠️ Firestore quota reached in server backend. Operating in local storage mode.');
-        } else {
-          console.warn('⚠️ Firestore background sync warning:', fsErr?.message || fsErr);
-        }
-      }
-    })().catch(() => {});
+    console.log(`✅ Database saved to disk (${data.jobs.length} jobs)`);
+  } catch (err) {
+    console.error('❌ Failed to save database to disk:', err);
   }
 }
 
 // Initialize database on startup
-let isDbLoaded = false;
+loadDatabase();
 
 // MySQL connection pool setup with lazy initialization & fallback
 let mysqlPool: mysql.Pool | null = null;
@@ -527,22 +481,6 @@ async function initDB() {
     console.log('ℹ️ MySQL credentials not in .env, using persistent JSON database (data/fastarc_database.json)');
   }
 }
-
-// Ensure database state is loaded before serving API routes (resilient for both persistent and serverless runtimes)
-app.use(async (req, res, next) => {
-  if (req.path.startsWith('/api')) {
-    try {
-      if (!isDbLoaded) {
-        await loadDatabase();
-        isDbLoaded = true;
-      }
-    } catch (dbErr) {
-      console.warn('⚠️ Safe database load fallback:', dbErr);
-      isDbLoaded = true;
-    }
-  }
-  next();
-});
 
 // ==========================================
 // --- SARKARI JOBS REST CRUD APIS ---
@@ -609,20 +547,7 @@ app.post('/api/v1/sarkari-posts', async (req, res) => {
     }
 
     // Persist to disk
-    await saveDatabase(dbState);
-
-    // Sync single job to Firestore if enabled
-    if (firestoreDb && !isFirestoreQuotaExhausted) {
-      try {
-        const jobRef = doc(firestoreDb, 'jobs', newJob.id);
-        await setDoc(jobRef, newJob, { merge: true });
-      } catch (fsErr: any) {
-        if (fsErr?.message?.includes('Quota') || fsErr?.code === 'resource-exhausted') {
-          isFirestoreQuotaExhausted = true;
-        }
-        console.warn('⚠️ Firestore individual job sync warning:', fsErr?.message || fsErr);
-      }
-    }
+    saveDatabase(dbState);
 
     if (useMySQL && mysqlPool) {
       try {
@@ -703,20 +628,7 @@ app.put('/api/v1/sarkari-posts/:id', async (req, res) => {
     }
 
     // Persist to disk
-    await saveDatabase(dbState);
-
-    // Sync updated job to Firestore if enabled
-    if (firestoreDb && !isFirestoreQuotaExhausted) {
-      try {
-        const jobRef = doc(firestoreDb, 'jobs', updatedJob.id);
-        await setDoc(jobRef, updatedJob, { merge: true });
-      } catch (fsErr: any) {
-        if (fsErr?.message?.includes('Quota') || fsErr?.code === 'resource-exhausted') {
-          isFirestoreQuotaExhausted = true;
-        }
-        console.warn('⚠️ Firestore individual job sync warning:', fsErr?.message || fsErr);
-      }
-    }
+    saveDatabase(dbState);
 
     if (useMySQL && mysqlPool) {
       try {
@@ -752,15 +664,7 @@ app.delete('/api/v1/sarkari-posts/:id', async (req, res) => {
     const { id } = req.params;
     
     dbState.jobs = dbState.jobs.filter(j => j.id !== id);
-    await saveDatabase(dbState);
-
-    if (firestoreDb && !isFirestoreQuotaExhausted) {
-      try {
-        await deleteDoc(doc(firestoreDb, 'jobs', id));
-      } catch (fsErr) {
-        console.warn('Firestore job delete warning:', fsErr);
-      }
-    }
+    saveDatabase(dbState);
 
     if (useMySQL && mysqlPool) {
       try {
@@ -777,11 +681,11 @@ app.delete('/api/v1/sarkari-posts/:id', async (req, res) => {
 });
 
 // 5. BULK RESET JOBS DATABASE
-app.post('/api/v1/sarkari-posts/bulk-reset', async (req, res) => {
+app.post('/api/v1/sarkari-posts/bulk-reset', (req, res) => {
   try {
     const { jobs } = req.body;
     dbState.jobs = Array.isArray(jobs) && jobs.length > 0 ? jobs : defaultInitialJobs;
-    await saveDatabase(dbState);
+    saveDatabase(dbState);
     return res.json({ success: true, message: 'Database reset and saved to disk', totalJobs: dbState.jobs.length });
   } catch (err: any) {
     return res.status(500).json({ success: false, error: err.message });
@@ -791,42 +695,42 @@ app.post('/api/v1/sarkari-posts/bulk-reset', async (req, res) => {
 // ==========================================
 // --- MARQUEE TICKER APIS ---
 // ==========================================
-app.get('/api/v1/marquee', async (req, res) => {
+app.get('/api/v1/marquee', (req, res) => {
   res.json({ success: true, marqueeText: dbState.marqueeText });
 });
 
-app.post('/api/v1/marquee', async (req, res) => {
+app.post('/api/v1/marquee', (req, res) => {
   const { marqueeText } = req.body;
   if (typeof marqueeText === 'string') {
     dbState.marqueeText = marqueeText;
-    await saveDatabase(dbState);
+    saveDatabase(dbState);
     return res.json({ success: true, marqueeText: dbState.marqueeText });
   }
   res.status(400).json({ success: false, error: 'Invalid marqueeText string' });
 });
 
-app.post('/api/v1/scraper/toggle-watcher', async (req, res) => {
+app.post('/api/v1/scraper/toggle-watcher', (req, res) => {
   const { enabled } = req.body;
   dbState.siteConfig.autoWatcherEnabled = !!enabled;
-  await saveDatabase(dbState);
+  saveDatabase(dbState);
   return res.json({ success: true, autoWatcherEnabled: dbState.siteConfig.autoWatcherEnabled });
 });
 
-app.get('/api/v1/site-config', async (req, res) => {
+app.get('/api/v1/site-config', (req, res) => {
   res.json({ success: true, siteConfig: dbState.siteConfig });
 });
 
-app.post('/api/v1/update-site-config', async (req, res) => {
+app.post('/api/v1/update-site-config', (req, res) => {
   const { siteTitle, maintenanceMode, appName, appVersion } = req.body;
   if (siteTitle !== undefined) dbState.siteConfig.siteTitle = siteTitle;
   if (maintenanceMode !== undefined) dbState.siteConfig.maintenanceMode = !!maintenanceMode;
   if (appName !== undefined) dbState.siteConfig.appName = appName;
   if (appVersion !== undefined) dbState.siteConfig.appVersion = appVersion;
-  await saveDatabase(dbState);
+  saveDatabase(dbState);
   return res.json({ success: true, siteConfig: dbState.siteConfig });
 });
 
-app.get('/manifest.json', async (req, res) => {
+app.get('/manifest.json', (req, res) => {
   const manifest = {
     "name": dbState.siteConfig.appName || "FastARC Result",
     "short_name": dbState.siteConfig.appName || "FastArc",
@@ -856,15 +760,15 @@ app.get('/manifest.json', async (req, res) => {
 // ==========================================
 // --- EMPLOYEES & STAFF APIS ---
 // ==========================================
-app.get('/api/v1/employees', async (req, res) => {
+app.get('/api/v1/employees', (req, res) => {
   res.json({ success: true, employees: dbState.employees });
 });
 
-app.post('/api/v1/employees', async (req, res) => {
+app.post('/api/v1/employees', (req, res) => {
   const { employees } = req.body;
   if (Array.isArray(employees)) {
     dbState.employees = employees;
-    await saveDatabase(dbState);
+    saveDatabase(dbState);
     return res.json({ success: true, employees: dbState.employees });
   }
   res.status(400).json({ success: false, error: 'Invalid employees array' });
@@ -873,15 +777,15 @@ app.post('/api/v1/employees', async (req, res) => {
 // ==========================================
 // --- SUBSCRIBERS APIS ---
 // ==========================================
-app.get('/api/v1/subscribers', async (req, res) => {
+app.get('/api/v1/subscribers', (req, res) => {
   res.json({ success: true, subscribers: dbState.subscribers });
 });
 
-app.post('/api/v1/subscribers', async (req, res) => {
+app.post('/api/v1/subscribers', (req, res) => {
   const { email, category, subscribers } = req.body;
   if (Array.isArray(subscribers)) {
     dbState.subscribers = subscribers;
-    await saveDatabase(dbState);
+    saveDatabase(dbState);
     return res.json({ success: true, subscribers: dbState.subscribers });
   } else if (email) {
     const newSub = {
@@ -891,14 +795,14 @@ app.post('/api/v1/subscribers', async (req, res) => {
       date: new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })
     };
     dbState.subscribers.unshift(newSub);
-    await saveDatabase(dbState);
+    saveDatabase(dbState);
     return res.status(201).json({ success: true, subscriber: newSub, total: dbState.subscribers.length });
   }
   res.status(400).json({ success: false, error: 'Email or subscribers array required' });
 });
 
 // --- SOCIAL MEDIA LINKS API ---
-app.get('/api/v1/social-links', async (req, res) => {
+app.get('/api/v1/social-links', (req, res) => {
   const links = (dbState as any).socialLinks || [
     { id: 'social-telegram', platform: 'telegram', title: 'Telegram Channel', url: 'https://t.me/fastarcgovtofficial', handle: '@fastarcgovtofficial', badgeText: 'Join 150K+ Aspirants', enabled: true, color: '#0088cc', order: 1 },
     { id: 'social-whatsapp', platform: 'whatsapp', title: 'WhatsApp Channel', url: 'https://whatsapp.com/channel/fastarcgovtofficial', handle: 'FastArc Govt Alerts', badgeText: 'Instant Job Alerts', enabled: true, color: '#25D366', order: 2 },
@@ -910,11 +814,11 @@ app.get('/api/v1/social-links', async (req, res) => {
   res.json({ success: true, links });
 });
 
-app.post('/api/v1/social-links', async (req, res) => {
+app.post('/api/v1/social-links', (req, res) => {
   const { links } = req.body;
   if (Array.isArray(links)) {
     (dbState as any).socialLinks = links;
-    await saveDatabase(dbState);
+    saveDatabase(dbState);
     return res.json({ success: true, links });
   }
   res.status(400).json({ success: false, error: 'links array required' });
@@ -1213,7 +1117,7 @@ async function dispatchJobAlertEmail(job: any, options: {
   if (dbState.notificationHistory.length > 50) {
     dbState.notificationHistory = dbState.notificationHistory.slice(0, 50);
   }
-  await saveDatabase(dbState);
+  saveDatabase(dbState);
 
   return {
     success: true,
@@ -1224,7 +1128,7 @@ async function dispatchJobAlertEmail(job: any, options: {
 }
 
 // 3. Notification Endpoints
-app.get('/api/v1/notifications/config', async (req, res) => {
+app.get('/api/v1/notifications/config', (req, res) => {
   res.json({
     success: true,
     config: dbState.notificationConfig || defaultNotificationConfig,
@@ -1232,7 +1136,7 @@ app.get('/api/v1/notifications/config', async (req, res) => {
   });
 });
 
-app.post('/api/v1/notifications/config', async (req, res) => {
+app.post('/api/v1/notifications/config', (req, res) => {
   try {
     const { config } = req.body;
     if (config && typeof config === 'object') {
@@ -1242,7 +1146,7 @@ app.post('/api/v1/notifications/config', async (req, res) => {
         ...config,
         updatedAt: new Date().toISOString()
       };
-      await saveDatabase(dbState);
+      saveDatabase(dbState);
       return res.json({
         success: true,
         message: 'Notification configuration saved successfully',
@@ -1325,7 +1229,7 @@ app.post('/api/v1/notifications/test-email', async (req, res) => {
   }
 });
 
-app.get('/api/v1/notifications/logs', async (req, res) => {
+app.get('/api/v1/notifications/logs', (req, res) => {
   res.json({
     success: true,
     logs: dbState.notificationHistory || [],
@@ -1333,13 +1237,13 @@ app.get('/api/v1/notifications/logs', async (req, res) => {
   });
 });
 
-app.delete('/api/v1/notifications/logs', async (req, res) => {
+app.delete('/api/v1/notifications/logs', (req, res) => {
   dbState.notificationHistory = [];
-  await saveDatabase(dbState);
+  saveDatabase(dbState);
   res.json({ success: true, message: 'Notification history logs cleared' });
 });
 
-app.get('/api/v1/notifications/preview-template', async (req, res) => {
+app.get('/api/v1/notifications/preview-template', (req, res) => {
   const sampleJob = dbState.jobs[0] || {
     id: 'sample-preview',
     title: 'Staff Selection Commission (SSC) CGL 2026 Notification - 17,727 Posts',
@@ -1400,13 +1304,8 @@ function categorizeScrapedTitle(title: string, defaultCat: string = 'latest-jobs
 }
 
 // 1. GET ALL SCRAPER SOURCES
-app.get(['/api/v1/scraper/sources', '/api/scraper/sources'], async (req, res) => {
-  let sources = dbState.scraperSources || defaultScraperSources;
-  if (!sources || sources.length < 500) {
-    sources = defaultScraperSources;
-    dbState.scraperSources = sources;
-  }
-
+app.get('/api/v1/scraper/sources', (req, res) => {
+  const sources = dbState.scraperSources || defaultScraperSources;
   res.json({
     success: true,
     total: sources.length,
@@ -1415,7 +1314,7 @@ app.get(['/api/v1/scraper/sources', '/api/scraper/sources'], async (req, res) =>
 });
 
 // 2. CREATE OR UPDATE A SCRAPER / RSS SOURCE
-app.post('/api/v1/scraper/sources', async (req, res) => {
+app.post('/api/v1/scraper/sources', (req, res) => {
   const { id, name, url, type, defaultCategory, state, enabled } = req.body;
   if (!name || !url) {
     return res.status(400).json({ success: false, error: 'Source name and URL are required' });
@@ -1445,31 +1344,23 @@ app.post('/api/v1/scraper/sources', async (req, res) => {
   }
 
   dbState.scraperSources = currentSources;
-  await saveDatabase(dbState);
+  saveDatabase(dbState);
   return res.json({ success: true, message: 'Scraper source saved', source: newSource, sources: currentSources });
 });
 
 // 3. DELETE A SCRAPER SOURCE
-app.delete('/api/v1/scraper/sources/:id', async (req, res) => {
+app.delete('/api/v1/scraper/sources/:id', (req, res) => {
   const { id } = req.params;
   const currentSources = dbState.scraperSources || [...defaultScraperSources];
   dbState.scraperSources = currentSources.filter(s => s.id !== id);
-  await saveDatabase(dbState);
+  saveDatabase(dbState);
   res.json({ success: true, message: 'Source deleted', sources: dbState.scraperSources });
 });
 
 // 4. RUN SCRAPER / FETCH LIVE POSTS FROM RSS FEEDS
 async function runAutomatedScraper(sourceId?: string) {
-  const allEnabledSources = (dbState.scraperSources || defaultScraperSources).filter(s => s.enabled);
-  let targetSources = sourceId ? allEnabledSources.filter(s => s.id === sourceId) : allEnabledSources;
-
-  // If scraping all feeds, pick top curated portals + a fresh random sample of state feeds for lightning-fast execution
-  if (!sourceId && targetSources.length > 25) {
-    const curatedKeys = ['src-employment-news', 'src-ssc-portal', 'src-rrb-railways', 'src-ibps-banking', 'src-upprpb-police', 'src-bssc-bihar'];
-    const prioritySources = targetSources.filter(s => curatedKeys.includes(s.id));
-    const otherSources = targetSources.filter(s => !curatedKeys.includes(s.id)).sort(() => 0.5 - Math.random());
-    targetSources = [...prioritySources, ...otherSources.slice(0, Math.max(5, 25 - prioritySources.length))];
-  }
+  const sources = (dbState.scraperSources || defaultScraperSources).filter(s => s.enabled);
+  const targetSources = sourceId ? sources.filter(s => s.id === sourceId) : sources;
 
   const todayStr = new Date().toLocaleDateString('en-GB').replace(/\//g, '-');
   const nowTime = new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
@@ -1613,35 +1504,22 @@ async function runAutomatedScraper(sourceId?: string) {
     src.status = 'success';
   }
 
-  if (isServerless) {
-    saveDatabase(dbState).catch(err => console.warn('Background DB save:', err));
-  } else {
-    await saveDatabase(dbState);
-  }
+  saveDatabase(dbState);
   return scrapedPosts;
 }
 
-app.post(['/api/v1/scraper/run', '/api/scraper/run'], async (req, res) => {
+app.post('/api/v1/scraper/run', async (req, res) => {
   try {
-    const { sourceId } = req.body || {};
+    const { sourceId } = req.body;
     const scrapedPosts = await runAutomatedScraper(sourceId);
-    
-    // To prevent payload timeouts/errors on massive feed fetch, we return a randomly selected 
-    // batch of 30 items for the UI queue if fetching all 500+ sources.
-    let postsToReturn = scrapedPosts;
-    if (!sourceId && scrapedPosts.length > 30) {
-       postsToReturn = scrapedPosts.sort(() => 0.5 - Math.random()).slice(0, 30);
-    }
-
     return res.json({
       success: true,
       timestamp: new Date().toISOString(),
       sourcesProcessed: (dbState.scraperSources || defaultScraperSources).filter(s => s.enabled).length,
       totalScraped: scrapedPosts.length,
-      posts: postsToReturn
+      posts: scrapedPosts
     });
   } catch (err: any) {
-    console.error('Scraper route error:', err);
     return res.status(500).json({ success: false, error: err.message || 'Scraper run failure' });
   }
 });
@@ -1650,7 +1528,6 @@ app.post(['/api/v1/scraper/run', '/api/scraper/run'], async (req, res) => {
 async function autoIngestPosts(posts: any[]) {
   const todayStr = new Date().toLocaleDateString('en-GB').replace(/\//g, '-');
   let ingestedCount = 0;
-  const newJobsList: any[] = [];
 
   posts.forEach((p: any) => {
     const existing = dbState.jobs.find(j => j.title.toLowerCase().trim() === (p.title || '').toLowerCase().trim());
@@ -1672,39 +1549,15 @@ async function autoIngestPosts(posts: any[]) {
         }
       };
       dbState.jobs.unshift(newJob);
-      newJobsList.push(newJob);
       ingestedCount++;
     }
   });
 
-  await saveDatabase(dbState);
-  
-  // Sync new jobs to Firestore using a batch to save quota
-  if (firestoreDb && !isFirestoreQuotaExhausted && newJobsList.length > 0) {
-    try {
-      const batch = writeBatch(firestoreDb);
-      let batchCount = 0;
-      for (const newJob of newJobsList) {
-        if (batchCount >= 400) break; // Firestore batch limit is 500
-        const jobRef = doc(firestoreDb, 'jobs', newJob.id);
-        batch.set(jobRef, newJob, { merge: true });
-        batchCount++;
-      }
-      if (batchCount > 0) {
-        await batch.commit();
-      }
-    } catch (fsErr: any) {
-      if (fsErr?.message?.includes('Quota') || fsErr?.code === 'resource-exhausted') {
-        isFirestoreQuotaExhausted = true;
-      }
-      console.warn('⚠️ Firestore auto-ingest batch sync warning:', fsErr?.message || fsErr);
-    }
-  }
-
+  saveDatabase(dbState);
   return ingestedCount;
 }
 
-app.post(['/api/v1/scraper/auto-ingest', '/api/scraper/auto-ingest'], async (req, res) => {
+app.post('/api/v1/scraper/auto-ingest', async (req, res) => {
   try {
     const { posts } = req.body;
     if (!Array.isArray(posts) || posts.length === 0) {
@@ -1724,23 +1577,20 @@ app.post(['/api/v1/scraper/auto-ingest', '/api/scraper/auto-ingest'], async (req
   }
 });
 
-// Background Auto-Watcher (disabled inside Vercel serverless functions, triggered via cron instead)
-if (!process.env.VERCEL) {
-  const watcherTimer = setInterval(async () => {
-    if (dbState.siteConfig.autoWatcherEnabled) {
-      console.log('🔄 Running automated scraper watcher...');
-      const posts = await runAutomatedScraper();
-      if (posts.length > 0) {
-        console.log(`⚡ Ingesting ${posts.length} jobs automatically.`);
-        await autoIngestPosts(posts);
-      }
+// Background Auto-Watcher
+setInterval(async () => {
+  if (dbState.siteConfig.autoWatcherEnabled) {
+    console.log('🔄 Running automated scraper watcher...');
+    const posts = await runAutomatedScraper();
+    if (posts.length > 0) {
+      console.log(`⚡ Ingesting ${posts.length} jobs automatically.`);
+      await autoIngestPosts(posts);
     }
-  }, 30 * 60 * 1000); // Every 30 minutes
-  watcherTimer.unref?.();
-}
+  }
+}, 30 * 60 * 1000); // Every 30 minutes
 
 // 6. PUBLIC RSS 2.0 FEED XML GENERATOR FOR FASTARC
-app.get('/api/v1/rss/feed.xml', async (req, res) => {
+app.get('/api/v1/rss/feed.xml', (req, res) => {
   const category = (req.query.category as string) || '';
   const state = (req.query.state as string) || '';
   
@@ -1788,7 +1638,7 @@ ${itemsXml}
 });
 
 // 7. RSS PREVIEW JSON API
-app.get('/api/v1/rss/preview', async (req, res) => {
+app.get('/api/v1/rss/preview', (req, res) => {
   const category = (req.query.category as string) || '';
   let jobsList = dbState.jobs || [];
   if (category) {
@@ -1851,7 +1701,7 @@ app.get(['/sitemap.xml', '/sitemap'], async (req, res) => {
 });
 
 // 2. Dynamic robots.txt pointing to sitemap.xml
-app.get('/robots.txt', async (req, res) => {
+app.get('/robots.txt', (req, res) => {
   const host = req.get('host') || 'ais-dev-yws3bts5m2vzceidnhls6p-838850138676.asia-southeast1.run.app';
   const protocol = req.protocol === 'https' || req.headers['x-forwarded-proto'] === 'https' ? 'https' : 'http';
   const baseUrl = `${protocol}://${host}`;
@@ -1870,7 +1720,7 @@ Sitemap: ${baseUrl}/sitemap.xml
 // ==========================================
 // --- FULL DATABASE EXPORT & IMPORT APIS ---
 // ==========================================
-app.get('/api/v1/database/export', async (req, res) => {
+app.get('/api/v1/database/export', (req, res) => {
   res.json({
     success: true,
     timestamp: new Date().toISOString(),
@@ -1878,7 +1728,7 @@ app.get('/api/v1/database/export', async (req, res) => {
   });
 });
 
-app.post('/api/v1/database/import', async (req, res) => {
+app.post('/api/v1/database/import', (req, res) => {
   try {
     const { database } = req.body;
     if (database && typeof database === 'object') {
@@ -1890,7 +1740,7 @@ app.post('/api/v1/database/import', async (req, res) => {
         siteConfig: database.siteConfig || dbState.siteConfig,
         users: Array.isArray(database.users) ? database.users : dbState.users
       };
-      await saveDatabase(dbState);
+      saveDatabase(dbState);
       return res.json({ success: true, message: 'Database imported and saved to disk successfully', database: dbState });
     }
     return res.status(400).json({ success: false, error: 'Invalid database payload' });
@@ -1900,33 +1750,7 @@ app.post('/api/v1/database/import', async (req, res) => {
 });
 
 // --- HEALTH CHECK API ---
-
-app.get('/api/v1/cron/auto-watcher', async (req, res) => {
-  try {
-    if (dbState.siteConfig.autoWatcherEnabled) {
-      const posts = await runAutomatedScraper();
-      if (posts.length > 0) {
-        await autoIngestPosts(posts);
-        return res.json({ success: true, message: `Ingested ${posts.length} jobs` });
-      }
-      return res.json({ success: true, message: 'No new jobs found' });
-    }
-    return res.json({ success: true, message: 'Auto-watcher disabled' });
-  } catch (err: any) {
-    return res.status(500).json({ success: false, error: err.message });
-  }
-});
-
-app.get('/api', (req, res) => {
-  res.json({
-    status: 'ok',
-    service: 'FastArc Government Results Portal API',
-    totalJobs: dbState.jobs.length,
-    timestamp: new Date().toISOString()
-  });
-});
-
-app.get('/api/health', async (req, res) => {
+app.get('/api/health', (req, res) => {
   res.json({
     status: 'ok',
     systemTime: new Date().toISOString(),
@@ -1972,7 +1796,7 @@ app.post('/api/auth/register', async (req, res) => {
         role: role || 'user'
       };
       dbState.users.push(newUser);
-      await saveDatabase(dbState);
+      saveDatabase(dbState);
       return res.json({ success: true, user: { id: newUser.id, username, email, name: newUser.name, role: newUser.role } });
     }
   } catch (err: any) {
@@ -2173,7 +1997,7 @@ app.get('/api/npm/popular', async (req, res) => {
 });
 
 // --- NPS (NATIONAL PENSION SYSTEM) CALCULATOR API ---
-app.post('/api/nps/calculate', async (req, res) => {
+app.post('/api/nps/calculate', (req, res) => {
   const { monthlyContribution, age, expectedReturn = 10, annuityRatio = 40, annuityReturn = 6 } = req.body;
   const currentAge = Number(age) || 25;
   const investmentYears = 60 - currentAge;
@@ -2207,55 +2031,27 @@ app.post('/api/nps/calculate', async (req, res) => {
   });
 });
 
-// --- API CATCH-ALL & GLOBAL ERROR HANDLERS ---
-app.all('/api/*', (req, res) => {
-  res.status(404).json({
-    success: false,
-    error: `API route not found: ${req.method} ${req.originalUrl || req.url}`
-  });
-});
-
-app.use((err: any, req: any, res: any, next: any) => {
-  console.error('Unhandled server error:', err);
-  if (!res.headersSent) {
-    res.status(500).json({
-      success: false,
-      error: 'Internal Server Error',
-      message: err?.message || String(err)
-    });
-  }
-});
-
 // --- SERVER SETUP & VITE MIDDLEWARE ---
-if (!isServerless) {
-  // Initialize DB in persistent server mode
-  initDB().catch(console.error);
+async function start() {
+  await initDB();
 
   if (process.env.NODE_ENV !== 'production') {
-    import('vite').then(({ createServer: createViteServer }) => {
-      createViteServer({
-        server: { middlewareMode: true },
-        appType: 'spa'
-      }).then(vite => {
-        app.use(vite.middlewares);
-        app.listen(PORT, '0.0.0.0', () => {
-          console.log(`🚀 Server started on http://0.0.0.0:${PORT}`);
-        });
-      });
-    }).catch(err => {
-      console.error('Failed to start Vite middleware:', err);
+    const vite = await createViteServer({
+      server: { middlewareMode: true },
+      appType: 'spa'
     });
+    app.use(vite.middlewares);
   } else {
     const distPath = path.join(process.cwd(), 'dist');
     app.use(express.static(distPath));
-    app.get('*', async (req, res) => {
+    app.get('*', (req, res) => {
       res.sendFile(path.join(distPath, 'index.html'));
     });
-    app.listen(PORT, '0.0.0.0', () => {
-      console.log(`🚀 Server started on http://0.0.0.0:${PORT}`);
-    });
   }
+
+  app.listen(PORT, '0.0.0.0', () => {
+    console.log(`🚀 Server started on http://0.0.0.0:${PORT}`);
+  });
 }
 
-// Export the app for Vercel Serverless Functions
-export default app;
+start();

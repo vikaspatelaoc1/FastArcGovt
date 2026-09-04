@@ -154,18 +154,6 @@ export const SUPER_ADMIN_MODULES: SuperAdminModuleConfig[] = [
     tag: 'BULK-SEO'
   },
   {
-    id: 'sitemap',
-    label: 'XML Sitemap Generator & Google Ping',
-    shortLabel: 'Sitemap Generator',
-    description: 'View active sitemap.xml, check crawled jobs, and ping Google Search Console for indexing',
-    icon: Globe,
-    category: 'core',
-    categoryLabel: 'Core Operations',
-    color: 'text-fuchsia-400',
-    hoverBg: 'hover:bg-fuchsia-950/40',
-    tag: 'INDEXING'
-  },
-  {
     id: 'social',
     label: 'Social Media & Official Channels',
     shortLabel: 'Social Media Links',

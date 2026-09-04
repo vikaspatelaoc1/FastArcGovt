@@ -7,7 +7,7 @@ import {
   Eye, EyeOff, Lock, Unlock, Check, MoreVertical, SlidersHorizontal, Menu, Package,
   Share2, Zap, ChevronRight, Search, ChevronDown, LayoutGrid
 } from 'lucide-react';
-import { JobAlert, EmployeeUser, EmployeePermissions, SocialLinkItem, SuperAdminTabType, SyncLogEntry } from '../types';
+import { JobAlert, EmployeeUser, EmployeePermissions, SocialLinkItem, SuperAdminTabType } from '../types';
 import { SUPER_ADMIN_MODULES, SuperAdminModuleConfig } from '../config/superAdminConfig';
 import { VersionControlTab } from './VersionControlTab';
 import { NpmSystemContent } from './NpmSystemModal';
@@ -18,7 +18,6 @@ import { ThemeColorCustomizerTab } from './ThemeColorCustomizerTab';
 import { ColumnEditorTab } from './ColumnEditorTab';
 import { SeoEditorTab } from './SeoEditorTab';
 import { CategorySeoEditorTab } from './CategorySeoEditorTab';
-import { SitemapGeneratorTab } from './SitemapGeneratorTab';
 import { WebsiteControlTab } from './WebsiteControlTab';
 import { JobsManagerTab } from './JobsManagerTab';
 import { PagesManagerTab, ApiAnalyticsTab, ActivityLogsTab, HelpdeskTab, AutoBroadcasterTab, AdsManagerTab, EmailNotificationsTab } from './NewAdminTabs';
@@ -1133,13 +1132,6 @@ export const SuperAdminDashboardModal: React.FC<SuperAdminDashboardModalProps> =
             {activeTab === 'categorySeo' && (
               <div className="space-y-6 animate-in fade-in duration-200">
                 <CategorySeoEditorTab onShowToast={onToast} />
-              </div>
-            )}
-
-            {/* TAB: SITEMAP GENERATOR */}
-            {activeTab === 'sitemap' && (
-              <div className="space-y-6 animate-in fade-in duration-200">
-                <SitemapGeneratorTab jobs={jobs} onToast={onToast} />
               </div>
             )}
 
