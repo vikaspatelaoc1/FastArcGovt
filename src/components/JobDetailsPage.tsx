@@ -561,6 +561,45 @@ export const JobDetailsPage: React.FC<JobDetailsPageProps> = ({
               </div>
             )}
 
+            {/* Category-Wise Vacancy Reservation Breakdown Table */}
+            {job.postWiseVacancies && job.postWiseVacancies.length > 0 && job.postWiseVacancies.some(pv => pv.general !== undefined) && (
+              <div className="border-2 border-slate-300 dark:border-slate-700 rounded-xl overflow-hidden shadow-sm">
+                <div className="bg-[#1d4ed8] dark:bg-blue-800 text-white font-black text-center py-2.5 px-4 text-xs sm:text-sm uppercase tracking-wider">
+                  Category-Wise Vacancy Reservation Details
+                </div>
+                <div className="overflow-x-auto">
+                  <table className="w-full text-center text-xs sm:text-sm border-collapse">
+                    <thead>
+                      <tr className="bg-slate-100 dark:bg-slate-800/80 text-slate-900 dark:text-white font-extrabold border-b border-slate-300 dark:border-slate-700">
+                        <th className="p-2.5 text-left border-r border-slate-300 dark:border-slate-700">Post Name</th>
+                        <th className="p-2.5 border-r border-slate-300 dark:border-slate-700">UR (Gen)</th>
+                        <th className="p-2.5 border-r border-slate-300 dark:border-slate-700">EWS</th>
+                        <th className="p-2.5 border-r border-slate-300 dark:border-slate-700">OBC</th>
+                        <th className="p-2.5 border-r border-slate-300 dark:border-slate-700">SC</th>
+                        <th className="p-2.5 border-r border-slate-300 dark:border-slate-700">ST</th>
+                        <th className="p-2.5 font-black text-emerald-600 dark:text-emerald-400">Total</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-200 dark:divide-slate-800">
+                      {job.postWiseVacancies.map((pv, idx) => (
+                        <tr key={idx} className="hover:bg-slate-50 dark:hover:bg-slate-800/50">
+                          <td className="p-2.5 text-left font-bold text-slate-900 dark:text-slate-100 border-r border-slate-300 dark:border-slate-700">
+                            {pv.postName}
+                          </td>
+                          <td className="p-2.5 border-r border-slate-300 dark:border-slate-700 font-semibold">{pv.general ?? '-'}</td>
+                          <td className="p-2.5 border-r border-slate-300 dark:border-slate-700 font-semibold">{pv.ews ?? '-'}</td>
+                          <td className="p-2.5 border-r border-slate-300 dark:border-slate-700 font-semibold">{pv.obc ?? '-'}</td>
+                          <td className="p-2.5 border-r border-slate-300 dark:border-slate-700 font-semibold">{pv.sc ?? '-'}</td>
+                          <td className="p-2.5 border-r border-slate-300 dark:border-slate-700 font-semibold">{pv.st ?? '-'}</td>
+                          <td className="p-2.5 font-extrabold text-emerald-600 dark:text-emerald-400">{pv.total ?? '-'}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
+
             {/* 9. Subjects Available Table (If UGC NET / Academic Job - Matching Screenshot 2 & 3) */}
             {job.subjects && job.subjects.length > 0 && (
               <div className="border-2 border-slate-300 dark:border-slate-700 rounded-xl overflow-hidden shadow-sm">

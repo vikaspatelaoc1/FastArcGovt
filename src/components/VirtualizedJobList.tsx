@@ -130,11 +130,6 @@ const VirtualJobRow: React.FC<VirtualJobRowProps> = ({
           <span className="text-[10px] sm:text-[11px] bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 px-1.5 py-0.5 rounded font-bold uppercase tracking-wide border border-slate-200/80 dark:border-slate-700/80">
             {item.state}
           </span>
-          {lastDateStr && (
-            <span className={`text-[11px] sm:text-xs ${isExpiringSoon ? 'text-rose-600 dark:text-rose-400 font-bold' : 'text-slate-500 dark:text-slate-400 font-medium'}`}>
-              Last Date: {lastDateStr}
-            </span>
-          )}
           {isExpiringSoon && (
             <span className="text-[9.5px] sm:text-[10px] bg-rose-500 text-white px-2 py-0.5 rounded font-black uppercase tracking-wider animate-pulse flex items-center gap-1 shadow-xs">
               <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">

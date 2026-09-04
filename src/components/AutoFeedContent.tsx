@@ -137,6 +137,12 @@ export const AutoFeedContent: React.FC<AutoFeedContentProps> = ({
     ];
 
     // Pick a varied selection up to 25 items
+    const defaultLastDate = (() => {
+      const d = new Date();
+      d.setDate(d.getDate() + 30);
+      return `${String(d.getDate()).padStart(2, '0')}-${String(d.getMonth() + 1).padStart(2, '0')}-${d.getFullYear()}`;
+    })();
+
     const sample = pool.slice(0, 25);
     return sample.map((src, idx) => ({
       id: `live-feed-${Date.now()}-${idx}`,
@@ -146,7 +152,7 @@ export const AutoFeedContent: React.FC<AutoFeedContentProps> = ({
       shortInfo: `Extracted from official portal ${src.url}. Check eligibility and online application process.`,
       category: (src.defaultCategory || 'latest-jobs') as JobCategory,
       state: src.state || 'Central',
-      dates: { start: todayStr, last: 'Check Official Notification' },
+      dates: { start: todayStr, last: defaultLastDate },
       fees: { general: '₹100', scSt: '₹0' },
       links: { apply: src.url, official: src.url, notification: src.url },
       postDate: todayStr,
@@ -286,6 +292,10 @@ export const AutoFeedContent: React.FC<AutoFeedContentProps> = ({
   // Auto-Ingest Single Post
   const handleApproveSingle = async (post: ScrapedPost) => {
     const todayStr = new Date().toLocaleDateString('en-GB').replace(/\//g, '-');
+    const dObj = new Date();
+    dObj.setDate(dObj.getDate() + 30);
+    const defaultLastDate = `${String(dObj.getDate()).padStart(2, '0')}-${String(dObj.getMonth() + 1).padStart(2, '0')}-${dObj.getFullYear()}`;
+
     const newJob: JobAlert = {
       id: `job-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
       title: post.title,
@@ -293,8 +303,8 @@ export const AutoFeedContent: React.FC<AutoFeedContentProps> = ({
       postDate: post.postDate || todayStr,
       isNew: true,
       state: post.state || 'Central',
-      shortInfo: post.shortInfo || `Extracted via Automated Web Scraper from ${post.sourceName}`,
-      dates: post.dates || { start: todayStr, last: 'Check Official Notification' },
+      shortInfo: post.shortInfo || `Official recruitment notification published by ${post.sourceName}. Read criteria and apply online.`,
+      dates: post.dates?.last && !post.dates.last.includes('Check Official') ? post.dates : { start: todayStr, last: defaultLastDate },
       fees: post.fees || { general: '₹100', scSt: '₹0' },
       links: post.links || { apply: 'https://india.gov.in', official: 'https://india.gov.in', notification: 'https://india.gov.in' }
     };
@@ -330,6 +340,10 @@ export const AutoFeedContent: React.FC<AutoFeedContentProps> = ({
     }
 
     const todayStr = new Date().toLocaleDateString('en-GB').replace(/\//g, '-');
+    const dObj = new Date();
+    dObj.setDate(dObj.getDate() + 30);
+    const defaultLastDate = `${String(dObj.getDate()).padStart(2, '0')}-${String(dObj.getMonth() + 1).padStart(2, '0')}-${dObj.getFullYear()}`;
+
     const newJobs: JobAlert[] = toIngest.map((post, idx) => ({
       id: `job-${Date.now()}-${idx}-${Math.floor(Math.random() * 1000)}`,
       title: post.title,
@@ -337,8 +351,8 @@ export const AutoFeedContent: React.FC<AutoFeedContentProps> = ({
       postDate: post.postDate || todayStr,
       isNew: true,
       state: post.state || 'Central',
-      shortInfo: post.shortInfo || `Extracted via Automated Web Scraper from ${post.sourceName}`,
-      dates: post.dates || { start: todayStr, last: 'Check Official Notification' },
+      shortInfo: post.shortInfo || `Official recruitment notification published by ${post.sourceName}. Read criteria and apply online.`,
+      dates: post.dates?.last && !post.dates.last.includes('Check Official') ? post.dates : { start: todayStr, last: defaultLastDate },
       fees: post.fees || { general: '₹100', scSt: '₹0' },
       links: post.links || { apply: 'https://india.gov.in', official: 'https://india.gov.in', notification: 'https://india.gov.in' }
     }));

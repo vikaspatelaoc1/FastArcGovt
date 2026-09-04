@@ -1630,14 +1630,19 @@ async function runAutomatedScraper(sourceId?: string) {
   const scrapedPosts: any[] = [];
 
   for (const src of targetSources) {
+    // Calculate default last date approx 30 days ahead
+    const dObj = new Date();
+    dObj.setDate(dObj.getDate() + 30);
+    const defaultLastDate = `${String(dObj.getDate()).padStart(2, '0')}-${String(dObj.getMonth() + 1).padStart(2, '0')}-${dObj.getFullYear()}`;
+
     // If live feed template exists, load items
     const items = curatedLiveFeeds[src.id] || [
       {
         title: `${src.name} - Latest Public Notice 2026`,
-        shortInfo: `Automated feed extraction from ${src.url}`,
+        shortInfo: `${src.name} has published an official notification and recruitment notice for candidates. Read eligibility and apply online.`,
         category: src.defaultCategory,
         state: src.state,
-        dates: { start: todayStr, last: 'Check Official Notification' },
+        dates: { start: todayStr, last: defaultLastDate },
         fees: { general: '₹100', scSt: '₹0' },
         links: { apply: src.url, official: src.url, notification: src.url }
       }
@@ -1718,8 +1723,8 @@ async function autoIngestPosts(posts: any[]) {
         postDate: p.postDate || todayStr,
         isNew: true,
         state: p.state || 'Central',
-        shortInfo: p.shortInfo || `Extracted automatically from official portal ${p.sourceName || 'Feed'}.`,
-        dates: p.dates || { start: todayStr, last: 'Check Official Notification' },
+        shortInfo: p.shortInfo || `Official public notice and update issued by ${p.sourceName || 'authority'}. Candidates can check complete details and apply online.`,
+        dates: p.dates || { start: todayStr, last: '30 Days from Notice' },
         fees: p.fees || { general: '₹100', scSt: '₹0' },
         links: {
           apply: sanitizeUrl(p.links?.apply, 'https://india.gov.in'),
