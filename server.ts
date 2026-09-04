@@ -313,80 +313,110 @@ let dbState: DatabaseSchema = {
   ]
 };
 
-// Helper to load DB from disk
-async function loadDatabase(): Promise<DatabaseSchema> {
-  try {
-    if (firestoreDb) {
-      const dbRef = doc(firestoreDb, 'config', 'app_state');
-      const docSnap = await getDoc(dbRef);
-      if (docSnap.exists()) {
-        const parsed = docSnap.data();
-        if (parsed && typeof parsed === 'object') {
-          let loadedSources = Array.isArray(parsed.scraperSources) ? parsed.scraperSources : [];
-          if (loadedSources.length < 500) {
-            const existingIds = new Set(loadedSources.map((s: any) => s.id));
-            const newSources = defaultScraperSources.filter(s => !existingIds.has(s.id));
-            loadedSources = [...loadedSources, ...newSources];
-          }
-          dbState = {
-            jobs: Array.isArray(parsed.jobs) && parsed.jobs.length > 0 ? parsed.jobs : defaultInitialJobs,
-            marqueeText: typeof parsed.marqueeText === 'string' ? parsed.marqueeText : dbState.marqueeText,
-            employees: Array.isArray(parsed.employees) ? parsed.employees : defaultInitialEmployees,
-            subscribers: Array.isArray(parsed.subscribers) ? parsed.subscribers : defaultInitialSubscribers,
-            scraperSources: loadedSources,
-            notificationConfig: parsed.notificationConfig ? { ...defaultNotificationConfig, ...parsed.notificationConfig } : defaultNotificationConfig,
-            notificationHistory: Array.isArray(parsed.notificationHistory) ? parsed.notificationHistory : (dbState.notificationHistory || []),
-            siteConfig: parsed.siteConfig || dbState.siteConfig,
-            users: Array.isArray(parsed.users) ? parsed.users : dbState.users
-          };
-          console.log(`🔥 Database loaded from Firebase: ${dbState.jobs.length} jobs available.`);
-          return dbState;
-        }
-      }
-    }
-  } catch (err) {
-    console.warn('⚠️ Could not load database from Firebase, checking local disk backup:', err);
-  }
+// Helper to load DB from disk / Firestore with maximum 8-sec guarantee
+export async function ensureDatabaseLoaded(timeoutMs = 8000): Promise<DatabaseSchema> {
+  if (isDbLoaded) return dbState;
 
-  // Fallback to read from local/bundled JSON file if Firebase is not connected or empty
-  try {
-    const candidatePaths = [
-      DB_FILE,
-      path.join(process.cwd(), 'data', 'fastarc_database.json')
-    ];
-    for (const p of candidatePaths) {
-      if (fs.existsSync(p)) {
-        const fileContent = fs.readFileSync(p, 'utf-8');
-        const parsed = JSON.parse(fileContent);
-        if (parsed && typeof parsed === 'object' && Array.isArray(parsed.jobs) && parsed.jobs.length > 0) {
-          let loadedSources = Array.isArray(parsed.scraperSources) ? parsed.scraperSources : [];
-          if (loadedSources.length < 500) {
-            const existingIds = new Set(loadedSources.map((s: any) => s.id));
-            const newSources = defaultScraperSources.filter(s => !existingIds.has(s.id));
-            loadedSources = [...loadedSources, ...newSources];
+  const loadPromise = (async () => {
+    try {
+      if (firestoreDb) {
+        // Individual 6s timeout for Firestore request
+        const dbRef = doc(firestoreDb, 'config', 'app_state');
+        const docSnapPromise = getDoc(dbRef);
+        const fsTimeout = new Promise<null>((_, reject) =>
+          setTimeout(() => reject(new Error('Firestore connection timeout')), 6000)
+        );
+
+        const docSnap: any = await Promise.race([docSnapPromise, fsTimeout]);
+        if (docSnap && docSnap.exists()) {
+          const parsed = docSnap.data();
+          if (parsed && typeof parsed === 'object') {
+            let loadedSources = Array.isArray(parsed.scraperSources) ? parsed.scraperSources : [];
+            if (loadedSources.length < 500) {
+              const existingIds = new Set(loadedSources.map((s: any) => s.id));
+              const newSources = defaultScraperSources.filter(s => !existingIds.has(s.id));
+              loadedSources = [...loadedSources, ...newSources];
+            }
+            dbState = {
+              jobs: Array.isArray(parsed.jobs) && parsed.jobs.length > 0 ? parsed.jobs : defaultInitialJobs,
+              marqueeText: typeof parsed.marqueeText === 'string' ? parsed.marqueeText : dbState.marqueeText,
+              employees: Array.isArray(parsed.employees) ? parsed.employees : defaultInitialEmployees,
+              subscribers: Array.isArray(parsed.subscribers) ? parsed.subscribers : defaultInitialSubscribers,
+              scraperSources: loadedSources,
+              notificationConfig: parsed.notificationConfig ? { ...defaultNotificationConfig, ...parsed.notificationConfig } : defaultNotificationConfig,
+              notificationHistory: Array.isArray(parsed.notificationHistory) ? parsed.notificationHistory : (dbState.notificationHistory || []),
+              siteConfig: parsed.siteConfig || dbState.siteConfig,
+              users: Array.isArray(parsed.users) ? parsed.users : dbState.users
+            };
+            console.log(`🔥 Database loaded from Firebase Firestore: ${dbState.jobs.length} jobs available.`);
+            return dbState;
           }
-          dbState = {
-            jobs: parsed.jobs,
-            marqueeText: typeof parsed.marqueeText === 'string' ? parsed.marqueeText : dbState.marqueeText,
-            employees: Array.isArray(parsed.employees) ? parsed.employees : defaultInitialEmployees,
-            subscribers: Array.isArray(parsed.subscribers) ? parsed.subscribers : defaultInitialSubscribers,
-            scraperSources: loadedSources,
-            notificationConfig: parsed.notificationConfig ? { ...defaultNotificationConfig, ...parsed.notificationConfig } : defaultNotificationConfig,
-            notificationHistory: Array.isArray(parsed.notificationHistory) ? parsed.notificationHistory : (dbState.notificationHistory || []),
-            siteConfig: parsed.siteConfig || dbState.siteConfig,
-            users: Array.isArray(parsed.users) ? parsed.users : dbState.users
-          };
-          console.log(`📂 Loaded database from disk (${dbState.jobs.length} jobs ready).`);
-          break;
         }
       }
+    } catch (err: any) {
+      console.warn('⚠️ Could not load database from Firebase, checking local disk backup:', err?.message || err);
     }
-  } catch (fileErr) {
-    console.warn('⚠️ Could not load local database file:', fileErr);
+
+    // Fallback to read from local/bundled JSON file if Firebase is not connected or empty
+    try {
+      const candidatePaths = [
+        DB_FILE,
+        path.join(process.cwd(), 'data', 'fastarc_database.json')
+      ];
+      for (const p of candidatePaths) {
+        if (fs.existsSync(p)) {
+          const fileContent = fs.readFileSync(p, 'utf-8');
+          const parsed = JSON.parse(fileContent);
+          if (parsed && typeof parsed === 'object' && Array.isArray(parsed.jobs) && parsed.jobs.length > 0) {
+            let loadedSources = Array.isArray(parsed.scraperSources) ? parsed.scraperSources : [];
+            if (loadedSources.length < 500) {
+              const existingIds = new Set(loadedSources.map((s: any) => s.id));
+              const newSources = defaultScraperSources.filter(s => !existingIds.has(s.id));
+              loadedSources = [...loadedSources, ...newSources];
+            }
+            dbState = {
+              jobs: parsed.jobs,
+              marqueeText: typeof parsed.marqueeText === 'string' ? parsed.marqueeText : dbState.marqueeText,
+              employees: Array.isArray(parsed.employees) ? parsed.employees : defaultInitialEmployees,
+              subscribers: Array.isArray(parsed.subscribers) ? parsed.subscribers : defaultInitialSubscribers,
+              scraperSources: loadedSources,
+              notificationConfig: parsed.notificationConfig ? { ...defaultNotificationConfig, ...parsed.notificationConfig } : defaultNotificationConfig,
+              notificationHistory: Array.isArray(parsed.notificationHistory) ? parsed.notificationHistory : (dbState.notificationHistory || []),
+              siteConfig: parsed.siteConfig || dbState.siteConfig,
+              users: Array.isArray(parsed.users) ? parsed.users : dbState.users
+            };
+            console.log(`📂 Loaded database from disk (${dbState.jobs.length} jobs ready).`);
+            break;
+          }
+        }
+      }
+    } catch (fileErr) {
+      console.warn('⚠️ Could not load local database file:', fileErr);
+    }
+
+    return dbState;
+  })();
+
+  const timeoutPromise = new Promise<DatabaseSchema>((resolve) => {
+    setTimeout(() => {
+      console.warn(`⏱️ Database load reached ${timeoutMs}ms limit. Operating with in-memory default state.`);
+      resolve(dbState);
+    }, timeoutMs);
+  });
+
+  try {
+    dbState = await Promise.race([loadPromise, timeoutPromise]);
+  } catch (err) {
+    console.warn('⚠️ Database init error, using in-memory state:', err);
+  } finally {
+    isDbLoaded = true;
   }
 
   return dbState;
 }
+
+// Alias loadDatabase for internal calls
+const loadDatabase = () => ensureDatabaseLoaded(8000);
 
 // Circuit-breaker for Firestore daily quota limit
 let isFirestoreQuotaExhausted = false;
@@ -1316,7 +1346,7 @@ function categorizeScrapedTitle(title: string, defaultCat: string = 'latest-jobs
 }
 
 // 1. GET ALL SCRAPER SOURCES
-app.get('/api/v1/scraper/sources', async (req, res) => {
+app.get(['/api/v1/scraper/sources', '/api/scraper/sources'], async (req, res) => {
   let sources = dbState.scraperSources || defaultScraperSources;
   if (!sources || sources.length < 500) {
     sources = defaultScraperSources;
@@ -1537,7 +1567,7 @@ async function runAutomatedScraper(sourceId?: string) {
   return scrapedPosts;
 }
 
-app.post('/api/v1/scraper/run', async (req, res) => {
+app.post(['/api/v1/scraper/run', '/api/scraper/run'], async (req, res) => {
   try {
     const { sourceId } = req.body || {};
     const scrapedPosts = await runAutomatedScraper(sourceId);
@@ -1595,7 +1625,7 @@ async function autoIngestPosts(posts: any[]) {
   return ingestedCount;
 }
 
-app.post('/api/v1/scraper/auto-ingest', async (req, res) => {
+app.post(['/api/v1/scraper/auto-ingest', '/api/scraper/auto-ingest'], async (req, res) => {
   try {
     const { posts } = req.body;
     if (!Array.isArray(posts) || posts.length === 0) {
@@ -2096,6 +2126,25 @@ app.post('/api/nps/calculate', async (req, res) => {
     annuityInvested: Math.round(annuityAmount),
     estimatedMonthlyPension: Math.round(monthlyPensions)
   });
+});
+
+// --- API CATCH-ALL & GLOBAL ERROR HANDLERS ---
+app.all('/api/*', (req, res) => {
+  res.status(404).json({
+    success: false,
+    error: `API route not found: ${req.method} ${req.originalUrl || req.url}`
+  });
+});
+
+app.use((err: any, req: any, res: any, next: any) => {
+  console.error('Unhandled server error:', err);
+  if (!res.headersSent) {
+    res.status(500).json({
+      success: false,
+      error: 'Internal Server Error',
+      message: err?.message || String(err)
+    });
+  }
 });
 
 // --- SERVER SETUP & VITE MIDDLEWARE ---
