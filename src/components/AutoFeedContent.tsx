@@ -7,6 +7,7 @@ import {
   Activity, XCircle
 } from 'lucide-react';
 import { JobAlert, ScraperSource, ScrapedPost, JobCategory, SyncLogEntry } from '../types';
+import { defaultScraperSources } from '../data/defaultScraperSources';
 
 interface AutoFeedContentProps {
   onPushJob: (job: JobAlert) => Promise<void> | void;
@@ -31,8 +32,8 @@ export const AutoFeedContent: React.FC<AutoFeedContentProps> = ({
 }) => {
   const [activeSubTab, setActiveSubTab] = useState<'scrapers' | 'rss_feeds' | 'sources' | 'webhook' | 'logs'>('scrapers');
   
-  // Sources state
-  const [sources, setSources] = useState<ScraperSource[]>([]);
+  // Sources state (initialized with 500+ official Indian govt portal feeds)
+  const [sources, setSources] = useState<ScraperSource[]>(defaultScraperSources);
   const [isLoadingSources, setIsLoadingSources] = useState(false);
   
   // Scraped Queue
