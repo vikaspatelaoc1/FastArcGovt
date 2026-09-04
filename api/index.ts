@@ -1,5 +1,5 @@
 process.env.IS_SERVERLESS = '1';
-import app from '../dist/server.js';
+import app from '../server';
 
 export default function handler(req: any, res: any) {
   // If Vercel rewrote the URL, recover original requested path from headers
