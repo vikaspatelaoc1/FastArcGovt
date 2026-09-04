@@ -16,6 +16,29 @@ import { ThemeColorConfig } from '../utils/themeColors';
 
 
 // Connection validation
+// Circuit breaker to avoid flooding Firestore when daily write quota is reached
+let isClientFirestoreQuotaExceeded = false;
+
+export function isFirestoreQuotaExceeded(): boolean {
+  return isClientFirestoreQuotaExceeded;
+}
+
+export function handleFirestoreQuotaError(err: any, context?: string): boolean {
+  const msg = err?.message || String(err);
+  if (
+    msg.includes('Quota limit exceeded') ||
+    msg.includes('resource-exhausted') ||
+    err?.code === 'resource-exhausted'
+  ) {
+    if (!isClientFirestoreQuotaExceeded) {
+      isClientFirestoreQuotaExceeded = true;
+      console.warn(`⚠️ [Firebase] Daily write quota reached (${context || 'operation'}). Continuing in resilient offline/backend mode.`);
+    }
+    return true;
+  }
+  return false;
+}
+
 export async function validateFirestoreConnection() {
   try {
     const timeoutPromise = new Promise((_, reject) => 
@@ -108,12 +131,15 @@ export function subscribeToJobs(
 
       onUpdate(finalUniqueJobs);
     } catch (err) {
-      console.error('Error handling jobs snapshot:', err);
+      console.warn('Error handling jobs snapshot:', err);
       if (onError) onError(err);
+      onUpdate(defaultJobsDatabase);
     }
   }, (err) => {
-    console.error('Firestore jobs subscription error:', err);
+    handleFirestoreQuotaError(err, 'subscribeToJobs');
+    console.warn('Firestore jobs subscription fallback to catalog:', err?.message || err);
     if (onError) onError(err);
+    onUpdate(defaultJobsDatabase);
   });
 }
 
@@ -137,137 +163,170 @@ function cleanForFirestore<T>(data: T): T {
 
 // 2. Save / Add Job (with Duplicate Prevention)
 export async function saveJobToFirestore(job: JobAlert): Promise<void> {
-  const initDocRef = doc(db, 'site_config', 'init');
-  await setDoc(initDocRef, { initialized: true }, { merge: true });
+  if (isClientFirestoreQuotaExceeded) return;
+  try {
+    const initDocRef = doc(db, 'site_config', 'init');
+    await setDoc(initDocRef, { initialized: true }, { merge: true });
 
-  const jobsCol = collection(db, 'jobs');
-  const snapshot = await getDocs(jobsCol);
-  const normTitle = job.title ? job.title.trim().toLowerCase() : '';
+    const jobsCol = collection(db, 'jobs');
+    const snapshot = await getDocs(jobsCol);
+    const normTitle = job.title ? job.title.trim().toLowerCase() : '';
 
-  let targetDocId = job.id;
+    let targetDocId = job.id;
 
-  if (normTitle) {
-    snapshot.forEach((docSnap) => {
-      const data = docSnap.data() as JobAlert;
-      if (data.title && data.title.trim().toLowerCase() === normTitle) {
-        targetDocId = docSnap.id; // Overwrite existing document ID to prevent duplicates!
-      }
+    if (normTitle) {
+      snapshot.forEach((docSnap) => {
+        const data = docSnap.data() as JobAlert;
+        if (data.title && data.title.trim().toLowerCase() === normTitle) {
+          targetDocId = docSnap.id; // Overwrite existing document ID to prevent duplicates!
+        }
+      });
+    }
+
+    const sanitizedJob = cleanForFirestore({
+      ...job,
+      id: targetDocId,
+      updatedAt: new Date().toISOString()
     });
+
+    const jobRef = doc(db, 'jobs', targetDocId);
+    await setDoc(jobRef, sanitizedJob, { merge: true });
+  } catch (err: any) {
+    if (!handleFirestoreQuotaError(err, 'saveJobToFirestore')) {
+      console.warn('saveJobToFirestore warning:', err?.message || err);
+    }
   }
-
-  const sanitizedJob = cleanForFirestore({
-    ...job,
-    id: targetDocId,
-    updatedAt: new Date().toISOString()
-  });
-
-  const jobRef = doc(db, 'jobs', targetDocId);
-  await setDoc(jobRef, sanitizedJob, { merge: true });
 }
 
 // 3. Delete Job (Immediate & Permanent)
 export async function deleteJobFromFirestore(jobId: string): Promise<void> {
-  // Ensure site_config/init is set so if all jobs are deleted, it doesn't re-seed defaults
-  const initDocRef = doc(db, 'site_config', 'init');
-  await setDoc(initDocRef, { initialized: true }, { merge: true });
-  const jobRef = doc(db, 'jobs', jobId);
-  await deleteDoc(jobRef);
+  if (isClientFirestoreQuotaExceeded) return;
+  try {
+    const initDocRef = doc(db, 'site_config', 'init');
+    await setDoc(initDocRef, { initialized: true }, { merge: true });
+    const jobRef = doc(db, 'jobs', jobId);
+    await deleteDoc(jobRef);
+  } catch (err: any) {
+    if (!handleFirestoreQuotaError(err, 'deleteJobFromFirestore')) {
+      console.warn('deleteJobFromFirestore warning:', err?.message || err);
+    }
+  }
 }
 
 // 4. Reset Jobs to Default
 export async function resetJobsInFirestore(): Promise<void> {
-  const jobsCol = collection(db, 'jobs');
-  const snapshot = await getDocs(jobsCol);
-  const batch = writeBatch(db);
-  
-  snapshot.forEach((docSnap) => {
-    batch.delete(docSnap.ref);
-  });
+  if (isClientFirestoreQuotaExceeded) return;
+  try {
+    const jobsCol = collection(db, 'jobs');
+    const snapshot = await getDocs(jobsCol);
+    const batch = writeBatch(db);
+    
+    snapshot.forEach((docSnap) => {
+      batch.delete(docSnap.ref);
+    });
 
-  defaultJobsDatabase.forEach((job) => {
-    const jobDoc = doc(db, 'jobs', job.id);
-    batch.set(jobDoc, job);
-  });
+    defaultJobsDatabase.forEach((job) => {
+      const jobDoc = doc(db, 'jobs', job.id);
+      batch.set(jobDoc, job);
+    });
 
-  const initDocRef = doc(db, 'site_config', 'init');
-  batch.set(initDocRef, { initialized: true, resetAt: new Date().toISOString() });
+    const initDocRef = doc(db, 'site_config', 'init');
+    batch.set(initDocRef, { initialized: true, resetAt: new Date().toISOString() });
 
-  await batch.commit();
+    await batch.commit();
+  } catch (err: any) {
+    if (!handleFirestoreQuotaError(err, 'resetJobsInFirestore')) {
+      console.warn('resetJobsInFirestore warning:', err?.message || err);
+    }
+  }
 }
 
 // 5. Bulk Save / Import Jobs (Deduplicated)
 export async function bulkSaveJobsToFirestore(jobs: JobAlert[]): Promise<void> {
-  const jobsCol = collection(db, 'jobs');
-  const snapshot = await getDocs(jobsCol);
-  const batch = writeBatch(db);
-  
-  snapshot.forEach((docSnap) => {
-    batch.delete(docSnap.ref);
-  });
+  if (isClientFirestoreQuotaExceeded) return;
+  try {
+    const jobsCol = collection(db, 'jobs');
+    const snapshot = await getDocs(jobsCol);
+    const batch = writeBatch(db);
+    
+    snapshot.forEach((docSnap) => {
+      batch.delete(docSnap.ref);
+    });
 
-  const seenTitles = new Set<string>();
-  jobs.forEach((job) => {
-    if (!job.title) return;
-    const norm = job.title.trim().toLowerCase();
-    if (!seenTitles.has(norm)) {
-      seenTitles.add(norm);
-      const jobDoc = doc(db, 'jobs', job.id);
-      batch.set(jobDoc, job);
+    const seenTitles = new Set<string>();
+    jobs.forEach((job) => {
+      if (!job.title) return;
+      const norm = job.title.trim().toLowerCase();
+      if (!seenTitles.has(norm)) {
+        seenTitles.add(norm);
+        const jobDoc = doc(db, 'jobs', job.id);
+        batch.set(jobDoc, job);
+      }
+    });
+
+    const initDocRef = doc(db, 'site_config', 'init');
+    batch.set(initDocRef, { initialized: true, importedAt: new Date().toISOString() });
+
+    await batch.commit();
+  } catch (err: any) {
+    if (!handleFirestoreQuotaError(err, 'bulkSaveJobsToFirestore')) {
+      console.warn('bulkSaveJobsToFirestore warning:', err?.message || err);
     }
-  });
-
-  const initDocRef = doc(db, 'site_config', 'init');
-  batch.set(initDocRef, { initialized: true, importedAt: new Date().toISOString() });
-
-  await batch.commit();
+  }
 }
 
 // 5b. Append or update jobs without wiping existing database (for Scrapers & Live Ingestion - Deduplicated)
 export async function appendJobsToFirestore(jobs: JobAlert[]): Promise<void> {
-  if (!jobs || jobs.length === 0) return;
+  if (!jobs || jobs.length === 0 || isClientFirestoreQuotaExceeded) return;
 
-  const jobsCol = collection(db, 'jobs');
-  const snapshot = await getDocs(jobsCol);
+  try {
+    const jobsCol = collection(db, 'jobs');
+    const snapshot = await getDocs(jobsCol);
 
-  const existingTitleMap = new Map<string, string>();
-  snapshot.forEach((docSnap) => {
-    const data = docSnap.data() as JobAlert;
-    if (data.title) {
-      existingTitleMap.set(data.title.trim().toLowerCase(), docSnap.id);
-    }
-  });
-
-  const initDocRef = doc(db, 'site_config', 'init');
-  await setDoc(initDocRef, { initialized: true }, { merge: true });
-
-  const batchSeenTitles = new Set<string>();
-  const itemsToSync: { targetDocId: string; job: JobAlert }[] = [];
-
-  jobs.forEach((job) => {
-    if (!job.title) return;
-    const norm = job.title.trim().toLowerCase();
-    if (batchSeenTitles.has(norm)) return; // Skip duplicates within the batch
-    batchSeenTitles.add(norm);
-
-    const targetDocId = existingTitleMap.get(norm) || job.id;
-    itemsToSync.push({ targetDocId, job });
-  });
-
-  // Execute in chunks of 400 to stay well under Firestore 500 limit
-  const CHUNK_SIZE = 400;
-  for (let i = 0; i < itemsToSync.length; i += CHUNK_SIZE) {
-    const chunk = itemsToSync.slice(i, i + CHUNK_SIZE);
-    const batch = writeBatch(db);
-    chunk.forEach(({ targetDocId, job }) => {
-      const jobDoc = doc(db, 'jobs', targetDocId);
-      const sanitized = cleanForFirestore({
-        ...job,
-        id: targetDocId,
-        updatedAt: new Date().toISOString()
-      });
-      batch.set(jobDoc, sanitized, { merge: true });
+    const existingTitleMap = new Map<string, string>();
+    snapshot.forEach((docSnap) => {
+      const data = docSnap.data() as JobAlert;
+      if (data.title) {
+        existingTitleMap.set(data.title.trim().toLowerCase(), docSnap.id);
+      }
     });
-    await batch.commit();
+
+    const initDocRef = doc(db, 'site_config', 'init');
+    await setDoc(initDocRef, { initialized: true }, { merge: true });
+
+    const batchSeenTitles = new Set<string>();
+    const itemsToSync: { targetDocId: string; job: JobAlert }[] = [];
+
+    jobs.forEach((job) => {
+      if (!job.title) return;
+      const norm = job.title.trim().toLowerCase();
+      if (batchSeenTitles.has(norm)) return; // Skip duplicates within the batch
+      batchSeenTitles.add(norm);
+
+      const targetDocId = existingTitleMap.get(norm) || job.id;
+      itemsToSync.push({ targetDocId, job });
+    });
+
+    // Execute in chunks of 400 to stay well under Firestore 500 limit
+    const CHUNK_SIZE = 400;
+    for (let i = 0; i < itemsToSync.length; i += CHUNK_SIZE) {
+      const chunk = itemsToSync.slice(i, i + CHUNK_SIZE);
+      const batch = writeBatch(db);
+      chunk.forEach(({ targetDocId, job }) => {
+        const jobDoc = doc(db, 'jobs', targetDocId);
+        const sanitized = cleanForFirestore({
+          ...job,
+          id: targetDocId,
+          updatedAt: new Date().toISOString()
+        });
+        batch.set(jobDoc, sanitized, { merge: true });
+      });
+      await batch.commit();
+    }
+  } catch (err: any) {
+    if (!handleFirestoreQuotaError(err, 'appendJobsToFirestore')) {
+      console.warn('appendJobsToFirestore warning:', err?.message || err);
+    }
   }
 }
 
@@ -281,15 +340,22 @@ export function subscribeToMarquee(onUpdate: (text: string) => void) {
         onUpdate(data.marqueeText);
       }
     }
+  }, (err) => {
+    handleFirestoreQuotaError(err, 'subscribeToMarquee');
   });
 }
 
 export async function saveMarqueeToFirestore(text: string): Promise<void> {
-  const configRef = doc(db, 'site_config', 'marquee');
-  await setDoc(configRef, {
-    marqueeText: text,
-    updatedAt: new Date().toISOString()
-  }, { merge: true });
+  if (isClientFirestoreQuotaExceeded) return;
+  try {
+    const configRef = doc(db, 'site_config', 'marquee');
+    await setDoc(configRef, {
+      marqueeText: text,
+      updatedAt: new Date().toISOString()
+    }, { merge: true });
+  } catch (err) {
+    handleFirestoreQuotaError(err, 'saveMarqueeToFirestore');
+  }
 }
 
 // 6b. Auto-Sync Watcher State Sync
@@ -302,15 +368,22 @@ export function subscribeToAutoSync(onUpdate: (isActive: boolean) => void) {
         onUpdate(data.isActive);
       }
     }
+  }, (err) => {
+    handleFirestoreQuotaError(err, 'subscribeToAutoSync');
   });
 }
 
 export async function saveAutoSyncToFirestore(isActive: boolean): Promise<void> {
-  const configRef = doc(db, 'site_config', 'autoSync');
-  await setDoc(configRef, {
-    isActive,
-    updatedAt: new Date().toISOString()
-  }, { merge: true });
+  if (isClientFirestoreQuotaExceeded) return;
+  try {
+    const configRef = doc(db, 'site_config', 'autoSync');
+    await setDoc(configRef, {
+      isActive,
+      updatedAt: new Date().toISOString()
+    }, { merge: true });
+  } catch (err) {
+    handleFirestoreQuotaError(err, 'saveAutoSyncToFirestore');
+  }
 }
 
 // 6c. Theme Colors State Sync
@@ -323,15 +396,22 @@ export function subscribeToThemeColors(onUpdate: (colors: ThemeColorConfig) => v
         onUpdate(data.colors as ThemeColorConfig);
       }
     }
+  }, (err) => {
+    handleFirestoreQuotaError(err, 'subscribeToThemeColors');
   });
 }
 
 export async function saveThemeColorsToFirestore(colors: ThemeColorConfig): Promise<void> {
-  const configRef = doc(db, 'site_config', 'theme_colors');
-  await setDoc(configRef, {
-    colors,
-    updatedAt: new Date().toISOString()
-  }, { merge: true });
+  if (isClientFirestoreQuotaExceeded) return;
+  try {
+    const configRef = doc(db, 'site_config', 'theme_colors');
+    await setDoc(configRef, {
+      colors,
+      updatedAt: new Date().toISOString()
+    }, { merge: true });
+  } catch (err) {
+    handleFirestoreQuotaError(err, 'saveThemeColorsToFirestore');
+  }
 }
 
 export interface EarningsConfig {
@@ -369,38 +449,54 @@ export function subscribeToEarningsConfig(onUpdate: (config: EarningsConfig) => 
         onUpdate(data.config as EarningsConfig);
       }
     }
+  }, (err) => {
+    handleFirestoreQuotaError(err, 'subscribeToEarningsConfig');
   });
 }
 
 export async function saveEarningsConfigToFirestore(config: EarningsConfig): Promise<void> {
-  const configRef = doc(db, 'site_config', 'earnings_config');
-  await setDoc(configRef, {
-    config,
-    updatedAt: new Date().toISOString()
-  }, { merge: true });
+  if (isClientFirestoreQuotaExceeded) return;
+  try {
+    const configRef = doc(db, 'site_config', 'earnings_config');
+    await setDoc(configRef, {
+      config,
+      updatedAt: new Date().toISOString()
+    }, { merge: true });
+  } catch (err) {
+    handleFirestoreQuotaError(err, 'saveEarningsConfigToFirestore');
+  }
 }
 
 // 6e. Website Backup Sync
 export async function saveBackupToFirestore(backupData: any): Promise<void> {
-  const backupRef = doc(db, 'site_config', 'website_backup');
-  await setDoc(backupRef, {
-    backup: JSON.stringify(backupData),
-    updatedAt: new Date().toISOString()
-  });
+  if (isClientFirestoreQuotaExceeded) return;
+  try {
+    const backupRef = doc(db, 'site_config', 'website_backup');
+    await setDoc(backupRef, {
+      backup: JSON.stringify(backupData),
+      updatedAt: new Date().toISOString()
+    });
+  } catch (err) {
+    handleFirestoreQuotaError(err, 'saveBackupToFirestore');
+  }
 }
 
 export async function getBackupFromFirestore(): Promise<any | null> {
-  const backupRef = doc(db, 'site_config', 'website_backup');
-  const snap = await getDoc(backupRef);
-  if (snap.exists()) {
-    const data = snap.data();
-    if (data.backup) {
-      try {
-        return JSON.parse(data.backup);
-      } catch (e) {
-        return null;
+  try {
+    const backupRef = doc(db, 'site_config', 'website_backup');
+    const snap = await getDoc(backupRef);
+    if (snap.exists()) {
+      const data = snap.data();
+      if (data.backup) {
+        try {
+          return JSON.parse(data.backup);
+        } catch (e) {
+          return null;
+        }
       }
     }
+  } catch (err) {
+    handleFirestoreQuotaError(err, 'getBackupFromFirestore');
   }
   return null;
 }
@@ -421,17 +517,30 @@ export function subscribeToEmployees(onUpdate: (employees: EmployeeUser[]) => vo
       });
     });
     onUpdate(emps);
+  }, (err) => {
+    handleFirestoreQuotaError(err, 'subscribeToEmployees');
+    onUpdate([]);
   });
 }
 
 export async function saveEmployeeToFirestore(employee: EmployeeUser): Promise<void> {
-  const empRef = doc(db, 'employees', employee.id);
-  await setDoc(empRef, employee, { merge: true });
+  if (isClientFirestoreQuotaExceeded) return;
+  try {
+    const empRef = doc(db, 'employees', employee.id);
+    await setDoc(empRef, employee, { merge: true });
+  } catch (err) {
+    handleFirestoreQuotaError(err, 'saveEmployeeToFirestore');
+  }
 }
 
 export async function deleteEmployeeFromFirestore(employeeId: string): Promise<void> {
-  const empRef = doc(db, 'employees', employeeId);
-  await deleteDoc(empRef);
+  if (isClientFirestoreQuotaExceeded) return;
+  try {
+    const empRef = doc(db, 'employees', employeeId);
+    await deleteDoc(empRef);
+  } catch (err) {
+    handleFirestoreQuotaError(err, 'deleteEmployeeFromFirestore');
+  }
 }
 
 // 8. Subscribers Sync
@@ -444,29 +553,16 @@ export interface SubscriberRecord {
 
 export function subscribeToSubscribers(onUpdate: (subs: SubscriberRecord[]) => void) {
   const subCol = collection(db, 'subscribers');
-  return onSnapshot(subCol, async (snapshot) => {
+  const defaultSubs: SubscriberRecord[] = [
+    { id: 'sub-1', email: 'vikas.patel@example.com', category: 'Latest Jobs', date: '11 Aug 2026' },
+    { id: 'sub-2', email: 'rahul.kumar@gmail.com', category: 'Admit Card', date: '10 Aug 2026' },
+    { id: 'sub-3', email: 'priya.singh@yahoo.com', category: 'Results', date: '09 Aug 2026' },
+  ];
+
+  return onSnapshot(subCol, (snapshot) => {
     try {
-      const initSubDoc = doc(db, 'site_config', 'subscribers_init');
-      const initDoc = await getDoc(initSubDoc);
-
-      if (snapshot.empty && !initDoc.exists()) {
-        const initialSubs: SubscriberRecord[] = [
-          { id: 'sub-1', email: 'vikas.patel@example.com', category: 'Latest Jobs', date: '11 Aug 2026' },
-          { id: 'sub-2', email: 'rahul.kumar@gmail.com', category: 'Admit Card', date: '10 Aug 2026' },
-          { id: 'sub-3', email: 'priya.singh@yahoo.com', category: 'Results', date: '09 Aug 2026' },
-        ];
-        const batch = writeBatch(db);
-        initialSubs.forEach((s) => {
-          batch.set(doc(db, 'subscribers', s.id), s);
-        });
-        batch.set(initSubDoc, { initialized: true });
-        await batch.commit();
-        onUpdate(initialSubs);
-        return;
-      }
-
       if (snapshot.empty) {
-        onUpdate([]);
+        onUpdate(defaultSubs);
         return;
       }
 
@@ -479,26 +575,40 @@ export function subscribeToSubscribers(onUpdate: (subs: SubscriberRecord[]) => v
       });
       onUpdate(subs);
     } catch (err) {
-      console.error('Subscribers snapshot error:', err);
+      handleFirestoreQuotaError(err, 'subscribeToSubscribers snapshot');
+      onUpdate(defaultSubs);
     }
+  }, (err) => {
+    handleFirestoreQuotaError(err, 'subscribeToSubscribers listener');
+    onUpdate(defaultSubs);
   });
 }
 
 export async function saveSubscriberToFirestore(sub: SubscriberRecord): Promise<void> {
-  const initSubDoc = doc(db, 'site_config', 'subscribers_init');
-  await setDoc(initSubDoc, { initialized: true }, { merge: true });
-  const subRef = doc(db, 'subscribers', sub.id);
-  await setDoc(subRef, {
-    ...sub,
-    createdAt: new Date().toISOString()
-  }, { merge: true });
+  if (isClientFirestoreQuotaExceeded) return;
+  try {
+    const initSubDoc = doc(db, 'site_config', 'subscribers_init');
+    await setDoc(initSubDoc, { initialized: true }, { merge: true });
+    const subRef = doc(db, 'subscribers', sub.id);
+    await setDoc(subRef, {
+      ...sub,
+      createdAt: new Date().toISOString()
+    }, { merge: true });
+  } catch (err) {
+    handleFirestoreQuotaError(err, 'saveSubscriberToFirestore');
+  }
 }
 
 export async function deleteSubscriberFromFirestore(subId: string): Promise<void> {
-  const initSubDoc = doc(db, 'site_config', 'subscribers_init');
-  await setDoc(initSubDoc, { initialized: true }, { merge: true });
-  const subRef = doc(db, 'subscribers', subId);
-  await deleteDoc(subRef);
+  if (isClientFirestoreQuotaExceeded) return;
+  try {
+    const initSubDoc = doc(db, 'site_config', 'subscribers_init');
+    await setDoc(initSubDoc, { initialized: true }, { merge: true });
+    const subRef = doc(db, 'subscribers', subId);
+    await deleteDoc(subRef);
+  } catch (err) {
+    handleFirestoreQuotaError(err, 'deleteSubscriberFromFirestore');
+  }
 }
 
 // 9. Social Media Links Realtime Sync
@@ -507,7 +617,7 @@ export function subscribeToSocialLinks(
   onError?: (err: any) => void
 ) {
   const socialDocRef = doc(db, 'site_config', 'social_links');
-  return onSnapshot(socialDocRef, async (docSnap) => {
+  return onSnapshot(socialDocRef, (docSnap) => {
     try {
       if (docSnap.exists()) {
         const data = docSnap.data();
@@ -516,31 +626,30 @@ export function subscribeToSocialLinks(
           return;
         }
       }
-
-      // First time initialization with default links
-      await setDoc(socialDocRef, {
-        links: defaultSocialLinks,
-        updatedAt: new Date().toISOString()
-      }, { merge: true });
       onUpdate(defaultSocialLinks);
     } catch (err) {
-      console.warn('Social links snapshot warning:', err);
+      handleFirestoreQuotaError(err, 'subscribeToSocialLinks');
       if (onError) onError(err);
       onUpdate(defaultSocialLinks);
     }
   }, (err) => {
-    console.warn('Social links subscription error:', err);
+    handleFirestoreQuotaError(err, 'subscribeToSocialLinks listener');
     if (onError) onError(err);
     onUpdate(defaultSocialLinks);
   });
 }
 
 export async function saveSocialLinksToFirestore(links: SocialLinkItem[]): Promise<void> {
-  const socialDocRef = doc(db, 'site_config', 'social_links');
-  await setDoc(socialDocRef, {
-    links: links,
-    updatedAt: new Date().toISOString()
-  }, { merge: true });
+  if (isClientFirestoreQuotaExceeded) return;
+  try {
+    const socialDocRef = doc(db, 'site_config', 'social_links');
+    await setDoc(socialDocRef, {
+      links: links,
+      updatedAt: new Date().toISOString()
+    }, { merge: true });
+  } catch (err) {
+    handleFirestoreQuotaError(err, 'saveSocialLinksToFirestore');
+  }
 }
 
 
@@ -554,15 +663,22 @@ export function subscribeToSiteLogo(onUpdate: (logo: string, timestamp?: number)
         onUpdate(data.logoData, data.updatedAt);
       }
     }
+  }, (err) => {
+    handleFirestoreQuotaError(err, 'subscribeToSiteLogo');
   });
 }
 
 export async function saveSiteLogoToFirestore(logoData: string): Promise<void> {
-  const configRef = doc(db, 'site_config', 'site_logo');
-  await setDoc(configRef, {
-    logoData: logoData,
-    updatedAt: Date.now()
-  }, { merge: true });
+  if (isClientFirestoreQuotaExceeded) return;
+  try {
+    const configRef = doc(db, 'site_config', 'site_logo');
+    await setDoc(configRef, {
+      logoData: logoData,
+      updatedAt: Date.now()
+    }, { merge: true });
+  } catch (err) {
+    handleFirestoreQuotaError(err, 'saveSiteLogoToFirestore');
+  }
 }
 
 export interface LogoBackup {
@@ -584,15 +700,23 @@ export function subscribeToLogoHistory(onUpdate: (history: LogoBackup[]) => void
     } else {
       onUpdate([]);
     }
+  }, (err) => {
+    handleFirestoreQuotaError(err, 'subscribeToLogoHistory');
+    onUpdate([]);
   });
 }
 
 export async function saveLogoHistoryToFirestore(history: LogoBackup[]): Promise<void> {
-  const configRef = doc(db, 'site_config', 'logo_history');
-  await setDoc(configRef, {
-    history: history,
-    updatedAt: Date.now()
-  }, { merge: true });
+  if (isClientFirestoreQuotaExceeded) return;
+  try {
+    const configRef = doc(db, 'site_config', 'logo_history');
+    await setDoc(configRef, {
+      history: history,
+      updatedAt: Date.now()
+    }, { merge: true });
+  } catch (err) {
+    handleFirestoreQuotaError(err, 'saveLogoHistoryToFirestore');
+  }
 }
 
 // 11. Column Configs Realtime Sync
@@ -605,15 +729,22 @@ export function subscribeToColumnConfigs(onUpdate: (configs: any) => void) {
         onUpdate(data.configs);
       }
     }
+  }, (err) => {
+    handleFirestoreQuotaError(err, 'subscribeToColumnConfigs');
   });
 }
 
 export async function saveColumnConfigsToFirestore(configs: any): Promise<void> {
-  const colRef = doc(db, 'site_config', 'column_configs');
-  await setDoc(colRef, {
-    configs,
-    updatedAt: new Date().toISOString()
-  }, { merge: true });
+  if (isClientFirestoreQuotaExceeded) return;
+  try {
+    const colRef = doc(db, 'site_config', 'column_configs');
+    await setDoc(colRef, {
+      configs,
+      updatedAt: new Date().toISOString()
+    }, { merge: true });
+  } catch (err) {
+    handleFirestoreQuotaError(err, 'saveColumnConfigsToFirestore');
+  }
 }
 
 // 12. Global SEO Config Realtime Sync
@@ -626,15 +757,22 @@ export function subscribeToSeoConfig(onUpdate: (config: any) => void) {
         onUpdate(data.config);
       }
     }
+  }, (err) => {
+    handleFirestoreQuotaError(err, 'subscribeToSeoConfig');
   });
 }
 
 export async function saveSeoConfigToFirestore(config: any): Promise<void> {
-  const seoRef = doc(db, 'site_config', 'seo_config');
-  await setDoc(seoRef, {
-    config,
-    updatedAt: new Date().toISOString()
-  }, { merge: true });
+  if (isClientFirestoreQuotaExceeded) return;
+  try {
+    const seoRef = doc(db, 'site_config', 'seo_config');
+    await setDoc(seoRef, {
+      config,
+      updatedAt: new Date().toISOString()
+    }, { merge: true });
+  } catch (err) {
+    handleFirestoreQuotaError(err, 'saveSeoConfigToFirestore');
+  }
 }
 
 // 12b. Category SEO & Meta Tags Realtime Sync
@@ -647,15 +785,22 @@ export function subscribeToCategorySeoConfig(onUpdate: (configs: any) => void) {
         onUpdate(data.configs);
       }
     }
+  }, (err) => {
+    handleFirestoreQuotaError(err, 'subscribeToCategorySeoConfig');
   });
 }
 
 export async function saveCategorySeoConfigToFirestore(configs: any): Promise<void> {
-  const catSeoRef = doc(db, 'site_config', 'category_seo_config');
-  await setDoc(catSeoRef, {
-    configs,
-    updatedAt: new Date().toISOString()
-  }, { merge: true });
+  if (isClientFirestoreQuotaExceeded) return;
+  try {
+    const catSeoRef = doc(db, 'site_config', 'category_seo_config');
+    await setDoc(catSeoRef, {
+      configs,
+      updatedAt: new Date().toISOString()
+    }, { merge: true });
+  } catch (err) {
+    handleFirestoreQuotaError(err, 'saveCategorySeoConfigToFirestore');
+  }
 }
 
 // 13. Dynamic Pages & CMS Sync
@@ -668,15 +813,22 @@ export function subscribeToDynamicPages(onUpdate: (pages: Record<string, any>) =
         onUpdate(data.pages);
       }
     }
+  }, (err) => {
+    handleFirestoreQuotaError(err, 'subscribeToDynamicPages');
   });
 }
 
 export async function saveDynamicPagesToFirestore(pages: Record<string, any>): Promise<void> {
-  const pagesRef = doc(db, 'site_config', 'dynamic_pages');
-  await setDoc(pagesRef, {
-    pages,
-    updatedAt: new Date().toISOString()
-  }, { merge: true });
+  if (isClientFirestoreQuotaExceeded) return;
+  try {
+    const pagesRef = doc(db, 'site_config', 'dynamic_pages');
+    await setDoc(pagesRef, {
+      pages,
+      updatedAt: new Date().toISOString()
+    }, { merge: true });
+  } catch (err) {
+    handleFirestoreQuotaError(err, 'saveDynamicPagesToFirestore');
+  }
 }
 
 // 14. API Analytics Config Sync
@@ -689,15 +841,22 @@ export function subscribeToApiConfig(onUpdate: (config: any) => void) {
         onUpdate(data.config);
       }
     }
+  }, (err) => {
+    handleFirestoreQuotaError(err, 'subscribeToApiConfig');
   });
 }
 
 export async function saveApiConfigToFirestore(config: any): Promise<void> {
-  const apiRef = doc(db, 'site_config', 'api_config');
-  await setDoc(apiRef, {
-    config,
-    updatedAt: new Date().toISOString()
-  }, { merge: true });
+  if (isClientFirestoreQuotaExceeded) return;
+  try {
+    const apiRef = doc(db, 'site_config', 'api_config');
+    await setDoc(apiRef, {
+      config,
+      updatedAt: new Date().toISOString()
+    }, { merge: true });
+  } catch (err) {
+    handleFirestoreQuotaError(err, 'saveApiConfigToFirestore');
+  }
 }
 
 // 15. Ads Manager Config Sync
@@ -710,15 +869,22 @@ export function subscribeToAdsConfig(onUpdate: (ads: any[]) => void) {
         onUpdate(data.ads);
       }
     }
+  }, (err) => {
+    handleFirestoreQuotaError(err, 'subscribeToAdsConfig');
   });
 }
 
 export async function saveAdsConfigToFirestore(ads: any[]): Promise<void> {
-  const adsRef = doc(db, 'site_config', 'ads_config');
-  await setDoc(adsRef, {
-    ads,
-    updatedAt: new Date().toISOString()
-  }, { merge: true });
+  if (isClientFirestoreQuotaExceeded) return;
+  try {
+    const adsRef = doc(db, 'site_config', 'ads_config');
+    await setDoc(adsRef, {
+      ads,
+      updatedAt: new Date().toISOString()
+    }, { merge: true });
+  } catch (err) {
+    handleFirestoreQuotaError(err, 'saveAdsConfigToFirestore');
+  }
 }
 
 // 16. Helpdesk & Candidate Tickets Sync
@@ -731,15 +897,22 @@ export function subscribeToHelpdeskTickets(onUpdate: (tickets: any[]) => void) {
         onUpdate(data.tickets);
       }
     }
+  }, (err) => {
+    handleFirestoreQuotaError(err, 'subscribeToHelpdeskTickets');
   });
 }
 
 export async function saveHelpdeskTicketsToFirestore(tickets: any[]): Promise<void> {
-  const ticketsRef = doc(db, 'site_config', 'helpdesk_tickets');
-  await setDoc(ticketsRef, {
-    tickets,
-    updatedAt: new Date().toISOString()
-  }, { merge: true });
+  if (isClientFirestoreQuotaExceeded) return;
+  try {
+    const ticketsRef = doc(db, 'site_config', 'helpdesk_tickets');
+    await setDoc(ticketsRef, {
+      tickets,
+      updatedAt: new Date().toISOString()
+    }, { merge: true });
+  } catch (err) {
+    handleFirestoreQuotaError(err, 'saveHelpdeskTicketsToFirestore');
+  }
 }
 
 // 17. Master Website Control & Customization Config Sync
@@ -752,15 +925,22 @@ export function subscribeToWebsiteControlConfig(onUpdate: (config: any) => void)
         onUpdate(data.config);
       }
     }
+  }, (err) => {
+    handleFirestoreQuotaError(err, 'subscribeToWebsiteControlConfig');
   });
 }
 
 export async function saveWebsiteControlConfigToFirestore(config: any): Promise<void> {
-  const configRef = doc(db, 'site_config', 'website_control_config');
-  await setDoc(configRef, {
-    config,
-    updatedAt: new Date().toISOString()
-  }, { merge: true });
+  if (isClientFirestoreQuotaExceeded) return;
+  try {
+    const configRef = doc(db, 'site_config', 'website_control_config');
+    await setDoc(configRef, {
+      config,
+      updatedAt: new Date().toISOString()
+    }, { merge: true });
+  } catch (err) {
+    handleFirestoreQuotaError(err, 'saveWebsiteControlConfigToFirestore');
+  }
 }
 
 // 18. Automated Email Notifications & Alerts Config Sync
@@ -802,27 +982,39 @@ export function subscribeToEmailNotificationConfig(onUpdate: (config: EmailNotif
       }
     }
     onUpdate(defaultEmailNotificationConfig);
+  }, (err) => {
+    handleFirestoreQuotaError(err, 'subscribeToEmailNotificationConfig');
+    onUpdate(defaultEmailNotificationConfig);
   });
 }
 
 export async function saveEmailNotificationConfigToFirestore(config: EmailNotificationConfig): Promise<void> {
-  const configRef = doc(db, 'site_config', 'email_notifications');
-  await setDoc(configRef, {
-    config,
-    updatedAt: new Date().toISOString()
-  }, { merge: true });
+  if (isClientFirestoreQuotaExceeded) return;
+  try {
+    const configRef = doc(db, 'site_config', 'email_notifications');
+    await setDoc(configRef, {
+      config,
+      updatedAt: new Date().toISOString()
+    }, { merge: true });
+  } catch (err) {
+    handleFirestoreQuotaError(err, 'saveEmailNotificationConfigToFirestore');
+  }
 }
 
 export async function bulkDeleteJobsFromFirestore(jobIds: string[]): Promise<void> {
-  if (!jobIds || jobIds.length === 0) return;
-  const initDocRef = doc(db, 'site_config', 'init');
-  await setDoc(initDocRef, { initialized: true }, { merge: true });
-  const batch = writeBatch(db);
-  jobIds.forEach(id => {
-    const jobRef = doc(db, 'jobs', id);
-    batch.delete(jobRef);
-  });
-  await batch.commit();
+  if (!jobIds || jobIds.length === 0 || isClientFirestoreQuotaExceeded) return;
+  try {
+    const initDocRef = doc(db, 'site_config', 'init');
+    await setDoc(initDocRef, { initialized: true }, { merge: true });
+    const batch = writeBatch(db);
+    jobIds.forEach(id => {
+      const jobRef = doc(db, 'jobs', id);
+      batch.delete(jobRef);
+    });
+    await batch.commit();
+  } catch (err) {
+    handleFirestoreQuotaError(err, 'bulkDeleteJobsFromFirestore');
+  }
 }
 
 // 19. Notification Dispatch History Logs
@@ -837,24 +1029,32 @@ export function subscribeToNotificationLogs(onUpdate: (logs: NotificationDispatc
       }
     }
     onUpdate([]);
+  }, (err) => {
+    handleFirestoreQuotaError(err, 'subscribeToNotificationLogs');
+    onUpdate([]);
   });
 }
 
 export async function saveNotificationLogToFirestore(log: NotificationDispatchLog): Promise<void> {
-  const logsRef = doc(db, 'site_config', 'notification_logs');
-  const snap = await getDoc(logsRef);
-  let existingLogs: NotificationDispatchLog[] = [];
-  if (snap.exists()) {
-    const data = snap.data();
-    if (data && Array.isArray(data.logs)) {
-      existingLogs = data.logs;
+  if (isClientFirestoreQuotaExceeded) return;
+  try {
+    const logsRef = doc(db, 'site_config', 'notification_logs');
+    const snap = await getDoc(logsRef);
+    let existingLogs: NotificationDispatchLog[] = [];
+    if (snap.exists()) {
+      const data = snap.data();
+      if (data && Array.isArray(data.logs)) {
+        existingLogs = data.logs;
+      }
     }
+    const updatedLogs = [log, ...existingLogs.filter(l => l.id !== log.id)].slice(0, 100);
+    await setDoc(logsRef, {
+      logs: updatedLogs,
+      updatedAt: new Date().toISOString()
+    }, { merge: true });
+  } catch (err) {
+    handleFirestoreQuotaError(err, 'saveNotificationLogToFirestore');
   }
-  const updatedLogs = [log, ...existingLogs.filter(l => l.id !== log.id)].slice(0, 100);
-  await setDoc(logsRef, {
-    logs: updatedLogs,
-    updatedAt: new Date().toISOString()
-  }, { merge: true });
 }
 
 

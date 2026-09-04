@@ -605,11 +605,12 @@ export default function App() {
             body: JSON.stringify({}) // Fetch random batch
           });
 
-          if (!res.ok) {
-            const errorText = await res.text();
+          const contentType = res.headers.get('content-type') || '';
+          if (!res.ok || !contentType.includes('application/json')) {
+            const errorText = await res.text().catch(() => '');
             console.error('[Auto-Sync] External API returned error:', res.status, errorText);
             setSyncLogs(logs => [
-              { id: Date.now(), time: new Date().toLocaleTimeString(), message: `Auto-sync failed: HTTP ${res.status} ${res.statusText}`, type: "error" },
+              { id: Date.now(), time: new Date().toLocaleTimeString(), message: `Auto-sync paused: API returned status ${res.status}`, type: "error" },
               ...logs.slice(0, 20)
             ]);
             return;
@@ -654,7 +655,12 @@ export default function App() {
                 ...logs.slice(0, 20)
               ]);
               
-              saveJobToFirestore(newJob).catch(err => console.warn('Auto-sync firestore save error:', err));
+              saveJobToFirestore(newJob).catch(() => {});
+              fetch('/api/v1/sarkari-posts', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(newJob)
+              }).catch(() => {});
               
               return [newJob, ...prev];
             });

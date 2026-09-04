@@ -4,13 +4,20 @@ import fs from 'fs';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import nodemailer from 'nodemailer';
-import { createServer as createViteServer } from 'vite';
 import mysql from 'mysql2/promise';
 import { generateSitemapXml } from './src/utils/sitemapGenerator';
 import { initializeApp } from 'firebase/app';
 import { getFirestore, collection, getDocs, doc, setDoc, getDoc } from 'firebase/firestore/lite';
 
 dotenv.config();
+
+// Determine if running in a serverless environment (e.g. Vercel, AWS Lambda)
+const isServerless = Boolean(
+  process.env.IS_SERVERLESS === '1' ||
+  process.env.VERCEL ||
+  process.env.AWS_LAMBDA_FUNCTION_NAME ||
+  process.env.NOW_REGION
+);
 
 let firestoreDb: any = null;
 try {
@@ -518,29 +525,40 @@ async function loadDatabase(): Promise<DatabaseSchema> {
     console.warn('⚠️ Could not load local database file:', fileErr);
   }
 
-  // Initialize in Firebase if not present
-  if (firestoreDb) {
-    await saveDatabase(dbState);
-  }
   return dbState;
 }
 
-// Helper to save DB to disk immediately
+// Circuit-breaker for Firestore daily quota limit
+let isFirestoreQuotaExhausted = false;
+
+// Helper to save DB to disk immediately with resilient cloud sync
 async function saveDatabase(data: DatabaseSchema) {
+  // 1. Always persist to resilient local disk database first
   try {
-    if (firestoreDb) {
+    if (!fs.existsSync(DATA_DIR)) {
+      fs.mkdirSync(DATA_DIR, { recursive: true });
+    }
+    fs.writeFileSync(DB_FILE, JSON.stringify(data, null, 2), 'utf-8');
+    console.log(`✅ Database saved to local disk (${data.jobs.length} jobs)`);
+  } catch (diskErr) {
+    console.warn('⚠️ Failed saving to local disk:', diskErr);
+  }
+
+  // 2. Sync to cloud Firestore only if available and quota has not been exceeded
+  if (firestoreDb && !isFirestoreQuotaExhausted) {
+    try {
       const dbRef = doc(firestoreDb, 'config', 'app_state');
       await setDoc(dbRef, JSON.parse(JSON.stringify(data)));
-      console.log(`🔥 Database saved to Firebase (${data.jobs.length} jobs)`);
-    } else {
-      if (!fs.existsSync(DATA_DIR)) {
-        fs.mkdirSync(DATA_DIR, { recursive: true });
+      console.log(`🔥 Database synced to Firebase (${data.jobs.length} jobs)`);
+    } catch (err: any) {
+      const errMsg = err?.message || String(err);
+      if (errMsg.includes('Quota limit exceeded') || errMsg.includes('resource-exhausted') || err?.code === 'resource-exhausted') {
+        isFirestoreQuotaExhausted = true;
+        console.warn('⚠️ Firestore daily write quota reached (Free tier: 20k writes/day). Gracefully operating in local disk mode without data loss.');
+      } else {
+        console.warn('⚠️ Could not sync database to Firebase:', errMsg);
       }
-      fs.writeFileSync(DB_FILE, JSON.stringify(data, null, 2), 'utf-8');
-      console.log(`✅ Database saved to local disk (${data.jobs.length} jobs)`);
     }
-  } catch (err) {
-    console.error('❌ Failed to save database:', err);
   }
 }
 
@@ -1608,13 +1626,17 @@ async function runAutomatedScraper(sourceId?: string) {
     src.status = 'success';
   }
 
-  await saveDatabase(dbState);
+  if (isServerless) {
+    saveDatabase(dbState).catch(err => console.warn('Background DB save:', err));
+  } else {
+    await saveDatabase(dbState);
+  }
   return scrapedPosts;
 }
 
 app.post('/api/v1/scraper/run', async (req, res) => {
   try {
-    const { sourceId } = req.body;
+    const { sourceId } = req.body || {};
     const scrapedPosts = await runAutomatedScraper(sourceId);
     
     // To prevent payload timeouts/errors on massive feed fetch, we return a randomly selected 
@@ -1632,6 +1654,7 @@ app.post('/api/v1/scraper/run', async (req, res) => {
       posts: postsToReturn
     });
   } catch (err: any) {
+    console.error('Scraper route error:', err);
     return res.status(500).json({ success: false, error: err.message || 'Scraper run failure' });
   }
 });
@@ -2173,28 +2196,34 @@ app.post('/api/nps/calculate', async (req, res) => {
 });
 
 // --- SERVER SETUP & VITE MIDDLEWARE ---
-// Initialize DB (lazy or eager)
-initDB().catch(console.error);
+if (!isServerless) {
+  // Initialize DB in persistent server mode
+  initDB().catch(console.error);
 
-if (process.env.NODE_ENV !== 'production' && !process.env.VERCEL) {
-  createViteServer({
-    server: { middlewareMode: true },
-    appType: 'spa'
-  }).then(vite => {
-    app.use(vite.middlewares);
+  if (process.env.NODE_ENV !== 'production') {
+    import('vite').then(({ createServer: createViteServer }) => {
+      createViteServer({
+        server: { middlewareMode: true },
+        appType: 'spa'
+      }).then(vite => {
+        app.use(vite.middlewares);
+        app.listen(PORT, '0.0.0.0', () => {
+          console.log(`🚀 Server started on http://0.0.0.0:${PORT}`);
+        });
+      });
+    }).catch(err => {
+      console.error('Failed to start Vite middleware:', err);
+    });
+  } else {
+    const distPath = path.join(process.cwd(), 'dist');
+    app.use(express.static(distPath));
+    app.get('*', async (req, res) => {
+      res.sendFile(path.join(distPath, 'index.html'));
+    });
     app.listen(PORT, '0.0.0.0', () => {
       console.log(`🚀 Server started on http://0.0.0.0:${PORT}`);
     });
-  });
-} else if (!process.env.VERCEL) {
-  const distPath = path.join(process.cwd(), 'dist');
-  app.use(express.static(distPath));
-  app.get('*', async (req, res) => {
-    res.sendFile(path.join(distPath, 'index.html'));
-  });
-  app.listen(PORT, '0.0.0.0', () => {
-    console.log(`🚀 Server started on http://0.0.0.0:${PORT}`);
-  });
+  }
 }
 
 // Export the app for Vercel Serverless Functions
