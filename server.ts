@@ -539,26 +539,8 @@ async function saveDatabase(data: DatabaseSchema) {
       fs.mkdirSync(DATA_DIR, { recursive: true });
     }
     fs.writeFileSync(DB_FILE, JSON.stringify(data, null, 2), 'utf-8');
-    console.log(`✅ Database saved to local disk (${data.jobs.length} jobs)`);
   } catch (diskErr) {
     console.warn('⚠️ Failed saving to local disk:', diskErr);
-  }
-
-  // 2. Sync to cloud Firestore only if available and quota has not been exceeded
-  if (firestoreDb && !isFirestoreQuotaExhausted) {
-    try {
-      const dbRef = doc(firestoreDb, 'config', 'app_state');
-      await setDoc(dbRef, JSON.parse(JSON.stringify(data)));
-      console.log(`🔥 Database synced to Firebase (${data.jobs.length} jobs)`);
-    } catch (err: any) {
-      const errMsg = err?.message || String(err);
-      if (errMsg.includes('Quota limit exceeded') || errMsg.includes('resource-exhausted') || err?.code === 'resource-exhausted') {
-        isFirestoreQuotaExhausted = true;
-        console.warn('⚠️ Firestore daily write quota reached (Free tier: 20k writes/day). Gracefully operating in local disk mode without data loss.');
-      } else {
-        console.warn('⚠️ Could not sync database to Firebase:', errMsg);
-      }
-    }
   }
 }
 
@@ -1481,8 +1463,16 @@ app.delete('/api/v1/scraper/sources/:id', async (req, res) => {
 
 // 4. RUN SCRAPER / FETCH LIVE POSTS FROM RSS FEEDS
 async function runAutomatedScraper(sourceId?: string) {
-  const sources = (dbState.scraperSources || defaultScraperSources).filter(s => s.enabled);
-  const targetSources = sourceId ? sources.filter(s => s.id === sourceId) : sources;
+  const allEnabledSources = (dbState.scraperSources || defaultScraperSources).filter(s => s.enabled);
+  let targetSources = sourceId ? allEnabledSources.filter(s => s.id === sourceId) : allEnabledSources;
+
+  // If scraping all feeds, pick top curated portals + a fresh random sample of state feeds for lightning-fast execution
+  if (!sourceId && targetSources.length > 25) {
+    const curatedKeys = ['src-employment-news', 'src-ssc-portal', 'src-rrb-railways', 'src-ibps-banking', 'src-upprpb-police', 'src-bssc-bihar'];
+    const prioritySources = targetSources.filter(s => curatedKeys.includes(s.id));
+    const otherSources = targetSources.filter(s => !curatedKeys.includes(s.id)).sort(() => 0.5 - Math.random());
+    targetSources = [...prioritySources, ...otherSources.slice(0, Math.max(5, 25 - prioritySources.length))];
+  }
 
   const todayStr = new Date().toLocaleDateString('en-GB').replace(/\//g, '-');
   const nowTime = new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });

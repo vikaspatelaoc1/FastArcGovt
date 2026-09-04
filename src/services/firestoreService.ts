@@ -17,7 +17,15 @@ import { ThemeColorConfig } from '../utils/themeColors';
 
 // Connection validation
 // Circuit breaker to avoid flooding Firestore when daily write quota is reached
-let isClientFirestoreQuotaExceeded = false;
+const getTodayDateKey = () => `quota_exceeded_${new Date().toISOString().slice(0, 10)}`;
+
+let isClientFirestoreQuotaExceeded: boolean = (() => {
+  try {
+    return localStorage.getItem(getTodayDateKey()) === 'true';
+  } catch {
+    return false;
+  }
+})();
 
 export function isFirestoreQuotaExceeded(): boolean {
   return isClientFirestoreQuotaExceeded;
@@ -28,11 +36,15 @@ export function handleFirestoreQuotaError(err: any, context?: string): boolean {
   if (
     msg.includes('Quota limit exceeded') ||
     msg.includes('resource-exhausted') ||
+    msg.includes('quota') ||
     err?.code === 'resource-exhausted'
   ) {
     if (!isClientFirestoreQuotaExceeded) {
       isClientFirestoreQuotaExceeded = true;
-      console.warn(`⚠️ [Firebase] Daily write quota reached (${context || 'operation'}). Continuing in resilient offline/backend mode.`);
+      try {
+        localStorage.setItem(getTodayDateKey(), 'true');
+      } catch {}
+      console.warn(`⚠️ [Firebase] Daily write quota reached (${context || 'operation'}). All writes safely redirected to local backend storage.`);
     }
     return true;
   }
@@ -165,9 +177,6 @@ function cleanForFirestore<T>(data: T): T {
 export async function saveJobToFirestore(job: JobAlert): Promise<void> {
   if (isClientFirestoreQuotaExceeded) return;
   try {
-    const initDocRef = doc(db, 'site_config', 'init');
-    await setDoc(initDocRef, { initialized: true }, { merge: true });
-
     const jobsCol = collection(db, 'jobs');
     const snapshot = await getDocs(jobsCol);
     const normTitle = job.title ? job.title.trim().toLowerCase() : '';
@@ -202,8 +211,6 @@ export async function saveJobToFirestore(job: JobAlert): Promise<void> {
 export async function deleteJobFromFirestore(jobId: string): Promise<void> {
   if (isClientFirestoreQuotaExceeded) return;
   try {
-    const initDocRef = doc(db, 'site_config', 'init');
-    await setDoc(initDocRef, { initialized: true }, { merge: true });
     const jobRef = doc(db, 'jobs', jobId);
     await deleteDoc(jobRef);
   } catch (err: any) {
@@ -229,9 +236,6 @@ export async function resetJobsInFirestore(): Promise<void> {
       const jobDoc = doc(db, 'jobs', job.id);
       batch.set(jobDoc, job);
     });
-
-    const initDocRef = doc(db, 'site_config', 'init');
-    batch.set(initDocRef, { initialized: true, resetAt: new Date().toISOString() });
 
     await batch.commit();
   } catch (err: any) {
@@ -264,9 +268,6 @@ export async function bulkSaveJobsToFirestore(jobs: JobAlert[]): Promise<void> {
       }
     });
 
-    const initDocRef = doc(db, 'site_config', 'init');
-    batch.set(initDocRef, { initialized: true, importedAt: new Date().toISOString() });
-
     await batch.commit();
   } catch (err: any) {
     if (!handleFirestoreQuotaError(err, 'bulkSaveJobsToFirestore')) {
@@ -290,9 +291,6 @@ export async function appendJobsToFirestore(jobs: JobAlert[]): Promise<void> {
         existingTitleMap.set(data.title.trim().toLowerCase(), docSnap.id);
       }
     });
-
-    const initDocRef = doc(db, 'site_config', 'init');
-    await setDoc(initDocRef, { initialized: true }, { merge: true });
 
     const batchSeenTitles = new Set<string>();
     const itemsToSync: { targetDocId: string; job: JobAlert }[] = [];
@@ -587,8 +585,6 @@ export function subscribeToSubscribers(onUpdate: (subs: SubscriberRecord[]) => v
 export async function saveSubscriberToFirestore(sub: SubscriberRecord): Promise<void> {
   if (isClientFirestoreQuotaExceeded) return;
   try {
-    const initSubDoc = doc(db, 'site_config', 'subscribers_init');
-    await setDoc(initSubDoc, { initialized: true }, { merge: true });
     const subRef = doc(db, 'subscribers', sub.id);
     await setDoc(subRef, {
       ...sub,
@@ -602,8 +598,6 @@ export async function saveSubscriberToFirestore(sub: SubscriberRecord): Promise<
 export async function deleteSubscriberFromFirestore(subId: string): Promise<void> {
   if (isClientFirestoreQuotaExceeded) return;
   try {
-    const initSubDoc = doc(db, 'site_config', 'subscribers_init');
-    await setDoc(initSubDoc, { initialized: true }, { merge: true });
     const subRef = doc(db, 'subscribers', subId);
     await deleteDoc(subRef);
   } catch (err) {
@@ -1004,8 +998,6 @@ export async function saveEmailNotificationConfigToFirestore(config: EmailNotifi
 export async function bulkDeleteJobsFromFirestore(jobIds: string[]): Promise<void> {
   if (!jobIds || jobIds.length === 0 || isClientFirestoreQuotaExceeded) return;
   try {
-    const initDocRef = doc(db, 'site_config', 'init');
-    await setDoc(initDocRef, { initialized: true }, { merge: true });
     const batch = writeBatch(db);
     jobIds.forEach(id => {
       const jobRef = doc(db, 'jobs', id);
