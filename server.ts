@@ -7,7 +7,7 @@ import nodemailer from 'nodemailer';
 import mysql from 'mysql2/promise';
 import { generateSitemapXml } from './src/utils/sitemapGenerator';
 import { initializeApp } from 'firebase/app';
-import { getFirestore, collection, getDocs, doc, setDoc, getDoc } from 'firebase/firestore/lite';
+import { getFirestore, collection, getDocs, doc, setDoc, getDoc, deleteDoc } from 'firebase/firestore/lite';
 
 dotenv.config();
 
@@ -554,6 +554,36 @@ async function saveDatabase(data: DatabaseSchema) {
   } catch (diskErr) {
     console.warn('⚠️ Failed saving to local disk:', diskErr);
   }
+
+  // 2. Persist state and jobs to Firestore for real-time multi-device sync
+  if (firestoreDb && !isFirestoreQuotaExhausted) {
+    try {
+      const stateRef = doc(firestoreDb, 'config', 'app_state');
+      await setDoc(stateRef, {
+        marqueeText: data.marqueeText,
+        siteConfig: data.siteConfig,
+        notificationConfig: data.notificationConfig,
+        updatedAt: new Date().toISOString()
+      }, { merge: true });
+
+      if (Array.isArray(data.jobs) && data.jobs.length > 0) {
+        const jobsToSync = data.jobs.slice(0, 150);
+        for (const job of jobsToSync) {
+          if (job && job.id) {
+            const jobRef = doc(firestoreDb, 'jobs', job.id);
+            await setDoc(jobRef, job, { merge: true });
+          }
+        }
+      }
+    } catch (fsErr: any) {
+      if (fsErr?.message?.includes('Quota') || fsErr?.code === 'resource-exhausted') {
+        isFirestoreQuotaExhausted = true;
+        console.warn('⚠️ Firestore quota reached in server backend. Operating in local storage mode.');
+      } else {
+        console.warn('⚠️ Firestore background sync warning:', fsErr?.message || fsErr);
+      }
+    }
+  }
 }
 
 // Initialize database on startup
@@ -773,6 +803,14 @@ app.delete('/api/v1/sarkari-posts/:id', async (req, res) => {
     
     dbState.jobs = dbState.jobs.filter(j => j.id !== id);
     await saveDatabase(dbState);
+
+    if (firestoreDb && !isFirestoreQuotaExhausted) {
+      try {
+        await deleteDoc(doc(firestoreDb, 'jobs', id));
+      } catch (fsErr) {
+        console.warn('Firestore job delete warning:', fsErr);
+      }
+    }
 
     if (useMySQL && mysqlPool) {
       try {
