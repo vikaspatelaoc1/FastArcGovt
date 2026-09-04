@@ -1,0 +1,8 @@
+{
+  "firestore": [
+    {
+      "database": "ai-studio-fastarcgovtresul-21912eff-20ad-4387-bde5-7cb20bed357a",
+      "rules": "firestore.rules"
+    }
+  ]
+}

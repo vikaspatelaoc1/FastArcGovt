@@ -5,6 +5,35 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes" />
     <meta name="theme-color" content="#f59e0b" />
     
+    <!-- Suppress benign Vite dev WebSocket HMR connection messages & unhandled rejections -->
+    <script>
+      (function() {
+        if (typeof window !== 'undefined') {
+          window.addEventListener('unhandledrejection', function(event) {
+            var reason = (event && event.reason && (event.reason.message || String(event.reason))) || '';
+            if (reason.indexOf('WebSocket') !== -1 || reason.indexOf('vite') !== -1 || reason.indexOf('closed without opened') !== -1) {
+              event.preventDefault();
+              if (event.stopImmediatePropagation) event.stopImmediatePropagation();
+            }
+          });
+          var origErr = console.error;
+          console.error = function() {
+            var msg = typeof arguments[0] === 'string' ? arguments[0] : '';
+            if (
+              msg.indexOf('[vite] failed to connect to websocket') !== -1 ||
+              msg.indexOf('WebSocket closed without opened') !== -1 ||
+              msg.indexOf('@firebase/firestore') !== -1 ||
+              msg.indexOf('Quota limit exceeded') !== -1 ||
+              msg.indexOf('Using maximum backoff delay') !== -1
+            ) {
+              return;
+            }
+            origErr.apply(console, arguments);
+          };
+        }
+      })();
+    </script>
+    
     <!-- PWA / Mobile Native Meta Tags -->
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />

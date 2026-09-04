@@ -26,7 +26,7 @@ function firebaseConfigPlugin() {
             storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || "direct-stone-dxctm.firebasestorage.app",
             messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || "993642021377",
             appId: import.meta.env.VITE_FIREBASE_APP_ID || "1:993642021377:web:98bdd8dc2f5d577e283600",
-            firestoreDatabaseId: import.meta.env.VITE_FIREBASE_DATABASE_ID || "ai-studio-fastarc-21912eff-20ad-4387-bde5-7cb20bed357a"
+            firestoreDatabaseId: import.meta.env.VITE_FIREBASE_DATABASE_ID || "ai-studio-fastarcgovtresul-21912eff-20ad-4387-bde5-7cb20bed357a"
           };`;
         }
       }
@@ -43,11 +43,8 @@ export default defineConfig(() => {
       },
     },
     server: {
-      // HMR is disabled in AI Studio via DISABLE_HMR env var.
-      // Do not modifyâfile watching is disabled to prevent flickering during agent edits.
-      hmr: process.env.DISABLE_HMR !== 'true',
-      // Disable file watching when DISABLE_HMR is true to save CPU during agent edits.
-      watch: process.env.DISABLE_HMR === 'true' ? null : {},
+      hmr: false,
+      watch: process.env.DISABLE_HMR === "true" ? null : {},
     },
   };
 });

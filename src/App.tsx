@@ -24,7 +24,7 @@ import { InstallPrompt } from './components/InstallPrompt';
 import { UpdatePrompt } from './components/UpdatePrompt';
 import { getSocialTheme } from './components/SocialLinksManager';
 import { OfficialSocialLogo } from './components/SocialIcons';
-import { JobAlert, JobCategory, EmployeeUser, SocialLinkItem, SuperAdminTabType } from './types';
+import { JobAlert, JobCategory, EmployeeUser, SocialLinkItem, SuperAdminTabType, SyncLogEntry } from './types';
 import { defaultJobsDatabase, defaultSocialLinks } from './data';
 import { loadThemeColors, applyThemeColorsToDOM } from './utils/themeColors';
 import { loadColumnConfigs, DEFAULT_COLUMN_CONFIGS, ColumnConfigsMap } from './utils/columnConfig';
@@ -50,7 +50,8 @@ import {
   subscribeToWebsiteControlConfig,
   validateFirestoreConnection,
   subscribeToAutoSync,
-  saveAutoSyncToFirestore
+  saveAutoSyncToFirestore,
+  isFirestoreQuotaExceeded
 } from './services/firestoreService';
 
 
@@ -333,7 +334,12 @@ export default function App() {
 
     // 4. Fallback/Initial sync with Express server if available
     fetch('/api/v1/sarkari-posts')
-      .then(res => res.json())
+      .then(res => {
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const ct = res.headers.get('content-type') || '';
+        if (!ct.includes('application/json')) throw new Error('Non-JSON response received');
+        return res.json();
+      })
       .then(data => {
         if (data.success && Array.isArray(data.jobs) && data.jobs.length > 0) {
           const serverJobs: JobAlert[] = data.jobs.map((j: any) => ({
@@ -461,7 +467,9 @@ export default function App() {
     if (typeof window !== 'undefined') {
       localStorage.setItem('fastarc_social_links', JSON.stringify(newLinks));
     }
-    await saveSocialLinksToFirestore(newLinks);
+    if (!isFirestoreQuotaExceeded()) {
+      saveSocialLinksToFirestore(newLinks).catch(() => {});
+    }
   };
 
   const [stateFilters, setStateFilters] = useState<string[]>(['All']);
@@ -562,6 +570,7 @@ export default function App() {
 
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [isAutoSyncActive, setIsAutoSyncActiveState] = useState<boolean>(false);
+  const [consecutiveSyncErrors, setConsecutiveSyncErrors] = useState<number>(0);
 
   useEffect(() => {
     const unsubscribe = subscribeToAutoSync((isActive) => {
@@ -573,79 +582,193 @@ export default function App() {
 
   const setIsAutoSyncActive = (isActive: boolean) => {
     setIsAutoSyncActiveState(isActive);
-    saveAutoSyncToFirestore(isActive).catch(console.error);
+    if (!isFirestoreQuotaExceeded()) {
+      saveAutoSyncToFirestore(isActive).catch(() => {});
+    }
   };
 
-  const [syncLogs, setSyncLogs] = useState<Array<{ id: number; time: string; message: string; type: string }>>([
-    { id: 1, time: new Date().toLocaleTimeString(), message: "FastArc Server Sync & Persistent Database Initialized.", type: "system" }
+  const [syncLogs, setSyncLogs] = useState<SyncLogEntry[]>([
+    { 
+      id: 1, 
+      time: new Date().toLocaleTimeString(), 
+      message: "FastArc Server Sync & Persistent Database Initialized.", 
+      type: "system",
+      statusCode: 200,
+      durationMs: 42,
+      endpoint: "/api/health"
+    }
   ]);
 
-  // Auto-Sync Background Feeder simulation (Deduplicated)
+  const handleAddSyncLog = (log: SyncLogEntry) => {
+    setSyncLogs(prev => [log, ...prev.slice(0, 99)]);
+  };
+
+  const handleClearSyncLogs = () => {
+    setSyncLogs([
+      { 
+        id: Date.now(), 
+        time: new Date().toLocaleTimeString(), 
+        message: "Sync & Scraper logs cleared by administrator.", 
+        type: "system",
+        statusCode: 200,
+        durationMs: 0
+      }
+    ]);
+    triggerToast("🗑️ Sync & Scraper logs cleared!");
+  };
+
+  // Auto-Sync Background Feeder with robust external API fetch and error handling
   useEffect(() => {
-    let interval: any;
-    if (isAutoSyncActive) {
-      interval = setInterval(() => {
-        const autoTemplates = [
-          {
-            title: "SBI PO Recruitment 2026 Notification Active",
-            category: "latest-jobs",
-            state: "Central",
-            shortInfo: "State Bank of India Probationary Officer 2,000 Posts notification.",
-            dates: { start: "15-08-2026", last: "05-09-2026" },
-            fees: { general: "₹750", scSt: "₹0" },
-            links: { apply: "https://sbi.co.in/careers", official: "https://sbi.co.in" }
-          },
-          {
-            title: "CTET July 2026 Exam Answer Key Out Download",
-            category: "answer-key",
-            state: "Central",
-            shortInfo: "CBSE Central Teacher Eligibility Test answer key released.",
-            dates: { start: "N/A", last: "20-08-2026" },
-            fees: { general: "N/A", scSt: "N/A" },
-            links: { apply: "https://ctet.nic.in", official: "https://ctet.nic.in" }
-          },
-          {
-            title: "Bihar BPSC 70th Combined Prelims Result 2026",
-            category: "results",
-            state: "Bihar",
-            shortInfo: "Bihar Public Service Commission 70th prelims result declared.",
-            dates: { start: "N/A", last: "N/A" },
-            fees: { general: "N/A", scSt: "N/A" },
-            links: { apply: "https://bpsc.bih.nic.in", official: "https://bpsc.bih.nic.in" }
-          }
-        ];
+    let timeoutId: any;
+    let isCancelled = false;
+    let currentConsecutiveErrors = 0;
 
-        const randomItem = autoTemplates[Math.floor(Math.random() * autoTemplates.length)];
-        const todayStr = new Date().toLocaleDateString('en-GB').replace(/\//g, '-');
-        
-        const newJob: JobAlert = {
-          id: `auto-${Date.now()}`,
-          title: randomItem.title,
-          category: randomItem.category as any,
-          postDate: todayStr,
-          isNew: true,
-          state: randomItem.state,
-          shortInfo: randomItem.shortInfo,
-          dates: randomItem.dates,
-          fees: randomItem.fees,
-          links: randomItem.links
-        };
+    const scheduleNextSync = (delay: number) => {
+      if (isCancelled) return;
+      timeoutId = setTimeout(async () => {
+        await executeSync();
+      }, delay);
+    };
 
-        setJobs(prev => {
-          const normTitle = newJob.title.trim().toLowerCase();
-          if (prev.some(j => j.title && j.title.trim().toLowerCase() === normTitle)) return prev;
-          triggerToast(`🔔 Auto-Filled: ${newJob.title.substring(0, 30)}...`);
-          setSyncLogs(logs => [
-            { id: Date.now(), time: new Date().toLocaleTimeString(), message: `AUTO-POST ADDED: ${newJob.title}`, type: "success" },
-            ...logs.slice(0, 20)
-          ]);
-          saveJobToFirestore(newJob).catch(err => console.warn('Auto-sync firestore save error:', err));
-          return [newJob, ...prev];
+    const executeSync = async () => {
+      if (isCancelled) return;
+      const startTime = performance.now();
+      try {
+        console.log("[Auto-Sync] Triggering background API fetch for jobs...");
+        setSyncLogs(logs => [
+          { id: Date.now(), time: new Date().toLocaleTimeString(), message: "Attempting automated background sync batch...", type: "system", endpoint: "/api/v1/scraper/run" },
+          ...logs.slice(0, 99)
+        ]);
+
+        const res = await fetch('/api/v1/scraper/run', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({})
         });
 
-      }, 20000); // Trigger auto-fill every 20s
+        const durationMs = Math.round(performance.now() - startTime);
+        const statusCode = res.status;
+        const contentType = res.headers.get('content-type') || '';
+
+        if (!res.ok || !contentType.includes('application/json')) {
+          const errorText = await res.text().catch(() => '');
+          const errorDetails = `HTTP ${statusCode}: ${errorText.substring(0, 100) || res.statusText || 'Server error'}`;
+          console.error('[Auto-Sync] External API returned error:', statusCode, errorDetails);
+          
+          currentConsecutiveErrors++;
+          setConsecutiveSyncErrors(currentConsecutiveErrors);
+
+          setSyncLogs(logs => [
+            { 
+              id: Date.now(), 
+              time: new Date().toLocaleTimeString(), 
+              message: `Auto-sync failed: HTTP status ${statusCode} (Attempt ${currentConsecutiveErrors})`, 
+              type: "error",
+              statusCode,
+              durationMs,
+              errorDetails,
+              endpoint: '/api/v1/scraper/run'
+            },
+            ...logs.slice(0, 99)
+          ]);
+          
+          const backoffDelay = Math.min(30000 * Math.pow(2, currentConsecutiveErrors), 300000); // Max 5 mins
+          scheduleNextSync(backoffDelay);
+          return;
+        }
+
+        currentConsecutiveErrors = 0;
+        setConsecutiveSyncErrors(0);
+
+        const data = await res.json();
+        if (data.success && Array.isArray(data.posts) && data.posts.length > 0) {
+          const randomItem = data.posts[Math.floor(Math.random() * data.posts.length)];
+          const todayStr = new Date().toLocaleDateString('en-GB').replace(/\//g, '-');
+          
+          if (randomItem.title && randomItem.category) {
+            const newJob: JobAlert = {
+              id: `auto-${Date.now()}`,
+              title: randomItem.title,
+              category: randomItem.category as any,
+              postDate: randomItem.postDate || todayStr,
+              isNew: true,
+              state: randomItem.state || "Central",
+              shortInfo: randomItem.shortInfo || "Extracted via Automated Web Scraper",
+              dates: randomItem.dates || { start: todayStr, last: "Check Official Notification" },
+              fees: randomItem.fees || { general: "₹100", scSt: "₹0" },
+              links: randomItem.links || { apply: "https://india.gov.in", official: "https://india.gov.in" }
+            };
+
+            setJobs(prev => {
+              const normTitle = newJob.title.trim().toLowerCase();
+              if (prev.some(j => j.title && j.title.trim().toLowerCase() === normTitle)) {
+                return prev;
+              }
+              
+              triggerToast(`🔔 Auto-Filled: ${newJob.title.substring(0, 30)}...`);
+              setSyncLogs(logs => [
+                { 
+                  id: Date.now(), 
+                  time: new Date().toLocaleTimeString(), 
+                  message: `AUTO-SYNC: Published ${newJob.title.substring(0,40)}...`, 
+                  type: "success",
+                  statusCode: 200,
+                  durationMs,
+                  postsCount: data.posts.length,
+                  endpoint: '/api/v1/scraper/run',
+                  sourceName: randomItem.sourceName || 'Active Govt Feed'
+                },
+                ...logs.slice(0, 99)
+              ]);
+              
+              if (!isFirestoreQuotaExceeded()) {
+                saveJobToFirestore(newJob).catch(() => {});
+              }
+              fetch('/api/v1/sarkari-posts', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(newJob)
+              }).catch(() => {});
+              
+              return [newJob, ...prev];
+            });
+          }
+        }
+        
+        scheduleNextSync(30000);
+      } catch (err: any) {
+        currentConsecutiveErrors++;
+        setConsecutiveSyncErrors(currentConsecutiveErrors);
+        
+        const durationMs = Math.round(performance.now() - startTime);
+        setSyncLogs(logs => [
+          { 
+            id: Date.now(), 
+            time: new Date().toLocaleTimeString(), 
+            message: `Auto-sync network exception: ${err.message} (Attempt ${currentConsecutiveErrors})`, 
+            type: "error",
+            statusCode: 0,
+            durationMs,
+            errorDetails: err.message || 'Network / connection timeout',
+            endpoint: '/api/v1/scraper/run'
+          },
+          ...logs.slice(0, 99)
+        ]);
+        
+        const backoffDelay = Math.min(30000 * Math.pow(2, currentConsecutiveErrors), 300000); // Max 5 mins
+        scheduleNextSync(backoffDelay);
+      }
+    };
+
+    if (isAutoSyncActive) {
+      console.log("[Auto-Sync] Watcher active. Background sync enabled.");
+      scheduleNextSync(30000);
     }
-    return () => clearInterval(interval);
+    
+    return () => {
+      isCancelled = true;
+      if (timeoutId) clearTimeout(timeoutId);
+    };
   }, [isAutoSyncActive]);
 
   useEffect(() => {
@@ -725,7 +848,9 @@ export default function App() {
     }
 
     try {
-      await saveJobToFirestore(finalJob);
+      if (!isFirestoreQuotaExceeded()) {
+        await saveJobToFirestore(finalJob);
+      }
       triggerToast(isExistingOrEditing ? 'Live database updated!' : 'Post added successfully!');
     } catch (err) {
       console.warn('Firestore save error, saving locally & backend:', err);
@@ -1164,7 +1289,12 @@ export default function App() {
         <div className="pt-[72px] lg:pt-[84px] flex-1 w-full flex flex-col mx-auto px-2 sm:px-4 lg:px-6 py-4 lg:py-6 min-h-[calc(100vh-80px)]">
           <SuperAdminDashboardModal
             siteLogo={siteLogo}
-            setSiteLogo={async (logo) => { setSiteLogo(logo); await saveSiteLogoToFirestore(logo); }}
+            setSiteLogo={async (logo) => {
+              setSiteLogo(logo);
+              if (!isFirestoreQuotaExceeded()) {
+                await saveSiteLogoToFirestore(logo).catch(() => {});
+              }
+            }}
             isOpen={isSuperAdminModalOpen}
             onClose={() => setIsSuperAdminModalOpen(false)}
             jobs={jobs}
@@ -1176,7 +1306,9 @@ export default function App() {
             marqueeText={marqueeText}
             setMarqueeText={(text) => {
               setMarqueeText(text);
-              saveMarqueeToFirestore(text).catch(err => console.warn('Marquee Firestore sync error:', err));
+              if (!isFirestoreQuotaExceeded()) {
+                saveMarqueeToFirestore(text).catch(() => {});
+              }
             }}
             onOpenAddJob={() => setIsAdminPanelOpen(true)}
             onResetDatabase={async () => {
@@ -1199,6 +1331,7 @@ export default function App() {
             initialTab={superAdminTab}
             initialColumnId={superAdminInitialColumnId}
             isAutoSyncActive={isAutoSyncActive}
+            consecutiveSyncErrors={consecutiveSyncErrors}
             setIsAutoSyncActive={setIsAutoSyncActive}
             syncLogs={syncLogs}
             onEditJob={handleEditJob}

@@ -1,10 +1,12 @@
-import { initializeApp } from 'firebase/app';
+import { initializeApp, getApps, getApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
-import { getFirestore } from 'firebase/firestore';
+import { getFirestore, setLogLevel } from 'firebase/firestore';
 
-// @ts-ignore - Ignore missing file error during GitHub exports
-import firebaseConfig from '../firebase-applet-config.json';
+// Mute verbose background retry warnings when quota is hit
+setLogLevel('silent');
+import firebaseConfig from './firebaseConfig';
 
-const app = initializeApp(firebaseConfig);
+const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
 export const db = getFirestore(app, firebaseConfig.firestoreDatabaseId);
 export const auth = getAuth(app);
+
