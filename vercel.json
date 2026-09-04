@@ -2,14 +2,26 @@
   "version": 2,
   "framework": "vite",
   "outputDirectory": "dist",
+  "builds": [
+    {
+      "src": "package.json",
+      "use": "@vercel/static-build",
+      "config": { "distDir": "dist" }
+    }
+  ],
+  "functions": {
+    "api/index.ts": {
+      "includeFiles": "dist/server.js"
+    }
+  },
   "rewrites": [
     {
       "source": "/api",
-      "destination": "/api"
+      "destination": "/api/index.ts"
     },
     {
       "source": "/api/(.*)",
-      "destination": "/api"
+      "destination": "/api/index.ts"
     },
     {
       "source": "/((?!api).*)",
