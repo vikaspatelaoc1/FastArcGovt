@@ -17,14 +17,18 @@ export const defaultFirebaseConfig = {
 
 const metaEnv = typeof import.meta !== 'undefined' && (import.meta as any).env ? (import.meta as any).env : {};
 
+// Defensive check: If the user accidentally set all env vars to their name "Vikaspatelaoc" or similar invalid strings, 
+// we fallback to the default correct configuration provided by AI Studio.
+const isEnvValid = metaEnv.VITE_FIREBASE_API_KEY && metaEnv.VITE_FIREBASE_API_KEY.startsWith('AIza');
+
 export const firebaseConfig = {
-  projectId: metaEnv.VITE_FIREBASE_PROJECT_ID || defaultFirebaseConfig.projectId,
-  appId: metaEnv.VITE_FIREBASE_APP_ID || defaultFirebaseConfig.appId,
-  apiKey: metaEnv.VITE_FIREBASE_API_KEY || defaultFirebaseConfig.apiKey,
-  authDomain: metaEnv.VITE_FIREBASE_AUTH_DOMAIN || defaultFirebaseConfig.authDomain,
-  firestoreDatabaseId: metaEnv.VITE_FIREBASE_DATABASE_ID || defaultFirebaseConfig.firestoreDatabaseId,
-  storageBucket: metaEnv.VITE_FIREBASE_STORAGE_BUCKET || defaultFirebaseConfig.storageBucket,
-  messagingSenderId: metaEnv.VITE_FIREBASE_MESSAGING_SENDER_ID || defaultFirebaseConfig.messagingSenderId,
+  projectId: isEnvValid ? metaEnv.VITE_FIREBASE_PROJECT_ID : defaultFirebaseConfig.projectId,
+  appId: isEnvValid ? metaEnv.VITE_FIREBASE_APP_ID : defaultFirebaseConfig.appId,
+  apiKey: isEnvValid ? metaEnv.VITE_FIREBASE_API_KEY : defaultFirebaseConfig.apiKey,
+  authDomain: isEnvValid ? metaEnv.VITE_FIREBASE_AUTH_DOMAIN : defaultFirebaseConfig.authDomain,
+  firestoreDatabaseId: isEnvValid ? metaEnv.VITE_FIREBASE_DATABASE_ID : defaultFirebaseConfig.firestoreDatabaseId,
+  storageBucket: isEnvValid ? metaEnv.VITE_FIREBASE_STORAGE_BUCKET : defaultFirebaseConfig.storageBucket,
+  messagingSenderId: isEnvValid ? metaEnv.VITE_FIREBASE_MESSAGING_SENDER_ID : defaultFirebaseConfig.messagingSenderId,
   measurementId: defaultFirebaseConfig.measurementId,
   recaptchaSiteKey: defaultFirebaseConfig.recaptchaSiteKey
 };

@@ -7,7 +7,7 @@ import nodemailer from 'nodemailer';
 import mysql from 'mysql2/promise';
 import { generateSitemapXml } from './src/utils/sitemapGenerator';
 import { initializeApp } from 'firebase/app';
-import { getFirestore, collection, getDocs, doc, setDoc, getDoc, deleteDoc } from 'firebase/firestore/lite';
+import { getFirestore, collection, getDocs, doc, setDoc, getDoc, deleteDoc, writeBatch } from 'firebase/firestore/lite';
 import { defaultScraperSources } from './src/data/defaultScraperSources';
 
 dotenv.config();
@@ -22,14 +22,18 @@ const isServerless = Boolean(
 
 let firestoreDb: any = null;
 try {
+  // Defensive check: If the user accidentally set all env vars to their name "Vikaspatelaoc" or similar invalid strings, 
+  // we fallback to the default correct configuration provided by AI Studio.
+  const isEnvValid = process.env.VITE_FIREBASE_API_KEY && process.env.VITE_FIREBASE_API_KEY.startsWith('AIza');
+  
   const firebaseConfig = {
-    projectId: process.env.FIREBASE_PROJECT_ID || process.env.VITE_FIREBASE_PROJECT_ID || "direct-stone-dxctm",
-    appId: process.env.FIREBASE_APP_ID || process.env.VITE_FIREBASE_APP_ID || "1:993642021377:web:98bdd8dc2f5d577e283600",
-    apiKey: process.env.FIREBASE_API_KEY || process.env.VITE_FIREBASE_API_KEY || "AIzaSyBPobsHpRVFbi4PKiomkK-46hYr1ylhSec",
-    authDomain: process.env.FIREBASE_AUTH_DOMAIN || process.env.VITE_FIREBASE_AUTH_DOMAIN || "direct-stone-dxctm.firebaseapp.com",
-    firestoreDatabaseId: process.env.FIREBASE_DATABASE_ID || process.env.VITE_FIREBASE_DATABASE_ID || "ai-studio-fastarcgovtresul-21912eff-20ad-4387-bde5-7cb20bed357a",
-    storageBucket: process.env.FIREBASE_STORAGE_BUCKET || process.env.VITE_FIREBASE_STORAGE_BUCKET || "direct-stone-dxctm.firebasestorage.app",
-    messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID || process.env.VITE_FIREBASE_MESSAGING_SENDER_ID || "993642021377",
+    projectId: isEnvValid ? (process.env.FIREBASE_PROJECT_ID || process.env.VITE_FIREBASE_PROJECT_ID) : "direct-stone-dxctm",
+    appId: isEnvValid ? (process.env.FIREBASE_APP_ID || process.env.VITE_FIREBASE_APP_ID) : "1:993642021377:web:98bdd8dc2f5d577e283600",
+    apiKey: isEnvValid ? (process.env.FIREBASE_API_KEY || process.env.VITE_FIREBASE_API_KEY) : "AIzaSyBPobsHpRVFbi4PKiomkK-46hYr1ylhSec",
+    authDomain: isEnvValid ? (process.env.FIREBASE_AUTH_DOMAIN || process.env.VITE_FIREBASE_AUTH_DOMAIN) : "direct-stone-dxctm.firebaseapp.com",
+    firestoreDatabaseId: isEnvValid ? (process.env.FIREBASE_DATABASE_ID || process.env.VITE_FIREBASE_DATABASE_ID) : "ai-studio-fastarcgovtresul-21912eff-20ad-4387-bde5-7cb20bed357a",
+    storageBucket: isEnvValid ? (process.env.FIREBASE_STORAGE_BUCKET || process.env.VITE_FIREBASE_STORAGE_BUCKET) : "direct-stone-dxctm.firebasestorage.app",
+    messagingSenderId: isEnvValid ? (process.env.FIREBASE_MESSAGING_SENDER_ID || process.env.VITE_FIREBASE_MESSAGING_SENDER_ID) : "993642021377",
     measurementId: "",
     recaptchaSiteKey: ""
   };
@@ -464,7 +468,7 @@ async function saveDatabase(data: DatabaseSchema) {
     console.warn('⚠️ Failed saving to local disk:', diskErr);
   }
 
-  // 2. Persist state and jobs to Firestore asynchronously in background (non-blocking for serverless)
+  // 2. Persist state to Firestore asynchronously in background (non-blocking for serverless)
   if (firestoreDb && !isFirestoreQuotaExhausted) {
     (async () => {
       try {
@@ -475,16 +479,9 @@ async function saveDatabase(data: DatabaseSchema) {
           notificationConfig: data.notificationConfig,
           updatedAt: new Date().toISOString()
         }, { merge: true });
-
-        if (Array.isArray(data.jobs) && data.jobs.length > 0) {
-          const jobsToSync = data.jobs.slice(0, 50);
-          for (const job of jobsToSync) {
-            if (job && job.id) {
-              const jobRef = doc(firestoreDb, 'jobs', job.id);
-              await setDoc(jobRef, job, { merge: true });
-            }
-          }
-        }
+        
+        // Note: Aggressive 50-job sync removed to prevent free tier quota exhaustion.
+        // Individual job updates should be handled selectively where jobs are ingested.
       } catch (fsErr: any) {
         if (fsErr?.message?.includes('Quota') || fsErr?.code === 'resource-exhausted') {
           isFirestoreQuotaExhausted = true;
@@ -614,6 +611,19 @@ app.post('/api/v1/sarkari-posts', async (req, res) => {
     // Persist to disk
     await saveDatabase(dbState);
 
+    // Sync single job to Firestore if enabled
+    if (firestoreDb && !isFirestoreQuotaExhausted) {
+      try {
+        const jobRef = doc(firestoreDb, 'jobs', newJob.id);
+        await setDoc(jobRef, newJob, { merge: true });
+      } catch (fsErr: any) {
+        if (fsErr?.message?.includes('Quota') || fsErr?.code === 'resource-exhausted') {
+          isFirestoreQuotaExhausted = true;
+        }
+        console.warn('⚠️ Firestore individual job sync warning:', fsErr?.message || fsErr);
+      }
+    }
+
     if (useMySQL && mysqlPool) {
       try {
         await mysqlPool.execute(
@@ -694,6 +704,19 @@ app.put('/api/v1/sarkari-posts/:id', async (req, res) => {
 
     // Persist to disk
     await saveDatabase(dbState);
+
+    // Sync updated job to Firestore if enabled
+    if (firestoreDb && !isFirestoreQuotaExhausted) {
+      try {
+        const jobRef = doc(firestoreDb, 'jobs', updatedJob.id);
+        await setDoc(jobRef, updatedJob, { merge: true });
+      } catch (fsErr: any) {
+        if (fsErr?.message?.includes('Quota') || fsErr?.code === 'resource-exhausted') {
+          isFirestoreQuotaExhausted = true;
+        }
+        console.warn('⚠️ Firestore individual job sync warning:', fsErr?.message || fsErr);
+      }
+    }
 
     if (useMySQL && mysqlPool) {
       try {
@@ -1627,6 +1650,7 @@ app.post(['/api/v1/scraper/run', '/api/scraper/run'], async (req, res) => {
 async function autoIngestPosts(posts: any[]) {
   const todayStr = new Date().toLocaleDateString('en-GB').replace(/\//g, '-');
   let ingestedCount = 0;
+  const newJobsList: any[] = [];
 
   posts.forEach((p: any) => {
     const existing = dbState.jobs.find(j => j.title.toLowerCase().trim() === (p.title || '').toLowerCase().trim());
@@ -1648,11 +1672,35 @@ async function autoIngestPosts(posts: any[]) {
         }
       };
       dbState.jobs.unshift(newJob);
+      newJobsList.push(newJob);
       ingestedCount++;
     }
   });
 
   await saveDatabase(dbState);
+  
+  // Sync new jobs to Firestore using a batch to save quota
+  if (firestoreDb && !isFirestoreQuotaExhausted && newJobsList.length > 0) {
+    try {
+      const batch = writeBatch(firestoreDb);
+      let batchCount = 0;
+      for (const newJob of newJobsList) {
+        if (batchCount >= 400) break; // Firestore batch limit is 500
+        const jobRef = doc(firestoreDb, 'jobs', newJob.id);
+        batch.set(jobRef, newJob, { merge: true });
+        batchCount++;
+      }
+      if (batchCount > 0) {
+        await batch.commit();
+      }
+    } catch (fsErr: any) {
+      if (fsErr?.message?.includes('Quota') || fsErr?.code === 'resource-exhausted') {
+        isFirestoreQuotaExhausted = true;
+      }
+      console.warn('⚠️ Firestore auto-ingest batch sync warning:', fsErr?.message || fsErr);
+    }
+  }
+
   return ingestedCount;
 }
 

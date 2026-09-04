@@ -18,6 +18,7 @@ import { ThemeColorCustomizerTab } from './ThemeColorCustomizerTab';
 import { ColumnEditorTab } from './ColumnEditorTab';
 import { SeoEditorTab } from './SeoEditorTab';
 import { CategorySeoEditorTab } from './CategorySeoEditorTab';
+import { SitemapGeneratorTab } from './SitemapGeneratorTab';
 import { WebsiteControlTab } from './WebsiteControlTab';
 import { JobsManagerTab } from './JobsManagerTab';
 import { PagesManagerTab, ApiAnalyticsTab, ActivityLogsTab, HelpdeskTab, AutoBroadcasterTab, AdsManagerTab, EmailNotificationsTab } from './NewAdminTabs';
@@ -1132,6 +1133,13 @@ export const SuperAdminDashboardModal: React.FC<SuperAdminDashboardModalProps> =
             {activeTab === 'categorySeo' && (
               <div className="space-y-6 animate-in fade-in duration-200">
                 <CategorySeoEditorTab onShowToast={onToast} />
+              </div>
+            )}
+
+            {/* TAB: SITEMAP GENERATOR */}
+            {activeTab === 'sitemap' && (
+              <div className="space-y-6 animate-in fade-in duration-200">
+                <SitemapGeneratorTab jobs={jobs} onToast={onToast} />
               </div>
             )}
 

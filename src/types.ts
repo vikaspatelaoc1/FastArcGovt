@@ -170,6 +170,7 @@ export type SuperAdminTabType =
   | 'columns'
   | 'seo'
   | 'categorySeo'
+  | 'sitemap'
   | 'social' 
   | 'earnings'
   | 'site' 
