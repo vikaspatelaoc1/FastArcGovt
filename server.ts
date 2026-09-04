@@ -474,12 +474,18 @@ async function loadDatabase(): Promise<DatabaseSchema> {
       if (docSnap.exists()) {
         const parsed = docSnap.data();
         if (parsed && typeof parsed === 'object') {
+          let loadedSources = Array.isArray(parsed.scraperSources) ? parsed.scraperSources : [];
+          if (loadedSources.length < 500) {
+            const existingIds = new Set(loadedSources.map((s: any) => s.id));
+            const newSources = defaultScraperSources.filter(s => !existingIds.has(s.id));
+            loadedSources = [...loadedSources, ...newSources];
+          }
           dbState = {
             jobs: Array.isArray(parsed.jobs) && parsed.jobs.length > 0 ? parsed.jobs : defaultInitialJobs,
             marqueeText: typeof parsed.marqueeText === 'string' ? parsed.marqueeText : dbState.marqueeText,
             employees: Array.isArray(parsed.employees) ? parsed.employees : defaultInitialEmployees,
             subscribers: Array.isArray(parsed.subscribers) ? parsed.subscribers : defaultInitialSubscribers,
-            scraperSources: Array.isArray(parsed.scraperSources) && parsed.scraperSources.length > 0 ? parsed.scraperSources : defaultScraperSources,
+            scraperSources: loadedSources,
             notificationConfig: parsed.notificationConfig ? { ...defaultNotificationConfig, ...parsed.notificationConfig } : defaultNotificationConfig,
             notificationHistory: Array.isArray(parsed.notificationHistory) ? parsed.notificationHistory : (dbState.notificationHistory || []),
             siteConfig: parsed.siteConfig || dbState.siteConfig,
@@ -505,12 +511,18 @@ async function loadDatabase(): Promise<DatabaseSchema> {
         const fileContent = fs.readFileSync(p, 'utf-8');
         const parsed = JSON.parse(fileContent);
         if (parsed && typeof parsed === 'object' && Array.isArray(parsed.jobs) && parsed.jobs.length > 0) {
+          let loadedSources = Array.isArray(parsed.scraperSources) ? parsed.scraperSources : [];
+          if (loadedSources.length < 500) {
+            const existingIds = new Set(loadedSources.map((s: any) => s.id));
+            const newSources = defaultScraperSources.filter(s => !existingIds.has(s.id));
+            loadedSources = [...loadedSources, ...newSources];
+          }
           dbState = {
             jobs: parsed.jobs,
             marqueeText: typeof parsed.marqueeText === 'string' ? parsed.marqueeText : dbState.marqueeText,
             employees: Array.isArray(parsed.employees) ? parsed.employees : defaultInitialEmployees,
             subscribers: Array.isArray(parsed.subscribers) ? parsed.subscribers : defaultInitialSubscribers,
-            scraperSources: Array.isArray(parsed.scraperSources) ? parsed.scraperSources : defaultScraperSources,
+            scraperSources: loadedSources,
             notificationConfig: parsed.notificationConfig ? { ...defaultNotificationConfig, ...parsed.notificationConfig } : defaultNotificationConfig,
             notificationHistory: Array.isArray(parsed.notificationHistory) ? parsed.notificationHistory : (dbState.notificationHistory || []),
             siteConfig: parsed.siteConfig || dbState.siteConfig,
