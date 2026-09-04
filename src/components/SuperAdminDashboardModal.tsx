@@ -7,7 +7,7 @@ import {
   Eye, EyeOff, Lock, Unlock, Check, MoreVertical, SlidersHorizontal, Menu, Package,
   Share2, Zap, ChevronRight, Search, ChevronDown, LayoutGrid
 } from 'lucide-react';
-import { JobAlert, EmployeeUser, EmployeePermissions, SocialLinkItem, SuperAdminTabType } from '../types';
+import { JobAlert, EmployeeUser, EmployeePermissions, SocialLinkItem, SuperAdminTabType, SyncLogEntry } from '../types';
 import { SUPER_ADMIN_MODULES, SuperAdminModuleConfig } from '../config/superAdminConfig';
 import { VersionControlTab } from './VersionControlTab';
 import { NpmSystemContent } from './NpmSystemModal';

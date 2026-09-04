@@ -24,7 +24,7 @@ import { InstallPrompt } from './components/InstallPrompt';
 import { UpdatePrompt } from './components/UpdatePrompt';
 import { getSocialTheme } from './components/SocialLinksManager';
 import { OfficialSocialLogo } from './components/SocialIcons';
-import { JobAlert, JobCategory, EmployeeUser, SocialLinkItem, SuperAdminTabType } from './types';
+import { JobAlert, JobCategory, EmployeeUser, SocialLinkItem, SuperAdminTabType, SyncLogEntry } from './types';
 import { defaultJobsDatabase, defaultSocialLinks } from './data';
 import { loadThemeColors, applyThemeColorsToDOM } from './utils/themeColors';
 import { loadColumnConfigs, DEFAULT_COLUMN_CONFIGS, ColumnConfigsMap } from './utils/columnConfig';
@@ -586,9 +586,35 @@ export default function App() {
     }
   };
 
-  const [syncLogs, setSyncLogs] = useState<Array<{ id: number; time: string; message: string; type: string }>>([
-    { id: 1, time: new Date().toLocaleTimeString(), message: "FastArc Server Sync & Persistent Database Initialized.", type: "system" }
+  const [syncLogs, setSyncLogs] = useState<SyncLogEntry[]>([
+    { 
+      id: 1, 
+      time: new Date().toLocaleTimeString(), 
+      message: "FastArc Server Sync & Persistent Database Initialized.", 
+      type: "system",
+      statusCode: 200,
+      durationMs: 42,
+      endpoint: "/api/health"
+    }
   ]);
+
+  const handleAddSyncLog = (log: SyncLogEntry) => {
+    setSyncLogs(prev => [log, ...prev.slice(0, 99)]);
+  };
+
+  const handleClearSyncLogs = () => {
+    setSyncLogs([
+      { 
+        id: Date.now(), 
+        time: new Date().toLocaleTimeString(), 
+        message: "Sync & Scraper logs cleared by administrator.", 
+        type: "system",
+        statusCode: 200,
+        durationMs: 0
+      }
+    ]);
+    triggerToast("🗑️ Sync & Scraper logs cleared!");
+  };
 
   // Auto-Sync Background Feeder with robust external API fetch and error handling
   useEffect(() => {
@@ -597,43 +623,50 @@ export default function App() {
       console.log("[Auto-Sync] Watcher active. Background sync enabled.");
       
       interval = setInterval(async () => {
+        const startTime = performance.now();
         try {
           console.log("[Auto-Sync] Triggering background API fetch for jobs...");
           setSyncLogs(logs => [
-            { id: Date.now(), time: new Date().toLocaleTimeString(), message: "Attempting auto-sync with API endpoint...", type: "system" },
-            ...logs.slice(0, 20)
+            { id: Date.now(), time: new Date().toLocaleTimeString(), message: "Attempting automated background sync batch...", type: "system", endpoint: "/api/v1/scraper/run" },
+            ...logs.slice(0, 99)
           ]);
 
           const res = await fetch('/api/v1/scraper/run', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({}) // Fetch random batch
+            body: JSON.stringify({})
           });
 
+          const durationMs = Math.round(performance.now() - startTime);
+          const statusCode = res.status;
           const contentType = res.headers.get('content-type') || '';
+
           if (!res.ok || !contentType.includes('application/json')) {
             const errorText = await res.text().catch(() => '');
-            console.error('[Auto-Sync] External API returned error:', res.status, errorText);
+            const errorDetails = `HTTP ${statusCode}: ${errorText.substring(0, 100) || res.statusText || 'Server error'}`;
+            console.error('[Auto-Sync] External API returned error:', statusCode, errorDetails);
             setSyncLogs(logs => [
-              { id: Date.now(), time: new Date().toLocaleTimeString(), message: `Auto-sync paused: API returned status ${res.status}`, type: "error" },
-              ...logs.slice(0, 20)
+              { 
+                id: Date.now(), 
+                time: new Date().toLocaleTimeString(), 
+                message: `Auto-sync failed: HTTP status ${statusCode}`, 
+                type: "error",
+                statusCode,
+                durationMs,
+                errorDetails,
+                endpoint: '/api/v1/scraper/run'
+              },
+              ...logs.slice(0, 99)
             ]);
             return;
           }
 
           const data = await res.json();
           if (data.success && Array.isArray(data.posts) && data.posts.length > 0) {
-            console.log(`[Auto-Sync] Received ${data.posts.length} new jobs. Verifying formats...`);
-            
-            // Pick a random scraped post to emulate "live auto-fill" in UI
             const randomItem = data.posts[Math.floor(Math.random() * data.posts.length)];
             const todayStr = new Date().toLocaleDateString('en-GB').replace(/\//g, '-');
             
-            // Verify mandatory fields
-            if (!randomItem.title || !randomItem.category) {
-               console.warn('[Auto-Sync] Invalid job format returned from API', randomItem);
-               return;
-            }
+            if (!randomItem.title || !randomItem.category) return;
 
             const newJob: JobAlert = {
               id: `auto-${Date.now()}`,
@@ -651,13 +684,23 @@ export default function App() {
             setJobs(prev => {
               const normTitle = newJob.title.trim().toLowerCase();
               if (prev.some(j => j.title && j.title.trim().toLowerCase() === normTitle)) {
-                return prev; // Ignore duplicates
+                return prev;
               }
               
               triggerToast(`🔔 Auto-Filled: ${newJob.title.substring(0, 30)}...`);
               setSyncLogs(logs => [
-                { id: Date.now(), time: new Date().toLocaleTimeString(), message: `API SYNC: Added ${newJob.title.substring(0,40)}...`, type: "success" },
-                ...logs.slice(0, 20)
+                { 
+                  id: Date.now(), 
+                  time: new Date().toLocaleTimeString(), 
+                  message: `AUTO-SYNC: Published ${newJob.title.substring(0,40)}...`, 
+                  type: "success",
+                  statusCode: 200,
+                  durationMs,
+                  postsCount: data.posts.length,
+                  endpoint: '/api/v1/scraper/run',
+                  sourceName: randomItem.sourceName || 'Active Govt Feed'
+                },
+                ...logs.slice(0, 99)
               ]);
               
               if (!isFirestoreQuotaExceeded()) {
@@ -671,17 +714,24 @@ export default function App() {
               
               return [newJob, ...prev];
             });
-          } else {
-            console.log('[Auto-Sync] No new alerts found or invalid payload format.', data);
           }
         } catch (err: any) {
-          console.error('[Auto-Sync] Exception parsing external API response:', err.message);
+          const durationMs = Math.round(performance.now() - startTime);
           setSyncLogs(logs => [
-            { id: Date.now(), time: new Date().toLocaleTimeString(), message: `Auto-sync parse/fetch exception: ${err.message}`, type: "error" },
-            ...logs.slice(0, 20)
+            { 
+              id: Date.now(), 
+              time: new Date().toLocaleTimeString(), 
+              message: `Auto-sync network exception: ${err.message}`, 
+              type: "error",
+              statusCode: 0,
+              durationMs,
+              errorDetails: err.message || 'Network / connection timeout',
+              endpoint: '/api/v1/scraper/run'
+            },
+            ...logs.slice(0, 99)
           ]);
         }
-      }, 30000); // 30s interval for background feed
+      }, 30000);
     }
     return () => clearInterval(interval);
   }, [isAutoSyncActive]);

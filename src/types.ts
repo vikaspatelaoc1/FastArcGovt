@@ -285,3 +285,18 @@ export interface HelpdeskTicket {
   updatedAt?: string;
   replies?: TicketReply[];
 }
+
+export interface SyncLogEntry {
+  id: number | string;
+  time: string;
+  message: string;
+  type: 'success' | 'error' | 'warning' | 'info' | 'system';
+  sourceName?: string;
+  sourceUrl?: string;
+  durationMs?: number;
+  statusCode?: number;
+  errorDetails?: string;
+  postsCount?: number;
+  endpoint?: string;
+}
+
