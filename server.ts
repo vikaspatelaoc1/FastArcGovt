@@ -555,34 +555,36 @@ async function saveDatabase(data: DatabaseSchema) {
     console.warn('⚠️ Failed saving to local disk:', diskErr);
   }
 
-  // 2. Persist state and jobs to Firestore for real-time multi-device sync
+  // 2. Persist state and jobs to Firestore asynchronously in background (non-blocking for serverless)
   if (firestoreDb && !isFirestoreQuotaExhausted) {
-    try {
-      const stateRef = doc(firestoreDb, 'config', 'app_state');
-      await setDoc(stateRef, {
-        marqueeText: data.marqueeText,
-        siteConfig: data.siteConfig,
-        notificationConfig: data.notificationConfig,
-        updatedAt: new Date().toISOString()
-      }, { merge: true });
+    (async () => {
+      try {
+        const stateRef = doc(firestoreDb, 'config', 'app_state');
+        await setDoc(stateRef, {
+          marqueeText: data.marqueeText,
+          siteConfig: data.siteConfig,
+          notificationConfig: data.notificationConfig,
+          updatedAt: new Date().toISOString()
+        }, { merge: true });
 
-      if (Array.isArray(data.jobs) && data.jobs.length > 0) {
-        const jobsToSync = data.jobs.slice(0, 150);
-        for (const job of jobsToSync) {
-          if (job && job.id) {
-            const jobRef = doc(firestoreDb, 'jobs', job.id);
-            await setDoc(jobRef, job, { merge: true });
+        if (Array.isArray(data.jobs) && data.jobs.length > 0) {
+          const jobsToSync = data.jobs.slice(0, 50);
+          for (const job of jobsToSync) {
+            if (job && job.id) {
+              const jobRef = doc(firestoreDb, 'jobs', job.id);
+              await setDoc(jobRef, job, { merge: true });
+            }
           }
         }
+      } catch (fsErr: any) {
+        if (fsErr?.message?.includes('Quota') || fsErr?.code === 'resource-exhausted') {
+          isFirestoreQuotaExhausted = true;
+          console.warn('⚠️ Firestore quota reached in server backend. Operating in local storage mode.');
+        } else {
+          console.warn('⚠️ Firestore background sync warning:', fsErr?.message || fsErr);
+        }
       }
-    } catch (fsErr: any) {
-      if (fsErr?.message?.includes('Quota') || fsErr?.code === 'resource-exhausted') {
-        isFirestoreQuotaExhausted = true;
-        console.warn('⚠️ Firestore quota reached in server backend. Operating in local storage mode.');
-      } else {
-        console.warn('⚠️ Firestore background sync warning:', fsErr?.message || fsErr);
-      }
-    }
+    })().catch(() => {});
   }
 }
 
@@ -1452,12 +1454,9 @@ function categorizeScrapedTitle(title: string, defaultCat: string = 'latest-jobs
 // 1. GET ALL SCRAPER SOURCES
 app.get('/api/v1/scraper/sources', async (req, res) => {
   let sources = dbState.scraperSources || defaultScraperSources;
-  if (sources.length < 500) {
-    const existingIds = new Set(sources.map((s: any) => s.id));
-    const newSources = defaultScraperSources.filter(s => !existingIds.has(s.id));
-    sources = [...sources, ...newSources];
+  if (!sources || sources.length < 500) {
+    sources = defaultScraperSources;
     dbState.scraperSources = sources;
-    await saveDatabase(dbState);
   }
 
   res.json({
