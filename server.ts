@@ -45,6 +45,37 @@ const PORT = 3000;
 app.use(cors());
 app.use(express.json({ limit: '10mb' }));
 
+// URL Normalization Middleware for Vercel Serverless and Reverse Proxies
+app.use((req, res, next) => {
+  try {
+    let url = req.url || '/';
+
+    // If Vercel rewrote the URL to /api/index, check original forwarded headers
+    if (url === '/api/index' || url.startsWith('/api/index?') || url === '/api' || url === '/api/') {
+      const forwarded = req.headers['x-forwarded-uri'] || req.headers['x-matched-path'];
+      if (forwarded && typeof forwarded === 'string' && forwarded !== '/api/index') {
+        url = forwarded;
+      } else if (req.headers['x-now-route-matches']) {
+        const matches = String(req.headers['x-now-route-matches']);
+        const match = matches.match(/1=([^&]+)/);
+        if (match && match[1]) {
+          url = `/api/${decodeURIComponent(match[1]).replace(/^\//, '')}`;
+        }
+      }
+    }
+
+    if (!url.startsWith('/api') && (req.headers['x-forwarded-uri'] || req.headers['x-matched-path'] || process.env.VERCEL)) {
+      url = `/api${url.startsWith('/') ? '' : '/'}${url}`;
+    }
+
+    req.url = url;
+    (req as any).originalUrl = url;
+  } catch (err) {
+    console.warn('URL normalization error:', err);
+  }
+  next();
+});
+
 // Persistent JSON file database path (with Vercel /tmp fallback for writable filesystem)
 const DATA_DIR = process.env.VERCEL ? path.join('/tmp', 'data') : path.join(process.cwd(), 'data');
 const DB_FILE = path.join(DATA_DIR, 'fastarc_database.json');
