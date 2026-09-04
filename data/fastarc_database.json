@@ -1,6 +1,270 @@
 {
   "jobs": [
     {
+      "id": "auto-1788496392989",
+      "title": "Tamil Nadu Metro Official Board - Latest Public Notice 2026",
+      "category": "answer-key",
+      "postDate": "04-09-2026",
+      "isNew": true,
+      "state": "Tamil Nadu",
+      "shortInfo": "Automated feed extraction from https://tamilnadu.metro.gov.in/rss.xml",
+      "ageLimit": "",
+      "eligibility": "",
+      "dates": {
+        "start": "04-09-2026",
+        "last": "Check Official Notification"
+      },
+      "fees": {
+        "general": "₹100",
+        "scSt": "₹0"
+      },
+      "links": {
+        "apply": "https://tamilnadu.metro.gov.in/rss.xml",
+        "official": "https://tamilnadu.metro.gov.in/rss.xml",
+        "notification": "https://tamilnadu.metro.gov.in/rss.xml"
+      }
+    },
+    {
+      "id": "auto-1788496363791",
+      "title": "UP Housing Board Official Board - Latest Public Notice 2026",
+      "category": "answer-key",
+      "postDate": "04-09-2026",
+      "isNew": true,
+      "state": "UP",
+      "shortInfo": "Automated feed extraction from https://up.housingboard.gov.in/rss.xml",
+      "ageLimit": "",
+      "eligibility": "",
+      "dates": {
+        "start": "04-09-2026",
+        "last": "Check Official Notification"
+      },
+      "fees": {
+        "general": "₹100",
+        "scSt": "₹0"
+      },
+      "links": {
+        "apply": "https://up.housingboard.gov.in/rss.xml",
+        "official": "https://up.housingboard.gov.in/rss.xml",
+        "notification": "https://up.housingboard.gov.in/rss.xml"
+      }
+    },
+    {
+      "id": "auto-1788496332148",
+      "title": "Bihar Electricity Board Official Board - Latest Public Notice 2026",
+      "category": "syllabus",
+      "postDate": "04-09-2026",
+      "isNew": true,
+      "state": "Bihar",
+      "shortInfo": "Automated feed extraction from https://bihar.electricityboard.gov.in/rss.xml",
+      "ageLimit": "",
+      "eligibility": "",
+      "dates": {
+        "start": "04-09-2026",
+        "last": "Check Official Notification"
+      },
+      "fees": {
+        "general": "₹100",
+        "scSt": "₹0"
+      },
+      "links": {
+        "apply": "https://bihar.electricityboard.gov.in/rss.xml",
+        "official": "https://bihar.electricityboard.gov.in/rss.xml",
+        "notification": "https://bihar.electricityboard.gov.in/rss.xml"
+      }
+    },
+    {
+      "id": "auto-1788496281912",
+      "title": "Bihar Education Board Official Board - Latest Public Notice 2026",
+      "category": "latest-jobs",
+      "postDate": "04-09-2026",
+      "isNew": true,
+      "state": "Bihar",
+      "shortInfo": "Automated feed extraction from https://bihar.educationboard.gov.in/rss.xml",
+      "ageLimit": "",
+      "eligibility": "",
+      "dates": {
+        "start": "04-09-2026",
+        "last": "Check Official Notification"
+      },
+      "fees": {
+        "general": "₹100",
+        "scSt": "₹0"
+      },
+      "links": {
+        "apply": "https://bihar.educationboard.gov.in/rss.xml",
+        "official": "https://bihar.educationboard.gov.in/rss.xml",
+        "notification": "https://bihar.educationboard.gov.in/rss.xml"
+      }
+    },
+    {
+      "id": "auto-1788496161923",
+      "title": "HPCL Central Govt Recruitment - Latest Public Notice 2026",
+      "category": "latest-jobs",
+      "postDate": "04-09-2026",
+      "isNew": true,
+      "state": "Central",
+      "shortInfo": "Automated feed extraction from https://hpcl.gov.in/latest-updates.rss",
+      "ageLimit": "",
+      "eligibility": "",
+      "dates": {
+        "start": "04-09-2026",
+        "last": "Check Official Notification"
+      },
+      "fees": {
+        "general": "₹100",
+        "scSt": "₹0"
+      },
+      "links": {
+        "apply": "https://hpcl.gov.in/latest-updates.rss",
+        "official": "https://hpcl.gov.in/latest-updates.rss",
+        "notification": "https://hpcl.gov.in/latest-updates.rss"
+      }
+    },
+    {
+      "id": "auto-1788496042442",
+      "title": "Rajasthan Panchayat Official Board - Latest Public Notice 2026",
+      "category": "admit-cards",
+      "postDate": "04-09-2026",
+      "isNew": true,
+      "state": "Rajasthan",
+      "shortInfo": "Automated feed extraction from https://rajasthan.panchayat.gov.in/rss.xml",
+      "ageLimit": "",
+      "eligibility": "",
+      "dates": {
+        "start": "04-09-2026",
+        "last": "Check Official Notification"
+      },
+      "fees": {
+        "general": "₹100",
+        "scSt": "₹0"
+      },
+      "links": {
+        "apply": "https://rajasthan.panchayat.gov.in/rss.xml",
+        "official": "https://rajasthan.panchayat.gov.in/rss.xml",
+        "notification": "https://rajasthan.panchayat.gov.in/rss.xml"
+      }
+    },
+    {
+      "id": "auto-1788495822262",
+      "title": "Assam Metro Official Board - Latest Public Notice 2026",
+      "category": "answer-key",
+      "postDate": "04-09-2026",
+      "isNew": true,
+      "state": "Assam",
+      "shortInfo": "Automated feed extraction from https://assam.metro.gov.in/rss.xml",
+      "ageLimit": "",
+      "eligibility": "",
+      "dates": {
+        "start": "04-09-2026",
+        "last": "Check Official Notification"
+      },
+      "fees": {
+        "general": "₹100",
+        "scSt": "₹0"
+      },
+      "links": {
+        "apply": "https://assam.metro.gov.in/rss.xml",
+        "official": "https://assam.metro.gov.in/rss.xml",
+        "notification": "https://assam.metro.gov.in/rss.xml"
+      }
+    },
+    {
+      "id": "auto-1788495793015",
+      "title": "MP Rural Development Official Board - Latest Public Notice 2026",
+      "category": "results",
+      "postDate": "04-09-2026",
+      "isNew": true,
+      "state": "MP",
+      "shortInfo": "Automated feed extraction from https://mp.ruraldevelopment.gov.in/rss.xml",
+      "ageLimit": "",
+      "eligibility": "",
+      "dates": {
+        "start": "04-09-2026",
+        "last": "Check Official Notification"
+      },
+      "fees": {
+        "general": "₹100",
+        "scSt": "₹0"
+      },
+      "links": {
+        "apply": "https://mp.ruraldevelopment.gov.in/rss.xml",
+        "official": "https://mp.ruraldevelopment.gov.in/rss.xml",
+        "notification": "https://mp.ruraldevelopment.gov.in/rss.xml"
+      }
+    },
+    {
+      "id": "auto-1788495732988",
+      "title": "Jharkhand Water Board Official Board - Latest Public Notice 2026",
+      "category": "syllabus",
+      "postDate": "04-09-2026",
+      "isNew": true,
+      "state": "Jharkhand",
+      "shortInfo": "Automated feed extraction from https://jharkhand.waterboard.gov.in/rss.xml",
+      "ageLimit": "",
+      "eligibility": "",
+      "dates": {
+        "start": "04-09-2026",
+        "last": "Check Official Notification"
+      },
+      "fees": {
+        "general": "₹100",
+        "scSt": "₹0"
+      },
+      "links": {
+        "apply": "https://jharkhand.waterboard.gov.in/rss.xml",
+        "official": "https://jharkhand.waterboard.gov.in/rss.xml",
+        "notification": "https://jharkhand.waterboard.gov.in/rss.xml"
+      }
+    },
+    {
+      "id": "auto-1788495703534",
+      "title": "Rajasthan PWD Official Board - Latest Public Notice 2026",
+      "category": "admission",
+      "postDate": "04-09-2026",
+      "isNew": true,
+      "state": "Rajasthan",
+      "shortInfo": "Automated feed extraction from https://rajasthan.pwd.gov.in/rss.xml",
+      "ageLimit": "",
+      "eligibility": "",
+      "dates": {
+        "start": "04-09-2026",
+        "last": "Check Official Notification"
+      },
+      "fees": {
+        "general": "₹100",
+        "scSt": "₹0"
+      },
+      "links": {
+        "apply": "https://rajasthan.pwd.gov.in/rss.xml",
+        "official": "https://rajasthan.pwd.gov.in/rss.xml",
+        "notification": "https://rajasthan.pwd.gov.in/rss.xml"
+      }
+    },
+    {
+      "id": "auto-1788495673013",
+      "title": "Uttarakhand Panchayat Official Board - Latest Public Notice 2026",
+      "category": "admit-cards",
+      "postDate": "04-09-2026",
+      "isNew": true,
+      "state": "Uttarakhand",
+      "shortInfo": "Automated feed extraction from https://uttarakhand.panchayat.gov.in/rss.xml",
+      "ageLimit": "",
+      "eligibility": "",
+      "dates": {
+        "start": "04-09-2026",
+        "last": "Check Official Notification"
+      },
+      "fees": {
+        "general": "₹100",
+        "scSt": "₹0"
+      },
+      "links": {
+        "apply": "https://uttarakhand.panchayat.gov.in/rss.xml",
+        "official": "https://uttarakhand.panchayat.gov.in/rss.xml",
+        "notification": "https://uttarakhand.panchayat.gov.in/rss.xml"
+      }
+    },
+    {
       "id": "job-1788456368886-29-372",
       "title": "MP State Cooperative Bank Official Board - Latest Public Notice 2026",
       "category": "admit-cards",
@@ -4229,7 +4493,7 @@
       "defaultCategory": "latest-jobs",
       "state": "Central",
       "enabled": true,
-      "lastScraped": "04-09-2026 04:19",
+      "lastScraped": "04-09-2026 04:33",
       "itemCount": 2,
       "status": "success"
     },
@@ -4241,7 +4505,7 @@
       "defaultCategory": "latest-jobs",
       "state": "Central",
       "enabled": true,
-      "lastScraped": "04-09-2026 04:19",
+      "lastScraped": "04-09-2026 04:33",
       "itemCount": 2,
       "status": "success"
     },
@@ -4253,7 +4517,7 @@
       "defaultCategory": "admit-cards",
       "state": "Central",
       "enabled": true,
-      "lastScraped": "04-09-2026 04:19",
+      "lastScraped": "04-09-2026 04:33",
       "itemCount": 2,
       "status": "success"
     },
@@ -4265,7 +4529,7 @@
       "defaultCategory": "latest-jobs",
       "state": "Central",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:31",
       "itemCount": 1,
       "status": "success"
     },
@@ -4277,7 +4541,7 @@
       "defaultCategory": "latest-jobs",
       "state": "Central",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:29",
       "itemCount": 1,
       "status": "success"
     },
@@ -4289,7 +4553,7 @@
       "defaultCategory": "results",
       "state": "Central",
       "enabled": true,
-      "lastScraped": "04-09-2026 04:19",
+      "lastScraped": "04-09-2026 04:33",
       "itemCount": 1,
       "status": "success"
     },
@@ -4301,7 +4565,7 @@
       "defaultCategory": "results",
       "state": "UP",
       "enabled": true,
-      "lastScraped": "04-09-2026 04:19",
+      "lastScraped": "04-09-2026 04:33",
       "itemCount": 1,
       "status": "success"
     },
@@ -4313,7 +4577,7 @@
       "defaultCategory": "latest-jobs",
       "state": "Bihar",
       "enabled": true,
-      "lastScraped": "04-09-2026 04:19",
+      "lastScraped": "04-09-2026 04:33",
       "itemCount": 1,
       "status": "success"
     },
@@ -4325,7 +4589,7 @@
       "defaultCategory": "results",
       "state": "UP",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:29",
       "itemCount": 1,
       "status": "success"
     },
@@ -4337,7 +4601,7 @@
       "defaultCategory": "syllabus",
       "state": "UP",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:33",
       "itemCount": 1,
       "status": "success"
     },
@@ -4349,7 +4613,7 @@
       "defaultCategory": "answer-key",
       "state": "UP",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:21",
       "itemCount": 1,
       "status": "success"
     },
@@ -4361,7 +4625,7 @@
       "defaultCategory": "admission",
       "state": "UP",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:23",
       "itemCount": 1,
       "status": "success"
     },
@@ -4373,7 +4637,7 @@
       "defaultCategory": "latest-jobs",
       "state": "UP",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:29",
       "itemCount": 1,
       "status": "success"
     },
@@ -4385,7 +4649,7 @@
       "defaultCategory": "admit-cards",
       "state": "UP",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:25",
       "itemCount": 1,
       "status": "success"
     },
@@ -4397,7 +4661,7 @@
       "defaultCategory": "results",
       "state": "UP",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:21",
       "itemCount": 1,
       "status": "success"
     },
@@ -4433,7 +4697,7 @@
       "defaultCategory": "admission",
       "state": "UP",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:32",
       "itemCount": 1,
       "status": "success"
     },
@@ -4457,7 +4721,7 @@
       "defaultCategory": "admit-cards",
       "state": "UP",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:29",
       "itemCount": 1,
       "status": "success"
     },
@@ -4469,7 +4733,7 @@
       "defaultCategory": "results",
       "state": "UP",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:26",
       "itemCount": 1,
       "status": "success"
     },
@@ -4481,7 +4745,7 @@
       "defaultCategory": "syllabus",
       "state": "UP",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:32",
       "itemCount": 1,
       "status": "success"
     },
@@ -4493,7 +4757,7 @@
       "defaultCategory": "answer-key",
       "state": "UP",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:32",
       "itemCount": 1,
       "status": "success"
     },
@@ -4505,7 +4769,7 @@
       "defaultCategory": "admission",
       "state": "UP",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:33",
       "itemCount": 1,
       "status": "success"
     },
@@ -4529,7 +4793,7 @@
       "defaultCategory": "admit-cards",
       "state": "UP",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:29",
       "itemCount": 1,
       "status": "success"
     },
@@ -4553,7 +4817,7 @@
       "defaultCategory": "syllabus",
       "state": "UP",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:29",
       "itemCount": 1,
       "status": "success"
     },
@@ -4565,7 +4829,7 @@
       "defaultCategory": "answer-key",
       "state": "UP",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:26",
       "itemCount": 1,
       "status": "success"
     },
@@ -4577,7 +4841,7 @@
       "defaultCategory": "admission",
       "state": "UP",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:32",
       "itemCount": 1,
       "status": "success"
     },
@@ -4589,7 +4853,7 @@
       "defaultCategory": "latest-jobs",
       "state": "UP",
       "enabled": true,
-      "lastScraped": "04-09-2026 04:19",
+      "lastScraped": "04-09-2026 04:33",
       "itemCount": 1,
       "status": "success"
     },
@@ -4625,7 +4889,7 @@
       "defaultCategory": "syllabus",
       "state": "MP",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:29",
       "itemCount": 1,
       "status": "success"
     },
@@ -4649,7 +4913,7 @@
       "defaultCategory": "admission",
       "state": "MP",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:33",
       "itemCount": 1,
       "status": "success"
     },
@@ -4673,7 +4937,7 @@
       "defaultCategory": "admit-cards",
       "state": "MP",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:23",
       "itemCount": 1,
       "status": "success"
     },
@@ -4709,7 +4973,7 @@
       "defaultCategory": "answer-key",
       "state": "MP",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:33",
       "itemCount": 1,
       "status": "success"
     },
@@ -4721,7 +4985,7 @@
       "defaultCategory": "admission",
       "state": "MP",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:28",
       "itemCount": 1,
       "status": "success"
     },
@@ -4733,7 +4997,7 @@
       "defaultCategory": "latest-jobs",
       "state": "MP",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:28",
       "itemCount": 1,
       "status": "success"
     },
@@ -4745,7 +5009,7 @@
       "defaultCategory": "admit-cards",
       "state": "MP",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:30",
       "itemCount": 1,
       "status": "success"
     },
@@ -4757,7 +5021,7 @@
       "defaultCategory": "results",
       "state": "MP",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:32",
       "itemCount": 1,
       "status": "success"
     },
@@ -4769,7 +5033,7 @@
       "defaultCategory": "syllabus",
       "state": "MP",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:30",
       "itemCount": 1,
       "status": "success"
     },
@@ -4781,7 +5045,7 @@
       "defaultCategory": "answer-key",
       "state": "MP",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:25",
       "itemCount": 1,
       "status": "success"
     },
@@ -4793,7 +5057,7 @@
       "defaultCategory": "admission",
       "state": "MP",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:32",
       "itemCount": 1,
       "status": "success"
     },
@@ -4805,7 +5069,7 @@
       "defaultCategory": "latest-jobs",
       "state": "MP",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:32",
       "itemCount": 1,
       "status": "success"
     },
@@ -4817,7 +5081,7 @@
       "defaultCategory": "admit-cards",
       "state": "MP",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:32",
       "itemCount": 1,
       "status": "success"
     },
@@ -4829,7 +5093,7 @@
       "defaultCategory": "results",
       "state": "MP",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:26",
       "itemCount": 1,
       "status": "success"
     },
@@ -4853,7 +5117,7 @@
       "defaultCategory": "answer-key",
       "state": "MP",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:27",
       "itemCount": 1,
       "status": "success"
     },
@@ -4865,7 +5129,7 @@
       "defaultCategory": "admission",
       "state": "MP",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:28",
       "itemCount": 1,
       "status": "success"
     },
@@ -4889,7 +5153,7 @@
       "defaultCategory": "admit-cards",
       "state": "MP",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:31",
       "itemCount": 1,
       "status": "success"
     },
@@ -4901,7 +5165,7 @@
       "defaultCategory": "results",
       "state": "Bihar",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:26",
       "itemCount": 1,
       "status": "success"
     },
@@ -4913,7 +5177,7 @@
       "defaultCategory": "syllabus",
       "state": "Bihar",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:26",
       "itemCount": 1,
       "status": "success"
     },
@@ -4925,7 +5189,7 @@
       "defaultCategory": "answer-key",
       "state": "Bihar",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:26",
       "itemCount": 1,
       "status": "success"
     },
@@ -4949,7 +5213,7 @@
       "defaultCategory": "latest-jobs",
       "state": "Bihar",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:31",
       "itemCount": 1,
       "status": "success"
     },
@@ -4973,7 +5237,7 @@
       "defaultCategory": "results",
       "state": "Bihar",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:32",
       "itemCount": 1,
       "status": "success"
     },
@@ -4985,7 +5249,7 @@
       "defaultCategory": "syllabus",
       "state": "Bihar",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:32",
       "itemCount": 1,
       "status": "success"
     },
@@ -5009,7 +5273,7 @@
       "defaultCategory": "admission",
       "state": "Bihar",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:27",
       "itemCount": 1,
       "status": "success"
     },
@@ -5021,7 +5285,7 @@
       "defaultCategory": "latest-jobs",
       "state": "Bihar",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:27",
       "itemCount": 1,
       "status": "success"
     },
@@ -5033,7 +5297,7 @@
       "defaultCategory": "admit-cards",
       "state": "Bihar",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:27",
       "itemCount": 1,
       "status": "success"
     },
@@ -5057,7 +5321,7 @@
       "defaultCategory": "syllabus",
       "state": "Bihar",
       "enabled": true,
-      "lastScraped": "04-09-2026 04:19",
+      "lastScraped": "04-09-2026 04:21",
       "itemCount": 1,
       "status": "success"
     },
@@ -5105,7 +5369,7 @@
       "defaultCategory": "admit-cards",
       "state": "Bihar",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:32",
       "itemCount": 1,
       "status": "success"
     },
@@ -5117,7 +5381,7 @@
       "defaultCategory": "results",
       "state": "Bihar",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:30",
       "itemCount": 1,
       "status": "success"
     },
@@ -5141,7 +5405,7 @@
       "defaultCategory": "answer-key",
       "state": "Bihar",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:31",
       "itemCount": 1,
       "status": "success"
     },
@@ -5165,7 +5429,7 @@
       "defaultCategory": "latest-jobs",
       "state": "Bihar",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:32",
       "itemCount": 1,
       "status": "success"
     },
@@ -5177,7 +5441,7 @@
       "defaultCategory": "admit-cards",
       "state": "Bihar",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:33",
       "itemCount": 1,
       "status": "success"
     },
@@ -5189,7 +5453,7 @@
       "defaultCategory": "results",
       "state": "Rajasthan",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:32",
       "itemCount": 1,
       "status": "success"
     },
@@ -5201,7 +5465,7 @@
       "defaultCategory": "syllabus",
       "state": "Rajasthan",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:30",
       "itemCount": 1,
       "status": "success"
     },
@@ -5213,7 +5477,7 @@
       "defaultCategory": "answer-key",
       "state": "Rajasthan",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:21",
       "itemCount": 1,
       "status": "success"
     },
@@ -5261,7 +5525,7 @@
       "defaultCategory": "results",
       "state": "Rajasthan",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:31",
       "itemCount": 1,
       "status": "success"
     },
@@ -5273,7 +5537,7 @@
       "defaultCategory": "syllabus",
       "state": "Rajasthan",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:30",
       "itemCount": 1,
       "status": "success"
     },
@@ -5285,7 +5549,7 @@
       "defaultCategory": "answer-key",
       "state": "Rajasthan",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:30",
       "itemCount": 1,
       "status": "success"
     },
@@ -5297,7 +5561,7 @@
       "defaultCategory": "admission",
       "state": "Rajasthan",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:21",
       "itemCount": 1,
       "status": "success"
     },
@@ -5309,7 +5573,7 @@
       "defaultCategory": "latest-jobs",
       "state": "Rajasthan",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:23",
       "itemCount": 1,
       "status": "success"
     },
@@ -5321,7 +5585,7 @@
       "defaultCategory": "admit-cards",
       "state": "Rajasthan",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:31",
       "itemCount": 1,
       "status": "success"
     },
@@ -5345,7 +5609,7 @@
       "defaultCategory": "syllabus",
       "state": "Rajasthan",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:26",
       "itemCount": 1,
       "status": "success"
     },
@@ -5369,7 +5633,7 @@
       "defaultCategory": "admission",
       "state": "Rajasthan",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:31",
       "itemCount": 1,
       "status": "success"
     },
@@ -5381,7 +5645,7 @@
       "defaultCategory": "latest-jobs",
       "state": "Rajasthan",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:29",
       "itemCount": 1,
       "status": "success"
     },
@@ -5393,7 +5657,7 @@
       "defaultCategory": "admit-cards",
       "state": "Rajasthan",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:32",
       "itemCount": 1,
       "status": "success"
     },
@@ -5405,7 +5669,7 @@
       "defaultCategory": "results",
       "state": "Rajasthan",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:27",
       "itemCount": 1,
       "status": "success"
     },
@@ -5429,7 +5693,7 @@
       "defaultCategory": "answer-key",
       "state": "Rajasthan",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:32",
       "itemCount": 1,
       "status": "success"
     },
@@ -5441,7 +5705,7 @@
       "defaultCategory": "admission",
       "state": "Rajasthan",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:27",
       "itemCount": 1,
       "status": "success"
     },
@@ -5453,7 +5717,7 @@
       "defaultCategory": "latest-jobs",
       "state": "Rajasthan",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:27",
       "itemCount": 1,
       "status": "success"
     },
@@ -5501,7 +5765,7 @@
       "defaultCategory": "answer-key",
       "state": "Gujarat",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:31",
       "itemCount": 1,
       "status": "success"
     },
@@ -5525,7 +5789,7 @@
       "defaultCategory": "latest-jobs",
       "state": "Gujarat",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:21",
       "itemCount": 1,
       "status": "success"
     },
@@ -5537,7 +5801,7 @@
       "defaultCategory": "admit-cards",
       "state": "Gujarat",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:22",
       "itemCount": 1,
       "status": "success"
     },
@@ -5549,7 +5813,7 @@
       "defaultCategory": "results",
       "state": "Gujarat",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:21",
       "itemCount": 1,
       "status": "success"
     },
@@ -5561,7 +5825,7 @@
       "defaultCategory": "syllabus",
       "state": "Gujarat",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:21",
       "itemCount": 1,
       "status": "success"
     },
@@ -5573,7 +5837,7 @@
       "defaultCategory": "answer-key",
       "state": "Gujarat",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:23",
       "itemCount": 1,
       "status": "success"
     },
@@ -5585,7 +5849,7 @@
       "defaultCategory": "admission",
       "state": "Gujarat",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:21",
       "itemCount": 1,
       "status": "success"
     },
@@ -5597,7 +5861,7 @@
       "defaultCategory": "latest-jobs",
       "state": "Gujarat",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:26",
       "itemCount": 1,
       "status": "success"
     },
@@ -5609,7 +5873,7 @@
       "defaultCategory": "admit-cards",
       "state": "Gujarat",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:30",
       "itemCount": 1,
       "status": "success"
     },
@@ -5621,7 +5885,7 @@
       "defaultCategory": "results",
       "state": "Gujarat",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:25",
       "itemCount": 1,
       "status": "success"
     },
@@ -5633,7 +5897,7 @@
       "defaultCategory": "syllabus",
       "state": "Gujarat",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:33",
       "itemCount": 1,
       "status": "success"
     },
@@ -5645,7 +5909,7 @@
       "defaultCategory": "answer-key",
       "state": "Gujarat",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:32",
       "itemCount": 1,
       "status": "success"
     },
@@ -5657,7 +5921,7 @@
       "defaultCategory": "admission",
       "state": "Gujarat",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:32",
       "itemCount": 1,
       "status": "success"
     },
@@ -5669,7 +5933,7 @@
       "defaultCategory": "latest-jobs",
       "state": "Gujarat",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:32",
       "itemCount": 1,
       "status": "success"
     },
@@ -5681,7 +5945,7 @@
       "defaultCategory": "admit-cards",
       "state": "Gujarat",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:32",
       "itemCount": 1,
       "status": "success"
     },
@@ -5693,7 +5957,7 @@
       "defaultCategory": "results",
       "state": "Gujarat",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:26",
       "itemCount": 1,
       "status": "success"
     },
@@ -5705,7 +5969,7 @@
       "defaultCategory": "syllabus",
       "state": "Gujarat",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:32",
       "itemCount": 1,
       "status": "success"
     },
@@ -5741,7 +6005,7 @@
       "defaultCategory": "latest-jobs",
       "state": "Gujarat",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:22",
       "itemCount": 1,
       "status": "success"
     },
@@ -5777,7 +6041,7 @@
       "defaultCategory": "syllabus",
       "state": "Maharashtra",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:23",
       "itemCount": 1,
       "status": "success"
     },
@@ -5801,7 +6065,7 @@
       "defaultCategory": "admission",
       "state": "Maharashtra",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:31",
       "itemCount": 1,
       "status": "success"
     },
@@ -5813,7 +6077,7 @@
       "defaultCategory": "latest-jobs",
       "state": "Maharashtra",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:32",
       "itemCount": 1,
       "status": "success"
     },
@@ -5837,7 +6101,7 @@
       "defaultCategory": "results",
       "state": "Maharashtra",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:32",
       "itemCount": 1,
       "status": "success"
     },
@@ -5861,7 +6125,7 @@
       "defaultCategory": "answer-key",
       "state": "Maharashtra",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:30",
       "itemCount": 1,
       "status": "success"
     },
@@ -5873,7 +6137,7 @@
       "defaultCategory": "admission",
       "state": "Maharashtra",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:23",
       "itemCount": 1,
       "status": "success"
     },
@@ -5945,7 +6209,7 @@
       "defaultCategory": "admission",
       "state": "Maharashtra",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:32",
       "itemCount": 1,
       "status": "success"
     },
@@ -5969,7 +6233,7 @@
       "defaultCategory": "admit-cards",
       "state": "Maharashtra",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:32",
       "itemCount": 1,
       "status": "success"
     },
@@ -5993,7 +6257,7 @@
       "defaultCategory": "syllabus",
       "state": "Maharashtra",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:32",
       "itemCount": 1,
       "status": "success"
     },
@@ -6005,7 +6269,7 @@
       "defaultCategory": "answer-key",
       "state": "Maharashtra",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:31",
       "itemCount": 1,
       "status": "success"
     },
@@ -6017,7 +6281,7 @@
       "defaultCategory": "admission",
       "state": "Maharashtra",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:32",
       "itemCount": 1,
       "status": "success"
     },
@@ -6029,7 +6293,7 @@
       "defaultCategory": "latest-jobs",
       "state": "Maharashtra",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:31",
       "itemCount": 1,
       "status": "success"
     },
@@ -6065,7 +6329,7 @@
       "defaultCategory": "syllabus",
       "state": "Punjab",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:30",
       "itemCount": 1,
       "status": "success"
     },
@@ -6089,7 +6353,7 @@
       "defaultCategory": "admission",
       "state": "Punjab",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:31",
       "itemCount": 1,
       "status": "success"
     },
@@ -6101,7 +6365,7 @@
       "defaultCategory": "latest-jobs",
       "state": "Punjab",
       "enabled": true,
-      "lastScraped": "04-09-2026 04:19",
+      "lastScraped": "04-09-2026 04:22",
       "itemCount": 1,
       "status": "success"
     },
@@ -6125,7 +6389,7 @@
       "defaultCategory": "results",
       "state": "Punjab",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:22",
       "itemCount": 1,
       "status": "success"
     },
@@ -6137,7 +6401,7 @@
       "defaultCategory": "syllabus",
       "state": "Punjab",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:25",
       "itemCount": 1,
       "status": "success"
     },
@@ -6149,7 +6413,7 @@
       "defaultCategory": "answer-key",
       "state": "Punjab",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:23",
       "itemCount": 1,
       "status": "success"
     },
@@ -6161,7 +6425,7 @@
       "defaultCategory": "admission",
       "state": "Punjab",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:20",
       "itemCount": 1,
       "status": "success"
     },
@@ -6173,7 +6437,7 @@
       "defaultCategory": "latest-jobs",
       "state": "Punjab",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:22",
       "itemCount": 1,
       "status": "success"
     },
@@ -6197,7 +6461,7 @@
       "defaultCategory": "results",
       "state": "Punjab",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:31",
       "itemCount": 1,
       "status": "success"
     },
@@ -6209,7 +6473,7 @@
       "defaultCategory": "syllabus",
       "state": "Punjab",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:31",
       "itemCount": 1,
       "status": "success"
     },
@@ -6221,7 +6485,7 @@
       "defaultCategory": "answer-key",
       "state": "Punjab",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:31",
       "itemCount": 1,
       "status": "success"
     },
@@ -6233,7 +6497,7 @@
       "defaultCategory": "admission",
       "state": "Punjab",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:20",
       "itemCount": 1,
       "status": "success"
     },
@@ -6269,7 +6533,7 @@
       "defaultCategory": "results",
       "state": "Punjab",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:31",
       "itemCount": 1,
       "status": "success"
     },
@@ -6305,7 +6569,7 @@
       "defaultCategory": "admission",
       "state": "Punjab",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:23",
       "itemCount": 1,
       "status": "success"
     },
@@ -6329,7 +6593,7 @@
       "defaultCategory": "admit-cards",
       "state": "Punjab",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:31",
       "itemCount": 1,
       "status": "success"
     },
@@ -6341,7 +6605,7 @@
       "defaultCategory": "results",
       "state": "Haryana",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:25",
       "itemCount": 1,
       "status": "success"
     },
@@ -6353,7 +6617,7 @@
       "defaultCategory": "syllabus",
       "state": "Haryana",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:30",
       "itemCount": 1,
       "status": "success"
     },
@@ -6365,7 +6629,7 @@
       "defaultCategory": "answer-key",
       "state": "Haryana",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:33",
       "itemCount": 1,
       "status": "success"
     },
@@ -6389,7 +6653,7 @@
       "defaultCategory": "latest-jobs",
       "state": "Haryana",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:32",
       "itemCount": 1,
       "status": "success"
     },
@@ -6401,7 +6665,7 @@
       "defaultCategory": "admit-cards",
       "state": "Haryana",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:25",
       "itemCount": 1,
       "status": "success"
     },
@@ -6413,7 +6677,7 @@
       "defaultCategory": "results",
       "state": "Haryana",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:31",
       "itemCount": 1,
       "status": "success"
     },
@@ -6437,7 +6701,7 @@
       "defaultCategory": "answer-key",
       "state": "Haryana",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:23",
       "itemCount": 1,
       "status": "success"
     },
@@ -6461,7 +6725,7 @@
       "defaultCategory": "latest-jobs",
       "state": "Haryana",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:31",
       "itemCount": 1,
       "status": "success"
     },
@@ -6473,7 +6737,7 @@
       "defaultCategory": "admit-cards",
       "state": "Haryana",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:28",
       "itemCount": 1,
       "status": "success"
     },
@@ -6485,7 +6749,7 @@
       "defaultCategory": "results",
       "state": "Haryana",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:25",
       "itemCount": 1,
       "status": "success"
     },
@@ -6497,7 +6761,7 @@
       "defaultCategory": "syllabus",
       "state": "Haryana",
       "enabled": true,
-      "lastScraped": "04-09-2026 04:19",
+      "lastScraped": "04-09-2026 02:09",
       "itemCount": 1,
       "status": "success"
     },
@@ -6545,7 +6809,7 @@
       "defaultCategory": "admit-cards",
       "state": "Haryana",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:31",
       "itemCount": 1,
       "status": "success"
     },
@@ -6581,7 +6845,7 @@
       "defaultCategory": "answer-key",
       "state": "Haryana",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:23",
       "itemCount": 1,
       "status": "success"
     },
@@ -6593,7 +6857,7 @@
       "defaultCategory": "admission",
       "state": "Haryana",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:31",
       "itemCount": 1,
       "status": "success"
     },
@@ -6605,7 +6869,7 @@
       "defaultCategory": "latest-jobs",
       "state": "Haryana",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:26",
       "itemCount": 1,
       "status": "success"
     },
@@ -6629,7 +6893,7 @@
       "defaultCategory": "results",
       "state": "Tamil Nadu",
       "enabled": true,
-      "lastScraped": "04-09-2026 04:19",
+      "lastScraped": "04-09-2026 04:23",
       "itemCount": 1,
       "status": "success"
     },
@@ -6641,7 +6905,7 @@
       "defaultCategory": "syllabus",
       "state": "Tamil Nadu",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:31",
       "itemCount": 1,
       "status": "success"
     },
@@ -6653,7 +6917,7 @@
       "defaultCategory": "answer-key",
       "state": "Tamil Nadu",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:31",
       "itemCount": 1,
       "status": "success"
     },
@@ -6665,7 +6929,7 @@
       "defaultCategory": "admission",
       "state": "Tamil Nadu",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:26",
       "itemCount": 1,
       "status": "success"
     },
@@ -6689,7 +6953,7 @@
       "defaultCategory": "admit-cards",
       "state": "Tamil Nadu",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:33",
       "itemCount": 1,
       "status": "success"
     },
@@ -6701,7 +6965,7 @@
       "defaultCategory": "results",
       "state": "Tamil Nadu",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:25",
       "itemCount": 1,
       "status": "success"
     },
@@ -6725,7 +6989,7 @@
       "defaultCategory": "answer-key",
       "state": "Tamil Nadu",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:33",
       "itemCount": 1,
       "status": "success"
     },
@@ -6761,7 +7025,7 @@
       "defaultCategory": "admit-cards",
       "state": "Tamil Nadu",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:31",
       "itemCount": 1,
       "status": "success"
     },
@@ -6773,7 +7037,7 @@
       "defaultCategory": "results",
       "state": "Tamil Nadu",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:29",
       "itemCount": 1,
       "status": "success"
     },
@@ -6821,7 +7085,7 @@
       "defaultCategory": "latest-jobs",
       "state": "Tamil Nadu",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:32",
       "itemCount": 1,
       "status": "success"
     },
@@ -6833,7 +7097,7 @@
       "defaultCategory": "admit-cards",
       "state": "Tamil Nadu",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:23",
       "itemCount": 1,
       "status": "success"
     },
@@ -6881,7 +7145,7 @@
       "defaultCategory": "admission",
       "state": "Tamil Nadu",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:31",
       "itemCount": 1,
       "status": "success"
     },
@@ -6893,7 +7157,7 @@
       "defaultCategory": "latest-jobs",
       "state": "Tamil Nadu",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:33",
       "itemCount": 1,
       "status": "success"
     },
@@ -6953,7 +7217,7 @@
       "defaultCategory": "admission",
       "state": "Kerala",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:32",
       "itemCount": 1,
       "status": "success"
     },
@@ -6965,7 +7229,7 @@
       "defaultCategory": "latest-jobs",
       "state": "Kerala",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:31",
       "itemCount": 1,
       "status": "success"
     },
@@ -7013,7 +7277,7 @@
       "defaultCategory": "answer-key",
       "state": "Kerala",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:20",
       "itemCount": 1,
       "status": "success"
     },
@@ -7025,7 +7289,7 @@
       "defaultCategory": "admission",
       "state": "Kerala",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:30",
       "itemCount": 1,
       "status": "success"
     },
@@ -7073,7 +7337,7 @@
       "defaultCategory": "syllabus",
       "state": "Kerala",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:31",
       "itemCount": 1,
       "status": "success"
     },
@@ -7085,7 +7349,7 @@
       "defaultCategory": "answer-key",
       "state": "Kerala",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:32",
       "itemCount": 1,
       "status": "success"
     },
@@ -7121,7 +7385,7 @@
       "defaultCategory": "admit-cards",
       "state": "Kerala",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:27",
       "itemCount": 1,
       "status": "success"
     },
@@ -7169,7 +7433,7 @@
       "defaultCategory": "admission",
       "state": "Kerala",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:23",
       "itemCount": 1,
       "status": "success"
     },
@@ -7181,7 +7445,7 @@
       "defaultCategory": "latest-jobs",
       "state": "Kerala",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:22",
       "itemCount": 1,
       "status": "success"
     },
@@ -7241,7 +7505,7 @@
       "defaultCategory": "admission",
       "state": "Karnataka",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:22",
       "itemCount": 1,
       "status": "success"
     },
@@ -7277,7 +7541,7 @@
       "defaultCategory": "results",
       "state": "Karnataka",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:20",
       "itemCount": 1,
       "status": "success"
     },
@@ -7325,7 +7589,7 @@
       "defaultCategory": "latest-jobs",
       "state": "Karnataka",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:33",
       "itemCount": 1,
       "status": "success"
     },
@@ -7373,7 +7637,7 @@
       "defaultCategory": "answer-key",
       "state": "Karnataka",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:20",
       "itemCount": 1,
       "status": "success"
     },
@@ -7385,7 +7649,7 @@
       "defaultCategory": "admission",
       "state": "Karnataka",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:31",
       "itemCount": 1,
       "status": "success"
     },
@@ -7397,7 +7661,7 @@
       "defaultCategory": "latest-jobs",
       "state": "Karnataka",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:31",
       "itemCount": 1,
       "status": "success"
     },
@@ -7409,7 +7673,7 @@
       "defaultCategory": "admit-cards",
       "state": "Karnataka",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:21",
       "itemCount": 1,
       "status": "success"
     },
@@ -7433,7 +7697,7 @@
       "defaultCategory": "syllabus",
       "state": "Karnataka",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:31",
       "itemCount": 1,
       "status": "success"
     },
@@ -7481,7 +7745,7 @@
       "defaultCategory": "admit-cards",
       "state": "Karnataka",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:32",
       "itemCount": 1,
       "status": "success"
     },
@@ -7493,7 +7757,7 @@
       "defaultCategory": "results",
       "state": "Odisha",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:30",
       "itemCount": 1,
       "status": "success"
     },
@@ -7517,7 +7781,7 @@
       "defaultCategory": "answer-key",
       "state": "Odisha",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:32",
       "itemCount": 1,
       "status": "success"
     },
@@ -7553,7 +7817,7 @@
       "defaultCategory": "admit-cards",
       "state": "Odisha",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:31",
       "itemCount": 1,
       "status": "success"
     },
@@ -7565,7 +7829,7 @@
       "defaultCategory": "results",
       "state": "Odisha",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:31",
       "itemCount": 1,
       "status": "success"
     },
@@ -7589,7 +7853,7 @@
       "defaultCategory": "answer-key",
       "state": "Odisha",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:32",
       "itemCount": 1,
       "status": "success"
     },
@@ -7661,7 +7925,7 @@
       "defaultCategory": "answer-key",
       "state": "Odisha",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:31",
       "itemCount": 1,
       "status": "success"
     },
@@ -7673,7 +7937,7 @@
       "defaultCategory": "admission",
       "state": "Odisha",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:27",
       "itemCount": 1,
       "status": "success"
     },
@@ -7745,7 +8009,7 @@
       "defaultCategory": "admission",
       "state": "Odisha",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:20",
       "itemCount": 1,
       "status": "success"
     },
@@ -7757,7 +8021,7 @@
       "defaultCategory": "latest-jobs",
       "state": "Odisha",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:33",
       "itemCount": 1,
       "status": "success"
     },
@@ -7769,7 +8033,7 @@
       "defaultCategory": "admit-cards",
       "state": "Odisha",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:23",
       "itemCount": 1,
       "status": "success"
     },
@@ -7817,7 +8081,7 @@
       "defaultCategory": "admission",
       "state": "West Bengal",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:24",
       "itemCount": 1,
       "status": "success"
     },
@@ -7841,7 +8105,7 @@
       "defaultCategory": "admit-cards",
       "state": "West Bengal",
       "enabled": true,
-      "lastScraped": "04-09-2026 04:19",
+      "lastScraped": "04-09-2026 04:24",
       "itemCount": 1,
       "status": "success"
     },
@@ -7877,7 +8141,7 @@
       "defaultCategory": "answer-key",
       "state": "West Bengal",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:33",
       "itemCount": 1,
       "status": "success"
     },
@@ -7901,7 +8165,7 @@
       "defaultCategory": "latest-jobs",
       "state": "West Bengal",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:23",
       "itemCount": 1,
       "status": "success"
     },
@@ -7913,7 +8177,7 @@
       "defaultCategory": "admit-cards",
       "state": "West Bengal",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:28",
       "itemCount": 1,
       "status": "success"
     },
@@ -7937,7 +8201,7 @@
       "defaultCategory": "syllabus",
       "state": "West Bengal",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:24",
       "itemCount": 1,
       "status": "success"
     },
@@ -7949,7 +8213,7 @@
       "defaultCategory": "answer-key",
       "state": "West Bengal",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:21",
       "itemCount": 1,
       "status": "success"
     },
@@ -7961,7 +8225,7 @@
       "defaultCategory": "admission",
       "state": "West Bengal",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:23",
       "itemCount": 1,
       "status": "success"
     },
@@ -7985,7 +8249,7 @@
       "defaultCategory": "admit-cards",
       "state": "West Bengal",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:20",
       "itemCount": 1,
       "status": "success"
     },
@@ -7997,7 +8261,7 @@
       "defaultCategory": "results",
       "state": "West Bengal",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:22",
       "itemCount": 1,
       "status": "success"
     },
@@ -8009,7 +8273,7 @@
       "defaultCategory": "syllabus",
       "state": "West Bengal",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:23",
       "itemCount": 1,
       "status": "success"
     },
@@ -8021,7 +8285,7 @@
       "defaultCategory": "answer-key",
       "state": "West Bengal",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:24",
       "itemCount": 1,
       "status": "success"
     },
@@ -8033,7 +8297,7 @@
       "defaultCategory": "admission",
       "state": "West Bengal",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:24",
       "itemCount": 1,
       "status": "success"
     },
@@ -8069,7 +8333,7 @@
       "defaultCategory": "results",
       "state": "Assam",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:23",
       "itemCount": 1,
       "status": "success"
     },
@@ -8093,7 +8357,7 @@
       "defaultCategory": "answer-key",
       "state": "Assam",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:23",
       "itemCount": 1,
       "status": "success"
     },
@@ -8141,7 +8405,7 @@
       "defaultCategory": "results",
       "state": "Assam",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:24",
       "itemCount": 1,
       "status": "success"
     },
@@ -8153,7 +8417,7 @@
       "defaultCategory": "syllabus",
       "state": "Assam",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:28",
       "itemCount": 1,
       "status": "success"
     },
@@ -8165,7 +8429,7 @@
       "defaultCategory": "answer-key",
       "state": "Assam",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:23",
       "itemCount": 1,
       "status": "success"
     },
@@ -8189,7 +8453,7 @@
       "defaultCategory": "latest-jobs",
       "state": "Assam",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:33",
       "itemCount": 1,
       "status": "success"
     },
@@ -8201,7 +8465,7 @@
       "defaultCategory": "admit-cards",
       "state": "Assam",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:28",
       "itemCount": 1,
       "status": "success"
     },
@@ -8225,7 +8489,7 @@
       "defaultCategory": "syllabus",
       "state": "Assam",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:28",
       "itemCount": 1,
       "status": "success"
     },
@@ -8261,7 +8525,7 @@
       "defaultCategory": "latest-jobs",
       "state": "Assam",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:23",
       "itemCount": 1,
       "status": "success"
     },
@@ -8333,7 +8597,7 @@
       "defaultCategory": "latest-jobs",
       "state": "Assam",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:21",
       "itemCount": 1,
       "status": "success"
     },
@@ -8345,7 +8609,7 @@
       "defaultCategory": "admit-cards",
       "state": "Assam",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:28",
       "itemCount": 1,
       "status": "success"
     },
@@ -8357,7 +8621,7 @@
       "defaultCategory": "results",
       "state": "Jharkhand",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:28",
       "itemCount": 1,
       "status": "success"
     },
@@ -8369,7 +8633,7 @@
       "defaultCategory": "syllabus",
       "state": "Jharkhand",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:23",
       "itemCount": 1,
       "status": "success"
     },
@@ -8381,7 +8645,7 @@
       "defaultCategory": "answer-key",
       "state": "Jharkhand",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:24",
       "itemCount": 1,
       "status": "success"
     },
@@ -8393,7 +8657,7 @@
       "defaultCategory": "admission",
       "state": "Jharkhand",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:24",
       "itemCount": 1,
       "status": "success"
     },
@@ -8405,7 +8669,7 @@
       "defaultCategory": "latest-jobs",
       "state": "Jharkhand",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:20",
       "itemCount": 1,
       "status": "success"
     },
@@ -8417,7 +8681,7 @@
       "defaultCategory": "admit-cards",
       "state": "Jharkhand",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:22",
       "itemCount": 1,
       "status": "success"
     },
@@ -8429,7 +8693,7 @@
       "defaultCategory": "results",
       "state": "Jharkhand",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:28",
       "itemCount": 1,
       "status": "success"
     },
@@ -8441,7 +8705,7 @@
       "defaultCategory": "syllabus",
       "state": "Jharkhand",
       "enabled": true,
-      "lastScraped": "04-09-2026 04:19",
+      "lastScraped": "04-09-2026 04:21",
       "itemCount": 1,
       "status": "success"
     },
@@ -8477,7 +8741,7 @@
       "defaultCategory": "latest-jobs",
       "state": "Jharkhand",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:21",
       "itemCount": 1,
       "status": "success"
     },
@@ -8513,7 +8777,7 @@
       "defaultCategory": "syllabus",
       "state": "Jharkhand",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:22",
       "itemCount": 1,
       "status": "success"
     },
@@ -8525,7 +8789,7 @@
       "defaultCategory": "answer-key",
       "state": "Jharkhand",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:23",
       "itemCount": 1,
       "status": "success"
     },
@@ -8549,7 +8813,7 @@
       "defaultCategory": "latest-jobs",
       "state": "Jharkhand",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:28",
       "itemCount": 1,
       "status": "success"
     },
@@ -8561,7 +8825,7 @@
       "defaultCategory": "admit-cards",
       "state": "Jharkhand",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:20",
       "itemCount": 1,
       "status": "success"
     },
@@ -8621,7 +8885,7 @@
       "defaultCategory": "latest-jobs",
       "state": "Jharkhand",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:27",
       "itemCount": 1,
       "status": "success"
     },
@@ -8633,7 +8897,7 @@
       "defaultCategory": "admit-cards",
       "state": "Jharkhand",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:28",
       "itemCount": 1,
       "status": "success"
     },
@@ -8645,7 +8909,7 @@
       "defaultCategory": "results",
       "state": "Chhattisgarh",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:28",
       "itemCount": 1,
       "status": "success"
     },
@@ -8657,7 +8921,7 @@
       "defaultCategory": "syllabus",
       "state": "Chhattisgarh",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:24",
       "itemCount": 1,
       "status": "success"
     },
@@ -8669,7 +8933,7 @@
       "defaultCategory": "answer-key",
       "state": "Chhattisgarh",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:28",
       "itemCount": 1,
       "status": "success"
     },
@@ -8681,7 +8945,7 @@
       "defaultCategory": "admission",
       "state": "Chhattisgarh",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:21",
       "itemCount": 1,
       "status": "success"
     },
@@ -8693,7 +8957,7 @@
       "defaultCategory": "latest-jobs",
       "state": "Chhattisgarh",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:27",
       "itemCount": 1,
       "status": "success"
     },
@@ -8705,7 +8969,7 @@
       "defaultCategory": "admit-cards",
       "state": "Chhattisgarh",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:32",
       "itemCount": 1,
       "status": "success"
     },
@@ -8729,7 +8993,7 @@
       "defaultCategory": "syllabus",
       "state": "Chhattisgarh",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:21",
       "itemCount": 1,
       "status": "success"
     },
@@ -8741,7 +9005,7 @@
       "defaultCategory": "answer-key",
       "state": "Chhattisgarh",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:33",
       "itemCount": 1,
       "status": "success"
     },
@@ -8765,7 +9029,7 @@
       "defaultCategory": "latest-jobs",
       "state": "Chhattisgarh",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:28",
       "itemCount": 1,
       "status": "success"
     },
@@ -8789,7 +9053,7 @@
       "defaultCategory": "results",
       "state": "Chhattisgarh",
       "enabled": true,
-      "lastScraped": "04-09-2026 04:19",
+      "lastScraped": "04-09-2026 04:33",
       "itemCount": 1,
       "status": "success"
     },
@@ -8813,7 +9077,7 @@
       "defaultCategory": "answer-key",
       "state": "Chhattisgarh",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:23",
       "itemCount": 1,
       "status": "success"
     },
@@ -8825,7 +9089,7 @@
       "defaultCategory": "admission",
       "state": "Chhattisgarh",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:28",
       "itemCount": 1,
       "status": "success"
     },
@@ -8837,7 +9101,7 @@
       "defaultCategory": "latest-jobs",
       "state": "Chhattisgarh",
       "enabled": true,
-      "lastScraped": "04-09-2026 04:19",
+      "lastScraped": "04-09-2026 02:09",
       "itemCount": 1,
       "status": "success"
     },
@@ -8849,7 +9113,7 @@
       "defaultCategory": "admit-cards",
       "state": "Chhattisgarh",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:21",
       "itemCount": 1,
       "status": "success"
     },
@@ -8861,7 +9125,7 @@
       "defaultCategory": "results",
       "state": "Chhattisgarh",
       "enabled": true,
-      "lastScraped": "04-09-2026 04:19",
+      "lastScraped": "04-09-2026 02:09",
       "itemCount": 1,
       "status": "success"
     },
@@ -8873,7 +9137,7 @@
       "defaultCategory": "syllabus",
       "state": "Chhattisgarh",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:22",
       "itemCount": 1,
       "status": "success"
     },
@@ -8885,7 +9149,7 @@
       "defaultCategory": "answer-key",
       "state": "Chhattisgarh",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:28",
       "itemCount": 1,
       "status": "success"
     },
@@ -8897,7 +9161,7 @@
       "defaultCategory": "admission",
       "state": "Chhattisgarh",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:21",
       "itemCount": 1,
       "status": "success"
     },
@@ -8921,7 +9185,7 @@
       "defaultCategory": "admit-cards",
       "state": "Chhattisgarh",
       "enabled": true,
-      "lastScraped": "04-09-2026 04:19",
+      "lastScraped": "04-09-2026 04:24",
       "itemCount": 1,
       "status": "success"
     },
@@ -8933,7 +9197,7 @@
       "defaultCategory": "results",
       "state": "Uttarakhand",
       "enabled": true,
-      "lastScraped": "04-09-2026 04:19",
+      "lastScraped": "04-09-2026 04:21",
       "itemCount": 1,
       "status": "success"
     },
@@ -8969,7 +9233,7 @@
       "defaultCategory": "admission",
       "state": "Uttarakhand",
       "enabled": true,
-      "lastScraped": "04-09-2026 04:19",
+      "lastScraped": "04-09-2026 02:09",
       "itemCount": 1,
       "status": "success"
     },
@@ -8993,7 +9257,7 @@
       "defaultCategory": "admit-cards",
       "state": "Uttarakhand",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:20",
       "itemCount": 1,
       "status": "success"
     },
@@ -9053,7 +9317,7 @@
       "defaultCategory": "latest-jobs",
       "state": "Uttarakhand",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:21",
       "itemCount": 1,
       "status": "success"
     },
@@ -9065,7 +9329,7 @@
       "defaultCategory": "admit-cards",
       "state": "Uttarakhand",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:21",
       "itemCount": 1,
       "status": "success"
     },
@@ -9077,7 +9341,7 @@
       "defaultCategory": "results",
       "state": "Uttarakhand",
       "enabled": true,
-      "lastScraped": "04-09-2026 04:19",
+      "lastScraped": "04-09-2026 04:22",
       "itemCount": 1,
       "status": "success"
     },
@@ -9089,7 +9353,7 @@
       "defaultCategory": "syllabus",
       "state": "Uttarakhand",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:20",
       "itemCount": 1,
       "status": "success"
     },
@@ -9101,7 +9365,7 @@
       "defaultCategory": "answer-key",
       "state": "Uttarakhand",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:22",
       "itemCount": 1,
       "status": "success"
     },
@@ -9113,7 +9377,7 @@
       "defaultCategory": "admission",
       "state": "Uttarakhand",
       "enabled": true,
-      "lastScraped": "04-09-2026 04:19",
+      "lastScraped": "04-09-2026 04:24",
       "itemCount": 1,
       "status": "success"
     },
@@ -9125,7 +9389,7 @@
       "defaultCategory": "latest-jobs",
       "state": "Uttarakhand",
       "enabled": true,
-      "lastScraped": "04-09-2026 04:19",
+      "lastScraped": "04-09-2026 02:09",
       "itemCount": 1,
       "status": "success"
     },
@@ -9149,7 +9413,7 @@
       "defaultCategory": "results",
       "state": "Uttarakhand",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:24",
       "itemCount": 1,
       "status": "success"
     },
@@ -9161,7 +9425,7 @@
       "defaultCategory": "syllabus",
       "state": "Uttarakhand",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:20",
       "itemCount": 1,
       "status": "success"
     },
@@ -9185,7 +9449,7 @@
       "defaultCategory": "admission",
       "state": "Uttarakhand",
       "enabled": true,
-      "lastScraped": "04-09-2026 04:19",
+      "lastScraped": "04-09-2026 02:09",
       "itemCount": 1,
       "status": "success"
     },
@@ -9197,7 +9461,7 @@
       "defaultCategory": "latest-jobs",
       "state": "Uttarakhand",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:21",
       "itemCount": 1,
       "status": "success"
     },
@@ -9209,7 +9473,7 @@
       "defaultCategory": "admit-cards",
       "state": "Uttarakhand",
       "enabled": true,
-      "lastScraped": "04-09-2026 04:19",
+      "lastScraped": "04-09-2026 02:09",
       "itemCount": 1,
       "status": "success"
     },
@@ -9293,7 +9557,7 @@
       "defaultCategory": "results",
       "state": "Himachal Pradesh",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:20",
       "itemCount": 1,
       "status": "success"
     },
@@ -9305,7 +9569,7 @@
       "defaultCategory": "syllabus",
       "state": "Himachal Pradesh",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:31",
       "itemCount": 1,
       "status": "success"
     },
@@ -9317,7 +9581,7 @@
       "defaultCategory": "answer-key",
       "state": "Himachal Pradesh",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:22",
       "itemCount": 1,
       "status": "success"
     },
@@ -9377,7 +9641,7 @@
       "defaultCategory": "syllabus",
       "state": "Himachal Pradesh",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:22",
       "itemCount": 1,
       "status": "success"
     },
@@ -9413,7 +9677,7 @@
       "defaultCategory": "latest-jobs",
       "state": "Himachal Pradesh",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:33",
       "itemCount": 1,
       "status": "success"
     },
@@ -9497,7 +9761,7 @@
       "defaultCategory": "admit-cards",
       "state": "Himachal Pradesh",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:20",
       "itemCount": 1,
       "status": "success"
     },
@@ -9509,7 +9773,7 @@
       "defaultCategory": "results",
       "state": "Telangana",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:29",
       "itemCount": 1,
       "status": "success"
     },
@@ -9533,7 +9797,7 @@
       "defaultCategory": "answer-key",
       "state": "Telangana",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:29",
       "itemCount": 1,
       "status": "success"
     },
@@ -9581,7 +9845,7 @@
       "defaultCategory": "results",
       "state": "Telangana",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:20",
       "itemCount": 1,
       "status": "success"
     },
@@ -9629,7 +9893,7 @@
       "defaultCategory": "latest-jobs",
       "state": "Telangana",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:29",
       "itemCount": 1,
       "status": "success"
     },
@@ -9641,7 +9905,7 @@
       "defaultCategory": "admit-cards",
       "state": "Telangana",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:23",
       "itemCount": 1,
       "status": "success"
     },
@@ -9653,7 +9917,7 @@
       "defaultCategory": "results",
       "state": "Telangana",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:21",
       "itemCount": 1,
       "status": "success"
     },
@@ -9665,7 +9929,7 @@
       "defaultCategory": "syllabus",
       "state": "Telangana",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:22",
       "itemCount": 1,
       "status": "success"
     },
@@ -9737,7 +10001,7 @@
       "defaultCategory": "syllabus",
       "state": "Telangana",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:31",
       "itemCount": 1,
       "status": "success"
     },
@@ -9749,7 +10013,7 @@
       "defaultCategory": "answer-key",
       "state": "Telangana",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:22",
       "itemCount": 1,
       "status": "success"
     },
@@ -9761,7 +10025,7 @@
       "defaultCategory": "admission",
       "state": "Telangana",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:27",
       "itemCount": 1,
       "status": "success"
     },
@@ -9809,7 +10073,7 @@
       "defaultCategory": "syllabus",
       "state": "Andhra Pradesh",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:20",
       "itemCount": 1,
       "status": "success"
     },
@@ -9833,7 +10097,7 @@
       "defaultCategory": "admission",
       "state": "Andhra Pradesh",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:20",
       "itemCount": 1,
       "status": "success"
     },
@@ -9845,7 +10109,7 @@
       "defaultCategory": "latest-jobs",
       "state": "Andhra Pradesh",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:29",
       "itemCount": 1,
       "status": "success"
     },
@@ -9893,7 +10157,7 @@
       "defaultCategory": "answer-key",
       "state": "Andhra Pradesh",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:29",
       "itemCount": 1,
       "status": "success"
     },
@@ -9917,7 +10181,7 @@
       "defaultCategory": "latest-jobs",
       "state": "Andhra Pradesh",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:29",
       "itemCount": 1,
       "status": "success"
     },
@@ -9929,7 +10193,7 @@
       "defaultCategory": "admit-cards",
       "state": "Andhra Pradesh",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:20",
       "itemCount": 1,
       "status": "success"
     },
@@ -9953,7 +10217,7 @@
       "defaultCategory": "syllabus",
       "state": "Andhra Pradesh",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:27",
       "itemCount": 1,
       "status": "success"
     },
@@ -9977,7 +10241,7 @@
       "defaultCategory": "admission",
       "state": "Andhra Pradesh",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:27",
       "itemCount": 1,
       "status": "success"
     },
@@ -10001,7 +10265,7 @@
       "defaultCategory": "admit-cards",
       "state": "Andhra Pradesh",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:29",
       "itemCount": 1,
       "status": "success"
     },
@@ -10049,7 +10313,7 @@
       "defaultCategory": "admission",
       "state": "Andhra Pradesh",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:29",
       "itemCount": 1,
       "status": "success"
     },
@@ -10193,7 +10457,7 @@
       "defaultCategory": "admission",
       "state": "Delhi",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:27",
       "itemCount": 1,
       "status": "success"
     },
@@ -10217,7 +10481,7 @@
       "defaultCategory": "admit-cards",
       "state": "Delhi",
       "enabled": true,
-      "lastScraped": "04-09-2026 04:19",
+      "lastScraped": "04-09-2026 04:23",
       "itemCount": 1,
       "status": "success"
     },
@@ -10253,7 +10517,7 @@
       "defaultCategory": "answer-key",
       "state": "Delhi",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:24",
       "itemCount": 1,
       "status": "success"
     },
@@ -10265,7 +10529,7 @@
       "defaultCategory": "admission",
       "state": "Delhi",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:29",
       "itemCount": 1,
       "status": "success"
     },
@@ -10313,7 +10577,7 @@
       "defaultCategory": "syllabus",
       "state": "Delhi",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:20",
       "itemCount": 1,
       "status": "success"
     },
@@ -10361,7 +10625,7 @@
       "defaultCategory": "admit-cards",
       "state": "Delhi",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:21",
       "itemCount": 1,
       "status": "success"
     },
@@ -10421,7 +10685,7 @@
       "defaultCategory": "latest-jobs",
       "state": "Jammu & Kashmir",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:24",
       "itemCount": 1,
       "status": "success"
     },
@@ -10433,7 +10697,7 @@
       "defaultCategory": "admit-cards",
       "state": "Jammu & Kashmir",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:33",
       "itemCount": 1,
       "status": "success"
     },
@@ -10445,7 +10709,7 @@
       "defaultCategory": "results",
       "state": "Jammu & Kashmir",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:24",
       "itemCount": 1,
       "status": "success"
     },
@@ -10481,7 +10745,7 @@
       "defaultCategory": "admission",
       "state": "Jammu & Kashmir",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:22",
       "itemCount": 1,
       "status": "success"
     },
@@ -10529,7 +10793,7 @@
       "defaultCategory": "syllabus",
       "state": "Jammu & Kashmir",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:24",
       "itemCount": 1,
       "status": "success"
     },
@@ -10565,7 +10829,7 @@
       "defaultCategory": "latest-jobs",
       "state": "Jammu & Kashmir",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:24",
       "itemCount": 1,
       "status": "success"
     },
@@ -10589,7 +10853,7 @@
       "defaultCategory": "results",
       "state": "Jammu & Kashmir",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:26",
       "itemCount": 1,
       "status": "success"
     },
@@ -10673,7 +10937,7 @@
       "defaultCategory": "latest-jobs",
       "state": "Central",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:24",
       "itemCount": 1,
       "status": "success"
     },
@@ -10721,7 +10985,7 @@
       "defaultCategory": "latest-jobs",
       "state": "Central",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:20",
       "itemCount": 1,
       "status": "success"
     },
@@ -10865,7 +11129,7 @@
       "defaultCategory": "latest-jobs",
       "state": "Central",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:29",
       "itemCount": 1,
       "status": "success"
     },
@@ -10913,7 +11177,7 @@
       "defaultCategory": "latest-jobs",
       "state": "Central",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:32",
       "itemCount": 1,
       "status": "success"
     },
@@ -11021,7 +11285,7 @@
       "defaultCategory": "latest-jobs",
       "state": "Central",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:25",
       "itemCount": 1,
       "status": "success"
     },
@@ -11093,7 +11357,7 @@
       "defaultCategory": "latest-jobs",
       "state": "Central",
       "enabled": true,
-      "lastScraped": "04-09-2026 02:09",
+      "lastScraped": "04-09-2026 04:27",
       "itemCount": 1,
       "status": "success"
     }
@@ -11130,6 +11394,402 @@
     "includeApplyLink": true
   },
   "notificationHistory": [
+    {
+      "id": "log-1788496392886-325",
+      "jobId": "auto-1788496392989",
+      "jobTitle": "Tamil Nadu Metro Official Board - Latest Public Notice 2026",
+      "category": "answer-key",
+      "sentAt": "04/09/2026 04:33",
+      "recipientCount": 4,
+      "provider": "built-in",
+      "status": "delivered",
+      "subject": "⚡ [FastArc Alert] Tamil Nadu Metro Official Board - Latest Public Notice 2026 - Tamil Nadu Apply Online",
+      "details": "Successfully dispatched to 4 subscriber(s).",
+      "sampleRecipients": [
+        "vikas.patel@example.com",
+        "rahul.kumar@gmail.com",
+        "priya.singh@yahoo.com",
+        "amit.sharma@outlook.com"
+      ]
+    },
+    {
+      "id": "log-1788496392813-377",
+      "jobId": "auto-1788496392989",
+      "jobTitle": "Tamil Nadu Metro Official Board - Latest Public Notice 2026",
+      "category": "answer-key",
+      "sentAt": "04/09/2026 04:33",
+      "recipientCount": 4,
+      "provider": "built-in",
+      "status": "delivered",
+      "subject": "⚡ [FastArc Alert] Tamil Nadu Metro Official Board - Latest Public Notice 2026 - Tamil Nadu Apply Online",
+      "details": "Successfully dispatched to 4 subscriber(s).",
+      "sampleRecipients": [
+        "vikas.patel@example.com",
+        "rahul.kumar@gmail.com",
+        "priya.singh@yahoo.com",
+        "amit.sharma@outlook.com"
+      ]
+    },
+    {
+      "id": "log-1788496363644-711",
+      "jobId": "auto-1788496363791",
+      "jobTitle": "UP Housing Board Official Board - Latest Public Notice 2026",
+      "category": "answer-key",
+      "sentAt": "04/09/2026 04:32",
+      "recipientCount": 4,
+      "provider": "built-in",
+      "status": "delivered",
+      "subject": "⚡ [FastArc Alert] UP Housing Board Official Board - Latest Public Notice 2026 - UP Apply Online",
+      "details": "Successfully dispatched to 4 subscriber(s).",
+      "sampleRecipients": [
+        "vikas.patel@example.com",
+        "rahul.kumar@gmail.com",
+        "priya.singh@yahoo.com",
+        "amit.sharma@outlook.com"
+      ]
+    },
+    {
+      "id": "log-1788496363604-131",
+      "jobId": "auto-1788496363791",
+      "jobTitle": "UP Housing Board Official Board - Latest Public Notice 2026",
+      "category": "answer-key",
+      "sentAt": "04/09/2026 04:32",
+      "recipientCount": 4,
+      "provider": "built-in",
+      "status": "delivered",
+      "subject": "⚡ [FastArc Alert] UP Housing Board Official Board - Latest Public Notice 2026 - UP Apply Online",
+      "details": "Successfully dispatched to 4 subscriber(s).",
+      "sampleRecipients": [
+        "vikas.patel@example.com",
+        "rahul.kumar@gmail.com",
+        "priya.singh@yahoo.com",
+        "amit.sharma@outlook.com"
+      ]
+    },
+    {
+      "id": "log-1788496331931-550",
+      "jobId": "auto-1788496332148",
+      "jobTitle": "Bihar Electricity Board Official Board - Latest Public Notice 2026",
+      "category": "syllabus",
+      "sentAt": "04/09/2026 04:32",
+      "recipientCount": 4,
+      "provider": "built-in",
+      "status": "delivered",
+      "subject": "⚡ [FastArc Alert] Bihar Electricity Board Official Board - Latest Public Notice 2026 - Bihar Apply Online",
+      "details": "Successfully dispatched to 4 subscriber(s).",
+      "sampleRecipients": [
+        "vikas.patel@example.com",
+        "rahul.kumar@gmail.com",
+        "priya.singh@yahoo.com",
+        "amit.sharma@outlook.com"
+      ]
+    },
+    {
+      "id": "log-1788496331899-39",
+      "jobId": "auto-1788496332148",
+      "jobTitle": "Bihar Electricity Board Official Board - Latest Public Notice 2026",
+      "category": "syllabus",
+      "sentAt": "04/09/2026 04:32",
+      "recipientCount": 4,
+      "provider": "built-in",
+      "status": "delivered",
+      "subject": "⚡ [FastArc Alert] Bihar Electricity Board Official Board - Latest Public Notice 2026 - Bihar Apply Online",
+      "details": "Successfully dispatched to 4 subscriber(s).",
+      "sampleRecipients": [
+        "vikas.patel@example.com",
+        "rahul.kumar@gmail.com",
+        "priya.singh@yahoo.com",
+        "amit.sharma@outlook.com"
+      ]
+    },
+    {
+      "id": "log-1788496281771-915",
+      "jobId": "auto-1788496281912",
+      "jobTitle": "Bihar Education Board Official Board - Latest Public Notice 2026",
+      "category": "latest-jobs",
+      "sentAt": "04/09/2026 04:31",
+      "recipientCount": 4,
+      "provider": "built-in",
+      "status": "delivered",
+      "subject": "⚡ [FastArc Alert] Bihar Education Board Official Board - Latest Public Notice 2026 - Bihar Apply Online",
+      "details": "Successfully dispatched to 4 subscriber(s).",
+      "sampleRecipients": [
+        "vikas.patel@example.com",
+        "rahul.kumar@gmail.com",
+        "priya.singh@yahoo.com",
+        "amit.sharma@outlook.com"
+      ]
+    },
+    {
+      "id": "log-1788496281737-917",
+      "jobId": "auto-1788496281912",
+      "jobTitle": "Bihar Education Board Official Board - Latest Public Notice 2026",
+      "category": "latest-jobs",
+      "sentAt": "04/09/2026 04:31",
+      "recipientCount": 4,
+      "provider": "built-in",
+      "status": "delivered",
+      "subject": "⚡ [FastArc Alert] Bihar Education Board Official Board - Latest Public Notice 2026 - Bihar Apply Online",
+      "details": "Successfully dispatched to 4 subscriber(s).",
+      "sampleRecipients": [
+        "vikas.patel@example.com",
+        "rahul.kumar@gmail.com",
+        "priya.singh@yahoo.com",
+        "amit.sharma@outlook.com"
+      ]
+    },
+    {
+      "id": "log-1788496161781-250",
+      "jobId": "auto-1788496161923",
+      "jobTitle": "HPCL Central Govt Recruitment - Latest Public Notice 2026",
+      "category": "latest-jobs",
+      "sentAt": "04/09/2026 04:29",
+      "recipientCount": 4,
+      "provider": "built-in",
+      "status": "delivered",
+      "subject": "⚡ [FastArc Alert] HPCL Central Govt Recruitment - Latest Public Notice 2026 - Central Apply Online",
+      "details": "Successfully dispatched to 4 subscriber(s).",
+      "sampleRecipients": [
+        "vikas.patel@example.com",
+        "rahul.kumar@gmail.com",
+        "priya.singh@yahoo.com",
+        "amit.sharma@outlook.com"
+      ]
+    },
+    {
+      "id": "log-1788496161709-66",
+      "jobId": "auto-1788496161923",
+      "jobTitle": "HPCL Central Govt Recruitment - Latest Public Notice 2026",
+      "category": "latest-jobs",
+      "sentAt": "04/09/2026 04:29",
+      "recipientCount": 4,
+      "provider": "built-in",
+      "status": "delivered",
+      "subject": "⚡ [FastArc Alert] HPCL Central Govt Recruitment - Latest Public Notice 2026 - Central Apply Online",
+      "details": "Successfully dispatched to 4 subscriber(s).",
+      "sampleRecipients": [
+        "vikas.patel@example.com",
+        "rahul.kumar@gmail.com",
+        "priya.singh@yahoo.com",
+        "amit.sharma@outlook.com"
+      ]
+    },
+    {
+      "id": "log-1788496042353-26",
+      "jobId": "auto-1788496042442",
+      "jobTitle": "Rajasthan Panchayat Official Board - Latest Public Notice 2026",
+      "category": "admit-cards",
+      "sentAt": "04/09/2026 04:27",
+      "recipientCount": 4,
+      "provider": "built-in",
+      "status": "delivered",
+      "subject": "⚡ [FastArc Alert] Rajasthan Panchayat Official Board - Latest Public Notice 2026 - Rajasthan Apply Online",
+      "details": "Successfully dispatched to 4 subscriber(s).",
+      "sampleRecipients": [
+        "vikas.patel@example.com",
+        "rahul.kumar@gmail.com",
+        "priya.singh@yahoo.com",
+        "amit.sharma@outlook.com"
+      ]
+    },
+    {
+      "id": "log-1788496042312-420",
+      "jobId": "auto-1788496042442",
+      "jobTitle": "Rajasthan Panchayat Official Board - Latest Public Notice 2026",
+      "category": "admit-cards",
+      "sentAt": "04/09/2026 04:27",
+      "recipientCount": 4,
+      "provider": "built-in",
+      "status": "delivered",
+      "subject": "⚡ [FastArc Alert] Rajasthan Panchayat Official Board - Latest Public Notice 2026 - Rajasthan Apply Online",
+      "details": "Successfully dispatched to 4 subscriber(s).",
+      "sampleRecipients": [
+        "vikas.patel@example.com",
+        "rahul.kumar@gmail.com",
+        "priya.singh@yahoo.com",
+        "amit.sharma@outlook.com"
+      ]
+    },
+    {
+      "id": "log-1788495821926-340",
+      "jobId": "auto-1788495822262",
+      "jobTitle": "Assam Metro Official Board - Latest Public Notice 2026",
+      "category": "answer-key",
+      "sentAt": "04/09/2026 04:23",
+      "recipientCount": 4,
+      "provider": "built-in",
+      "status": "delivered",
+      "subject": "⚡ [FastArc Alert] Assam Metro Official Board - Latest Public Notice 2026 - Assam Apply Online",
+      "details": "Successfully dispatched to 4 subscriber(s).",
+      "sampleRecipients": [
+        "vikas.patel@example.com",
+        "rahul.kumar@gmail.com",
+        "priya.singh@yahoo.com",
+        "amit.sharma@outlook.com"
+      ]
+    },
+    {
+      "id": "log-1788495821885-346",
+      "jobId": "auto-1788495822262",
+      "jobTitle": "Assam Metro Official Board - Latest Public Notice 2026",
+      "category": "answer-key",
+      "sentAt": "04/09/2026 04:23",
+      "recipientCount": 4,
+      "provider": "built-in",
+      "status": "delivered",
+      "subject": "⚡ [FastArc Alert] Assam Metro Official Board - Latest Public Notice 2026 - Assam Apply Online",
+      "details": "Successfully dispatched to 4 subscriber(s).",
+      "sampleRecipients": [
+        "vikas.patel@example.com",
+        "rahul.kumar@gmail.com",
+        "priya.singh@yahoo.com",
+        "amit.sharma@outlook.com"
+      ]
+    },
+    {
+      "id": "log-1788495792806-521",
+      "jobId": "auto-1788495793015",
+      "jobTitle": "MP Rural Development Official Board - Latest Public Notice 2026",
+      "category": "results",
+      "sentAt": "04/09/2026 04:23",
+      "recipientCount": 4,
+      "provider": "built-in",
+      "status": "delivered",
+      "subject": "⚡ [FastArc Alert] MP Rural Development Official Board - Latest Public Notice 2026 - MP Apply Online",
+      "details": "Successfully dispatched to 4 subscriber(s).",
+      "sampleRecipients": [
+        "vikas.patel@example.com",
+        "rahul.kumar@gmail.com",
+        "priya.singh@yahoo.com",
+        "amit.sharma@outlook.com"
+      ]
+    },
+    {
+      "id": "log-1788495792776-809",
+      "jobId": "auto-1788495793015",
+      "jobTitle": "MP Rural Development Official Board - Latest Public Notice 2026",
+      "category": "results",
+      "sentAt": "04/09/2026 04:23",
+      "recipientCount": 4,
+      "provider": "built-in",
+      "status": "delivered",
+      "subject": "⚡ [FastArc Alert] MP Rural Development Official Board - Latest Public Notice 2026 - MP Apply Online",
+      "details": "Successfully dispatched to 4 subscriber(s).",
+      "sampleRecipients": [
+        "vikas.patel@example.com",
+        "rahul.kumar@gmail.com",
+        "priya.singh@yahoo.com",
+        "amit.sharma@outlook.com"
+      ]
+    },
+    {
+      "id": "log-1788495732709-888",
+      "jobId": "auto-1788495732988",
+      "jobTitle": "Jharkhand Water Board Official Board - Latest Public Notice 2026",
+      "category": "syllabus",
+      "sentAt": "04/09/2026 04:22",
+      "recipientCount": 4,
+      "provider": "built-in",
+      "status": "delivered",
+      "subject": "⚡ [FastArc Alert] Jharkhand Water Board Official Board - Latest Public Notice 2026 - Jharkhand Apply Online",
+      "details": "Successfully dispatched to 4 subscriber(s).",
+      "sampleRecipients": [
+        "vikas.patel@example.com",
+        "rahul.kumar@gmail.com",
+        "priya.singh@yahoo.com",
+        "amit.sharma@outlook.com"
+      ]
+    },
+    {
+      "id": "log-1788495732648-535",
+      "jobId": "auto-1788495732988",
+      "jobTitle": "Jharkhand Water Board Official Board - Latest Public Notice 2026",
+      "category": "syllabus",
+      "sentAt": "04/09/2026 04:22",
+      "recipientCount": 4,
+      "provider": "built-in",
+      "status": "delivered",
+      "subject": "⚡ [FastArc Alert] Jharkhand Water Board Official Board - Latest Public Notice 2026 - Jharkhand Apply Online",
+      "details": "Successfully dispatched to 4 subscriber(s).",
+      "sampleRecipients": [
+        "vikas.patel@example.com",
+        "rahul.kumar@gmail.com",
+        "priya.singh@yahoo.com",
+        "amit.sharma@outlook.com"
+      ]
+    },
+    {
+      "id": "log-1788495703342-242",
+      "jobId": "auto-1788495703534",
+      "jobTitle": "Rajasthan PWD Official Board - Latest Public Notice 2026",
+      "category": "admission",
+      "sentAt": "04/09/2026 04:21",
+      "recipientCount": 4,
+      "provider": "built-in",
+      "status": "delivered",
+      "subject": "⚡ [FastArc Alert] Rajasthan PWD Official Board - Latest Public Notice 2026 - Rajasthan Apply Online",
+      "details": "Successfully dispatched to 4 subscriber(s).",
+      "sampleRecipients": [
+        "vikas.patel@example.com",
+        "rahul.kumar@gmail.com",
+        "priya.singh@yahoo.com",
+        "amit.sharma@outlook.com"
+      ]
+    },
+    {
+      "id": "log-1788495703215-360",
+      "jobId": "auto-1788495703534",
+      "jobTitle": "Rajasthan PWD Official Board - Latest Public Notice 2026",
+      "category": "admission",
+      "sentAt": "04/09/2026 04:21",
+      "recipientCount": 4,
+      "provider": "built-in",
+      "status": "delivered",
+      "subject": "⚡ [FastArc Alert] Rajasthan PWD Official Board - Latest Public Notice 2026 - Rajasthan Apply Online",
+      "details": "Successfully dispatched to 4 subscriber(s).",
+      "sampleRecipients": [
+        "vikas.patel@example.com",
+        "rahul.kumar@gmail.com",
+        "priya.singh@yahoo.com",
+        "amit.sharma@outlook.com"
+      ]
+    },
+    {
+      "id": "log-1788495672805-936",
+      "jobId": "auto-1788495673013",
+      "jobTitle": "Uttarakhand Panchayat Official Board - Latest Public Notice 2026",
+      "category": "admit-cards",
+      "sentAt": "04/09/2026 04:21",
+      "recipientCount": 4,
+      "provider": "built-in",
+      "status": "delivered",
+      "subject": "⚡ [FastArc Alert] Uttarakhand Panchayat Official Board - Latest Public Notice 2026 - Uttarakhand Apply Online",
+      "details": "Successfully dispatched to 4 subscriber(s).",
+      "sampleRecipients": [
+        "vikas.patel@example.com",
+        "rahul.kumar@gmail.com",
+        "priya.singh@yahoo.com",
+        "amit.sharma@outlook.com"
+      ]
+    },
+    {
+      "id": "log-1788495672727-25",
+      "jobId": "auto-1788495673013",
+      "jobTitle": "Uttarakhand Panchayat Official Board - Latest Public Notice 2026",
+      "category": "admit-cards",
+      "sentAt": "04/09/2026 04:21",
+      "recipientCount": 4,
+      "provider": "built-in",
+      "status": "delivered",
+      "subject": "⚡ [FastArc Alert] Uttarakhand Panchayat Official Board - Latest Public Notice 2026 - Uttarakhand Apply Online",
+      "details": "Successfully dispatched to 4 subscriber(s).",
+      "sampleRecipients": [
+        "vikas.patel@example.com",
+        "rahul.kumar@gmail.com",
+        "priya.singh@yahoo.com",
+        "amit.sharma@outlook.com"
+      ]
+    },
     {
       "id": "log-seed-1",
       "jobId": "seed-job-1",
