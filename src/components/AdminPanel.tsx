@@ -1,6 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Sparkles, Wand2, Check } from 'lucide-react';
-import { JobAlert } from '../types';
+import { 
+  Sparkles, Wand2, Check, ArrowLeft, ArrowRight, Save, Eye, X, 
+  Plus, Trash2, Calendar, DollarSign, GraduationCap, Building2, 
+  Users, FileText, Link, Shield, Briefcase, HelpCircle, RefreshCw,
+  Clock, AlertCircle, Share2, Download, ExternalLink, CheckCircle2
+} from 'lucide-react';
+import { JobAlert, JobCategory, PostWiseVacancy } from '../types';
 import { DateInputWithPicker } from './DateInputWithPicker';
 import { enrichJobDetails } from '../utils/jobEnricher';
 
@@ -51,8 +56,23 @@ const ALL_INDIAN_STATES = [
   'Other'
 ];
 
+type AdminTab = 'basic' | 'dates-fees' | 'age-eligibility' | 'vacancies' | 'salary-selection' | 'instructions-docs' | 'links' | 'preview';
+
+const TAB_LIST: { id: AdminTab; label: string; shortLabel: string; icon: any }[] = [
+  { id: 'basic', label: '1. Basic Info & Org', shortLabel: 'Basic Info', icon: Building2 },
+  { id: 'dates-fees', label: '2. Dates & Fees', shortLabel: 'Dates & Fees', icon: Calendar },
+  { id: 'age-eligibility', label: '3. Age & Qualification', shortLabel: 'Age & Eligibility', icon: GraduationCap },
+  { id: 'vacancies', label: '4. Vacancy & Reservation', shortLabel: 'Vacancies', icon: Users },
+  { id: 'salary-selection', label: '5. Salary & Selection', shortLabel: 'Salary & Selection', icon: Briefcase },
+  { id: 'instructions-docs', label: '6. How To Apply & Docs', shortLabel: 'Apply & Docs', icon: FileText },
+  { id: 'links', label: '7. Official Links', shortLabel: 'Official Links', icon: Link },
+  { id: 'preview', label: '8. Live Preview', shortLabel: 'Preview', icon: Eye },
+];
+
 export const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose, onSave, editingJob }) => {
+  const [activeTab, setActiveTab] = useState<AdminTab>('basic');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [statusMessage, setStatusMessage] = useState<string | null>(null);
 
   const formatInitialDate = (dateStr?: string) => {
     if (!dateStr) {
@@ -65,38 +85,156 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose, onSave,
     return dateStr;
   };
 
-  const [formData, setFormData] = useState<Partial<JobAlert>>({
-    title: '', category: 'latest-jobs', state: 'Central', isNew: true, shortInfo: '', postDate: formatInitialDate()
+  const getInitialJobState = (): Partial<JobAlert> => ({
+    title: '',
+    category: 'latest-jobs',
+    state: 'Central',
+    orgName: '',
+    postName: '',
+    advtNo: '',
+    totalVacancies: '',
+    status: 'Application Open',
+    isNew: true,
+    shortInfo: '',
+    postDate: formatInitialDate(),
+    dates: {
+      start: '',
+      last: '',
+      feeLast: '',
+      correctionDate: '',
+      examDate: '',
+      admitCardDate: '',
+      answerKeyDate: '',
+      resultDate: '',
+    },
+    fees: {
+      general: '₹100/-',
+      scSt: '₹0/- (Exempted)',
+      female: '₹0/- (Exempted)',
+      paymentMode: 'Pay the Examination Fee Through Online Mode (Debit Card / Credit Card / Net Banking / UPI / E-Challan).',
+    },
+    ageLimit: {
+      min: '18 Years',
+      max: '27-32 Years (Post Wise)',
+      asOn: `01-08-${new Date().getFullYear()}`,
+      relaxation: 'Age Relaxation Extra as per Recruitment Rules (OBC: 3 Years, SC/ST: 5 Years, PwD: 10 Years).',
+      details: '',
+    },
+    eligibility: '',
+    qualifications: [],
+    postWiseVacancies: [
+      {
+        postName: 'General Staff / Assistant',
+        total: '500',
+        general: 200,
+        ews: 50,
+        obc: 135,
+        sc: 75,
+        st: 40,
+        eligibility: 'Bachelor Degree in Any Stream from Any Recognized University in India.'
+      }
+    ],
+    salary: 'Pay Level-6 (₹35,400 to ₹1,12,400/-) + DA, HRA as per Central/State Government rules.',
+    selectionProcess: [
+      'Tier-I Computer Based Written Exam (CBT)',
+      'Tier-II Main Examination / Skill Test',
+      'Document Verification (DV)',
+      'Medical Fitness Examination'
+    ],
+    howToApply: [
+      'Interested candidates can apply online between the announced start and last dates.',
+      'Candidates must carefully read the full official recruitment notification before filling the online form.',
+      'Check and collect all required documents: Eligibility proof, ID proof, Address details, and Basic details.',
+      'Keep scanned copies ready: Passport photo, Signature, ID Proof, 10th Certificate, Degree Marksheet.',
+      'Before submitting the application form, preview and check all columns carefully.',
+      'Pay the required application fee if applicable. Incomplete forms without fee will not be accepted.',
+      'Take a clear printout of the final submitted application form for future reference.'
+    ],
+    importantDocuments: [
+      'Active Mobile Number & Valid Email ID',
+      'Recent Passport Size Color Photograph (White Background, max 50KB)',
+      'Candidate Scanned Signature (max 20KB)',
+      'Class 10th (High School) Certificate for Date of Birth Verification',
+      'Graduation / Qualifying Degree Marksheet & Certificate',
+      'Category / Caste / EWS Certificate (if seeking reservation benefit)',
+      'Valid Photo Identity Proof (Aadhaar Card / Voter ID / PAN Card)'
+    ],
+    links: {
+      apply: '',
+      applyServer2: '',
+      notification: '',
+      official: '',
+      admitCard: '',
+      result: '',
+      resultServer2: '',
+      answerKey: '',
+      syllabus: '',
+      videoHindi: '',
+      telegram: 'https://t.me/fastarcgovtresul',
+      whatsapp: 'https://whatsapp.com/channel/fastarc'
+    }
   });
+
+  const [formData, setFormData] = useState<Partial<JobAlert>>(getInitialJobState());
 
   useEffect(() => {
     if (editingJob) {
+      const enriched = enrichJobDetails(editingJob);
       setFormData({
-        ...editingJob,
-        postDate: editingJob.postDate || formatInitialDate(),
+        ...enriched,
+        postDate: enriched.postDate || formatInitialDate(),
+        dates: {
+          start: enriched.dates?.start || '',
+          last: enriched.dates?.last || '',
+          feeLast: enriched.dates?.feeLast || '',
+          correctionDate: enriched.dates?.correctionDate || '',
+          examDate: enriched.dates?.examDate || '',
+          admitCardDate: enriched.dates?.admitCardDate || '',
+          answerKeyDate: enriched.dates?.answerKeyDate || '',
+          resultDate: enriched.dates?.resultDate || '',
+        },
+        fees: {
+          general: enriched.fees?.general || '₹100/-',
+          scSt: enriched.fees?.scSt || '₹0/- (Exempted)',
+          female: enriched.fees?.female || '₹0/- (Exempted)',
+          paymentMode: enriched.fees?.paymentMode || 'Pay Exam Fee via Online Mode.',
+        },
+        ageLimit: typeof enriched.ageLimit === 'object' ? enriched.ageLimit : {
+          min: '18 Years',
+          max: '27-32 Years',
+          asOn: `01-08-${new Date().getFullYear()}`,
+          relaxation: typeof enriched.ageLimit === 'string' ? enriched.ageLimit : 'As per Rules',
+        },
         links: {
-          apply: editingJob.links?.apply || '',
-          official: editingJob.links?.official || '',
-          notification: editingJob.links?.notification || '',
+          apply: enriched.links?.apply || '',
+          applyServer2: enriched.links?.applyServer2 || '',
+          official: enriched.links?.official || '',
+          notification: enriched.links?.notification || '',
+          admitCard: enriched.links?.admitCard || '',
+          result: enriched.links?.result || '',
+          resultServer2: enriched.links?.resultServer2 || '',
+          answerKey: enriched.links?.answerKey || '',
+          syllabus: enriched.links?.syllabus || '',
+          videoHindi: enriched.links?.videoHindi || '',
+          telegram: enriched.links?.telegram || '',
+          whatsapp: enriched.links?.whatsapp || '',
         }
       });
+      setActiveTab('basic');
     } else {
-      setFormData({
-        title: '', category: 'latest-jobs', state: 'Central', isNew: true, shortInfo: '', postDate: formatInitialDate(),
-        fees: { general: '', scSt: '' }, dates: { start: '', last: '' }, 
-        links: { apply: '', official: '', notification: '' }
-      });
+      setFormData(getInitialJobState());
+      setActiveTab('basic');
     }
   }, [editingJob, isOpen]);
 
   if (!isOpen) return null;
 
-  const handleChange = (field: string, value: any, nested?: 'fees' | 'dates' | 'links') => {
+  const handleChange = (field: string, value: any, nested?: 'fees' | 'dates' | 'links' | 'ageLimit') => {
     if (nested) {
       setFormData(prev => ({ 
         ...prev, 
         [nested]: { 
-          ...(prev[nested] || {}), 
+          ...(prev[nested] as any || {}), 
           [field]: value 
         } 
       }));
@@ -113,349 +251,1670 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose, onSave,
     return `https://${trimmed}`;
   };
 
-  const handleQuickPortalPreset = (portal: 'ssc' | 'rrb' | 'uppbpb' | 'bpsc' | 'ibps' | 'nta' | 'upsc') => {
-    const presets: Record<string, { apply: string; official: string; notification: string }> = {
+  // Quick Portal Presets for Indian Government Commissions
+  const handleQuickPortalPreset = (portal: 'ssc' | 'rrb' | 'uppbpb' | 'bpsc' | 'ibps' | 'nta' | 'upsc' | 'dsssb') => {
+    const presets: Record<string, { org: string; apply: string; official: string; notification: string }> = {
       ssc: {
+        org: 'Staff Selection Commission (SSC)',
         apply: 'https://ssc.gov.in',
         official: 'https://ssc.gov.in',
         notification: 'https://ssc.gov.in/notices'
       },
       rrb: {
+        org: 'Railway Recruitment Boards (RRB) / Ministry of Railways',
         apply: 'https://rrbapply.gov.in',
         official: 'https://indianrailways.gov.in',
         notification: 'https://rrbapply.gov.in/#/auth/home'
       },
       uppbpb: {
+        org: 'Uttar Pradesh Police Recruitment and Promotion Board (UPPRPB)',
         apply: 'https://uppbpb.gov.in',
         official: 'https://uppbpb.gov.in',
         notification: 'https://uppbpb.gov.in/Recruitment'
       },
       bpsc: {
+        org: 'Bihar Public Service Commission (BPSC)',
         apply: 'https://onlinebpsc.bihar.gov.in',
         official: 'https://bpsc.bih.nic.in',
         notification: 'https://bpsc.bih.nic.in'
       },
       ibps: {
+        org: 'Institute of Banking Personnel Selection (IBPS)',
         apply: 'https://ibps.in',
         official: 'https://ibps.in',
         notification: 'https://ibps.in'
       },
       nta: {
+        org: 'National Testing Agency (NTA)',
         apply: 'https://exams.nta.ac.in',
         official: 'https://nta.ac.in',
         notification: 'https://nta.ac.in'
       },
       upsc: {
+        org: 'Union Public Service Commission (UPSC)',
         apply: 'https://upsconline.nic.in',
         official: 'https://upsc.gov.in',
         notification: 'https://upsc.gov.in/examinations'
+      },
+      dsssb: {
+        org: 'Delhi Subordinate Services Selection Board (DSSSB)',
+        apply: 'https://dsssbonline.nic.in',
+        official: 'https://dsssb.delhi.gov.in',
+        notification: 'https://dsssb.delhi.gov.in/current-vacancies'
       }
     };
 
     if (presets[portal]) {
+      const p = presets[portal];
       setFormData(prev => ({
         ...prev,
+        orgName: prev.orgName || p.org,
         links: {
           ...prev.links,
-          apply: presets[portal].apply,
-          official: presets[portal].official,
-          notification: presets[portal].notification,
+          apply: p.apply,
+          official: p.official,
+          notification: p.notification,
         }
       }));
+      setStatusMessage(`Applied ${portal.toUpperCase()} portal preset successfully!`);
+      setTimeout(() => setStatusMessage(null), 2500);
     }
   };
 
+  // AI / Intelligent Auto-Enrichment from Title
   const handleAutoGenerateDetails = () => {
     if (!formData.title?.trim()) {
-      alert('Please enter a Post Title first to auto-generate details.');
+      alert('Please enter a Job Post Title first to auto-generate all columns.');
       return;
     }
     const enriched = enrichJobDetails(formData);
     setFormData(enriched);
+    setStatusMessage('✨ All 7 tabs auto-populated with complete details! You can now review and customize any field.');
+    setTimeout(() => setStatusMessage(null), 4000);
+  };
+
+  // Dynamic Array Handlers for Qualifications
+  const handleAddQualification = () => {
+    setFormData(prev => ({
+      ...prev,
+      qualifications: [...(prev.qualifications || []), 'Bachelor Degree / Diploma in relevant discipline.']
+    }));
+  };
+
+  const handleUpdateQualification = (index: number, val: string) => {
+    setFormData(prev => {
+      const list = [...(prev.qualifications || [])];
+      list[index] = val;
+      return { ...prev, qualifications: list };
+    });
+  };
+
+  const handleRemoveQualification = (index: number) => {
+    setFormData(prev => {
+      const list = [...(prev.qualifications || [])];
+      list.splice(index, 1);
+      return { ...prev, qualifications: list };
+    });
+  };
+
+  // Dynamic Array Handlers for PostWiseVacancies
+  const handleAddVacancyRow = () => {
+    const newRow: PostWiseVacancy = {
+      postName: 'Sub-Inspector / Assistant',
+      total: '100',
+      general: 40,
+      ews: 10,
+      obc: 27,
+      sc: 15,
+      st: 8,
+      eligibility: formData.eligibility || 'Bachelor Degree in Any Stream from Any Recognized University in India.'
+    };
+    setFormData(prev => ({
+      ...prev,
+      postWiseVacancies: [...(prev.postWiseVacancies || []), newRow]
+    }));
+  };
+
+  const handleUpdateVacancyRow = (index: number, field: keyof PostWiseVacancy, val: any) => {
+    setFormData(prev => {
+      const list = [...(prev.postWiseVacancies || [])];
+      list[index] = { ...list[index], [field]: val };
+      return { ...prev, postWiseVacancies: list };
+    });
+  };
+
+  const handleRemoveVacancyRow = (index: number) => {
+    setFormData(prev => {
+      const list = [...(prev.postWiseVacancies || [])];
+      list.splice(index, 1);
+      return { ...prev, postWiseVacancies: list };
+    });
+  };
+
+  const handleAutoDistributeVacancies = (index: number) => {
+    setFormData(prev => {
+      const list = [...(prev.postWiseVacancies || [])];
+      const item = list[index];
+      const totalNum = parseInt(String(item.total).replace(/\D/g, '') || '100', 10);
+      item.general = Math.round(totalNum * 0.40);
+      item.obc = Math.round(totalNum * 0.27);
+      item.ews = Math.round(totalNum * 0.10);
+      item.sc = Math.round(totalNum * 0.15);
+      item.st = Math.max(0, totalNum - (Number(item.general) + Number(item.obc) + Number(item.ews) + Number(item.sc)));
+      return { ...prev, postWiseVacancies: list };
+    });
+  };
+
+  // Dynamic Array Handlers for Selection Process
+  const handleAddSelectionStage = () => {
+    const stageNum = (formData.selectionProcess?.length || 0) + 1;
+    setFormData(prev => ({
+      ...prev,
+      selectionProcess: [...(prev.selectionProcess || []), `Stage ${stageNum}: Computer Based Test / Skill Assessment`]
+    }));
+  };
+
+  const handleUpdateSelectionStage = (index: number, val: string) => {
+    setFormData(prev => {
+      const list = [...(prev.selectionProcess || [])];
+      list[index] = val;
+      return { ...prev, selectionProcess: list };
+    });
+  };
+
+  const handleRemoveSelectionStage = (index: number) => {
+    setFormData(prev => {
+      const list = [...(prev.selectionProcess || [])];
+      list.splice(index, 1);
+      return { ...prev, selectionProcess: list };
+    });
+  };
+
+  // Dynamic Array Handlers for How To Apply
+  const handleAddApplyStep = () => {
+    const stepNum = (formData.howToApply?.length || 0) + 1;
+    setFormData(prev => ({
+      ...prev,
+      howToApply: [...(prev.howToApply || []), `${stepNum}. Review all required documents and details before submitting the application.`]
+    }));
+  };
+
+  const handleUpdateApplyStep = (index: number, val: string) => {
+    setFormData(prev => {
+      const list = [...(prev.howToApply || [])];
+      list[index] = val;
+      return { ...prev, howToApply: list };
+    });
+  };
+
+  const handleRemoveApplyStep = (index: number) => {
+    setFormData(prev => {
+      const list = [...(prev.howToApply || [])];
+      list.splice(index, 1);
+      return { ...prev, howToApply: list };
+    });
+  };
+
+  // Dynamic Array Handlers for Important Documents
+  const handleAddDocument = () => {
+    setFormData(prev => ({
+      ...prev,
+      importantDocuments: [...(prev.importantDocuments || []), 'Scanned Copy of Required Qualification Marksheet']
+    }));
+  };
+
+  const handleUpdateDocument = (index: number, val: string) => {
+    setFormData(prev => {
+      const list = [...(prev.importantDocuments || [])];
+      list[index] = val;
+      return { ...prev, importantDocuments: list };
+    });
+  };
+
+  const handleRemoveDocument = (index: number) => {
+    setFormData(prev => {
+      const list = [...(prev.importantDocuments || [])];
+      list.splice(index, 1);
+      return { ...prev, importantDocuments: list };
+    });
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (isSubmitting) return;
 
+    if (!formData.title?.trim()) {
+      setActiveTab('basic');
+      alert('Please provide a Job Title before saving.');
+      return;
+    }
+
     setIsSubmitting(true);
     
-    // Automatically enrich with all complete details so nothing is missing!
+    // Automatically enrich with all complete details so nothing is ever missing!
     const jobData = enrichJobDetails({
       id: editingJob?.id || `job-${Date.now()}`,
       title: formData.title ? formData.title.trim() : '',
-      category: (formData.category as any) || 'latest-jobs',
+      category: (formData.category as JobCategory) || 'latest-jobs',
       postDate: formData.postDate || formatInitialDate(),
       isNew: !!formData.isNew,
       state: formData.state || 'Central',
+      orgName: formData.orgName?.trim() || '',
+      postName: formData.postName?.trim() || '',
+      advtNo: formData.advtNo?.trim() || '',
+      totalVacancies: formData.totalVacancies || '',
+      status: formData.status || 'Application Open',
       shortInfo: formData.shortInfo || '',
       ageLimit: formData.ageLimit || '',
       eligibility: formData.eligibility || '',
+      qualifications: formData.qualifications || [],
+      postWiseVacancies: formData.postWiseVacancies || [],
+      salary: formData.salary || '',
+      selectionProcess: formData.selectionProcess || [],
+      howToApply: formData.howToApply || [],
+      importantDocuments: formData.importantDocuments || [],
       fees: {
-        general: formData.fees?.general || '',
-        scSt: formData.fees?.scSt || ''
+        general: formData.fees?.general || '₹100/-',
+        scSt: formData.fees?.scSt || '₹0/- (Exempted)',
+        female: formData.fees?.female || '₹0/- (Exempted)',
+        paymentMode: formData.fees?.paymentMode || 'Online Mode',
       },
       dates: {
         start: formData.dates?.start || '',
-        last: formData.dates?.last || ''
+        last: formData.dates?.last || '',
+        feeLast: formData.dates?.feeLast || '',
+        correctionDate: formData.dates?.correctionDate || '',
+        examDate: formData.dates?.examDate || '',
+        admitCardDate: formData.dates?.admitCardDate || '',
+        answerKeyDate: formData.dates?.answerKeyDate || '',
+        resultDate: formData.dates?.resultDate || '',
       },
       links: {
         apply: sanitizeUrl(formData.links?.apply) || 'https://india.gov.in',
+        applyServer2: sanitizeUrl(formData.links?.applyServer2) || '',
         official: sanitizeUrl(formData.links?.official) || 'https://india.gov.in',
         notification: sanitizeUrl(formData.links?.notification) || 'https://india.gov.in',
+        admitCard: sanitizeUrl(formData.links?.admitCard) || '',
+        result: sanitizeUrl(formData.links?.result) || '',
+        resultServer2: sanitizeUrl(formData.links?.resultServer2) || '',
+        answerKey: sanitizeUrl(formData.links?.answerKey) || '',
+        syllabus: sanitizeUrl(formData.links?.syllabus) || '',
+        videoHindi: sanitizeUrl(formData.links?.videoHindi) || '',
+        telegram: sanitizeUrl(formData.links?.telegram) || 'https://t.me/fastarcgovtresul',
+        whatsapp: sanitizeUrl(formData.links?.whatsapp) || 'https://whatsapp.com/channel/fastarc',
       },
       ...formData
     });
 
     onSave(jobData);
-    setTimeout(() => setIsSubmitting(false), 1500);
+    setTimeout(() => {
+      setIsSubmitting(false);
+      onClose();
+    }, 800);
   };
 
+  const getNextTab = (): AdminTab | null => {
+    const currentIndex = TAB_LIST.findIndex(t => t.id === activeTab);
+    if (currentIndex >= 0 && currentIndex < TAB_LIST.length - 1) {
+      return TAB_LIST[currentIndex + 1].id;
+    }
+    return null;
+  };
+
+  const getPrevTab = (): AdminTab | null => {
+    const currentIndex = TAB_LIST.findIndex(t => t.id === activeTab);
+    if (currentIndex > 0) {
+      return TAB_LIST[currentIndex - 1].id;
+    }
+    return null;
+  };
+
+  const activeTabIndex = TAB_LIST.findIndex(t => t.id === activeTab);
+
   return (
-    <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex justify-end transition-transform duration-300">
-      <div className="w-full max-w-md bg-white dark:bg-slate-900 h-full shadow-2xl flex flex-col p-6 overflow-y-auto border-l border-slate-200 dark:border-slate-800">
-        <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-4 mb-6">
-          <h3 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
-            <span className="w-8 h-8 rounded-lg bg-red-600 text-white flex items-center justify-center">
+    <div className="w-full max-w-7xl mx-auto px-3 sm:px-6 py-6 space-y-6 animate-in fade-in duration-300">
+      
+      {/* Top Breadcrumbs & Action Bar */}
+      <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-lg p-4 sm:p-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div>
+          <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400 font-semibold mb-1">
+            <button 
+              onClick={onClose} 
+              className="hover:text-amber-600 dark:hover:text-amber-400 flex items-center gap-1 cursor-pointer"
+            >
+              <ArrowLeft className="w-3.5 h-3.5" />
+              <span>Back to Portal</span>
+            </button>
+            <span>/</span>
+            <span>Admin Management</span>
+            <span>/</span>
+            <span className="text-amber-600 dark:text-amber-400 font-bold">
+              {editingJob ? 'Edit Job Notification' : 'Manual Job Post Editor'}
+            </span>
+          </div>
+          <h1 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white flex items-center gap-2.5">
+            <span className="w-9 h-9 rounded-xl bg-gradient-to-br from-amber-500 to-amber-600 text-slate-950 font-black flex items-center justify-center text-base shadow-sm">
               {editingJob ? '✎' : '+'}
             </span>
-            <span>{editingJob ? 'Edit Database Entry' : 'Add Job to Database'}</span>
-          </h3>
-          <button onClick={onClose} className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 text-2xl">
+            <span>{editingJob ? `Editing: ${editingJob.title}` : 'Post Manual Job Notification (All Columns)'}</span>
+          </h1>
+          <p className="text-xs text-slate-600 dark:text-slate-400 mt-1">
+            Sarkari Result ke sabhi columns (Dates, Fees, Age, Vacancies, Reservation, Qualifications, Selection, Documents, Links) yahan se poori tarah fill karein.
+          </p>
+        </div>
+
+        {/* Global Action Buttons */}
+        <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+          <button
+            type="button"
+            onClick={handleAutoGenerateDetails}
+            className="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 font-extrabold px-3.5 py-2 rounded-xl text-xs flex items-center gap-1.5 shadow-sm transition-all active:scale-95 cursor-pointer"
+            title="Auto populate all tabs based on title"
+          >
+            <Sparkles className="w-4 h-4 text-slate-950" />
+            <span>Auto-Fill All Tabs from Title</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setActiveTab(activeTab === 'preview' ? 'basic' : 'preview')}
+            className={`px-3.5 py-2 rounded-xl text-xs font-bold border transition-all flex items-center gap-1.5 cursor-pointer ${
+              activeTab === 'preview'
+                ? 'bg-blue-600 text-white border-blue-600 shadow-md'
+                : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 border-slate-200 dark:border-slate-700 hover:bg-slate-200 dark:hover:bg-slate-700'
+            }`}
+          >
+            <Eye className="w-4 h-4" />
+            <span>{activeTab === 'preview' ? 'Edit Columns' : 'Live Preview'}</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={onClose}
+            className="bg-slate-200 hover:bg-slate-300 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold px-3.5 py-2 rounded-xl text-xs transition-all cursor-pointer"
+          >
+            Cancel
+          </button>
+
+          <button
+            type="button"
+            onClick={handleSubmit}
+            disabled={isSubmitting}
+            className="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-extrabold px-5 py-2 rounded-xl text-xs shadow-md transition-all active:scale-95 flex items-center gap-2 cursor-pointer disabled:opacity-50"
+          >
+            <Save className="w-4 h-4" />
+            <span>{isSubmitting ? 'Saving...' : editingJob ? 'Update & Publish' : 'Publish Job Post'}</span>
+          </button>
+        </div>
+      </div>
+
+      {/* Toast / Status Alert Banner */}
+      {statusMessage && (
+        <div className="bg-amber-50 dark:bg-amber-950/40 border border-amber-300 dark:border-amber-700/60 text-amber-900 dark:text-amber-200 px-4 py-3 rounded-xl text-xs font-bold flex items-center justify-between shadow-xs">
+          <div className="flex items-center gap-2">
+            <Sparkles className="w-4 h-4 text-amber-600 dark:text-amber-400" />
+            <span>{statusMessage}</span>
+          </div>
+          <button onClick={() => setStatusMessage(null)} className="text-amber-700 hover:text-amber-950 dark:hover:text-white font-bold cursor-pointer">
             &times;
           </button>
         </div>
-        
-        <form onSubmit={handleSubmit} className="space-y-4 text-xs font-semibold text-slate-700 dark:text-slate-300">
-          <div>
-            <div className="flex items-center justify-between mb-1">
-              <label className="text-slate-900 dark:text-slate-100">Post Title/Name *</label>
-              <button
-                type="button"
-                onClick={handleAutoGenerateDetails}
-                className="text-[11px] bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 font-extrabold px-2.5 py-1 rounded-md transition-all active:scale-95 flex items-center gap-1 shadow-xs cursor-pointer"
-                title="Automatically synthesize organization, dates, fee, eligibility, vacancies, and links from title"
-              >
-                <Sparkles className="w-3 h-3 text-slate-950" />
-                <span>Auto-Generate Full Details</span>
-              </button>
-            </div>
-            <input required type="text" value={formData.title} onChange={e => handleChange('title', e.target.value)} placeholder="e.g. Railway NTPC Online Form" className="w-full border border-slate-300 dark:border-slate-700 bg-transparent rounded-lg p-2.5 text-slate-800 dark:text-slate-100 focus:outline-none focus:border-red-500 transition-colors" />
-          </div>
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className="block mb-1 text-slate-900 dark:text-slate-100">Select Category *</label>
-              <select value={formData.category} onChange={e => handleChange('category', e.target.value)} className="w-full border border-slate-300 dark:border-slate-700 bg-transparent rounded-lg p-2.5 text-slate-800 dark:text-slate-100 focus:outline-none focus:border-red-500 transition-colors">
-                <option className="bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100" value="latest-jobs">Latest Jobs</option>
-                <option className="bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100" value="admit-cards">Admit Cards</option>
-                <option className="bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100" value="results">Results</option>
-                <option className="bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100" value="answer-key">Answer Key</option>
-                <option className="bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100" value="syllabus">Syllabus</option>
-                <option className="bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100" value="admission">Admission</option>
-                <option className="bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100" value="documents">Certificates & Services</option>
-              </select>
-            </div>
-            <div>
-              <label className="block mb-1 text-slate-900 dark:text-slate-100">Post Date *</label>
-              <DateInputWithPicker required value={formData.postDate || ''} onChange={val => handleChange('postDate', val)} placeholder="01-Aug-2026" />
-            </div>
-          </div>
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className="block mb-1 text-slate-900 dark:text-slate-100 font-medium text-xs">State / Region / Location *</label>
-              <select 
-                value={ALL_INDIAN_STATES.includes(formData.state || '') ? formData.state : 'Other'} 
-                onChange={e => {
-                  const val = e.target.value;
-                  if (val === 'Other') {
-                    handleChange('state', 'Other State');
-                  } else {
-                    handleChange('state', val);
-                  }
-                }} 
-                className="w-full border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 rounded-lg p-2.5 text-xs text-slate-800 dark:text-slate-100 focus:outline-none focus:border-red-500 transition-colors"
-              >
-                {ALL_INDIAN_STATES.map(st => (
-                  <option key={st} value={st}>
-                    {st === 'Central' ? 'Central (All India Govt)' : st === 'UP' ? 'Uttar Pradesh (UP)' : st}
-                  </option>
-                ))}
-              </select>
+      )}
 
-              {(!ALL_INDIAN_STATES.includes(formData.state || '') || formData.state === 'Other' || formData.state === 'Other State') && (
+      {/* Quick Presets Bar for Popular Indian Commissions */}
+      <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-3 flex flex-wrap items-center gap-2 text-xs">
+        <span className="font-extrabold text-slate-700 dark:text-slate-300 flex items-center gap-1">
+          <Building2 className="w-3.5 h-3.5 text-amber-500" />
+          <span>Quick Commission Presets:</span>
+        </span>
+        {(['ssc', 'rrb', 'uppbpb', 'bpsc', 'ibps', 'nta', 'upsc', 'dsssb'] as const).map(portal => (
+          <button
+            key={portal}
+            type="button"
+            onClick={() => handleQuickPortalPreset(portal)}
+            className="px-2.5 py-1 bg-slate-100 dark:bg-slate-800 hover:bg-amber-100 dark:hover:bg-amber-950/50 text-slate-800 dark:text-slate-200 hover:text-amber-800 dark:hover:text-amber-300 border border-slate-200 dark:border-slate-700 rounded-lg font-bold text-[11px] uppercase transition-all cursor-pointer"
+          >
+            {portal}
+          </button>
+        ))}
+      </div>
+
+      {/* Horizontal Tabs Navigation Bar */}
+      <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm p-1.5 overflow-x-auto custom-scrollbar">
+        <div className="flex items-center gap-1 min-w-max">
+          {TAB_LIST.map((tab, idx) => {
+            const Icon = tab.icon;
+            const isActive = activeTab === tab.id;
+            return (
+              <button
+                key={tab.id}
+                type="button"
+                onClick={() => setActiveTab(tab.id)}
+                className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                  isActive
+                    ? 'bg-amber-500 text-slate-950 shadow-md font-black'
+                    : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white'
+                }`}
+              >
+                <Icon className="w-4 h-4" />
+                <span>{tab.label}</span>
+                {idx < 7 && (
+                  <span className={`w-1.5 h-1.5 rounded-full ${isActive ? 'bg-slate-950' : 'bg-slate-300 dark:bg-slate-600'}`} />
+                )}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Main Form Tab Content Area */}
+      <form onSubmit={handleSubmit} className="space-y-6">
+
+        {/* ========================================================== */}
+        {/* TAB 1: BASIC INFO & ORGANIZATION */}
+        {/* ========================================================== */}
+        {activeTab === 'basic' && (
+          <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 sm:p-7 shadow-lg space-y-6">
+            <div className="border-b border-slate-100 dark:border-slate-800 pb-3 flex items-center justify-between">
+              <div>
+                <h2 className="text-base sm:text-lg font-black text-slate-900 dark:text-white flex items-center gap-2">
+                  <Building2 className="w-5 h-5 text-amber-500" />
+                  <span>1. Job Post Title, Department & Basic Meta</span>
+                </h2>
+                <p className="text-xs text-slate-500 dark:text-slate-400">
+                  Enter the primary headline, conducting department, advertisement number, category, and state.
+                </p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 text-xs font-semibold text-slate-700 dark:text-slate-300">
+              
+              {/* Job Title */}
+              <div className="md:col-span-2">
+                <label className="block mb-1.5 text-slate-900 dark:text-slate-100 font-bold">
+                  Job Post Title / Headline *
+                </label>
                 <input
                   type="text"
-                  placeholder="Type custom state or location name..."
-                  value={formData.state || ''}
+                  required
+                  placeholder="e.g. SSC CGL 2026 Online Form / Railway NTPC Graduate & Under Graduate Posts"
+                  value={formData.title || ''}
+                  onChange={e => handleChange('title', e.target.value)}
+                  className="w-full border border-slate-300 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50 rounded-xl p-3 text-slate-900 dark:text-white focus:outline-none focus:border-amber-500 focus:bg-white dark:focus:bg-slate-800 text-sm font-bold transition-all shadow-xs"
+                />
+              </div>
+
+              {/* Organization / Department Name */}
+              <div>
+                <label className="block mb-1.5 text-slate-900 dark:text-slate-100 font-bold">
+                  Organization / Commission / Department Name
+                </label>
+                <input
+                  type="text"
+                  placeholder="e.g. Staff Selection Commission (SSC) / Railway Recruitment Board"
+                  value={formData.orgName || ''}
+                  onChange={e => handleChange('orgName', e.target.value)}
+                  className="w-full border border-slate-300 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50 rounded-xl p-2.5 text-slate-900 dark:text-white focus:outline-none focus:border-amber-500 transition-all"
+                />
+              </div>
+
+              {/* Specific Post Name */}
+              <div>
+                <label className="block mb-1.5 text-slate-900 dark:text-slate-100 font-bold">
+                  Specific Post Name / Notification Subtitle
+                </label>
+                <input
+                  type="text"
+                  placeholder="e.g. Combined Graduate Level Examination 2026 (Group B & C Posts)"
+                  value={formData.postName || ''}
+                  onChange={e => handleChange('postName', e.target.value)}
+                  className="w-full border border-slate-300 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50 rounded-xl p-2.5 text-slate-900 dark:text-white focus:outline-none focus:border-amber-500 transition-all"
+                />
+              </div>
+
+              {/* Advertisement Number */}
+              <div>
+                <label className="block mb-1.5 text-slate-900 dark:text-slate-100 font-bold">
+                  Advertisement / Notification Number (Advt No.)
+                </label>
+                <input
+                  type="text"
+                  placeholder="e.g. Advt No. 04/2026 / CEN 01/2026"
+                  value={formData.advtNo || ''}
+                  onChange={e => handleChange('advtNo', e.target.value)}
+                  className="w-full border border-slate-300 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50 rounded-xl p-2.5 text-slate-900 dark:text-white focus:outline-none focus:border-amber-500 transition-all"
+                />
+              </div>
+
+              {/* Total Vacancies */}
+              <div>
+                <label className="block mb-1.5 text-slate-900 dark:text-slate-100 font-bold">
+                  Total Vacancies
+                </label>
+                <input
+                  type="text"
+                  placeholder="e.g. 17,727 Posts / Multiple Vacancies"
+                  value={formData.totalVacancies || ''}
+                  onChange={e => handleChange('totalVacancies', e.target.value)}
+                  className="w-full border border-slate-300 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50 rounded-xl p-2.5 text-slate-900 dark:text-white focus:outline-none focus:border-amber-500 transition-all"
+                />
+              </div>
+
+              {/* Category */}
+              <div>
+                <label className="block mb-1.5 text-slate-900 dark:text-slate-100 font-bold">
+                  Portal Category *
+                </label>
+                <select
+                  value={formData.category}
+                  onChange={e => handleChange('category', e.target.value)}
+                  className="w-full border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 rounded-xl p-2.5 text-slate-900 dark:text-white focus:outline-none focus:border-amber-500 font-bold transition-all"
+                >
+                  <option value="latest-jobs">Latest Jobs</option>
+                  <option value="admit-cards">Admit Cards</option>
+                  <option value="results">Results</option>
+                  <option value="answer-key">Answer Key</option>
+                  <option value="syllabus">Syllabus</option>
+                  <option value="admission">Admission</option>
+                  <option value="documents">Certificates / Documents</option>
+                  <option value="important">Important</option>
+                </select>
+              </div>
+
+              {/* State */}
+              <div>
+                <label className="block mb-1.5 text-slate-900 dark:text-slate-100 font-bold">
+                  State / Jurisdiction
+                </label>
+                <select
+                  value={formData.state}
                   onChange={e => handleChange('state', e.target.value)}
-                  className="mt-2 w-full border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 rounded-lg p-2 text-xs text-slate-800 dark:text-slate-100 focus:outline-none focus:border-red-500"
+                  className="w-full border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 rounded-xl p-2.5 text-slate-900 dark:text-white focus:outline-none focus:border-amber-500 font-bold transition-all"
+                >
+                  {ALL_INDIAN_STATES.map(st => (
+                    <option key={st} value={st}>{st === 'Central' ? 'Central (Govt of India)' : st}</option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Post Status */}
+              <div>
+                <label className="block mb-1.5 text-slate-900 dark:text-slate-100 font-bold">
+                  Application / Post Status
+                </label>
+                <select
+                  value={formData.status || 'Application Open'}
+                  onChange={e => handleChange('status', e.target.value)}
+                  className="w-full border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 rounded-xl p-2.5 text-slate-900 dark:text-white focus:outline-none focus:border-amber-500 font-bold transition-all"
+                >
+                  <option value="Application Open">Application Open</option>
+                  <option value="Upcoming">Upcoming</option>
+                  <option value="Last Date Near">Last Date Near</option>
+                  <option value="Application Closed">Application Closed</option>
+                  <option value="Admit Card Released">Admit Card Released</option>
+                  <option value="Result Declared">Result Declared</option>
+                  <option value="Answer Key Released">Answer Key Released</option>
+                </select>
+              </div>
+
+              {/* Post Date */}
+              <div>
+                <label className="block mb-1.5 text-slate-900 dark:text-slate-100 font-bold">
+                  Notification Date
+                </label>
+                <DateInputWithPicker
+                  value={formData.postDate || ''}
+                  onChange={val => handleChange('postDate', val)}
+                  placeholder="DD-MM-YYYY"
+                  className="w-full border border-slate-300 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50 rounded-xl p-2.5 text-slate-900 dark:text-white"
                 />
+              </div>
+
+              {/* NEW Badge Checkbox */}
+              <div className="md:col-span-2 flex items-center gap-3 p-3 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700">
+                <input
+                  type="checkbox"
+                  id="isNewCheck"
+                  checked={!!formData.isNew}
+                  onChange={e => handleChange('isNew', e.target.checked)}
+                  className="w-4 h-4 text-amber-600 rounded border-slate-300 dark:border-slate-600 focus:ring-amber-500 cursor-pointer"
+                />
+                <label htmlFor="isNewCheck" className="text-xs font-bold text-slate-900 dark:text-white cursor-pointer flex items-center gap-2">
+                  <span>Display glowing "NEW" animated badge on homepage</span>
+                  <span className="bg-rose-500 text-white text-[10px] font-black px-1.5 py-0.5 rounded">NEW</span>
+                </label>
+              </div>
+
+              {/* Short Information */}
+              <div className="md:col-span-2">
+                <label className="block mb-1.5 text-slate-900 dark:text-slate-100 font-bold">
+                  Short Information Summary (Detailed Brief)
+                </label>
+                <textarea
+                  rows={4}
+                  placeholder="Enter a comprehensive overview of this notification (e.g. eligibility, key dates, vacancies, commission overview)..."
+                  value={formData.shortInfo || ''}
+                  onChange={e => handleChange('shortInfo', e.target.value)}
+                  className="w-full border border-slate-300 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50 rounded-xl p-3 text-slate-900 dark:text-white focus:outline-none focus:border-amber-500 transition-all font-medium leading-relaxed"
+                />
+              </div>
+
+            </div>
+          </div>
+        )}
+
+        {/* ========================================================== */}
+        {/* TAB 2: IMPORTANT DATES & APPLICATION FEE */}
+        {/* ========================================================== */}
+        {activeTab === 'dates-fees' && (
+          <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 sm:p-7 shadow-lg space-y-6">
+            <div className="border-b border-slate-100 dark:border-slate-800 pb-3">
+              <h2 className="text-base sm:text-lg font-black text-slate-900 dark:text-white flex items-center gap-2">
+                <Calendar className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
+                <span>2. Important Dates & Application Fee Breakdown</span>
+              </h2>
+              <p className="text-xs text-slate-500 dark:text-slate-400">
+                Configure both columns: all schedule dates on the left, and category-wise application fees on the right.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              
+              {/* Left Column: Dates */}
+              <div className="bg-slate-50/80 dark:bg-slate-800/40 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 space-y-4">
+                <h3 className="font-black text-sm text-[#059669] dark:text-[#34d399] uppercase tracking-wider flex items-center gap-1.5 pb-2 border-b border-slate-200 dark:border-slate-700">
+                  <Calendar className="w-4 h-4" />
+                  <span>Important Dates Column</span>
+                </h3>
+
+                <div>
+                  <label className="block mb-1 text-xs font-bold text-slate-900 dark:text-slate-200">• Application Begin Date</label>
+                  <DateInputWithPicker
+                    value={formData.dates?.start || ''}
+                    onChange={v => handleChange('start', v, 'dates')}
+                    placeholder="e.g. 24-06-2026"
+                  />
+                </div>
+
+                <div>
+                  <label className="block mb-1 text-xs font-bold text-[#dc2626] dark:text-[#f87171]">• Last Date for Apply Online *</label>
+                  <DateInputWithPicker
+                    value={formData.dates?.last || ''}
+                    onChange={v => handleChange('last', v, 'dates')}
+                    placeholder="e.g. 24-07-2026 (11:00 PM)"
+                  />
+                </div>
+
+                <div>
+                  <label className="block mb-1 text-xs font-bold text-slate-900 dark:text-slate-200">• Last Date to Pay Exam Fee</label>
+                  <input
+                    type="text"
+                    placeholder="e.g. 25-07-2026"
+                    value={formData.dates?.feeLast || ''}
+                    onChange={e => handleChange('feeLast', e.target.value, 'dates')}
+                    className="w-full border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 rounded-lg p-2 text-xs font-medium text-slate-900 dark:text-white"
+                  />
+                </div>
+
+                <div>
+                  <label className="block mb-1 text-xs font-bold text-slate-900 dark:text-slate-200">• Correction Window Date</label>
+                  <input
+                    type="text"
+                    placeholder="e.g. 10-11 August 2026"
+                    value={formData.dates?.correctionDate || ''}
+                    onChange={e => handleChange('correctionDate', e.target.value, 'dates')}
+                    className="w-full border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 rounded-lg p-2 text-xs font-medium text-slate-900 dark:text-white"
+                  />
+                </div>
+
+                <div>
+                  <label className="block mb-1 text-xs font-bold text-indigo-600 dark:text-indigo-400">• Exam Date (Tier-I / Written)</label>
+                  <input
+                    type="text"
+                    placeholder="e.g. September - October 2026"
+                    value={formData.dates?.examDate || ''}
+                    onChange={e => handleChange('examDate', e.target.value, 'dates')}
+                    className="w-full border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 rounded-lg p-2 text-xs font-medium text-slate-900 dark:text-white"
+                  />
+                </div>
+
+                <div>
+                  <label className="block mb-1 text-xs font-bold text-emerald-600 dark:text-emerald-400">• Admit Card Release Date</label>
+                  <input
+                    type="text"
+                    placeholder="e.g. Before Exam / 4 Days Before Exam"
+                    value={formData.dates?.admitCardDate || ''}
+                    onChange={e => handleChange('admitCardDate', e.target.value, 'dates')}
+                    className="w-full border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 rounded-lg p-2 text-xs font-medium text-slate-900 dark:text-white"
+                  />
+                </div>
+
+                <div>
+                  <label className="block mb-1 text-xs font-bold text-purple-600 dark:text-purple-400">• Answer Key Release Date</label>
+                  <input
+                    type="text"
+                    placeholder="e.g. As per Schedule / Notify Soon"
+                    value={formData.dates?.answerKeyDate || ''}
+                    onChange={e => handleChange('answerKeyDate', e.target.value, 'dates')}
+                    className="w-full border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 rounded-lg p-2 text-xs font-medium text-slate-900 dark:text-white"
+                  />
+                </div>
+
+                <div>
+                  <label className="block mb-1 text-xs font-bold text-rose-600 dark:text-rose-400">• Result Declaration Date</label>
+                  <input
+                    type="text"
+                    placeholder="e.g. Notify Soon / Declared"
+                    value={formData.dates?.resultDate || ''}
+                    onChange={e => handleChange('resultDate', e.target.value, 'dates')}
+                    className="w-full border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 rounded-lg p-2 text-xs font-medium text-slate-900 dark:text-white"
+                  />
+                </div>
+              </div>
+
+              {/* Right Column: Fees */}
+              <div className="bg-slate-50/80 dark:bg-slate-800/40 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 space-y-4">
+                <h3 className="font-black text-sm text-[#059669] dark:text-[#34d399] uppercase tracking-wider flex items-center gap-1.5 pb-2 border-b border-slate-200 dark:border-slate-700">
+                  <DollarSign className="w-4 h-4" />
+                  <span>Application Fee Column</span>
+                </h3>
+
+                <div>
+                  <label className="block mb-1 text-xs font-bold text-slate-900 dark:text-slate-200">• General / OBC / EWS Fee</label>
+                  <input
+                    type="text"
+                    placeholder="e.g. ₹100/- or ₹500/-"
+                    value={formData.fees?.general || ''}
+                    onChange={e => handleChange('general', e.target.value, 'fees')}
+                    className="w-full border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 rounded-lg p-2 text-xs font-medium text-slate-900 dark:text-white"
+                  />
+                </div>
+
+                <div>
+                  <label className="block mb-1 text-xs font-bold text-slate-900 dark:text-slate-200">• SC / ST / PwD (PH) Fee</label>
+                  <input
+                    type="text"
+                    placeholder="e.g. ₹0/- (Exempted) or ₹250/-"
+                    value={formData.fees?.scSt || ''}
+                    onChange={e => handleChange('scSt', e.target.value, 'fees')}
+                    className="w-full border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 rounded-lg p-2 text-xs font-medium text-slate-900 dark:text-white"
+                  />
+                </div>
+
+                <div>
+                  <label className="block mb-1 text-xs font-bold text-slate-900 dark:text-slate-200">• All Category Female Fee</label>
+                  <input
+                    type="text"
+                    placeholder="e.g. ₹0/- (Exempted)"
+                    value={formData.fees?.female || ''}
+                    onChange={e => handleChange('female', e.target.value, 'fees')}
+                    className="w-full border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 rounded-lg p-2 text-xs font-medium text-slate-900 dark:text-white"
+                  />
+                </div>
+
+                <div>
+                  <label className="block mb-1 text-xs font-bold text-slate-900 dark:text-slate-200">💳 Payment Mode Instructions</label>
+                  <textarea
+                    rows={4}
+                    placeholder="e.g. Pay the Examination Fee Through Debit Card, Credit Card, Net Banking, UPI or SBI E-Challan Offline Mode."
+                    value={formData.fees?.paymentMode || ''}
+                    onChange={e => handleChange('paymentMode', e.target.value, 'fees')}
+                    className="w-full border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 rounded-lg p-2.5 text-xs font-medium text-slate-900 dark:text-white"
+                  />
+                </div>
+
+                <div className="p-3 bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/60 rounded-xl text-xs text-slate-700 dark:text-slate-300">
+                  <p className="font-semibold">💡 Tip: In case of fee exemption, write <strong>₹0/- (Exempted)</strong> so candidates know clearly that there is no fee.</p>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        )}
+
+        {/* ========================================================== */}
+        {/* TAB 3: AGE LIMIT & EDUCATIONAL QUALIFICATION */}
+        {/* ========================================================== */}
+        {activeTab === 'age-eligibility' && (
+          <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 sm:p-7 shadow-lg space-y-6">
+            <div className="border-b border-slate-100 dark:border-slate-800 pb-3">
+              <h2 className="text-base sm:text-lg font-black text-slate-900 dark:text-white flex items-center gap-2">
+                <GraduationCap className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
+                <span>3. Age Limit & Educational Qualification Details</span>
+              </h2>
+              <p className="text-xs text-slate-500 dark:text-slate-400">
+                Define age criteria, cutoff date, relaxation policy, and academic eligibility requirements.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              
+              {/* Age Limit Section */}
+              <div className="bg-slate-50/80 dark:bg-slate-800/40 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 space-y-4">
+                <h3 className="font-black text-sm text-[#d91e63] dark:text-[#f472b6] uppercase tracking-wider flex items-center gap-1.5 pb-2 border-b border-slate-200 dark:border-slate-700">
+                  <Clock className="w-4 h-4" />
+                  <span>Age Limit Criteria</span>
+                </h3>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="block mb-1 text-xs font-bold text-slate-900 dark:text-slate-200">Minimum Age</label>
+                    <input
+                      type="text"
+                      placeholder="e.g. 18 Years"
+                      value={typeof formData.ageLimit === 'object' ? (formData.ageLimit.min || '') : ''}
+                      onChange={e => handleChange('min', e.target.value, 'ageLimit')}
+                      className="w-full border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 rounded-lg p-2 text-xs font-medium text-slate-900 dark:text-white"
+                    />
+                  </div>
+                  <div>
+                    <label className="block mb-1 text-xs font-bold text-slate-900 dark:text-slate-200">Maximum Age</label>
+                    <input
+                      type="text"
+                      placeholder="e.g. 27-32 Years (Post Wise)"
+                      value={typeof formData.ageLimit === 'object' ? (formData.ageLimit.max || '') : ''}
+                      onChange={e => handleChange('max', e.target.value, 'ageLimit')}
+                      className="w-full border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 rounded-lg p-2 text-xs font-medium text-slate-900 dark:text-white"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block mb-1 text-xs font-bold text-slate-900 dark:text-slate-200">Age Calculated As On Date</label>
+                  <input
+                    type="text"
+                    placeholder={`e.g. 01-08-${new Date().getFullYear()}`}
+                    value={typeof formData.ageLimit === 'object' ? (formData.ageLimit.asOn || '') : ''}
+                    onChange={e => handleChange('asOn', e.target.value, 'ageLimit')}
+                    className="w-full border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 rounded-lg p-2 text-xs font-medium text-slate-900 dark:text-white"
+                  />
+                </div>
+
+                <div>
+                  <label className="block mb-1 text-xs font-bold text-slate-900 dark:text-slate-200">Age Relaxation Policy</label>
+                  <textarea
+                    rows={2}
+                    placeholder="e.g. Age Relaxation Extra as per Recruitment Rules (OBC: 3 Yrs, SC/ST: 5 Yrs, PwD: 10 Yrs)."
+                    value={typeof formData.ageLimit === 'object' ? (formData.ageLimit.relaxation || '') : ''}
+                    onChange={e => handleChange('relaxation', e.target.value, 'ageLimit')}
+                    className="w-full border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 rounded-lg p-2 text-xs font-medium text-slate-900 dark:text-white"
+                  />
+                </div>
+
+                <div>
+                  <label className="block mb-1 text-xs font-bold text-slate-900 dark:text-slate-200">Extra Age Details / Post-wise Notes</label>
+                  <textarea
+                    rows={2}
+                    placeholder="e.g. For Junior Statistical Officer: 18-32 Years. For Assistant Section Officer: 20-30 Years."
+                    value={typeof formData.ageLimit === 'object' ? (formData.ageLimit.details || '') : ''}
+                    onChange={e => handleChange('details', e.target.value, 'ageLimit')}
+                    className="w-full border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 rounded-lg p-2 text-xs font-medium text-slate-900 dark:text-white"
+                  />
+                </div>
+              </div>
+
+              {/* Eligibility & Qualifications Section */}
+              <div className="bg-slate-50/80 dark:bg-slate-800/40 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 space-y-4">
+                <h3 className="font-black text-sm text-[#059669] dark:text-[#34d399] uppercase tracking-wider flex items-center gap-1.5 pb-2 border-b border-slate-200 dark:border-slate-700">
+                  <GraduationCap className="w-4 h-4" />
+                  <span>Educational Qualification</span>
+                </h3>
+
+                <div>
+                  <label className="block mb-1 text-xs font-bold text-slate-900 dark:text-slate-200">Primary Eligibility Summary</label>
+                  <textarea
+                    rows={3}
+                    placeholder="e.g. Bachelor Degree in Any Stream from Any Recognized University in India. For more post-wise eligibility details read the official notification."
+                    value={formData.eligibility || ''}
+                    onChange={e => handleChange('eligibility', e.target.value)}
+                    className="w-full border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 rounded-lg p-2.5 text-xs font-medium text-slate-900 dark:text-white"
+                  />
+                </div>
+
+                {/* Specific Qualification Bullet Points */}
+                <div>
+                  <div className="flex items-center justify-between mb-2">
+                    <label className="text-xs font-bold text-slate-900 dark:text-slate-200">Specific Qualification Bullet Points</label>
+                    <button
+                      type="button"
+                      onClick={handleAddQualification}
+                      className="text-[11px] bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-2.5 py-1 rounded-lg flex items-center gap-1 transition-all cursor-pointer"
+                    >
+                      <Plus className="w-3 h-3" />
+                      <span>Add Point</span>
+                    </button>
+                  </div>
+
+                  <div className="space-y-2 max-h-56 overflow-y-auto pr-1">
+                    {(formData.qualifications || []).map((q, idx) => (
+                      <div key={idx} className="flex items-center gap-2">
+                        <span className="text-xs text-slate-400 font-bold">•</span>
+                        <input
+                          type="text"
+                          value={q}
+                          onChange={e => handleUpdateQualification(idx, e.target.value)}
+                          className="flex-1 border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 rounded-lg p-1.5 text-xs text-slate-900 dark:text-white"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveQualification(idx)}
+                          className="text-rose-500 hover:text-rose-700 p-1 cursor-pointer"
+                          title="Remove this point"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    ))}
+                    {(!formData.qualifications || formData.qualifications.length === 0) && (
+                      <p className="text-xs text-slate-400 italic">No bullet points added. Click "+ Add Point" above.</p>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        )}
+
+        {/* ========================================================== */}
+        {/* TAB 4: POST-WISE VACANCIES & CATEGORY RESERVATION */}
+        {/* ========================================================== */}
+        {activeTab === 'vacancies' && (
+          <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 sm:p-7 shadow-lg space-y-6">
+            <div className="border-b border-slate-100 dark:border-slate-800 pb-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+              <div>
+                <h2 className="text-base sm:text-lg font-black text-slate-900 dark:text-white flex items-center gap-2">
+                  <Users className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                  <span>4. Post-Wise Vacancy & Category Reservation Breakdown (UR, EWS, OBC, SC, ST)</span>
+                </h2>
+                <p className="text-xs text-slate-500 dark:text-slate-400">
+                  Fill in the complete reservation distribution table that displays directly under the vacancy details.
+                </p>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={handleAddVacancyRow}
+                  className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-3 py-1.5 rounded-xl text-xs flex items-center gap-1.5 shadow-xs transition-all cursor-pointer"
+                >
+                  <Plus className="w-4 h-4" />
+                  <span>Add Post Row</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Dynamic Table */}
+            <div className="overflow-x-auto border border-slate-200 dark:border-slate-700 rounded-xl">
+              <table className="w-full text-left text-xs border-collapse">
+                <thead>
+                  <tr className="bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white font-extrabold border-b border-slate-200 dark:border-slate-700">
+                    <th className="p-2.5 min-w-[160px]">Post Name</th>
+                    <th className="p-2.5 w-20 text-center">Total</th>
+                    <th className="p-2.5 w-16 text-center">UR</th>
+                    <th className="p-2.5 w-16 text-center">EWS</th>
+                    <th className="p-2.5 w-16 text-center">OBC</th>
+                    <th className="p-2.5 w-16 text-center">SC</th>
+                    <th className="p-2.5 w-16 text-center">ST</th>
+                    <th className="p-2.5 min-w-[200px]">Specific Eligibility</th>
+                    <th className="p-2.5 w-24 text-center">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-200 dark:divide-slate-800 bg-white dark:bg-slate-900">
+                  {(formData.postWiseVacancies || []).map((row, idx) => (
+                    <tr key={idx} className="hover:bg-slate-50/80 dark:hover:bg-slate-800/50">
+                      <td className="p-2">
+                        <input
+                          type="text"
+                          value={row.postName}
+                          onChange={e => handleUpdateVacancyRow(idx, 'postName', e.target.value)}
+                          placeholder="e.g. Assistant / Inspector"
+                          className="w-full border border-slate-300 dark:border-slate-700 bg-transparent rounded p-1.5 text-xs font-bold text-slate-900 dark:text-white"
+                        />
+                      </td>
+                      <td className="p-2">
+                        <input
+                          type="text"
+                          value={row.total ?? ''}
+                          onChange={e => handleUpdateVacancyRow(idx, 'total', e.target.value)}
+                          placeholder="100"
+                          className="w-full border border-slate-300 dark:border-slate-700 bg-transparent rounded p-1.5 text-xs font-black text-center text-emerald-600 dark:text-emerald-400"
+                        />
+                      </td>
+                      <td className="p-2">
+                        <input
+                          type="number"
+                          value={row.general ?? ''}
+                          onChange={e => handleUpdateVacancyRow(idx, 'general', e.target.value)}
+                          placeholder="40"
+                          className="w-full border border-slate-300 dark:border-slate-700 bg-transparent rounded p-1.5 text-xs text-center text-slate-900 dark:text-white"
+                        />
+                      </td>
+                      <td className="p-2">
+                        <input
+                          type="number"
+                          value={row.ews ?? ''}
+                          onChange={e => handleUpdateVacancyRow(idx, 'ews', e.target.value)}
+                          placeholder="10"
+                          className="w-full border border-slate-300 dark:border-slate-700 bg-transparent rounded p-1.5 text-xs text-center text-slate-900 dark:text-white"
+                        />
+                      </td>
+                      <td className="p-2">
+                        <input
+                          type="number"
+                          value={row.obc ?? ''}
+                          onChange={e => handleUpdateVacancyRow(idx, 'obc', e.target.value)}
+                          placeholder="27"
+                          className="w-full border border-slate-300 dark:border-slate-700 bg-transparent rounded p-1.5 text-xs text-center text-slate-900 dark:text-white"
+                        />
+                      </td>
+                      <td className="p-2">
+                        <input
+                          type="number"
+                          value={row.sc ?? ''}
+                          onChange={e => handleUpdateVacancyRow(idx, 'sc', e.target.value)}
+                          placeholder="15"
+                          className="w-full border border-slate-300 dark:border-slate-700 bg-transparent rounded p-1.5 text-xs text-center text-slate-900 dark:text-white"
+                        />
+                      </td>
+                      <td className="p-2">
+                        <input
+                          type="number"
+                          value={row.st ?? ''}
+                          onChange={e => handleUpdateVacancyRow(idx, 'st', e.target.value)}
+                          placeholder="8"
+                          className="w-full border border-slate-300 dark:border-slate-700 bg-transparent rounded p-1.5 text-xs text-center text-slate-900 dark:text-white"
+                        />
+                      </td>
+                      <td className="p-2">
+                        <input
+                          type="text"
+                          value={row.eligibility || ''}
+                          onChange={e => handleUpdateVacancyRow(idx, 'eligibility', e.target.value)}
+                          placeholder="Eligibility criteria for this post"
+                          className="w-full border border-slate-300 dark:border-slate-700 bg-transparent rounded p-1.5 text-xs text-slate-800 dark:text-slate-200"
+                        />
+                      </td>
+                      <td className="p-2 text-center">
+                        <div className="flex items-center justify-center gap-1.5">
+                          <button
+                            type="button"
+                            onClick={() => handleAutoDistributeVacancies(idx)}
+                            title="Auto Calculate standard reservation from total"
+                            className="p-1.5 bg-blue-50 hover:bg-blue-100 dark:bg-blue-950/50 dark:hover:bg-blue-900/60 text-blue-600 dark:text-blue-300 rounded cursor-pointer"
+                          >
+                            <RefreshCw className="w-3.5 h-3.5" />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleRemoveVacancyRow(idx)}
+                            title="Delete Row"
+                            className="p-1.5 bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/50 dark:hover:bg-rose-900/60 text-rose-600 dark:text-rose-400 rounded cursor-pointer"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                  {(!formData.postWiseVacancies || formData.postWiseVacancies.length === 0) && (
+                    <tr>
+                      <td colSpan={9} className="p-6 text-center text-slate-400">
+                        No post-wise vacancy rows created. Click "+ Add Post Row" above to create rows.
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+
+        {/* ========================================================== */}
+        {/* TAB 5: SALARY & SELECTION PROCESS */}
+        {/* ========================================================== */}
+        {activeTab === 'salary-selection' && (
+          <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 sm:p-7 shadow-lg space-y-6">
+            <div className="border-b border-slate-100 dark:border-slate-800 pb-3">
+              <h2 className="text-base sm:text-lg font-black text-slate-900 dark:text-white flex items-center gap-2">
+                <Briefcase className="w-5 h-5 text-amber-500" />
+                <span>5. Salary / Pay Scale & Selection Process Stages</span>
+              </h2>
+              <p className="text-xs text-slate-500 dark:text-slate-400">
+                Specify monthly remuneration and the stages required for final candidate selection.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              
+              {/* Salary Section */}
+              <div className="bg-slate-50/80 dark:bg-slate-800/40 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 space-y-4">
+                <h3 className="font-black text-sm text-slate-900 dark:text-white uppercase tracking-wider flex items-center gap-1.5 pb-2 border-b border-slate-200 dark:border-slate-700">
+                  <DollarSign className="w-4 h-4 text-emerald-500" />
+                  <span>Salary & Pay Scale Details</span>
+                </h3>
+
+                <div>
+                  <label className="block mb-1 text-xs font-bold text-slate-900 dark:text-slate-200">
+                    Pay Scale / Matrix Level
+                  </label>
+                  <textarea
+                    rows={4}
+                    placeholder="e.g. Pay Level-6 (₹35,400 - ₹1,12,400/-) to Level-8 (₹47,600 - ₹1,51,100/-) as per 7th CPC plus Dearness Allowance (DA), House Rent Allowance (HRA) and Transport Allowance."
+                    value={formData.salary || ''}
+                    onChange={e => handleChange('salary', e.target.value)}
+                    className="w-full border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 rounded-xl p-3 text-xs font-medium text-slate-900 dark:text-white leading-relaxed"
+                  />
+                </div>
+              </div>
+
+              {/* Selection Process Section */}
+              <div className="bg-slate-50/80 dark:bg-slate-800/40 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 space-y-4">
+                <div className="flex items-center justify-between pb-2 border-b border-slate-200 dark:border-slate-700">
+                  <h3 className="font-black text-sm text-slate-900 dark:text-white uppercase tracking-wider flex items-center gap-1.5">
+                    <CheckCircle2 className="w-4 h-4 text-indigo-500" />
+                    <span>Selection Process Stages</span>
+                  </h3>
+                  <button
+                    type="button"
+                    onClick={handleAddSelectionStage}
+                    className="text-[11px] bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-2.5 py-1 rounded-lg flex items-center gap-1 cursor-pointer"
+                  >
+                    <Plus className="w-3 h-3" />
+                    <span>Add Stage</span>
+                  </button>
+                </div>
+
+                <div className="space-y-2.5">
+                  {(formData.selectionProcess || []).map((stage, idx) => (
+                    <div key={idx} className="flex items-center gap-2">
+                      <span className="w-6 h-6 rounded-full bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300 text-xs font-extrabold flex items-center justify-center shrink-0">
+                        {idx + 1}
+                      </span>
+                      <input
+                        type="text"
+                        value={stage}
+                        onChange={e => handleUpdateSelectionStage(idx, e.target.value)}
+                        className="flex-1 border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 rounded-lg p-2 text-xs font-medium text-slate-900 dark:text-white"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveSelectionStage(idx)}
+                        className="text-rose-500 hover:text-rose-700 p-1 cursor-pointer"
+                        title="Remove Stage"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  ))}
+                  {(!formData.selectionProcess || formData.selectionProcess.length === 0) && (
+                    <p className="text-xs text-slate-400 italic">No stages configured. Click "+ Add Stage" above.</p>
+                  )}
+                </div>
+              </div>
+
+            </div>
+          </div>
+        )}
+
+        {/* ========================================================== */}
+        {/* TAB 6: HOW TO APPLY & REQUIRED DOCUMENTS */}
+        {/* ========================================================== */}
+        {activeTab === 'instructions-docs' && (
+          <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 sm:p-7 shadow-lg space-y-6">
+            <div className="border-b border-slate-100 dark:border-slate-800 pb-3">
+              <h2 className="text-base sm:text-lg font-black text-slate-900 dark:text-white flex items-center gap-2">
+                <FileText className="w-5 h-5 text-amber-500" />
+                <span>6. How to Apply Instructions & Required Documents Checklist</span>
+              </h2>
+              <p className="text-xs text-slate-500 dark:text-slate-400">
+                Provide step-by-step guidance for applicants and the checklist of files they need to upload.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              
+              {/* How To Apply Steps */}
+              <div className="bg-slate-50/80 dark:bg-slate-800/40 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 space-y-4">
+                <div className="flex items-center justify-between pb-2 border-b border-slate-200 dark:border-slate-700">
+                  <h3 className="font-black text-sm text-slate-900 dark:text-white uppercase tracking-wider flex items-center gap-1.5">
+                    <HelpCircle className="w-4 h-4 text-emerald-500" />
+                    <span>How To Apply Steps</span>
+                  </h3>
+                  <button
+                    type="button"
+                    onClick={handleAddApplyStep}
+                    className="text-[11px] bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-2.5 py-1 rounded-lg flex items-center gap-1 cursor-pointer"
+                  >
+                    <Plus className="w-3 h-3" />
+                    <span>Add Step</span>
+                  </button>
+                </div>
+
+                <div className="space-y-2.5 max-h-96 overflow-y-auto pr-1">
+                  {(formData.howToApply || []).map((step, idx) => (
+                    <div key={idx} className="flex items-start gap-2">
+                      <span className="w-5 h-5 rounded-full bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 text-[11px] font-black flex items-center justify-center shrink-0 mt-1">
+                        {idx + 1}
+                      </span>
+                      <textarea
+                        rows={2}
+                        value={step}
+                        onChange={e => handleUpdateApplyStep(idx, e.target.value)}
+                        className="flex-1 border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 rounded-lg p-2 text-xs font-medium text-slate-900 dark:text-white"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveApplyStep(idx)}
+                        className="text-rose-500 hover:text-rose-700 p-1 mt-1 cursor-pointer"
+                        title="Remove Step"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Required Documents Checklist */}
+              <div className="bg-slate-50/80 dark:bg-slate-800/40 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 space-y-4">
+                <div className="flex items-center justify-between pb-2 border-b border-slate-200 dark:border-slate-700">
+                  <h3 className="font-black text-sm text-slate-900 dark:text-white uppercase tracking-wider flex items-center gap-1.5">
+                    <FileText className="w-4 h-4 text-blue-500" />
+                    <span>Documents to Keep Ready</span>
+                  </h3>
+                  <button
+                    type="button"
+                    onClick={handleAddDocument}
+                    className="text-[11px] bg-blue-600 hover:bg-blue-700 text-white font-bold px-2.5 py-1 rounded-lg flex items-center gap-1 cursor-pointer"
+                  >
+                    <Plus className="w-3 h-3" />
+                    <span>Add Document</span>
+                  </button>
+                </div>
+
+                <div className="space-y-2.5 max-h-96 overflow-y-auto pr-1">
+                  {(formData.importantDocuments || []).map((doc, idx) => (
+                    <div key={idx} className="flex items-center gap-2">
+                      <span className="text-xs text-blue-500 font-bold">📄</span>
+                      <input
+                        type="text"
+                        value={doc}
+                        onChange={e => handleUpdateDocument(idx, e.target.value)}
+                        className="flex-1 border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 rounded-lg p-2 text-xs font-medium text-slate-900 dark:text-white"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveDocument(idx)}
+                        className="text-rose-500 hover:text-rose-700 p-1 cursor-pointer"
+                        title="Remove Document"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+            </div>
+          </div>
+        )}
+
+        {/* ========================================================== */}
+        {/* TAB 7: OFFICIAL IMPORTANT LINKS */}
+        {/* ========================================================== */}
+        {activeTab === 'links' && (
+          <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 sm:p-7 shadow-lg space-y-6">
+            <div className="border-b border-slate-100 dark:border-slate-800 pb-3">
+              <h2 className="text-base sm:text-lg font-black text-slate-900 dark:text-white flex items-center gap-2">
+                <Link className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
+                <span>7. Official Important Direct Links</span>
+              </h2>
+              <p className="text-xs text-slate-500 dark:text-slate-400">
+                All buttons displayed in the Important Links table on the job details page.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 text-xs font-semibold text-slate-700 dark:text-slate-300">
+              
+              {/* Apply Server 1 */}
+              <div>
+                <label className="block mb-1 text-slate-900 dark:text-slate-100 font-bold">
+                  1. Apply Online Link (Server 1) *
+                </label>
+                <input
+                  type="text"
+                  placeholder="https://apply.commission.gov.in"
+                  value={formData.links?.apply || ''}
+                  onChange={e => handleChange('apply', e.target.value, 'links')}
+                  className="w-full border border-slate-300 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50 rounded-xl p-2.5 text-slate-900 dark:text-white"
+                />
+              </div>
+
+              {/* Apply Server 2 */}
+              <div>
+                <label className="block mb-1 text-slate-900 dark:text-slate-100 font-bold">
+                  2. Apply Online Link (Server 2 / Mirror)
+                </label>
+                <input
+                  type="text"
+                  placeholder="https://server2.commission.gov.in"
+                  value={formData.links?.applyServer2 || ''}
+                  onChange={e => handleChange('applyServer2', e.target.value, 'links')}
+                  className="w-full border border-slate-300 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50 rounded-xl p-2.5 text-slate-900 dark:text-white"
+                />
+              </div>
+
+              {/* Official Notification */}
+              <div>
+                <label className="block mb-1 text-slate-900 dark:text-slate-100 font-bold">
+                  3. Download Official Notification (PDF / Notice)
+                </label>
+                <input
+                  type="text"
+                  placeholder="https://commission.gov.in/notice.pdf"
+                  value={formData.links?.notification || ''}
+                  onChange={e => handleChange('notification', e.target.value, 'links')}
+                  className="w-full border border-slate-300 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50 rounded-xl p-2.5 text-slate-900 dark:text-white"
+                />
+              </div>
+
+              {/* Official Website */}
+              <div>
+                <label className="block mb-1 text-slate-900 dark:text-slate-100 font-bold">
+                  4. Official Commission / Board Website
+                </label>
+                <input
+                  type="text"
+                  placeholder="https://commission.gov.in"
+                  value={formData.links?.official || ''}
+                  onChange={e => handleChange('official', e.target.value, 'links')}
+                  className="w-full border border-slate-300 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50 rounded-xl p-2.5 text-slate-900 dark:text-white"
+                />
+              </div>
+
+              {/* Admit Card */}
+              <div>
+                <label className="block mb-1 text-slate-900 dark:text-slate-100 font-bold">
+                  5. Download Admit Card Link
+                </label>
+                <input
+                  type="text"
+                  placeholder="https://commission.gov.in/admitcard"
+                  value={formData.links?.admitCard || ''}
+                  onChange={e => handleChange('admitCard', e.target.value, 'links')}
+                  className="w-full border border-slate-300 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50 rounded-xl p-2.5 text-slate-900 dark:text-white"
+                />
+              </div>
+
+              {/* Result Server 1 */}
+              <div>
+                <label className="block mb-1 text-slate-900 dark:text-slate-100 font-bold">
+                  6. Download Result Link (Server 1)
+                </label>
+                <input
+                  type="text"
+                  placeholder="https://commission.gov.in/result"
+                  value={formData.links?.result || ''}
+                  onChange={e => handleChange('result', e.target.value, 'links')}
+                  className="w-full border border-slate-300 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50 rounded-xl p-2.5 text-slate-900 dark:text-white"
+                />
+              </div>
+
+              {/* Result Server 2 */}
+              <div>
+                <label className="block mb-1 text-slate-900 dark:text-slate-100 font-bold">
+                  7. Download Result Link (Server 2)
+                </label>
+                <input
+                  type="text"
+                  placeholder="https://server2.commission.gov.in/result"
+                  value={formData.links?.resultServer2 || ''}
+                  onChange={e => handleChange('resultServer2', e.target.value, 'links')}
+                  className="w-full border border-slate-300 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50 rounded-xl p-2.5 text-slate-900 dark:text-white"
+                />
+              </div>
+
+              {/* Answer Key */}
+              <div>
+                <label className="block mb-1 text-slate-900 dark:text-slate-100 font-bold">
+                  8. Download Answer Key Link
+                </label>
+                <input
+                  type="text"
+                  placeholder="https://commission.gov.in/answerkey"
+                  value={formData.links?.answerKey || ''}
+                  onChange={e => handleChange('answerKey', e.target.value, 'links')}
+                  className="w-full border border-slate-300 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50 rounded-xl p-2.5 text-slate-900 dark:text-white"
+                />
+              </div>
+
+              {/* Syllabus */}
+              <div>
+                <label className="block mb-1 text-slate-900 dark:text-slate-100 font-bold">
+                  9. Download Syllabus & Exam Pattern
+                </label>
+                <input
+                  type="text"
+                  placeholder="https://commission.gov.in/syllabus.pdf"
+                  value={formData.links?.syllabus || ''}
+                  onChange={e => handleChange('syllabus', e.target.value, 'links')}
+                  className="w-full border border-slate-300 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50 rounded-xl p-2.5 text-slate-900 dark:text-white"
+                />
+              </div>
+
+              {/* Video Hindi */}
+              <div>
+                <label className="block mb-1 text-slate-900 dark:text-slate-100 font-bold">
+                  10. Video: How to Fill Form in Hindi (YouTube)
+                </label>
+                <input
+                  type="text"
+                  placeholder="https://youtube.com/watch?v=..."
+                  value={formData.links?.videoHindi || ''}
+                  onChange={e => handleChange('videoHindi', e.target.value, 'links')}
+                  className="w-full border border-slate-300 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50 rounded-xl p-2.5 text-slate-900 dark:text-white"
+                />
+              </div>
+
+              {/* Telegram */}
+              <div>
+                <label className="block mb-1 text-slate-900 dark:text-slate-100 font-bold">
+                  11. Official Telegram Channel Link
+                </label>
+                <input
+                  type="text"
+                  placeholder="https://t.me/fastarcgovtresul"
+                  value={formData.links?.telegram || ''}
+                  onChange={e => handleChange('telegram', e.target.value, 'links')}
+                  className="w-full border border-slate-300 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50 rounded-xl p-2.5 text-slate-900 dark:text-white"
+                />
+              </div>
+
+              {/* WhatsApp */}
+              <div>
+                <label className="block mb-1 text-slate-900 dark:text-slate-100 font-bold">
+                  12. Official WhatsApp Channel Link
+                </label>
+                <input
+                  type="text"
+                  placeholder="https://whatsapp.com/channel/..."
+                  value={formData.links?.whatsapp || ''}
+                  onChange={e => handleChange('whatsapp', e.target.value, 'links')}
+                  className="w-full border border-slate-300 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50 rounded-xl p-2.5 text-slate-900 dark:text-white"
+                />
+              </div>
+
+            </div>
+          </div>
+        )}
+
+        {/* ========================================================== */}
+        {/* TAB 8: LIVE PREVIEW */}
+        {/* ========================================================== */}
+        {activeTab === 'preview' && (
+          <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 sm:p-7 shadow-lg space-y-6">
+            <div className="border-b border-slate-100 dark:border-slate-800 pb-3 flex items-center justify-between">
+              <div>
+                <h2 className="text-base sm:text-lg font-black text-slate-900 dark:text-white flex items-center gap-2">
+                  <Eye className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                  <span>8. Live Sarkari Result Format Preview</span>
+                </h2>
+                <p className="text-xs text-slate-500 dark:text-slate-400">
+                  Yeh exact format hai jaisa user ko Job Link par click karne ke baad show hoga.
+                </p>
+              </div>
+            </div>
+
+            {/* Rendered Job Card */}
+            <article className="border-2 border-slate-300 dark:border-slate-700 rounded-2xl overflow-hidden shadow-md">
+              {/* Header */}
+              <div className="p-4 sm:p-6 text-center border-b border-slate-200 dark:border-slate-800 bg-gradient-to-b from-slate-50/80 to-white dark:from-slate-900/90 dark:to-slate-900">
+                <h2 className="text-base sm:text-xl font-black text-[#d91e63] dark:text-[#f472b6] tracking-tight uppercase mb-1.5">
+                  {formData.orgName || 'Commission / Organization'}
+                </h2>
+                <h1 className="text-lg sm:text-2xl font-extrabold text-[#059669] dark:text-[#34d399] leading-tight max-w-4xl mx-auto mb-1.5">
+                  {formData.title || 'Job Post Title'}
+                </h1>
+                <p className="text-xs sm:text-sm font-bold text-[#c026d3] dark:text-[#e879f9] mb-2">
+                  {formData.postName || formData.title} : Short Details of Notification
+                </p>
+                <div className="inline-block py-1 px-4 rounded-md my-1 font-black text-xs sm:text-sm text-[#dc2626] dark:text-[#f87171] uppercase tracking-wider">
+                  FastArc Result Official • WWW.FASTARCGOVT.IN
+                </div>
+              </div>
+
+              {/* Short Info */}
+              {formData.shortInfo && (
+                <div className="p-4 bg-amber-50/60 dark:bg-amber-950/20 border-l-4 border-amber-500 m-4 rounded-r-xl text-xs sm:text-sm">
+                  <strong className="text-amber-700 dark:text-amber-400 block mb-1">Short Information :</strong>
+                  <p>{formData.shortInfo}</p>
+                </div>
               )}
-            </div>
-            <div className="flex items-center pt-5 pl-2">
-              <label className="flex items-center space-x-2 cursor-pointer">
-                <input type="checkbox" checked={formData.isNew} onChange={e => handleChange('isNew', e.target.checked)} className="rounded border-slate-300 dark:border-slate-700 text-red-600 focus:ring-red-500 w-4 h-4" />
-                <span className="text-slate-900 dark:text-slate-100 text-xs">Show "NEW" Badge</span>
-              </label>
-            </div>
+
+              {/* Dates & Fees */}
+              <div className="p-4">
+                <div className="border-2 border-slate-300 dark:border-slate-700 rounded-xl overflow-hidden">
+                  <div className="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x-2 divide-slate-300 dark:divide-slate-700">
+                    <div className="p-4 space-y-2 text-xs">
+                      <h4 className="font-black text-center text-[#059669] uppercase pb-2 border-b">Important Dates</h4>
+                      <p className="flex justify-between"><span>• Application Begin:</span><strong>{formData.dates?.start || 'Active Now'}</strong></p>
+                      <p className="flex justify-between text-[#dc2626]"><span>• Last Date Apply:</span><strong>{formData.dates?.last || 'Notify Soon'}</strong></p>
+                      <p className="flex justify-between"><span>• Last Date Fee:</span><strong>{formData.dates?.feeLast || 'As per Schedule'}</strong></p>
+                      {formData.dates?.examDate && <p className="flex justify-between text-indigo-600"><span>• Exam Date:</span><strong>{formData.dates.examDate}</strong></p>}
+                    </div>
+
+                    <div className="p-4 space-y-2 text-xs">
+                      <h4 className="font-black text-center text-[#059669] uppercase pb-2 border-b">Application Fee</h4>
+                      <p className="flex justify-between"><span>• Gen / OBC / EWS:</span><strong>{formData.fees?.general || '₹100/-'}</strong></p>
+                      <p className="flex justify-between"><span>• SC / ST / PH:</span><strong>{formData.fees?.scSt || '₹0/- (Exempted)'}</strong></p>
+                      {formData.fees?.female && <p className="flex justify-between"><span>• Female:</span><strong>{formData.fees.female}</strong></p>}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Vacancy Reservation Table */}
+              {formData.postWiseVacancies && formData.postWiseVacancies.length > 0 && (
+                <div className="p-4">
+                  <div className="border-2 border-slate-300 dark:border-slate-700 rounded-xl overflow-hidden">
+                    <div className="bg-[#1d4ed8] text-white font-black text-center py-2 text-xs uppercase">
+                      Category-Wise Vacancy Reservation Details
+                    </div>
+                    <table className="w-full text-center text-xs">
+                      <thead>
+                        <tr className="bg-slate-100 dark:bg-slate-800 font-extrabold border-b">
+                          <th className="p-2 text-left">Post Name</th>
+                          <th className="p-2">UR</th>
+                          <th className="p-2">EWS</th>
+                          <th className="p-2">OBC</th>
+                          <th className="p-2">SC</th>
+                          <th className="p-2">ST</th>
+                          <th className="p-2 font-black text-emerald-600">Total</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-slate-200 dark:divide-slate-800">
+                        {formData.postWiseVacancies.map((pv, i) => (
+                          <tr key={i}>
+                            <td className="p-2 text-left font-bold">{pv.postName}</td>
+                            <td className="p-2">{pv.general ?? '-'}</td>
+                            <td className="p-2">{pv.ews ?? '-'}</td>
+                            <td className="p-2">{pv.obc ?? '-'}</td>
+                            <td className="p-2">{pv.sc ?? '-'}</td>
+                            <td className="p-2">{pv.st ?? '-'}</td>
+                            <td className="p-2 font-black text-emerald-600">{pv.total ?? '-'}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              )}
+            </article>
           </div>
-          <div>
-            <label className="block mb-1 text-slate-900 dark:text-slate-100">Brief Info / Description</label>
-            <textarea rows={2} value={formData.shortInfo} onChange={e => handleChange('shortInfo', e.target.value)} className="w-full border border-slate-300 dark:border-slate-700 bg-transparent rounded-lg p-2.5 text-slate-800 dark:text-slate-100 focus:outline-none focus:border-red-500 transition-colors"></textarea>
+        )}
+
+        {/* ========================================================== */}
+        {/* BOTTOM TAB NAVIGATION & SUBMIT BAR */}
+        {/* ========================================================== */}
+        <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-4 sm:p-5 shadow-lg flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="flex items-center gap-2 w-full sm:w-auto">
+            {getPrevTab() ? (
+              <button
+                type="button"
+                onClick={() => {
+                  const prev = getPrevTab();
+                  if (prev) setActiveTab(prev);
+                }}
+                className="flex-1 sm:flex-initial bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 font-bold px-4 py-2.5 rounded-xl text-xs flex items-center justify-center gap-1.5 transition-all cursor-pointer"
+              >
+                <ArrowLeft className="w-4 h-4" />
+                <span>Previous Tab</span>
+              </button>
+            ) : (
+              <div className="hidden sm:block text-xs font-bold text-slate-400">Beginning of Form</div>
+            )}
+
+            {getNextTab() && (
+              <button
+                type="button"
+                onClick={() => {
+                  const next = getNextTab();
+                  if (next) setActiveTab(next);
+                }}
+                className="flex-1 sm:flex-initial bg-amber-500 hover:bg-amber-600 text-slate-950 font-black px-4 py-2.5 rounded-xl text-xs flex items-center justify-center gap-1.5 transition-all cursor-pointer shadow-sm"
+              >
+                <span>Next Tab</span>
+                <ArrowRight className="w-4 h-4" />
+              </button>
+            )}
           </div>
 
-          {/* Age Limit & Eligibility */}
-          <div className="border-t border-slate-100 dark:border-slate-800 pt-4">
-            <h4 className="font-bold text-sm text-slate-900 dark:text-white mb-2">Age Limit & Eligibility</h4>
-            <div className="grid grid-cols-2 gap-3">
-              <div>
-                <label className="block mb-1 text-slate-500 font-medium">Age Limit Info</label>
-                <input type="text" placeholder="e.g. 18 - 30 Years" value={formData.ageLimit || ''} onChange={e => handleChange('ageLimit', e.target.value)} className="w-full border border-slate-300 dark:border-slate-700 bg-transparent rounded-lg p-2.5 text-slate-800 dark:text-slate-100 focus:outline-none focus:border-red-500 transition-colors" />
-              </div>
-              <div>
-                <label className="block mb-1 text-slate-500 font-medium">Eligibility Criteria</label>
-                <input type="text" placeholder="e.g. 12th / Graduation" value={formData.eligibility || ''} onChange={e => handleChange('eligibility', e.target.value)} className="w-full border border-slate-300 dark:border-slate-700 bg-transparent rounded-lg p-2.5 text-slate-800 dark:text-slate-100 focus:outline-none focus:border-red-500 transition-colors" />
-              </div>
-            </div>
+          <div className="text-xs text-slate-500 dark:text-slate-400 font-bold">
+            Step {activeTabIndex + 1} of {TAB_LIST.length} • {TAB_LIST[activeTabIndex]?.shortLabel}
           </div>
 
-          <div className="border-t border-slate-100 dark:border-slate-800 pt-4">
-            <h4 className="font-bold text-sm text-slate-900 dark:text-white mb-2">Important Dates</h4>
-            <div className="grid grid-cols-2 gap-3">
-              <div>
-                <label className="block mb-1 text-slate-500 font-medium">Start Date</label>
-                <DateInputWithPicker value={formData.dates?.start || ''} onChange={val => handleChange('start', val, 'dates')} placeholder="Start Date" />
-              </div>
-              <div>
-                <label className="block mb-1 text-slate-500 font-medium">Last Date</label>
-                <DateInputWithPicker value={formData.dates?.last || ''} onChange={val => handleChange('last', val, 'dates')} placeholder="Last Date" />
-              </div>
-            </div>
-          </div>
-          <div className="border-t border-slate-100 dark:border-slate-800 pt-4">
-            <h4 className="font-bold text-sm text-slate-900 dark:text-white mb-2">Application Fees</h4>
-            <div className="grid grid-cols-2 gap-3">
-              <input type="text" placeholder="General/OBC" value={formData.fees?.general || ''} onChange={e => handleChange('general', e.target.value, 'fees')} className="w-full border border-slate-300 dark:border-slate-700 bg-transparent rounded-lg p-2.5 text-slate-800 dark:text-slate-100 focus:outline-none transition-colors" />
-              <input type="text" placeholder="SC/ST" value={formData.fees?.scSt || ''} onChange={e => handleChange('scSt', e.target.value, 'fees')} className="w-full border border-slate-300 dark:border-slate-700 bg-transparent rounded-lg p-2.5 text-slate-800 dark:text-slate-100 focus:outline-none transition-colors" />
-            </div>
-          </div>
-
-          {/* Important Links */}
-          <div className="border-t border-slate-100 dark:border-slate-800 pt-4">
-            <div className="flex items-center justify-between mb-2">
-              <h4 className="font-bold text-sm text-slate-900 dark:text-white flex items-center gap-1.5">
-                <span>🔗</span> Important Web Links
-              </h4>
-            </div>
-            
-            {/* Quick 1-Click Board Presets */}
-            <div className="mb-3">
-              <p className="text-[11px] text-slate-500 mb-1.5 font-medium">Quick Auto-Fill Official Links:</p>
-              <div className="flex flex-wrap gap-1.5">
-                <button type="button" onClick={() => handleQuickPortalPreset('ssc')} className="px-2 py-1 rounded bg-slate-100 dark:bg-slate-800 hover:bg-red-50 dark:hover:bg-red-950/40 text-[10px] font-bold text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:border-red-400 cursor-pointer">
-                  SSC
-                </button>
-                <button type="button" onClick={() => handleQuickPortalPreset('rrb')} className="px-2 py-1 rounded bg-slate-100 dark:bg-slate-800 hover:bg-red-50 dark:hover:bg-red-950/40 text-[10px] font-bold text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:border-red-400 cursor-pointer">
-                  Railway RRB
-                </button>
-                <button type="button" onClick={() => handleQuickPortalPreset('uppbpb')} className="px-2 py-1 rounded bg-slate-100 dark:bg-slate-800 hover:bg-red-50 dark:hover:bg-red-950/40 text-[10px] font-bold text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:border-red-400 cursor-pointer">
-                  UP Police
-                </button>
-                <button type="button" onClick={() => handleQuickPortalPreset('bpsc')} className="px-2 py-1 rounded bg-slate-100 dark:bg-slate-800 hover:bg-red-50 dark:hover:bg-red-950/40 text-[10px] font-bold text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:border-red-400 cursor-pointer">
-                  BPSC Bihar
-                </button>
-                <button type="button" onClick={() => handleQuickPortalPreset('ibps')} className="px-2 py-1 rounded bg-slate-100 dark:bg-slate-800 hover:bg-red-50 dark:hover:bg-red-950/40 text-[10px] font-bold text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:border-red-400 cursor-pointer">
-                  IBPS Bank
-                </button>
-                <button type="button" onClick={() => handleQuickPortalPreset('nta')} className="px-2 py-1 rounded bg-slate-100 dark:bg-slate-800 hover:bg-red-50 dark:hover:bg-red-950/40 text-[10px] font-bold text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:border-red-400 cursor-pointer">
-                  NTA Exam
-                </button>
-                <button type="button" onClick={() => handleQuickPortalPreset('upsc')} className="px-2 py-1 rounded bg-slate-100 dark:bg-slate-800 hover:bg-red-50 dark:hover:bg-red-950/40 text-[10px] font-bold text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:border-red-400 cursor-pointer">
-                  UPSC
-                </button>
-              </div>
-            </div>
-
-            <div className="space-y-2.5">
-              <div>
-                <label className="block mb-1 text-slate-700 dark:text-slate-200 font-semibold">1. Apply Online / Direct Action URL</label>
-                <input 
-                  type="text" 
-                  placeholder="https://ssc.gov.in or https://rrbapply.gov.in" 
-                  value={formData.links?.apply || ''} 
-                  onChange={e => handleChange('apply', e.target.value, 'links')} 
-                  className="w-full border border-slate-300 dark:border-slate-700 bg-transparent rounded-lg p-2 text-slate-800 dark:text-slate-100 focus:outline-none focus:border-red-500 transition-colors" 
-                />
-              </div>
-              <div>
-                <label className="block mb-1 text-slate-700 dark:text-slate-200 font-semibold">2. Download Official Notification (PDF / Notice URL)</label>
-                <input 
-                  type="text" 
-                  placeholder="https://official-board.gov.in/notice.pdf" 
-                  value={formData.links?.notification || ''} 
-                  onChange={e => handleChange('notification', e.target.value, 'links')} 
-                  className="w-full border border-slate-300 dark:border-slate-700 bg-transparent rounded-lg p-2 text-slate-800 dark:text-slate-100 focus:outline-none focus:border-red-500 transition-colors" 
-                />
-              </div>
-              <div>
-                <label className="block mb-1 text-slate-700 dark:text-slate-200 font-semibold">3. Official Board Website URL</label>
-                <input 
-                  type="text" 
-                  placeholder="https://ssc.gov.in or https://uppbpb.gov.in" 
-                  value={formData.links?.official || ''} 
-                  onChange={e => handleChange('official', e.target.value, 'links')} 
-                  className="w-full border border-slate-300 dark:border-slate-700 bg-transparent rounded-lg p-2 text-slate-800 dark:text-slate-100 focus:outline-none focus:border-red-500 transition-colors" 
-                />
-              </div>
-            </div>
-          </div>
-          
-          {editingJob && (
-            <div className="flex flex-col gap-2 pt-2 border-t border-slate-200 dark:border-slate-800">
-              <span className="text-xs text-slate-500 font-bold uppercase">Quick Share Broadcast</span>
-              <div className="flex gap-2">
-                <button
-                  type="button"
-                  onClick={() => {
-                    const text = `🔥 *${formData.title}*\n\n📝 *Category:* ${formData.category?.toUpperCase() || 'LATEST'}\n📅 *Last Date:* ${formData.dates?.last || 'Available Now'}\n\n👉 *View Details & Apply:* ${window.location.origin}/?jobId=${editingJob.id}`;
-                    window.open(`https://t.me/share/url?url=${encodeURIComponent(text)}`, '_blank');
-                  }}
-                  className="flex-1 bg-[#229ED9] hover:bg-[#1c84b6] text-white py-2 rounded-lg text-xs font-bold transition-all shadow flex items-center justify-center gap-1.5 cursor-pointer"
-                >
-                  <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.446 1.394c-.14.18-.357.295-.6.295-.002 0-.003 0-.005 0l.213-3.054 5.56-5.022c.24-.213-.054-.334-.373-.121l-6.869 4.326-2.96-.924c-.64-.203-.658-.64.135-.954l11.566-4.458c.538-.196 1.006.128.832.941z"/></svg>
-                  Telegram
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    const text = `🔥 *${formData.title}*\n\n📝 *Category:* ${formData.category?.toUpperCase() || 'LATEST'}\n📅 *Last Date:* ${formData.dates?.last || 'Available Now'}\n\n👉 *View Details & Apply:* ${window.location.origin}/?jobId=${editingJob.id}`;
-                    window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`, '_blank');
-                  }}
-                  className="flex-1 bg-[#25D366] hover:bg-[#20bd5a] text-white py-2 rounded-lg text-xs font-bold transition-all shadow flex items-center justify-center gap-1.5 cursor-pointer"
-                >
-                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12.031 0C5.405 0 .016 5.389.016 12.016c0 2.12.553 4.187 1.603 6.002L.031 24l6.125-1.607c1.748.966 3.708 1.474 5.706 1.474h.007c6.626 0 12.016-5.389 12.016-12.016C23.885 5.389 18.497 0 12.031 0zm0 21.84c-1.782 0-3.526-.479-5.056-1.385l-.362-.214-3.765.986.997-3.666-.235-.373C2.593 15.541 2.052 13.805 2.052 12.017c0-5.503 4.478-9.98 9.98-9.98 5.503 0 9.98 4.477 9.98 9.98 0 5.503-4.477 9.98-9.98 9.98zm5.474-7.485c-.3-.15-1.776-.877-2.052-.977-.277-.101-.478-.151-.679.151-.202.302-.778.978-.953 1.178-.175.202-.35.227-.652.076-1.353-.68-2.316-1.258-3.238-2.839-.175-.302.175-.286.471-.876.101-.202.05-.378-.025-.529-.076-.151-.679-1.637-.93-2.241-.243-.585-.49-.504-.678-.513-.175-.01-.378-.01-.579-.01-.202 0-.528.076-.804.378-.276.302-1.054 1.03-1.054 2.512 0 1.482 1.079 2.915 1.23 3.115.151.2 2.124 3.242 5.143 4.542 1.956.845 2.457.777 3.333.626.877-.151 1.777-.726 2.028-1.431.251-.705.251-1.309.176-1.431-.075-.126-.277-.202-.577-.353z"/></svg>
-                  WhatsApp
-                </button>
-              </div>
-            </div>
-          )}
-
-          <div className="flex space-x-2 pt-4 border-t border-slate-200 dark:border-slate-800">
-            <button type="button" onClick={onClose} className="w-1/3 bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold py-3 rounded-lg shadow-md transition-all">
+          <div className="flex items-center gap-2.5 w-full sm:w-auto">
+            <button
+              type="button"
+              onClick={onClose}
+              className="flex-1 sm:flex-initial bg-slate-200 hover:bg-slate-300 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold px-4 py-2.5 rounded-xl text-xs transition-all cursor-pointer"
+            >
               Cancel
             </button>
-            <button 
-              type="submit" 
-              disabled={isSubmitting} 
-              className={`w-full font-bold py-3 rounded-lg shadow-md transition-all text-white ${
-                isSubmitting ? 'bg-slate-500 cursor-not-allowed' : 'bg-red-600 hover:bg-red-700 cursor-pointer'
-              }`}
+
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="flex-1 sm:flex-initial bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-black px-6 py-2.5 rounded-xl text-xs shadow-md transition-all active:scale-95 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
             >
-              {isSubmitting ? 'Saving...' : editingJob ? 'Update Database' : 'Push to Live Database'}
+              <Save className="w-4 h-4" />
+              <span>{isSubmitting ? 'Saving to Database...' : editingJob ? 'Update & Publish' : 'Publish Job Post'}</span>
             </button>
           </div>
-        </form>
-      </div>
+        </div>
+
+      </form>
     </div>
   );
 };

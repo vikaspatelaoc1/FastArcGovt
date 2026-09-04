@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import { JobAlert, ScraperSource, ScrapedPost, JobCategory, SyncLogEntry } from '../types';
 import { defaultScraperSources } from '../data/defaultScraperSources';
+import { enrichJobDetails } from '../utils/jobEnricher';
 
 interface AutoFeedContentProps {
   onPushJob: (job: JobAlert) => Promise<void> | void;
@@ -296,7 +297,7 @@ export const AutoFeedContent: React.FC<AutoFeedContentProps> = ({
     dObj.setDate(dObj.getDate() + 30);
     const defaultLastDate = `${String(dObj.getDate()).padStart(2, '0')}-${String(dObj.getMonth() + 1).padStart(2, '0')}-${dObj.getFullYear()}`;
 
-    const newJob: JobAlert = {
+    const rawJob: Partial<JobAlert> = {
       id: `job-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
       title: post.title,
       category: post.category,
@@ -308,6 +309,9 @@ export const AutoFeedContent: React.FC<AutoFeedContentProps> = ({
       fees: post.fees || { general: '₹100', scSt: '₹0' },
       links: post.links || { apply: 'https://india.gov.in', official: 'https://india.gov.in', notification: 'https://india.gov.in' }
     };
+
+    // Guarantee 100% complete job details (dates, fees, vacancies, reservation, age, salary, eligibility, syllabus)
+    const newJob = enrichJobDetails(rawJob);
 
     try {
       await onPushJob(newJob);
@@ -344,7 +348,7 @@ export const AutoFeedContent: React.FC<AutoFeedContentProps> = ({
     dObj.setDate(dObj.getDate() + 30);
     const defaultLastDate = `${String(dObj.getDate()).padStart(2, '0')}-${String(dObj.getMonth() + 1).padStart(2, '0')}-${dObj.getFullYear()}`;
 
-    const newJobs: JobAlert[] = toIngest.map((post, idx) => ({
+    const newJobs: JobAlert[] = toIngest.map((post, idx) => enrichJobDetails({
       id: `job-${Date.now()}-${idx}-${Math.floor(Math.random() * 1000)}`,
       title: post.title,
       category: post.category,
@@ -543,18 +547,19 @@ if __name__ == "__main__":
       const parsed = JSON.parse(customJsonInput);
       const todayStr = new Date().toLocaleDateString('en-GB').replace(/\//g, '-');
 
-      const newJob: JobAlert = {
-        id: `auto-${Date.now()}`,
+      const newJob: JobAlert = enrichJobDetails({
+        id: parsed.id || `auto-${Date.now()}`,
         title: parsed.title || "Untitled Govt Notice",
         category: (parsed.category as any) || "latest-jobs",
         postDate: parsed.postDate || todayStr,
         isNew: parsed.isNew !== undefined ? parsed.isNew : true,
         state: parsed.state || "Central",
-        shortInfo: parsed.shortInfo || "Auto-filled via REST API Gateway.",
-        dates: parsed.dates || { start: todayStr, last: 'Check Official Notice' },
-        fees: parsed.fees || { general: '₹100', scSt: '₹0' },
-        links: parsed.links || { apply: 'https://india.gov.in', official: 'https://india.gov.in' }
-      };
+        shortInfo: parsed.shortInfo,
+        dates: parsed.dates,
+        fees: parsed.fees,
+        links: parsed.links,
+        ...parsed
+      });
 
       try {
         await fetch('/api/v1/sarkari-posts', {

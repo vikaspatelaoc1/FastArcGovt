@@ -30,6 +30,7 @@ import { loadThemeColors, applyThemeColorsToDOM } from './utils/themeColors';
 import { loadColumnConfigs, DEFAULT_COLUMN_CONFIGS, ColumnConfigsMap } from './utils/columnConfig';
 import { loadWebsiteControlConfig, applyWebsiteControlToDOM, WebsiteControlConfig } from './utils/websiteControlConfig';
 import { updateJobDetailSeo, resetDefaultSeo } from './utils/seo';
+import { enrichJobDetails } from './utils/jobEnricher';
 import { 
   subscribeToJobs, 
   saveJobToFirestore, 
@@ -686,18 +687,19 @@ export default function App() {
           const todayStr = new Date().toLocaleDateString('en-GB').replace(/\//g, '-');
           
           if (randomItem.title && randomItem.category) {
-            const newJob: JobAlert = {
+            const newJob: JobAlert = enrichJobDetails({
               id: `auto-${Date.now()}`,
               title: randomItem.title,
               category: randomItem.category as any,
               postDate: randomItem.postDate || todayStr,
               isNew: true,
               state: randomItem.state || "Central",
-              shortInfo: randomItem.shortInfo || "Extracted via Automated Web Scraper",
-              dates: randomItem.dates || { start: todayStr, last: "Check Official Notification" },
-              fees: randomItem.fees || { general: "₹100", scSt: "₹0" },
-              links: randomItem.links || { apply: "https://india.gov.in", official: "https://india.gov.in" }
-            };
+              shortInfo: randomItem.shortInfo,
+              dates: randomItem.dates,
+              fees: randomItem.fees,
+              links: randomItem.links,
+              ...randomItem
+            });
 
             setJobs(prev => {
               const normTitle = newJob.title.trim().toLowerCase();
@@ -836,15 +838,15 @@ export default function App() {
     const normTitle = job.title ? job.title.trim().toLowerCase() : '';
     const existingJob = jobs.find(j => j.title && j.title.trim().toLowerCase() === normTitle);
 
-    let finalJob = job;
+    let finalJob = enrichJobDetails(job);
     const isExistingOrEditing = editingJob || existingJob;
 
     if (existingJob && (!editingJob || editingJob.id !== existingJob.id)) {
       // Overwrite existing job ID to avoid creating duplicate post
-      finalJob = {
-        ...job,
+      finalJob = enrichJobDetails({
+        ...finalJob,
         id: existingJob.id
-      };
+      });
     }
 
     try {
@@ -892,20 +894,21 @@ export default function App() {
   };
 
   const handleBulkSaveJobs = async (jobsToSave: JobAlert[]) => {
+    const enrichedJobs = jobsToSave.map(j => enrichJobDetails(j));
     try {
-      await appendJobsToFirestore(jobsToSave);
-      triggerToast(`Published ${jobsToSave.length} jobs to database across all devices!`);
+      await appendJobsToFirestore(enrichedJobs);
+      triggerToast(`Published ${enrichedJobs.length} jobs to database across all devices!`);
     } catch (err) {
       console.warn('Firestore bulk save error:', err);
-      setJobs(prev => [...jobsToSave, ...prev.filter(p => !jobsToSave.some(j => j.id === p.id))]);
-      triggerToast(`Published ${jobsToSave.length} jobs locally!`);
+      setJobs(prev => [...enrichedJobs, ...prev.filter(p => !enrichedJobs.some(j => j.id === p.id))]);
+      triggerToast(`Published ${enrichedJobs.length} jobs locally!`);
     }
 
     try {
       await fetch('/api/v1/scraper/auto-ingest', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ posts: jobsToSave })
+        body: JSON.stringify({ posts: enrichedJobs })
       });
     } catch (e) {
       console.warn('Backend auto-ingest sync warning:', e);
@@ -1006,7 +1009,10 @@ export default function App() {
     const job = jobs.find(j => j.id === id);
     if (job) {
       setEditingJob(job);
+      setSelectedJobId(null);
       setIsAdminPanelOpen(true);
+      setIsSuperAdminModalOpen(false);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
 
@@ -1215,7 +1221,6 @@ export default function App() {
           </div>
         )}
 
-        <AdminPanel isOpen={isAdminPanelOpen} onClose={() => setIsAdminPanelOpen(false)} onSave={handleSaveJob} editingJob={editingJob} />
         <LoginModal 
           isOpen={isLoginOpen} 
           onClose={() => setIsLoginOpen(false)} 
@@ -1310,7 +1315,13 @@ export default function App() {
                 saveMarqueeToFirestore(text).catch(() => {});
               }
             }}
-            onOpenAddJob={() => setIsAdminPanelOpen(true)}
+            onOpenAddJob={() => {
+              setEditingJob(null);
+              setSelectedJobId(null);
+              setIsAdminPanelOpen(true);
+              setIsSuperAdminModalOpen(false);
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
             onResetDatabase={async () => {
               try {
                 await resetJobsInFirestore();
@@ -1336,6 +1347,22 @@ export default function App() {
             syncLogs={syncLogs}
             onEditJob={handleEditJob}
             onDeleteJob={handleDeleteJob}
+          />
+        </div>
+      ) : isAdminPanelOpen ? (
+        <div className="pt-[72px] lg:pt-[84px] flex-1 w-full flex flex-col mx-auto px-2 sm:px-4 lg:px-6 py-4 lg:py-6 min-h-[calc(100vh-80px)]">
+          <AdminPanel
+            isOpen={isAdminPanelOpen}
+            onClose={() => {
+              setIsAdminPanelOpen(false);
+              setEditingJob(null);
+            }}
+            onSave={(job) => {
+              handleSaveJob(job);
+              setIsAdminPanelOpen(false);
+              setEditingJob(null);
+            }}
+            editingJob={editingJob}
           />
         </div>
       ) : (
@@ -2231,7 +2258,6 @@ export default function App() {
         </div>
       )}
 
-      <AdminPanel isOpen={isAdminPanelOpen} onClose={() => setIsAdminPanelOpen(false)} onSave={handleSaveJob} editingJob={editingJob} />
       <LoginModal 
         isOpen={isLoginOpen} 
         onClose={() => setIsLoginOpen(false)} 

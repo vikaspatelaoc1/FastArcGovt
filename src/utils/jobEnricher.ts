@@ -521,6 +521,22 @@ export function enrichJobDetails(rawJob: Partial<JobAlert>): JobAlert {
         eligibility: typeof eligibility === 'string' ? eligibility : 'Passed 10th / 12th / ITI / Diploma / Bachelor Degree in relevant stream from any recognized board/university in India.'
       }
     ];
+  } else {
+    // Fill any missing category breakdown fields in existing postWiseVacancies
+    postWiseVacancies = postWiseVacancies.map(pv => {
+      const numericPart = pv.total ? parseInt(String(pv.total).replace(/[^\d]/g, ''), 10) : 0;
+      const hasNumeric = !isNaN(numericPart) && numericPart > 0;
+      return {
+        postName: pv.postName || postName,
+        total: pv.total || totalVacancies || 'Multiple Posts',
+        general: pv.general ?? (hasNumeric ? Math.round(numericPart * 0.40) : 'As per Rules'),
+        obc: pv.obc ?? (hasNumeric ? Math.round(numericPart * 0.27) : 'As per Rules'),
+        ews: pv.ews ?? (hasNumeric ? Math.round(numericPart * 0.10) : 'As per Rules'),
+        sc: pv.sc ?? (hasNumeric ? Math.round(numericPart * 0.15) : 'As per Rules'),
+        st: pv.st ?? (hasNumeric ? Math.round(numericPart * 0.08) : 'As per Rules'),
+        eligibility: pv.eligibility || (typeof eligibility === 'string' ? eligibility : 'Passed 10th / 12th / ITI / Diploma / Bachelor Degree in relevant stream from any recognized board/university in India.')
+      };
+    });
   }
 
   // Subjects list if UGC NET or academic job
