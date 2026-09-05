@@ -16,6 +16,57 @@ export function generateJobSlug(title: string, id?: string): string {
 }
 
 /**
+ * Strips RSS/feed/XML artifacts and suffixes from URLs to guarantee pure, clean official portal links.
+ * E.g., 'https://bssc.bihar.gov.in/rss.xml' -> 'https://bssc.bihar.gov.in'
+ *       'https://bssc.bihar.gov.in/rss.xml/' -> 'https://bssc.bihar.gov.in'
+ *       'https://ssc.gov.in/notices/rss.xml' -> 'https://ssc.gov.in'
+ *       'https://ssc.gov.in/feed.xml' -> 'https://ssc.gov.in'
+ *       'https://domain.gov.in/feed' -> 'https://domain.gov.in'
+ *       'https://domain.gov.in/atom.xml' -> 'https://domain.gov.in'
+ *       'https://telangana.urbandevelopment.gov.in/rss.xml/admit-card' -> 'https://telangana.urbandevelopment.gov.in/admit-card'
+ */
+export function cleanOfficialUrl(url?: string, defaultFallback: string = 'https://india.gov.in'): string {
+  if (!url || typeof url !== 'string' || !url.trim() || url.trim() === '#') return defaultFallback;
+  let clean = url.trim();
+  if (!/^https?:\/\//i.test(clean)) clean = `https://${clean}`;
+  try {
+    const u = new URL(clean);
+    
+    // Strip common feed query parameters (e.g. ?feed=rss2, ?format=xml, ?type=rss)
+    if (u.search && (u.search.includes('rss') || u.search.includes('feed') || u.search.includes('xml') || u.search.includes('atom'))) {
+      u.search = '';
+    }
+
+    let path = u.pathname
+      // Strip directory + filename feed artifacts like /notices/rss.xml, /rss.xml, /feed.xml, /atom.xml
+      .replace(/\/(notices\/|updates\/|news\/|rss\/|feed\/)?(rss|feed|recruitment|updates|notices|notifications|latest-updates|atom|index)?\.(xml|rss|atom)(\/.*)?$/i, '')
+      // Strip standalone feed path segments like /rss, /feed, /rss-feed, /feeds
+      .replace(/\/(rss|feed|rss-feed|feeds)(\/.*)?$/i, '')
+      // Strip intermediate /rss.xml/ from paths
+      .replace(/\/(notices\/)?rss\.xml(\/.*)?$/i, '')
+      .replace(/\/(notices\/)?feed\.xml(\/.*)?$/i, '')
+      .replace(/\.(xml|rss|atom)(\/.*)?$/i, '')
+      .replace(/\/+$/, '');
+
+    u.pathname = path || '';
+    u.hash = '';
+
+    // If path is root or generic feed container, point directly to official home domain
+    if (!u.pathname || u.pathname === '/' || u.pathname === '/notices' || u.pathname === '/notifications' || u.pathname === '/rss') {
+      return u.origin;
+    }
+    return `${u.origin}${u.pathname}`.replace(/\/+$/, '');
+  } catch {
+    return clean
+      .replace(/\/(notices\/)?rss\.xml(\/.*)?$/i, '')
+      .replace(/\/(notices\/)?feed\.xml(\/.*)?$/i, '')
+      .replace(/\/(rss|feed|rss-feed|feeds)(\/.*)?$/i, '')
+      .replace(/\.(xml|rss|atom).*$/i, '')
+      .replace(/\/+$/, '');
+  }
+}
+
+/**
  * Smart organization matcher from job title or state
  */
 export function detectOrganization(title: string = '', state: string = ''): { orgName: string; officialUrl: string; applyUrl: string } {
@@ -445,29 +496,30 @@ export function enrichJobDetails(rawJob: Partial<JobAlert>): JobAlert {
     }
   }
 
-  // Links Handling
+  // Links Handling - Guarantee pure, clean official portal links (no rss.xml, feed.xml or XML artifacts)
   const rawLinks = rawJob.links || {};
-  const applyUrl = rawLinks.apply || org.applyUrl;
-  const officialUrl = rawLinks.official || org.officialUrl;
-  const notifUrl = rawLinks.notification || `${officialUrl}/notices`;
+  const cleanedOfficial = cleanOfficialUrl(rawLinks.official, org.officialUrl);
+  const officialUrl = cleanedOfficial || org.officialUrl;
+  const applyUrl = cleanOfficialUrl(rawLinks.apply, org.applyUrl) || org.applyUrl;
+  const notifUrl = cleanOfficialUrl(rawLinks.notification, `${officialUrl}/notices`) || `${officialUrl}/notices`;
 
   const links = {
     apply: applyUrl,
-    applyServer2: rawLinks.applyServer2 || applyUrl,
+    applyServer2: cleanOfficialUrl(rawLinks.applyServer2, applyUrl),
     official: officialUrl,
     notification: notifUrl,
-    admitCard: rawLinks.admitCard || (category === 'admit-cards' ? applyUrl : `${officialUrl}/admit-card`),
-    admitCardNotice: rawLinks.admitCardNotice || notifUrl,
-    result: rawLinks.result || (category === 'results' ? applyUrl : `${officialUrl}/results`),
-    resultServer2: rawLinks.resultServer2 || `${officialUrl}/results`,
-    resultNotice: rawLinks.resultNotice || notifUrl,
-    cutoff: rawLinks.cutoff || notifUrl,
-    answerKey: rawLinks.answerKey || `${officialUrl}/answer-key`,
-    answerKeyNotice: rawLinks.answerKeyNotice || notifUrl,
-    examCity: rawLinks.examCity || `${officialUrl}/exam-city`,
-    syllabus: rawLinks.syllabus || notifUrl,
+    admitCard: cleanOfficialUrl(rawLinks.admitCard, (category === 'admit-cards' ? applyUrl : `${officialUrl}/admit-card`)),
+    admitCardNotice: cleanOfficialUrl(rawLinks.admitCardNotice, notifUrl),
+    result: cleanOfficialUrl(rawLinks.result, (category === 'results' ? applyUrl : `${officialUrl}/results`)),
+    resultServer2: cleanOfficialUrl(rawLinks.resultServer2, `${officialUrl}/results`),
+    resultNotice: cleanOfficialUrl(rawLinks.resultNotice, notifUrl),
+    cutoff: cleanOfficialUrl(rawLinks.cutoff, notifUrl),
+    answerKey: cleanOfficialUrl(rawLinks.answerKey, `${officialUrl}/answer-key`),
+    answerKeyNotice: cleanOfficialUrl(rawLinks.answerKeyNotice, notifUrl),
+    examCity: cleanOfficialUrl(rawLinks.examCity, `${officialUrl}/exam-city`),
+    syllabus: cleanOfficialUrl(rawLinks.syllabus, notifUrl),
     videoHindi: rawLinks.videoHindi || `https://www.youtube.com/results?search_query=${encodeURIComponent(title + ' Form Kaise Bhare')}`,
-    extendedNotice: rawLinks.extendedNotice || notifUrl,
+    extendedNotice: cleanOfficialUrl(rawLinks.extendedNotice, notifUrl),
     telegram: rawLinks.telegram || 'https://t.me/fastarcgov',
     whatsapp: rawLinks.whatsapp || 'https://whatsapp.com/channel/0029VaFastArcGov',
     tools: rawLinks.tools || '/?tab=documents'

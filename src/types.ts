@@ -133,6 +133,7 @@ export interface ScraperSource {
   id: string;
   name: string;
   url: string;
+  officialUrl?: string;
   type: 'rss' | 'html_scraper' | 'api';
   defaultCategory: JobCategory;
   state: string;

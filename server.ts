@@ -111,11 +111,43 @@ app.use((req, res, next) => {
 const DATA_DIR = process.env.VERCEL ? path.join('/tmp', 'data') : path.join(process.cwd(), 'data');
 const DB_FILE = path.join(DATA_DIR, 'fastarc_database.json');
 
-// URL sanitizer helper
+// URL sanitizer & official portal cleaner (strips RSS / feed / XML artifacts)
+const cleanOfficialUrl = (url?: string, defaultFallback: string = 'https://india.gov.in'): string => {
+  if (!url || typeof url !== 'string' || !url.trim() || url.trim() === '#') return defaultFallback;
+  let clean = url.trim();
+  if (!/^https?:\/\//i.test(clean)) clean = `https://${clean}`;
+  try {
+    const u = new URL(clean);
+    let path = u.pathname
+      .replace(/\/(notices\/)?rss\.xml/gi, '')
+      .replace(/\/(notices\/)?feed\.xml/gi, '')
+      .replace(/\/(notices\/)?feed\.rss/gi, '')
+      .replace(/\/(notices\/)?updates\.rss/gi, '')
+      .replace(/\/(notices\/)?notices\.rss/gi, '')
+      .replace(/\/rss-feed/gi, '')
+      .replace(/\/notifications\.xml/gi, '')
+      .replace(/\/recruitment\.xml/gi, '')
+      .replace(/\.(xml|rss|atom)$/i, '')
+      .replace(/\/+$/, '');
+
+    u.pathname = path || '';
+    u.search = '';
+    u.hash = '';
+
+    if (!u.pathname || u.pathname === '/' || u.pathname === '/notices' || u.pathname === '/notifications') {
+      return u.origin;
+    }
+    return `${u.origin}${u.pathname}`.replace(/\/+$/, '');
+  } catch {
+    return clean
+      .replace(/\/rss\.xml/gi, '')
+      .replace(/\.(xml|rss).*$/i, '')
+      .replace(/\/+$/, '');
+  }
+};
+
 const sanitizeUrl = (url?: string, defaultFallback: string = 'https://india.gov.in'): string => {
-  if (!url || !url.trim() || url.trim() === '#') return defaultFallback;
-  const clean = url.trim();
-  return /^https?:\/\//i.test(clean) ? clean : `https://${clean}`;
+  return cleanOfficialUrl(url, defaultFallback);
 };
 
 // Default initial dataset with complete official links
@@ -655,6 +687,10 @@ function serverEnrichJob(raw: any): any {
     orgName = orgName || 'Bihar Public Service Commission (BPSC)';
     officialPortal = 'https://bpsc.bih.nic.in';
     applyPortal = 'https://onlinebpsc.bihar.gov.in';
+  } else if (tLow.includes('bssc') || (tLow.includes('bihar') && tLow.includes('staff selection'))) {
+    orgName = orgName || 'Bihar Staff Selection Commission (BSSC)';
+    officialPortal = 'https://bssc.bihar.gov.in';
+    applyPortal = 'https://onlinebssc.com';
   } else if (tLow.includes('dsssb') || tLow.includes('delhi')) {
     orgName = orgName || 'Delhi Subordinate Services Selection Board (DSSSB)';
     officialPortal = 'https://dsssb.delhi.gov.in';
@@ -1913,6 +1949,9 @@ async function runAutomatedScraper(sourceId?: string) {
     dObj.setDate(dObj.getDate() + 30);
     const defaultLastDate = `${String(dObj.getDate()).padStart(2, '0')}-${String(dObj.getMonth() + 1).padStart(2, '0')}-${dObj.getFullYear()}`;
 
+    // Clean feed URL to official website URL (remove /rss.xml, /feed.xml, etc.)
+    const cleanSourceOfficial = cleanOfficialUrl(src.url);
+
     // If live feed template exists, load items
     const items = curatedLiveFeeds[src.id] || [
       {
@@ -1922,12 +1961,15 @@ async function runAutomatedScraper(sourceId?: string) {
         state: src.state,
         dates: { start: todayStr, last: defaultLastDate },
         fees: { general: '₹100', scSt: '₹0' },
-        links: { apply: src.url, official: src.url, notification: src.url }
+        links: { apply: cleanSourceOfficial, official: cleanSourceOfficial, notification: cleanSourceOfficial }
       }
     ];
 
     items.forEach((item, idx) => {
       const autoCat = categorizeScrapedTitle(item.title, item.category || src.defaultCategory);
+      const applyClean = cleanOfficialUrl(item.links?.apply || cleanSourceOfficial);
+      const officialClean = cleanOfficialUrl(item.links?.official || cleanSourceOfficial);
+      const notifClean = cleanOfficialUrl(item.links?.notification || officialClean);
       scrapedPosts.push({
         id: `scraped-${src.id}-${idx}-${Date.now()}`,
         sourceId: src.id,
@@ -1939,7 +1981,11 @@ async function runAutomatedScraper(sourceId?: string) {
         shortInfo: item.shortInfo || '',
         dates: item.dates || { start: todayStr, last: 'Check Official Notice' },
         fees: item.fees || { general: '₹100', scSt: '₹0' },
-        links: item.links || { apply: src.url, official: src.url, notification: src.url },
+        links: {
+          apply: applyClean,
+          official: officialClean,
+          notification: notifClean
+        },
         scrapedAt: `${todayStr} ${nowTime}`,
         confidenceScore: 98,
         status: 'pending'

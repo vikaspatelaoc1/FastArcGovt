@@ -7,7 +7,7 @@ import {
 } from 'lucide-react';
 import { JobAlert, SocialLinkItem, SuperAdminTabType } from '../types';
 import { Header } from './Header';
-import { enrichJobDetails, formatLongDate } from '../utils/jobEnricher';
+import { enrichJobDetails, formatLongDate, cleanOfficialUrl } from '../utils/jobEnricher';
 import { openJobInNewTab, getJobDetailUrl } from '../utils/jobUrl';
 import { updateJobDetailSeo } from '../utils/seo';
 import { saveSubscriberToFirestore, SubscriberRecord } from '../services/firestoreService';
@@ -726,7 +726,7 @@ export const JobDetailsPage: React.FC<JobDetailsPageProps> = ({
                   </div>
                   <div className="p-3.5 sm:p-4 font-extrabold text-[#1d4ed8] dark:text-[#60a5fa] text-xs sm:text-sm flex items-center justify-start sm:justify-start gap-3">
                     <a
-                      href={job.links?.apply || '#'}
+                      href={cleanOfficialUrl(job.links?.apply || '#')}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="hover:underline flex items-center gap-1 cursor-pointer"
@@ -738,7 +738,7 @@ export const JobDetailsPage: React.FC<JobDetailsPageProps> = ({
                       <>
                         <span className="text-slate-400 font-normal">|</span>
                         <a
-                          href={job.links.applyServer2}
+                          href={cleanOfficialUrl(job.links.applyServer2)}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="hover:underline flex items-center gap-1 cursor-pointer"
@@ -757,7 +757,7 @@ export const JobDetailsPage: React.FC<JobDetailsPageProps> = ({
                   </div>
                   <div className="p-3.5 sm:p-4 font-extrabold text-[#1d4ed8] dark:text-[#60a5fa] text-xs sm:text-sm flex items-center gap-2">
                     <a
-                      href={job.links?.notification || job.links?.official || '#'}
+                      href={cleanOfficialUrl(job.links?.notification || job.links?.official || '#')}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="hover:underline flex items-center gap-1 cursor-pointer"
@@ -775,7 +775,7 @@ export const JobDetailsPage: React.FC<JobDetailsPageProps> = ({
                   </div>
                   <div className="p-3.5 sm:p-4 font-extrabold text-[#1d4ed8] dark:text-[#60a5fa] text-xs sm:text-sm flex items-center gap-2">
                     <a
-                      href={job.links?.official || '#'}
+                      href={cleanOfficialUrl(job.links?.official || '#')}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="hover:underline flex items-center gap-1 cursor-pointer truncate max-w-xs sm:max-w-md"
@@ -794,7 +794,7 @@ export const JobDetailsPage: React.FC<JobDetailsPageProps> = ({
                     </div>
                     <div className="p-3.5 sm:p-4 font-extrabold text-[#1d4ed8] dark:text-[#60a5fa] text-xs sm:text-sm flex items-center gap-3">
                       <a
-                        href={job.links.admitCard}
+                        href={cleanOfficialUrl(job.links.admitCard)}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="hover:underline flex items-center gap-1 cursor-pointer"
@@ -814,7 +814,7 @@ export const JobDetailsPage: React.FC<JobDetailsPageProps> = ({
                     </div>
                     <div className="p-3.5 sm:p-4 font-extrabold text-[#1d4ed8] dark:text-[#60a5fa] text-xs sm:text-sm flex items-center gap-3">
                       <a
-                        href={job.links.result}
+                        href={cleanOfficialUrl(job.links.result)}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="hover:underline flex items-center gap-1 cursor-pointer"
@@ -823,7 +823,7 @@ export const JobDetailsPage: React.FC<JobDetailsPageProps> = ({
                       </a>
                       <span className="text-slate-400 font-normal">|</span>
                       <a
-                        href={job.links.resultServer2 || job.links.result}
+                        href={cleanOfficialUrl(job.links.resultServer2 || job.links.result)}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="hover:underline flex items-center gap-1 cursor-pointer"
@@ -842,7 +842,7 @@ export const JobDetailsPage: React.FC<JobDetailsPageProps> = ({
                     </div>
                     <div className="p-3.5 sm:p-4 font-extrabold text-[#1d4ed8] dark:text-[#60a5fa] text-xs sm:text-sm flex items-center gap-3">
                       <a
-                        href={job.links.answerKey}
+                        href={cleanOfficialUrl(job.links.answerKey)}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="hover:underline flex items-center gap-1 cursor-pointer"

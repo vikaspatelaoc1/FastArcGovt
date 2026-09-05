@@ -8,7 +8,7 @@ import {
 } from 'lucide-react';
 import { JobAlert, ScraperSource, ScrapedPost, JobCategory, SyncLogEntry } from '../types';
 import { defaultScraperSources } from '../data/defaultScraperSources';
-import { enrichJobDetails } from '../utils/jobEnricher';
+import { enrichJobDetails, cleanOfficialUrl } from '../utils/jobEnricher';
 
 interface AutoFeedContentProps {
   onPushJob: (job: JobAlert) => Promise<void> | void;
@@ -145,22 +145,25 @@ export const AutoFeedContent: React.FC<AutoFeedContentProps> = ({
     })();
 
     const sample = pool.slice(0, 25);
-    return sample.map((src, idx) => ({
-      id: `live-feed-${Date.now()}-${idx}`,
-      sourceId: src.id,
-      sourceName: src.name,
-      title: `${src.name} - Latest Recruitment & Exam Notification 2026`,
-      shortInfo: `Extracted from official portal ${src.url}. Check eligibility and online application process.`,
-      category: (src.defaultCategory || 'latest-jobs') as JobCategory,
-      state: src.state || 'Central',
-      dates: { start: todayStr, last: defaultLastDate },
-      fees: { general: '₹100', scSt: '₹0' },
-      links: { apply: src.url, official: src.url, notification: src.url },
-      postDate: todayStr,
-      confidenceScore: 95,
-      scrapedAt: new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }),
-      status: 'pending' as const
-    }));
+    return sample.map((src, idx) => {
+      const cleanOfficial = cleanOfficialUrl(src.url);
+      return {
+        id: `live-feed-${Date.now()}-${idx}`,
+        sourceId: src.id,
+        sourceName: src.name,
+        title: `${src.name} - Latest Recruitment & Exam Notification 2026`,
+        shortInfo: `Extracted from official portal ${cleanOfficial}. Check eligibility and online application process.`,
+        category: (src.defaultCategory || 'latest-jobs') as JobCategory,
+        state: src.state || 'Central',
+        dates: { start: todayStr, last: defaultLastDate },
+        fees: { general: '₹100', scSt: '₹0' },
+        links: { apply: cleanOfficial, official: cleanOfficial, notification: cleanOfficial },
+        postDate: todayStr,
+        confidenceScore: 95,
+        scrapedAt: new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }),
+        status: 'pending' as const
+      };
+    });
   };
 
   // Run Scraper Engine
@@ -987,8 +990,8 @@ if __name__ == "__main__":
                               <span>📅 Date: {post.postDate}</span>
                               {post.links?.apply && (
                                 <a 
-                                  href={post.links.apply} 
-                                   
+                                  href={cleanOfficialUrl(post.links.apply)} 
+                                  target="_blank"
                                   rel="noreferrer" 
                                   className="text-amber-600 dark:text-amber-400 hover:underline flex items-center gap-0.5"
                                 >

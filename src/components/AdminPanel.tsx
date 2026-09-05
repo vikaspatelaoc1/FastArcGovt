@@ -7,7 +7,7 @@ import {
 } from 'lucide-react';
 import { JobAlert, JobCategory, PostWiseVacancy } from '../types';
 import { DateInputWithPicker } from './DateInputWithPicker';
-import { enrichJobDetails } from '../utils/jobEnricher';
+import { enrichJobDetails, cleanOfficialUrl } from '../utils/jobEnricher';
 
 interface AdminPanelProps {
   isOpen: boolean;
@@ -247,18 +247,23 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose, onSave,
     if (!url || !url.trim()) return '';
     const trimmed = url.trim();
     if (trimmed === '#') return '';
-    if (/^https?:\/\//i.test(trimmed)) return trimmed;
-    return `https://${trimmed}`;
+    return cleanOfficialUrl(trimmed);
   };
 
   // Quick Portal Presets for Indian Government Commissions
-  const handleQuickPortalPreset = (portal: 'ssc' | 'rrb' | 'uppbpb' | 'bpsc' | 'ibps' | 'nta' | 'upsc' | 'dsssb') => {
+  const handleQuickPortalPreset = (portal: 'ssc' | 'rrb' | 'uppbpb' | 'bpsc' | 'bssc' | 'ibps' | 'nta' | 'upsc' | 'dsssb') => {
     const presets: Record<string, { org: string; apply: string; official: string; notification: string }> = {
       ssc: {
         org: 'Staff Selection Commission (SSC)',
         apply: 'https://ssc.gov.in',
         official: 'https://ssc.gov.in',
         notification: 'https://ssc.gov.in/notices'
+      },
+      bssc: {
+        org: 'Bihar Staff Selection Commission (BSSC)',
+        apply: 'https://onlinebssc.com',
+        official: 'https://bssc.bihar.gov.in',
+        notification: 'https://bssc.bihar.gov.in'
       },
       rrb: {
         org: 'Railway Recruitment Boards (RRB) / Ministry of Railways',

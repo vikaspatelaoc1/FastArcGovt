@@ -30,7 +30,7 @@ import { loadThemeColors, applyThemeColorsToDOM } from './utils/themeColors';
 import { loadColumnConfigs, DEFAULT_COLUMN_CONFIGS, ColumnConfigsMap } from './utils/columnConfig';
 import { loadWebsiteControlConfig, applyWebsiteControlToDOM, WebsiteControlConfig } from './utils/websiteControlConfig';
 import { updateJobDetailSeo, resetDefaultSeo } from './utils/seo';
-import { enrichJobDetails } from './utils/jobEnricher';
+import { enrichJobDetails, cleanOfficialUrl } from './utils/jobEnricher';
 import { 
   subscribeToJobs, 
   saveJobToFirestore, 
@@ -255,7 +255,26 @@ export default function App() {
         try {
           const parsed = JSON.parse(saved);
           if (Array.isArray(parsed) && parsed.length >= defaultJobsDatabase.length) {
-            return parsed;
+            return parsed.map((j: any) => {
+              const rawLinks = j.links || {};
+              const official = cleanOfficialUrl(rawLinks.official, 'https://india.gov.in');
+              const apply = cleanOfficialUrl(rawLinks.apply, official);
+              const notification = cleanOfficialUrl(rawLinks.notification, official);
+              return {
+                ...j,
+                links: {
+                  ...rawLinks,
+                  official,
+                  apply,
+                  notification,
+                  applyServer2: rawLinks.applyServer2 ? cleanOfficialUrl(rawLinks.applyServer2, apply) : undefined,
+                  admitCard: rawLinks.admitCard ? cleanOfficialUrl(rawLinks.admitCard, apply) : undefined,
+                  result: rawLinks.result ? cleanOfficialUrl(rawLinks.result, apply) : undefined,
+                  resultServer2: rawLinks.resultServer2 ? cleanOfficialUrl(rawLinks.resultServer2, apply) : undefined,
+                  answerKey: rawLinks.answerKey ? cleanOfficialUrl(rawLinks.answerKey, official) : undefined,
+                }
+              };
+            });
           }
         } catch (e) { /* ignore */ }
       }
@@ -292,8 +311,28 @@ export default function App() {
     const unsubscribeJobs = subscribeToJobs(
       (liveJobs) => {
         if (Array.isArray(liveJobs)) {
-          setJobs(liveJobs);
-          localStorage.setItem('fastarc_jobs', JSON.stringify(liveJobs));
+          const sanitizedJobs = liveJobs.map((j: any) => {
+            const rawLinks = j.links || {};
+            const official = cleanOfficialUrl(rawLinks.official, 'https://india.gov.in');
+            const apply = cleanOfficialUrl(rawLinks.apply, official);
+            const notification = cleanOfficialUrl(rawLinks.notification, official);
+            return {
+              ...j,
+              links: {
+                ...rawLinks,
+                official,
+                apply,
+                notification,
+                applyServer2: rawLinks.applyServer2 ? cleanOfficialUrl(rawLinks.applyServer2, apply) : undefined,
+                admitCard: rawLinks.admitCard ? cleanOfficialUrl(rawLinks.admitCard, apply) : undefined,
+                result: rawLinks.result ? cleanOfficialUrl(rawLinks.result, apply) : undefined,
+                resultServer2: rawLinks.resultServer2 ? cleanOfficialUrl(rawLinks.resultServer2, apply) : undefined,
+                answerKey: rawLinks.answerKey ? cleanOfficialUrl(rawLinks.answerKey, official) : undefined,
+              }
+            };
+          });
+          setJobs(sanitizedJobs);
+          localStorage.setItem('fastarc_jobs', JSON.stringify(sanitizedJobs));
         }
       },
       (err) => {
@@ -343,26 +382,40 @@ export default function App() {
       })
       .then(data => {
         if (data.success && Array.isArray(data.jobs) && data.jobs.length > 0) {
-          const serverJobs: JobAlert[] = data.jobs.map((j: any) => ({
-            id: j.id,
-            title: j.title,
-            category: j.category,
-            postDate: j.post_date || j.postDate || '',
-            isNew: Boolean(j.is_new !== undefined ? j.is_new : j.isNew),
-            state: j.state || 'Central',
-            shortInfo: j.short_info || j.shortInfo || '',
-            ageLimit: j.ageLimit || '',
-            eligibility: j.eligibility || '',
-            dates: typeof j.dates === 'string' ? JSON.parse(j.dates) : (j.dates || { start: 'N/A', last: 'N/A' }),
-            fees: typeof j.fees === 'string' ? JSON.parse(j.fees) : (j.fees || { general: 'N/A', scSt: 'N/A' }),
-            links: (() => {
-              const raw = typeof j.links === 'string' ? JSON.parse(j.links) : j.links;
-              const apply = (raw?.apply && raw.apply !== '#') ? raw.apply : 'https://india.gov.in';
-              const official = (raw?.official && raw.official !== '#') ? raw.official : 'https://india.gov.in';
-              const notification = raw?.notification || official;
-              return { apply, official, notification };
-            })(),
-          }));
+          const serverJobs: JobAlert[] = data.jobs.map((j: any) => {
+            const rawLinks = typeof j.links === 'string' ? JSON.parse(j.links) : j.links;
+            const rawOfficial = (rawLinks?.official && rawLinks.official !== '#') ? rawLinks.official : 'https://india.gov.in';
+            const official = cleanOfficialUrl(rawOfficial, 'https://india.gov.in');
+            const rawApply = (rawLinks?.apply && rawLinks.apply !== '#') ? rawLinks.apply : official;
+            const apply = cleanOfficialUrl(rawApply, official);
+            const rawNotif = (rawLinks?.notification && rawLinks.notification !== '#') ? rawLinks.notification : official;
+            const notification = cleanOfficialUrl(rawNotif, official);
+
+            return {
+              id: j.id,
+              title: j.title,
+              category: j.category,
+              postDate: j.post_date || j.postDate || '',
+              isNew: Boolean(j.is_new !== undefined ? j.is_new : j.isNew),
+              state: j.state || 'Central',
+              shortInfo: j.short_info || j.shortInfo || '',
+              ageLimit: j.ageLimit || '',
+              eligibility: j.eligibility || '',
+              dates: typeof j.dates === 'string' ? JSON.parse(j.dates) : (j.dates || { start: 'N/A', last: 'N/A' }),
+              fees: typeof j.fees === 'string' ? JSON.parse(j.fees) : (j.fees || { general: 'N/A', scSt: 'N/A' }),
+              links: {
+                ...(rawLinks || {}),
+                apply,
+                official,
+                notification,
+                applyServer2: rawLinks?.applyServer2 ? cleanOfficialUrl(rawLinks.applyServer2, apply) : undefined,
+                admitCard: rawLinks?.admitCard ? cleanOfficialUrl(rawLinks.admitCard, apply) : undefined,
+                result: rawLinks?.result ? cleanOfficialUrl(rawLinks.result, apply) : undefined,
+                resultServer2: rawLinks?.resultServer2 ? cleanOfficialUrl(rawLinks.resultServer2, apply) : undefined,
+                answerKey: rawLinks?.answerKey ? cleanOfficialUrl(rawLinks.answerKey, official) : undefined,
+              },
+            };
+          });
           setJobs(prev => (prev.length === 0 ? serverJobs : prev));
         }
       })
