@@ -301,12 +301,15 @@ const defaultInitialEmployees = [
   }
 ];
 
-const defaultInitialSubscribers = [
-  { id: '1', email: 'vikas.patel@example.com', category: 'Latest Jobs', date: '11 Aug 2026' },
-  { id: '2', email: 'rahul.kumar@gmail.com', category: 'Admit Card', date: '10 Aug 2026' },
-  { id: '3', email: 'priya.singh@yahoo.com', category: 'Results', date: '09 Aug 2026' },
-  { id: '4', email: 'amit.sharma@outlook.com', category: 'Admission', date: '08 Aug 2026' },
-];
+const defaultInitialSubscribers: any[] = [];
+
+const sanitizeSubscribers = (list: any[]): any[] => {
+  if (!Array.isArray(list)) return [];
+  return list.filter((s: any) => {
+    const em = (s?.email || '').toLowerCase().trim();
+    return em && !em.includes('@example.com') && em !== 'rahul.kumar@gmail.com' && em !== 'priya.singh@yahoo.com' && em !== 'amit.sharma@outlook.com';
+  });
+};
 
 interface DatabaseSchema {
   jobs: any[];
@@ -377,23 +380,10 @@ let dbState: DatabaseSchema = {
   jobs: defaultInitialJobs,
   marqueeText: "🔥 UP Police Constable Result 2026 Declared Now! | 🚀 SSC CGL 2026 Notification & Online Form Active | 🎓 CBSE Board Class 10th & 12th Board Result Released | 💼 Railway RRB NTPC Admit Card Download Started!",
   employees: defaultInitialEmployees,
-  subscribers: defaultInitialSubscribers,
+  subscribers: [],
   scraperSources: defaultScraperSources,
   notificationConfig: defaultNotificationConfig,
-  notificationHistory: [
-    {
-      id: 'log-seed-1',
-      jobId: 'seed-job-1',
-      jobTitle: 'UP Police Sub Inspector (SI) 2026 Online Form (4500 Posts)',
-      category: 'latest-jobs',
-      sentAt: '15-08-2026 10:30',
-      recipientCount: 4,
-      provider: 'built-in',
-      status: 'delivered',
-      subject: '⚡ [FastArc Alert] UP Police Sub Inspector (SI) 2026 - UP Apply Online',
-      details: 'Automated dispatch to 4 active subscribers for Latest Jobs.'
-    }
-  ],
+  notificationHistory: [],
   siteConfig: {
     siteTitle: 'FastArc Govt Jobs',
     maintenanceMode: false,
@@ -435,10 +425,10 @@ export async function ensureDatabaseLoaded(timeoutMs = 8000): Promise<DatabaseSc
               jobs: (Array.isArray(parsed.jobs) && parsed.jobs.length > 0 ? parsed.jobs : defaultInitialJobs).map(serverEnrichJob),
               marqueeText: typeof parsed.marqueeText === 'string' ? parsed.marqueeText : dbState.marqueeText,
               employees: Array.isArray(parsed.employees) ? parsed.employees : defaultInitialEmployees,
-              subscribers: Array.isArray(parsed.subscribers) ? parsed.subscribers : defaultInitialSubscribers,
+              subscribers: sanitizeSubscribers(parsed.subscribers),
               scraperSources: loadedSources,
               notificationConfig: parsed.notificationConfig ? { ...defaultNotificationConfig, ...parsed.notificationConfig } : defaultNotificationConfig,
-              notificationHistory: Array.isArray(parsed.notificationHistory) ? parsed.notificationHistory : (dbState.notificationHistory || []),
+              notificationHistory: Array.isArray(parsed.notificationHistory) ? parsed.notificationHistory.filter((l: any) => l?.id !== 'log-seed-1') : [],
               siteConfig: parsed.siteConfig || dbState.siteConfig,
               users: Array.isArray(parsed.users) ? parsed.users : dbState.users
             };
@@ -472,10 +462,10 @@ export async function ensureDatabaseLoaded(timeoutMs = 8000): Promise<DatabaseSc
               jobs: parsed.jobs.map(serverEnrichJob),
               marqueeText: typeof parsed.marqueeText === 'string' ? parsed.marqueeText : dbState.marqueeText,
               employees: Array.isArray(parsed.employees) ? parsed.employees : defaultInitialEmployees,
-              subscribers: Array.isArray(parsed.subscribers) ? parsed.subscribers : defaultInitialSubscribers,
+              subscribers: sanitizeSubscribers(parsed.subscribers),
               scraperSources: loadedSources,
               notificationConfig: parsed.notificationConfig ? { ...defaultNotificationConfig, ...parsed.notificationConfig } : defaultNotificationConfig,
-              notificationHistory: Array.isArray(parsed.notificationHistory) ? parsed.notificationHistory : (dbState.notificationHistory || []),
+              notificationHistory: Array.isArray(parsed.notificationHistory) ? parsed.notificationHistory.filter((l: any) => l?.id !== 'log-seed-1') : [],
               siteConfig: parsed.siteConfig || dbState.siteConfig,
               users: Array.isArray(parsed.users) ? parsed.users : dbState.users
             };
@@ -1244,27 +1234,62 @@ app.post('/api/v1/employees', async (req, res) => {
 // --- SUBSCRIBERS APIS ---
 // ==========================================
 app.get('/api/v1/subscribers', async (req, res) => {
+  dbState.subscribers = sanitizeSubscribers(dbState.subscribers);
   res.json({ success: true, subscribers: dbState.subscribers });
 });
 
 app.post('/api/v1/subscribers', async (req, res) => {
   const { email, category, subscribers } = req.body;
   if (Array.isArray(subscribers)) {
-    dbState.subscribers = subscribers;
+    dbState.subscribers = sanitizeSubscribers(subscribers);
     await saveDatabase(dbState);
     return res.json({ success: true, subscribers: dbState.subscribers });
   } else if (email) {
-    const newSub = {
-      id: String(Date.now()),
-      email,
-      category: category || 'All Job Alerts',
-      date: new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })
-    };
-    dbState.subscribers.unshift(newSub);
-    await saveDatabase(dbState);
-    return res.status(201).json({ success: true, subscriber: newSub, total: dbState.subscribers.length });
+    const cleanEmail = String(email).trim().toLowerCase();
+    // Reject sample placeholder emails
+    if (cleanEmail.includes('@example.com') || cleanEmail === 'rahul.kumar@gmail.com' || cleanEmail === 'priya.singh@yahoo.com' || cleanEmail === 'amit.sharma@outlook.com') {
+      return res.status(400).json({ success: false, error: 'Sample emails cannot be subscribed' });
+    }
+    // Prevent duplicates
+    const exists = dbState.subscribers.some(s => (s.email || '').toLowerCase().trim() === cleanEmail);
+    if (!exists) {
+      const newSub = {
+        id: `sub-${Date.now()}`,
+        email: String(email).trim(),
+        category: category || 'All Job Alerts',
+        date: new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })
+      };
+      dbState.subscribers.unshift(newSub);
+      await saveDatabase(dbState);
+      return res.status(201).json({ success: true, subscriber: newSub, total: dbState.subscribers.length });
+    } else {
+      return res.json({ success: true, message: 'Already subscribed', total: dbState.subscribers.length });
+    }
   }
   res.status(400).json({ success: false, error: 'Email or subscribers array required' });
+});
+
+app.delete('/api/v1/subscribers/:id', async (req, res) => {
+  const { id } = req.params;
+  const { email } = req.body || {};
+  dbState.subscribers = (dbState.subscribers || []).filter(s => {
+    if (s.id === id) return false;
+    if (email && s.email && s.email.toLowerCase().trim() === String(email).toLowerCase().trim()) return false;
+    return true;
+  });
+  await saveDatabase(dbState);
+  res.json({ success: true, subscribers: dbState.subscribers });
+});
+
+app.delete('/api/v1/subscribers', async (req, res) => {
+  const { id, email } = req.body || {};
+  dbState.subscribers = (dbState.subscribers || []).filter(s => {
+    if (id && s.id === id) return false;
+    if (email && s.email && s.email.toLowerCase().trim() === String(email).toLowerCase().trim()) return false;
+    return true;
+  });
+  await saveDatabase(dbState);
+  res.json({ success: true, subscribers: dbState.subscribers });
 });
 
 // --- SOCIAL MEDIA LINKS API ---
@@ -1469,7 +1494,7 @@ async function dispatchJobAlertEmail(job: any, options: {
     recipientList = options.recipients.map(r => r.trim()).filter(Boolean);
   } else {
     // Gather subscribers from local db and firestore
-    let allSubs = dbState.subscribers || [];
+    let allSubs = sanitizeSubscribers(dbState.subscribers || []);
     if (firestoreDb) {
       try {
         const snap = await getDocs(collection(firestoreDb, 'subscribers'));
@@ -1483,6 +1508,7 @@ async function dispatchJobAlertEmail(job: any, options: {
         console.warn('⚠️ Firestore subscriber fetch error:', err);
       }
     }
+    allSubs = sanitizeSubscribers(allSubs);
 
     // Filter subscribers matching job category
     const jobCat = (job.category || '').toLowerCase();

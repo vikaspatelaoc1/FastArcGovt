@@ -204,19 +204,43 @@ export const SuperAdminDashboardModal: React.FC<SuperAdminDashboardModalProps> =
     }
   };
 
-  const [subscribers, setSubscribers] = useState<SubscriberRecord[]>([
-    { id: '1', email: 'vikas.patel@example.com', category: 'Latest Jobs', date: '11 Aug 2026' },
-    { id: '2', email: 'rahul.kumar@gmail.com', category: 'Admit Card', date: '10 Aug 2026' },
-    { id: '3', email: 'priya.singh@yahoo.com', category: 'Results', date: '09 Aug 2026' },
-    { id: '4', email: 'amit.sharma@outlook.com', category: 'Admission', date: '08 Aug 2026' },
-  ]);
+  const [subscribers, setSubscribers] = useState<SubscriberRecord[]>([]);
 
   useEffect(() => {
+    // 1. Listen to Firestore real-time updates
     const unsub = subscribeToSubscribers((liveSubs) => {
       if (Array.isArray(liveSubs)) {
-        setSubscribers(liveSubs);
+        const clean = liveSubs.filter(s => {
+          const em = (s.email || '').toLowerCase().trim();
+          return em && !em.includes('@example.com') && em !== 'rahul.kumar@gmail.com' && em !== 'priya.singh@yahoo.com' && em !== 'amit.sharma@outlook.com';
+        });
+        setSubscribers(clean);
       }
     });
+
+    // 2. Fetch from backend server API
+    fetch('/api/v1/subscribers')
+      .then(res => res.json())
+      .then(data => {
+        if (data.success && Array.isArray(data.subscribers)) {
+          const clean = data.subscribers.filter((s: any) => {
+            const em = (s?.email || '').toLowerCase().trim();
+            return em && !em.includes('@example.com') && em !== 'rahul.kumar@gmail.com' && em !== 'priya.singh@yahoo.com' && em !== 'amit.sharma@outlook.com';
+          });
+          setSubscribers(prev => (prev.length === 0 ? clean : prev));
+        }
+      })
+      .catch(() => {});
+
+    // 3. Clean up localStorage sample emails if present
+    try {
+      const stored = JSON.parse(localStorage.getItem('fastarc_subscribers') || '[]');
+      if (Array.isArray(stored)) {
+        const filtered = stored.filter(e => typeof e === 'string' && !e.includes('@example.com') && e !== 'rahul.kumar@gmail.com' && e !== 'priya.singh@yahoo.com' && e !== 'amit.sharma@outlook.com');
+        localStorage.setItem('fastarc_subscribers', JSON.stringify(filtered));
+      }
+    } catch (e) {}
+
     return () => {
       unsub();
     };
@@ -351,27 +375,56 @@ export const SuperAdminDashboardModal: React.FC<SuperAdminDashboardModalProps> =
 
   const handleAddSubscriber = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (newSubEmail.trim()) {
+    const cleanEmail = newSubEmail.trim();
+    if (cleanEmail) {
+      if (cleanEmail.includes('@example.com') || cleanEmail === 'rahul.kumar@gmail.com' || cleanEmail === 'priya.singh@yahoo.com' || cleanEmail === 'amit.sharma@outlook.com') {
+        onToast('⚠️ Sample emails cannot be added.');
+        return;
+      }
       const newSub: SubscriberRecord = {
         id: `sub-${Date.now()}`,
-        email: newSubEmail.trim(),
+        email: cleanEmail,
         category: 'All Updates',
         date: new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })
       };
-      setSubscribers(prev => [newSub, ...prev]);
+      setSubscribers(prev => [newSub, ...prev.filter(s => s.email.toLowerCase() !== cleanEmail.toLowerCase())]);
+      setNewSubEmail('');
       try {
         await saveSubscriberToFirestore(newSub);
       } catch (err) {}
-      setNewSubEmail('');
+      try {
+        await fetch('/api/v1/subscribers', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: cleanEmail, category: 'All Updates' })
+        });
+      } catch (err) {}
       onToast('New subscriber added to alert list & saved to database!');
     }
   };
 
   const handleDeleteSubscriber = async (subId: string) => {
+    const targetSub = subscribers.find(s => s.id === subId);
     setSubscribers(prev => prev.filter(s => s.id !== subId));
     try {
       await deleteSubscriberFromFirestore(subId);
     } catch (err) {}
+    try {
+      await fetch(`/api/v1/subscribers/${subId}`, {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: targetSub?.email })
+      });
+    } catch (err) {}
+    try {
+      if (targetSub?.email) {
+        const stored = JSON.parse(localStorage.getItem('fastarc_subscribers') || '[]');
+        if (Array.isArray(stored)) {
+          const filtered = stored.filter(e => e !== targetSub.email);
+          localStorage.setItem('fastarc_subscribers', JSON.stringify(filtered));
+        }
+      }
+    } catch (e) {}
     onToast('Subscriber removed from database!');
   };
 
@@ -1449,21 +1502,35 @@ export const SuperAdminDashboardModal: React.FC<SuperAdminDashboardModalProps> =
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-200 dark:divide-slate-800 text-slate-800 dark:text-slate-200">
-                      {subscribers.map((sub) => (
-                        <tr key={sub.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/40">
-                          <td className="p-3 font-semibold">{sub.email}</td>
-                          <td className="p-3 text-slate-500 dark:text-slate-400">{sub.category}</td>
-                          <td className="p-3 text-slate-500 dark:text-slate-400">{sub.date}</td>
-                          <td className="p-3 text-right">
-                            <button
-                              onClick={() => handleDeleteSubscriber(sub.id)}
-                              className="text-rose-600 hover:text-rose-800 dark:text-rose-400 font-bold text-[11px] cursor-pointer"
-                            >
-                              Delete
-                            </button>
+                      {subscribers.length === 0 ? (
+                        <tr>
+                          <td colSpan={4} className="p-8 text-center text-slate-500 dark:text-slate-400">
+                            <div className="flex flex-col items-center justify-center max-w-sm mx-auto">
+                              <Users className="w-8 h-8 text-slate-400 dark:text-slate-500 mb-2 opacity-50" />
+                              <div className="font-bold text-xs text-slate-700 dark:text-slate-300">No Registered Subscribers</div>
+                              <div className="text-[11px] text-slate-400 dark:text-slate-500 mt-1 leading-relaxed">
+                                All sample dummy emails have been removed. Candidates who subscribe on the portal will appear here in real time, or you can add real subscribers above.
+                              </div>
+                            </div>
                           </td>
                         </tr>
-                      ))}
+                      ) : (
+                        subscribers.map((sub) => (
+                          <tr key={sub.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/40">
+                            <td className="p-3 font-semibold">{sub.email}</td>
+                            <td className="p-3 text-slate-500 dark:text-slate-400">{sub.category}</td>
+                            <td className="p-3 text-slate-500 dark:text-slate-400">{sub.date}</td>
+                            <td className="p-3 text-right">
+                              <button
+                                onClick={() => handleDeleteSubscriber(sub.id)}
+                                className="text-rose-600 hover:text-rose-800 dark:text-rose-400 font-bold text-[11px] cursor-pointer"
+                              >
+                                Delete
+                              </button>
+                            </td>
+                          </tr>
+                        ))
+                      )}
                     </tbody>
                   </table>
                 </div>

@@ -324,7 +324,7 @@ export const EmailNotificationsTab: React.FC<EmailNotificationsTabProps> = ({
             <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Total Subscribers</div>
             <div className="text-lg sm:text-xl font-black text-amber-400 mt-0.5 flex items-center gap-1.5">
               <Users className="w-4 h-4 text-amber-400" />
-              {subscribers.length > 0 ? subscribers.length : 4} Active
+              {subscribers.length} Active
             </div>
           </div>
 
@@ -340,7 +340,7 @@ export const EmailNotificationsTab: React.FC<EmailNotificationsTabProps> = ({
             <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Alerts Dispatched</div>
             <div className="text-lg sm:text-xl font-black text-emerald-400 mt-0.5 flex items-center gap-1.5">
               <CheckCircle2 className="w-4 h-4" />
-              {logs.length > 0 ? logs.reduce((acc, l) => acc + (l.recipientCount || 1), 0) : 4} Delivered
+              {logs.reduce((acc, l) => acc + (l.recipientCount || 1), 0)} Delivered
             </div>
           </div>
 
@@ -1115,7 +1115,9 @@ export const EmailNotificationsTab: React.FC<EmailNotificationsTabProps> = ({
                   Broadcast Job Alert to All Subscribers
                 </h3>
                 <p className="text-xs text-slate-500 dark:text-slate-400">
-                  Instantly notify all {subscribers.length > 0 ? subscribers.length : 4} modal subscribers about an important job notice.
+                  {subscribers.length > 0 
+                    ? `Instantly notify all ${subscribers.length} modal subscribers about an important job notice.`
+                    : 'No subscribers registered yet. Candidates who subscribe on the portal will receive alerts.'}
                 </p>
               </div>
             </div>
@@ -1141,21 +1143,22 @@ export const EmailNotificationsTab: React.FC<EmailNotificationsTabProps> = ({
               {!showBroadcastConfirm ? (
                 <button
                   onClick={() => setShowBroadcastConfirm(true)}
-                  className="w-full py-3 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-black text-xs uppercase tracking-wider transition-colors flex items-center justify-center gap-2 shadow-md cursor-pointer"
+                  disabled={subscribers.length === 0}
+                  className="w-full py-3 rounded-xl bg-amber-500 hover:bg-amber-600 disabled:opacity-50 disabled:cursor-not-allowed text-slate-950 font-black text-xs uppercase tracking-wider transition-colors flex items-center justify-center gap-2 shadow-md cursor-pointer"
                 >
                   <Megaphone className="w-4 h-4" />
-                  Initiate Mass Broadcast ({subscribers.length > 0 ? subscribers.length : 4} Recipients)
+                  Initiate Mass Broadcast ({subscribers.length} Recipients)
                 </button>
               ) : (
                 <div className="p-4 bg-amber-50 dark:bg-amber-950/40 rounded-xl border border-amber-300 dark:border-amber-700 space-y-3 animate-in fade-in">
                   <div className="text-xs font-bold text-amber-900 dark:text-amber-200">
-                    ⚠️ Confirm Mass Broadcast to {subscribers.length > 0 ? subscribers.length : 4} registered candidates?
+                    ⚠️ Confirm Mass Broadcast to {subscribers.length} registered candidates?
                   </div>
                   <div className="flex gap-2">
                     <button
                       onClick={handleManualBroadcast}
-                      disabled={isBroadcasting}
-                      className="flex-1 py-2.5 rounded-lg bg-emerald-600 text-white font-black text-xs uppercase hover:bg-emerald-700 cursor-pointer flex items-center justify-center gap-1.5"
+                      disabled={isBroadcasting || subscribers.length === 0}
+                      className="flex-1 py-2.5 rounded-lg bg-emerald-600 text-white font-black text-xs uppercase hover:bg-emerald-700 cursor-pointer flex items-center justify-center gap-1.5 disabled:opacity-50"
                     >
                       {isBroadcasting ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <Check className="w-3.5 h-3.5" />}
                       Yes, Send Now

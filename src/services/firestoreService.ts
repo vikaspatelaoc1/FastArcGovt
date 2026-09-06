@@ -555,34 +555,35 @@ export interface SubscriberRecord {
 
 export function subscribeToSubscribers(onUpdate: (subs: SubscriberRecord[]) => void) {
   const subCol = collection(db, 'subscribers');
-  const defaultSubs: SubscriberRecord[] = [
-    { id: 'sub-1', email: 'vikas.patel@example.com', category: 'Latest Jobs', date: '11 Aug 2026' },
-    { id: 'sub-2', email: 'rahul.kumar@gmail.com', category: 'Admit Card', date: '10 Aug 2026' },
-    { id: 'sub-3', email: 'priya.singh@yahoo.com', category: 'Results', date: '09 Aug 2026' },
-  ];
 
   return onSnapshot(subCol, (snapshot) => {
     try {
       if (snapshot.empty) {
-        onUpdate(defaultSubs);
+        onUpdate([]);
         return;
       }
 
       const subs: SubscriberRecord[] = [];
       snapshot.forEach((docSnap) => {
-        subs.push({
-          ...(docSnap.data() as SubscriberRecord),
-          id: docSnap.id
-        });
+        const data = docSnap.data() as SubscriberRecord;
+        // Filter out any legacy dummy sample emails if present
+        const email = (data.email || '').toLowerCase().trim();
+        const isSample = email.includes('@example.com') || email === 'rahul.kumar@gmail.com' || email === 'priya.singh@yahoo.com' || email === 'amit.sharma@outlook.com';
+        if (!isSample && email) {
+          subs.push({
+            ...data,
+            id: docSnap.id
+          });
+        }
       });
       onUpdate(subs);
     } catch (err) {
       handleFirestoreQuotaError(err, 'subscribeToSubscribers snapshot');
-      onUpdate(defaultSubs);
+      onUpdate([]);
     }
   }, (err) => {
     handleFirestoreQuotaError(err, 'subscribeToSubscribers listener');
-    onUpdate(defaultSubs);
+    onUpdate([]);
   });
 }
 
