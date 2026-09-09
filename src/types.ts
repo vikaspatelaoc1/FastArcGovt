@@ -188,7 +188,8 @@ export type SuperAdminTabType =
   | 'helpdesk'
   | 'autoBroadcast'
   | 'adsManager'
-  | 'jobsManager';
+  | 'jobsManager'
+  | 'approvals';
 
 export interface EmailNotificationConfig {
   autoSendOnPublish: boolean;

@@ -12,6 +12,7 @@ import { SUPER_ADMIN_MODULES, SuperAdminModuleConfig } from '../config/superAdmi
 import { VersionControlTab } from './VersionControlTab';
 import { NpmSystemContent } from './NpmSystemModal';
 import { AutoFeedContent } from './AutoFeedContent';
+import { AdminApprovalsContent } from './AdminApprovalsContent';
 import { SocialLinksManager } from './SocialLinksManager';
 import { EarningsTab } from './EarningsTab';
 import { ThemeColorCustomizerTab } from './ThemeColorCustomizerTab';
@@ -2006,6 +2007,22 @@ export const SuperAdminDashboardModal: React.FC<SuperAdminDashboardModalProps> =
               </div>
             )}
 
+            {activeTab === 'approvals' && (
+              <div className="space-y-6 animate-in fade-in duration-200">
+                <AdminApprovalsContent 
+                  jobs={jobs}
+                  onUpdateJob={async (j) => {
+                     if (onSaveJob) await onSaveJob(j);
+                     else setJobs(prev => prev.map(old => old.id === j.id ? j : old));
+                  }}
+                  onDeleteJob={async (id) => {
+                     if (onDeleteJob) await onDeleteJob(id);
+                     else setJobs(prev => prev.filter(j => j.id !== id));
+                  }}
+                />
+              </div>
+            )}
+            
             {/* TAB 8: AUTO-FILL & SCRAPER REST API */}
             {activeTab === 'autofeed' && (
               <div className="space-y-6 animate-in fade-in duration-200">

@@ -623,9 +623,41 @@ async function initDB() {
       });
       // Test connection
       const conn = await mysqlPool.getConnection();
+      
+      // Auto-create jobs table
+      await conn.query(`
+        CREATE TABLE IF NOT EXISTS jobs (
+          id VARCHAR(255) PRIMARY KEY,
+          title TEXT,
+          category VARCHAR(100),
+          post_date VARCHAR(100),
+          is_new BOOLEAN DEFAULT 1,
+          state VARCHAR(100),
+          short_info TEXT,
+          dates JSON,
+          fees JSON,
+          links JSON,
+          status VARCHAR(100) DEFAULT 'Application Open',
+          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+      `);
+      
+      // Auto-create users table
+      await conn.query(`
+        CREATE TABLE IF NOT EXISTS users (
+          id VARCHAR(255) PRIMARY KEY,
+          username VARCHAR(255) UNIQUE,
+          email VARCHAR(255) UNIQUE,
+          password_hash VARCHAR(255),
+          name VARCHAR(255),
+          role VARCHAR(50) DEFAULT 'user',
+          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+      `);
+
       conn.release();
       useMySQL = true;
-      console.log('✅ Connected to MySQL Database successfully');
+      console.log('✅ Connected to MySQL Database successfully and ensured schema');
     } catch (err) {
       console.warn('⚠️ MySQL connection failed, using persistent JSON file database:', (err as Error).message);
       if (mysqlPool) {
@@ -978,11 +1010,28 @@ function serverEnrichJob(raw: any): any {
 // 1. GET all jobs (Guaranteed 100% enriched with complete details)
 app.get('/api/v1/sarkari-posts', async (req, res) => {
   try {
+    const isAdmin = req.query.admin === 'true';
     if (useMySQL && mysqlPool) {
-      const [rows] = await mysqlPool.execute('SELECT * FROM jobs ORDER BY id DESC LIMIT 200');
-      return res.json({ success: true, jobs: (rows as any[]).map(serverEnrichJob) });
+      const [rows] = await mysqlPool.execute('SELECT * FROM jobs ORDER BY created_at DESC LIMIT 500');
+      let parsedJobs = (rows as any[]).map(row => {
+         return serverEnrichJob({
+           ...row,
+           dates: typeof row.dates === 'string' ? JSON.parse(row.dates) : row.dates,
+           fees: typeof row.fees === 'string' ? JSON.parse(row.fees) : row.fees,
+           links: typeof row.links === 'string' ? JSON.parse(row.links) : row.links,
+           postDate: row.post_date,
+           isNew: row.is_new === 1 || row.is_new === true
+         });
+      });
+      if (!isAdmin) {
+         parsedJobs = parsedJobs.filter(j => j.status !== 'Pending Approval');
+      }
+      return res.json({ success: true, jobs: parsedJobs });
     } else {
-      const enrichedJobs = dbState.jobs.map(serverEnrichJob);
+      let enrichedJobs = dbState.jobs.map(serverEnrichJob);
+      if (!isAdmin) {
+         enrichedJobs = enrichedJobs.filter(j => j.status !== 'Pending Approval');
+      }
       return res.json({ success: true, jobs: enrichedJobs });
     }
   } catch (err: any) {
@@ -994,51 +1043,41 @@ app.get('/api/v1/sarkari-posts', async (req, res) => {
 app.post('/api/v1/sarkari-posts', async (req, res) => {
   try {
     const { title, id } = req.body;
-
     if (!title) {
       return res.status(400).json({ success: false, error: 'Title is required' });
     }
 
-    // Auto-fill all complete details (dates, fees, vacancy reservation, age limit, eligibility, salary, links)
     const newJob = serverEnrichJob({
       ...req.body,
       id: id || ('job-' + Date.now())
     });
 
-    // Check if job exists by ID or title to prevent duplicate creation
     const normTitle = newJob.title.trim().toLowerCase();
     const existingIdx = dbState.jobs.findIndex(j => 
       j.id === newJob.id || (j.title && j.title.trim().toLowerCase() === normTitle)
     );
 
     if (existingIdx !== -1) {
-      newJob.id = dbState.jobs[existingIdx].id; // Keep existing ID
+      newJob.id = dbState.jobs[existingIdx].id;
       dbState.jobs[existingIdx] = newJob;
     } else {
       dbState.jobs.unshift(newJob);
     }
 
-    // Persist to disk
     await saveDatabase(dbState);
 
-    // Sync single job to Firestore if enabled
     if (firestoreDb && !isFirestoreQuotaExhausted) {
       try {
-        const jobRef = doc(firestoreDb, 'jobs', newJob.id);
-        await setDoc(jobRef, newJob, { merge: true });
+        await setDoc(doc(firestoreDb, 'jobs', newJob.id), newJob, { merge: true });
       } catch (fsErr: any) {
-        if (isQuotaError(fsErr)) {
-          markFirestoreQuotaExhausted();
-        } else {
-          console.warn('⚠️ Firestore individual job sync warning:', fsErr?.message || fsErr);
-        }
+        if (isQuotaError(fsErr)) markFirestoreQuotaExhausted();
       }
     }
 
     if (useMySQL && mysqlPool) {
       try {
         await mysqlPool.execute(
-          'INSERT INTO jobs (id, title, category, post_date, is_new, state, short_info, dates, fees, links) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+          'INSERT INTO jobs (id, title, category, post_date, is_new, state, short_info, dates, fees, links, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE title=VALUES(title), category=VALUES(category), post_date=VALUES(post_date), is_new=VALUES(is_new), state=VALUES(state), short_info=VALUES(short_info), dates=VALUES(dates), fees=VALUES(fees), links=VALUES(links), status=VALUES(status)',
           [
             newJob.id,
             newJob.title,
@@ -1046,34 +1085,21 @@ app.post('/api/v1/sarkari-posts', async (req, res) => {
             newJob.postDate,
             newJob.isNew ? 1 : 0,
             newJob.state,
-            newJob.shortInfo,
-            typeof newJob.dates === 'object' ? JSON.stringify(newJob.dates) : newJob.dates,
-            typeof newJob.fees === 'object' ? JSON.stringify(newJob.fees) : newJob.fees,
-            typeof newJob.links === 'object' ? JSON.stringify(newJob.links) : newJob.links
+            newJob.shortInfo || '',
+            JSON.stringify(newJob.dates || {}),
+            JSON.stringify(newJob.fees || {}),
+            JSON.stringify(newJob.links || {}),
+            newJob.status || 'Application Open'
           ]
         );
-      } catch (sqlErr) {
-        console.warn('MySQL insert failed:', sqlErr);
+      } catch (sqlErr: any) {
+        console.warn('MySQL insert/update error:', sqlErr?.message);
       }
     }
 
-    console.log(`✅ Job Added & Persisted with 100% Complete Details: ${newJob.title}`);
-
-    // Trigger automated email alert if requested / enabled
-    if (req.body.sendEmailAlert !== false && dbState.notificationConfig?.autoSendOnPublish !== false) {
-      dispatchJobAlertEmail(newJob).catch(e => {
-        console.warn('⚠️ Auto email notification warning:', e);
-      });
-    }
-
-    return res.status(201).json({
-      success: true,
-      message: 'Job notification successfully saved to backend database with all details filled',
-      job: newJob,
-      totalJobs: dbState.jobs.length
-    });
+    return res.status(201).json({ success: true, message: 'Job notification successfully saved', job: newJob });
   } catch (err: any) {
-    return res.status(500).json({ success: false, error: err.message || 'Server error saving job' });
+    return res.status(500).json({ success: false, error: err.message });
   }
 });
 
@@ -1083,59 +1109,49 @@ app.put('/api/v1/sarkari-posts/:id', async (req, res) => {
     const { id } = req.params;
     const index = dbState.jobs.findIndex(j => j.id === id);
     const existing = index !== -1 ? dbState.jobs[index] : {};
-
-    const updatedJob = serverEnrichJob({
-      ...existing,
-      ...req.body,
-      id
-    });
+    
+    const updatedJob = serverEnrichJob({ ...existing, ...req.body, id });
 
     if (index !== -1) {
       dbState.jobs[index] = updatedJob;
     } else {
       dbState.jobs.unshift(updatedJob);
     }
-
-    // Persist to disk
+    
     await saveDatabase(dbState);
 
-    // Sync updated job to Firestore if enabled
     if (firestoreDb && !isFirestoreQuotaExhausted) {
       try {
-        const jobRef = doc(firestoreDb, 'jobs', updatedJob.id);
-        await setDoc(jobRef, updatedJob, { merge: true });
+        await setDoc(doc(firestoreDb, 'jobs', updatedJob.id), updatedJob, { merge: true });
       } catch (fsErr: any) {
-        if (isQuotaError(fsErr)) {
-          markFirestoreQuotaExhausted();
-        } else {
-          console.warn('⚠️ Firestore individual job sync warning:', fsErr?.message || fsErr);
-        }
+        if (isQuotaError(fsErr)) markFirestoreQuotaExhausted();
       }
     }
 
     if (useMySQL && mysqlPool) {
       try {
         await mysqlPool.execute(
-          'UPDATE jobs SET title=?, category=?, post_date=?, is_new=?, state=?, short_info=?, dates=?, fees=?, links=? WHERE id=?',
+          'UPDATE jobs SET title=?, category=?, post_date=?, is_new=?, state=?, short_info=?, dates=?, fees=?, links=?, status=? WHERE id=?',
           [
             updatedJob.title,
             updatedJob.category,
             updatedJob.postDate,
             updatedJob.isNew ? 1 : 0,
             updatedJob.state,
-            updatedJob.shortInfo,
-            typeof updatedJob.dates === 'object' ? JSON.stringify(updatedJob.dates) : updatedJob.dates,
-            typeof updatedJob.fees === 'object' ? JSON.stringify(updatedJob.fees) : updatedJob.fees,
-            typeof updatedJob.links === 'object' ? JSON.stringify(updatedJob.links) : updatedJob.links,
-            id
+            updatedJob.shortInfo || '',
+            JSON.stringify(updatedJob.dates || {}),
+            JSON.stringify(updatedJob.fees || {}),
+            JSON.stringify(updatedJob.links || {}),
+            updatedJob.status || 'Application Open',
+            updatedJob.id
           ]
         );
-      } catch (sqlErr) {
-        console.warn('MySQL update error:', sqlErr);
+      } catch (sqlErr: any) {
+        console.warn('MySQL update error:', sqlErr?.message);
       }
     }
 
-    return res.json({ success: true, message: 'Job updated and persisted to backend', job: updatedJob });
+    return res.json({ success: true, message: 'Job updated successfully', job: updatedJob });
   } catch (err: any) {
     return res.status(500).json({ success: false, error: err.message });
   }
@@ -1153,11 +1169,7 @@ app.delete('/api/v1/sarkari-posts/:id', async (req, res) => {
       try {
         await deleteDoc(doc(firestoreDb, 'jobs', id));
       } catch (fsErr: any) {
-        if (isQuotaError(fsErr)) {
-          markFirestoreQuotaExhausted();
-        } else {
-          console.warn('Firestore job delete warning:', fsErr);
-        }
+        if (isQuotaError(fsErr)) markFirestoreQuotaExhausted();
       }
     }
 
@@ -1169,7 +1181,7 @@ app.delete('/api/v1/sarkari-posts/:id', async (req, res) => {
       }
     }
 
-    return res.json({ success: true, message: 'Job deleted and persisted', id, totalJobs: dbState.jobs.length });
+    return res.json({ success: true, message: 'Job deleted' });
   } catch (err: any) {
     return res.status(500).json({ success: false, error: err.message });
   }
@@ -2126,7 +2138,8 @@ async function autoIngestPosts(posts: any[]) {
         ...p,
         id: p.id?.startsWith('job-') ? p.id : `job-scraped-${Date.now()}-${Math.floor(Math.random()*1000)}`,
         category: p.category || categorizeScrapedTitle(p.title),
-        isNew: true
+        isNew: true,
+        status: 'Pending Approval'
       });
       dbState.jobs.unshift(newJob);
       newJobsList.push(newJob);

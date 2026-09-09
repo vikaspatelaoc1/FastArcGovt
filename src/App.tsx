@@ -373,7 +373,7 @@ export default function App() {
     });
 
     // 4. Fallback/Initial sync with Express server if available
-    fetch('/api/v1/sarkari-posts')
+    fetch('/api/v1/sarkari-posts' + (currentUserRole === 'superadmin' || currentUserRole === 'employee' || currentUserRole === 'admin' ? '?admin=true' : ''))
       .then(res => {
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const ct = res.headers.get('content-type') || '';
