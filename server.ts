@@ -415,38 +415,62 @@ export async function ensureDatabaseLoaded(timeoutMs = 8000): Promise<DatabaseSc
   const loadPromise = (async () => {
     try {
       if (firestoreDb) {
-        // Individual 6s timeout for Firestore request
-        const dbRef = doc(firestoreDb, 'config', 'app_state');
-        const docSnapPromise = getDoc(dbRef);
         const fsTimeout = new Promise<null>((_, reject) =>
           setTimeout(() => reject(new Error('Firestore connection timeout')), 6000)
         );
 
-        const docSnap: any = await Promise.race([docSnapPromise, fsTimeout]);
-        if (docSnap && docSnap.exists()) {
-          const parsed = docSnap.data();
-          if (parsed && typeof parsed === 'object') {
-            let loadedSources = Array.isArray(parsed.scraperSources) ? parsed.scraperSources : [];
-            if (loadedSources.length < 500) {
-              const existingIds = new Set(loadedSources.map((s: any) => s.id));
-              const newSources = defaultScraperSources.filter(s => !existingIds.has(s.id));
-              loadedSources = [...loadedSources, ...newSources];
-            }
-            dbState = {
-              jobs: (Array.isArray(parsed.jobs) && parsed.jobs.length > 0 ? parsed.jobs : defaultInitialJobs).map(serverEnrichJob),
-              marqueeText: typeof parsed.marqueeText === 'string' ? parsed.marqueeText : dbState.marqueeText,
-              employees: Array.isArray(parsed.employees) ? parsed.employees : defaultInitialEmployees,
-              subscribers: sanitizeSubscribers(parsed.subscribers),
-              scraperSources: loadedSources,
-              notificationConfig: parsed.notificationConfig ? { ...defaultNotificationConfig, ...parsed.notificationConfig } : defaultNotificationConfig,
-              notificationHistory: Array.isArray(parsed.notificationHistory) ? parsed.notificationHistory.filter((l: any) => l?.id !== 'log-seed-1') : [],
-              siteConfig: parsed.siteConfig || dbState.siteConfig,
-              users: Array.isArray(parsed.users) ? parsed.users : dbState.users
-            };
-            console.log(`🔥 Database loaded from Firebase Firestore: ${dbState.jobs.length} jobs available.`);
-            return dbState;
-          }
+        const dataPromises = Promise.all([
+          getDoc(doc(firestoreDb, 'config', 'app_state')),
+          getDocs(collection(firestoreDb, 'jobs')),
+          getDocs(collection(firestoreDb, 'subscribers')),
+          getDocs(collection(firestoreDb, 'notification_history'))
+        ]).catch(e => {
+          console.warn('⚠️ Firestore parallel fetch partial failure:', e?.message || e);
+          return [null, null, null, null];
+        });
+
+        const [docSnap, jobsSnap, subsSnap, logsSnap]: any = await Promise.race([dataPromises, fsTimeout]);
+
+        let parsed: any = {};
+        if (docSnap && docSnap?.exists && docSnap.exists()) {
+          parsed = docSnap.data() || {};
         }
+
+        let fsJobs: any[] = [];
+        if (jobsSnap && typeof jobsSnap.forEach === 'function') {
+          jobsSnap.forEach((d: any) => fsJobs.push({ id: d.id, ...d.data() }));
+        }
+
+        let fsSubs: any[] = [];
+        if (subsSnap && typeof subsSnap.forEach === 'function') {
+          subsSnap.forEach((d: any) => fsSubs.push({ id: d.id, ...d.data() }));
+        }
+
+        let fsLogs: any[] = [];
+        if (logsSnap && typeof logsSnap.forEach === 'function') {
+          logsSnap.forEach((d: any) => fsLogs.push({ id: d.id, ...d.data() }));
+        }
+
+        let loadedSources = Array.isArray(parsed.scraperSources) ? parsed.scraperSources : [];
+        if (loadedSources.length < 500) {
+          const existingIds = new Set(loadedSources.map((s: any) => s.id));
+          const newSources = defaultScraperSources.filter(s => !existingIds.has(s.id));
+          loadedSources = [...loadedSources, ...newSources];
+        }
+
+        dbState = {
+          jobs: (fsJobs.length > 0 ? fsJobs : (Array.isArray(parsed.jobs) && parsed.jobs.length > 0 ? parsed.jobs : defaultInitialJobs)).map(serverEnrichJob),
+          marqueeText: typeof parsed.marqueeText === 'string' ? parsed.marqueeText : dbState.marqueeText,
+          employees: Array.isArray(parsed.employees) ? parsed.employees : defaultInitialEmployees,
+          subscribers: sanitizeSubscribers(fsSubs.length > 0 ? fsSubs : parsed.subscribers),
+          scraperSources: loadedSources,
+          notificationConfig: parsed.notificationConfig ? { ...defaultNotificationConfig, ...parsed.notificationConfig } : defaultNotificationConfig,
+          notificationHistory: (fsLogs.length > 0 ? fsLogs : (Array.isArray(parsed.notificationHistory) ? parsed.notificationHistory : [])).filter((l: any) => l?.id !== 'log-seed-1'),
+          siteConfig: parsed.siteConfig || dbState.siteConfig,
+          users: Array.isArray(parsed.users) ? parsed.users : dbState.users
+        };
+        console.log(`🔥 Database loaded from Firebase Firestore: ${dbState.jobs.length} jobs available.`);
+        return dbState;
       }
     } catch (err: any) {
       console.warn('⚠️ Could not load database from Firebase, checking local disk backup:', err?.message || err);
@@ -1276,6 +1300,15 @@ app.post('/api/v1/subscribers', async (req, res) => {
       };
       dbState.subscribers.unshift(newSub);
       await saveDatabase(dbState);
+
+      if (firestoreDb && !isFirestoreQuotaExhausted) {
+        try {
+          await setDoc(doc(firestoreDb, 'subscribers', newSub.id), newSub, { merge: true });
+        } catch (fsErr: any) {
+          if (isQuotaError(fsErr)) markFirestoreQuotaExhausted();
+        }
+      }
+
       return res.status(201).json({ success: true, subscriber: newSub, total: dbState.subscribers.length });
     } else {
       return res.json({ success: true, message: 'Already subscribed', total: dbState.subscribers.length });
@@ -1293,6 +1326,15 @@ app.delete('/api/v1/subscribers/:id', async (req, res) => {
     return true;
   });
   await saveDatabase(dbState);
+
+  if (firestoreDb && !isFirestoreQuotaExhausted && id) {
+    try {
+      await deleteDoc(doc(firestoreDb, 'subscribers', id));
+    } catch (fsErr: any) {
+      if (isQuotaError(fsErr)) markFirestoreQuotaExhausted();
+    }
+  }
+
   res.json({ success: true, subscribers: dbState.subscribers });
 });
 
