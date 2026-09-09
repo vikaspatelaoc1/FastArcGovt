@@ -1,4 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
+import { motion } from 'motion/react';
 import { ChevronDown, ChevronUp, ArrowRight, Sparkles, Edit2, ArrowUpDown } from 'lucide-react';
 import { JobAlert, JobCategory } from '../types';
 import { CategoryIcon } from './CategoryIcon';
@@ -143,7 +144,10 @@ export const JobColumn: React.FC<JobColumnProps> = ({
   };
 
   return (
-    <section 
+    <motion.section 
+      initial={{ opacity: 0, y: 15 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4, ease: "easeOut" }}
       id={id} 
       className={`bg-white dark:bg-slate-900 flex flex-col overflow-hidden transition-all duration-300 h-full scroll-mt-24 rounded-2xl border border-slate-200/90 dark:border-slate-700/90 shadow-sm hover:shadow-md hover:border-slate-300 dark:hover:border-slate-600 ${
         className
@@ -257,7 +261,7 @@ export const JobColumn: React.FC<JobColumnProps> = ({
           )}
         </div>
       )}
-    </section>
+    </motion.section>
   );
 };
 

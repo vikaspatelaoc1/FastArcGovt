@@ -24,6 +24,17 @@ console.warn = (...args: any[]) => {
   originalConsoleWarn.apply(console, args);
 };
 
+// Catch unhandled errors gracefully so dev server never crashes unexpectedly
+process.on('uncaughtException', (err: any) => {
+  if (shouldSuppressLog(err)) return;
+  console.warn('⚠️ Non-fatal server uncaughtException caught:', err?.message || err);
+});
+
+process.on('unhandledRejection', (reason: any) => {
+  if (shouldSuppressLog(reason)) return;
+  console.warn('⚠️ Non-fatal server unhandledRejection caught:', reason?.message || reason);
+});
+
 import express from 'express';
 import path from 'path';
 import fs from 'fs';
@@ -593,6 +604,10 @@ async function initDB() {
       console.log('✅ Connected to MySQL Database successfully');
     } catch (err) {
       console.warn('⚠️ MySQL connection failed, using persistent JSON file database:', (err as Error).message);
+      if (mysqlPool) {
+        mysqlPool.end().catch(() => {});
+        mysqlPool = null;
+      }
       useMySQL = false;
     }
   } else {
@@ -2616,47 +2631,64 @@ app.all('/api/*', (req, res) => {
   });
 });
 
-app.use((err: any, req: any, res: any, next: any) => {
-  console.error('Unhandled server error:', err);
-  if (!res.headersSent) {
-    res.status(500).json({
-      success: false,
-      error: 'Internal Server Error',
-      message: err?.message || String(err)
-    });
-  }
-});
-
 // --- SERVER SETUP & VITE MIDDLEWARE ---
-if (!isServerless) {
-  // Initialize DB in persistent server mode
-  initDB().catch(console.error);
+async function startServer() {
+  if (!isServerless) {
+    // 1. Initialize DB in persistent server mode
+    await initDB().catch(err => {
+      console.warn('DB init notice:', err?.message || err);
+    });
 
-  if (process.env.NODE_ENV !== 'production') {
-    import('vite').then(({ createServer: createViteServer }) => {
-      createViteServer({
-        server: { middlewareMode: true, hmr: false },
-        appType: 'spa'
-      }).then(vite => {
-        app.use(vite.middlewares);
-        app.listen(PORT, '0.0.0.0', () => {
-          console.log(`🚀 Server started on http://0.0.0.0:${PORT}`);
+    // 2. Vite middleware setup in development, static files in production
+    if (process.env.NODE_ENV !== 'production') {
+      try {
+        const { createServer: createViteServer } = await import('vite');
+        const vite = await createViteServer({
+          server: { middlewareMode: true, hmr: false },
+          appType: 'spa'
         });
+        app.use(vite.middlewares);
+      } catch (err) {
+        console.error('Failed to start Vite middleware:', err);
+      }
+    } else {
+      const distPath = path.join(process.cwd(), 'dist');
+      app.use(express.static(distPath));
+      app.get('*', async (req, res) => {
+        res.sendFile(path.join(distPath, 'index.html'));
       });
-    }).catch(err => {
-      console.error('Failed to start Vite middleware:', err);
+    }
+
+    // 3. Error handler middleware (mounted AFTER all routes & Vite middleware)
+    app.use((err: any, req: any, res: any, next: any) => {
+      console.error('Unhandled server error:', err);
+      if (!res.headersSent) {
+        res.status(500).json({
+          success: false,
+          error: 'Internal Server Error',
+          message: err?.message || String(err)
+        });
+      }
     });
-  } else {
-    const distPath = path.join(process.cwd(), 'dist');
-    app.use(express.static(distPath));
-    app.get('*', async (req, res) => {
-      res.sendFile(path.join(distPath, 'index.html'));
+
+    // 4. Bind and listen on 0.0.0.0:PORT
+    const server = app.listen(PORT, '0.0.0.0', () => {
+      console.log(`🚀 Server started and listening on http://0.0.0.0:${PORT}`);
     });
-    app.listen(PORT, '0.0.0.0', () => {
-      console.log(`🚀 Server started on http://0.0.0.0:${PORT}`);
+
+    server.on('error', (err: any) => {
+      if (err?.code === 'EADDRINUSE') {
+        console.warn(`Port ${PORT} is already in use, listening will be retried or handled by master process.`);
+      } else {
+        console.error('Server socket error:', err);
+      }
     });
   }
 }
+
+startServer().catch(err => {
+  console.error('Server failed to start:', err);
+});
 
 // Export the app for Vercel Serverless Functions
 export default app;
