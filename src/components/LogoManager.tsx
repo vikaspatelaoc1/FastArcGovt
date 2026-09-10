@@ -157,7 +157,7 @@ export const LogoManager: React.FC<LogoManagerProps> = ({ currentLogo, onUpdateL
               <img 
                 src={preview || currentLogo} 
                 alt="Portal Logo Preview" 
-                className="w-full h-full object-cover scale-125 rounded-full"
+                className="w-full h-full object-contain rounded-full"
                 onError={(e) => {
                   (e.target as HTMLImageElement).src = "https://lh3.googleusercontent.com/d/1IE6MQ8EUwyKmGeXnpLTXx7d5HBLJiKb4";
                 }}
@@ -260,7 +260,7 @@ export const LogoManager: React.FC<LogoManagerProps> = ({ currentLogo, onUpdateL
                     <img 
                       src={backup.logoData} 
                       alt="Backup Logo" 
-                      className="w-full h-full object-cover scale-125 rounded-full" 
+                      className="w-full h-full object-contain rounded-full" 
                     />
                   </div>
                   <span className="text-[9px] text-slate-400 text-center font-medium">

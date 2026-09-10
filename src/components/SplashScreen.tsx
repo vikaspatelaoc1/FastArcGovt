@@ -71,7 +71,7 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({
               <img
                 src={siteLogo}
                 alt="FastArc Logo"
-                className="w-full h-full object-cover scale-125 rounded-full"
+                className="w-full h-full object-contain rounded-full"
                 onError={(e) => {
                   (e.target as HTMLImageElement).src =
                     'https://lh3.googleusercontent.com/d/1IE6MQ8EUwyKmGeXnpLTXx7d5HBLJiKb4';

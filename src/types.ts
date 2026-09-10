@@ -74,7 +74,8 @@ export interface JobAlert {
   subjects?: SubjectItem[];
   selectionProcess?: string[];
   salary?: string;
-  payScale?: string;
+  payScale?: string; // Dedicated Pay Scale or Salary Information
+  salaryInfo?: string; // Alias for Salary Information
   payLevel?: string;
   howToApply?: string[];
   importantDocuments?: string[];

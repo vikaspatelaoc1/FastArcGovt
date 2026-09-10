@@ -628,13 +628,14 @@ export function enrichJobDetails(rawJob: Partial<JobAlert>): JobAlert {
     ];
   }
 
-  // Salary / Pay Scale
-  const salary = rawJob.salary || rawJob.payScale || (
+  // Salary / Pay Scale / Remuneration
+  const payScale = rawJob.payScale || rawJob.salaryInfo || rawJob.salary || (
     title.includes('CGL') || title.includes('Officer') ? 'Pay Level 7 & 8 (₹44,900 to ₹1,42,400 per month) + DA, HRA & Allowances' :
     title.includes('Constable') || title.includes('ALP') ? 'Pay Level 2 & 3 (₹19,900 to ₹63,200 per month) + Allowances' :
     title.includes('Assistant') || title.includes('Clerk') ? 'Pay Level 4 & 5 (₹25,500 to ₹81,100 per month)' :
     'As per 7th Central / State Pay Commission Matrix with standard DA, HRA, and Medical Allowances.'
   );
+  const salary = rawJob.salary || payScale;
 
   // Status calculation
   const status = rawJob.status || calculateJobStatus(category, dates);
@@ -668,6 +669,7 @@ export function enrichJobDetails(rawJob: Partial<JobAlert>): JobAlert {
     postWiseVacancies,
     subjects,
     salary,
+    payScale,
     status,
     lastUpdated,
     officialSource: rawJob.officialSource || orgName,

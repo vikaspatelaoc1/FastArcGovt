@@ -1,23 +1,44 @@
 {
+  "id": "/",
   "name": "FastArc Govt Result",
   "short_name": "FastArc",
-  "description": "FastArc Government Jobs Portal: Get instant updates for latest Sarkari Naukri, Online Forms, Admit Cards, Exam Results, Answer Keys, Syllabus & Admissions 2026.",
+  "description": "WWW.FASTARCGOVT.INFO - FastArc Government Jobs Portal: Get instant updates for latest Sarkari Naukri, Online Forms, Admit Cards, Exam Results, Answer Keys, Syllabus & Admissions 2026.",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
   "background_color": "#020617",
-  "theme_color": "#f59e0b",
+  "theme_color": "#020617",
   "icons": [
     {
-      "src": "/logo.png",
+      "src": "/pwa-192x192.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "/pwa-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/pwa-maskable-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/pwa-maskable-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
     },
     {
       "src": "/logo.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
     }
   ]
 }
+

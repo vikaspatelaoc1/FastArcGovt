@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Printer, Bell, Check, Mail, Share2, Link as LinkIcon, ExternalLink, FileText, Globe, Copy, CheckCheck } from 'lucide-react';
+import { Printer, Bell, Check, Mail, Share2, Link as LinkIcon, ExternalLink, FileText, Globe, Copy, CheckCheck, DollarSign } from 'lucide-react';
 import { JobAlert } from '../types';
 import { saveSubscriberToFirestore, SubscriberRecord } from '../services/firestoreService';
 
@@ -339,6 +339,14 @@ export const JobDetailModal: React.FC<JobDetailModalProps> = ({ job, onClose }) 
                 </td>
               </tr>
               ` : ''}
+              ${(job.payScale || job.salary) ? `
+              <tr>
+                <td colspan="2" style="background-color: #f0fdf4; border-top: 1px solid #cbd5e1; padding: 10px;">
+                  <div class="dates-header" style="color: #047857; margin-bottom: 4px;">💰 Pay Scale / Salary Information</div>
+                  <div style="font-size: 12px; font-weight: 600; color: #065f46; line-height: 1.5;">${job.payScale || job.salary}</div>
+                </td>
+              </tr>
+              ` : ''}
             </table>
 
             <div class="section-box">
@@ -489,6 +497,19 @@ export const JobDetailModal: React.FC<JobDetailModalProps> = ({ job, onClose }) 
                         🎓 Eligibility Criteria
                       </h4>
                       <p className="text-xs text-slate-700 dark:text-slate-200 font-semibold">{job.eligibility || '-'}</p>
+                    </td>
+                  </tr>
+                )}
+                {(job.payScale || job.salary) && (
+                  <tr className="flex flex-col sm:flex-row border-t border-slate-200 dark:border-amber-500/30">
+                    <td colSpan={2} className="w-full p-4 bg-emerald-50/60 dark:bg-emerald-950/30 align-top">
+                      <h4 className="font-black text-emerald-800 dark:text-emerald-400 mb-1.5 uppercase tracking-wider text-xs flex items-center gap-1.5">
+                        <DollarSign className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
+                        <span>Pay Scale / Salary Information</span>
+                      </h4>
+                      <p className="text-xs text-slate-800 dark:text-emerald-100 font-semibold leading-relaxed">
+                        {job.payScale || job.salary}
+                      </p>
                     </td>
                   </tr>
                 )}

@@ -135,6 +135,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose, onSave,
       }
     ],
     salary: 'Pay Level-6 (₹35,400 to ₹1,12,400/-) + DA, HRA as per Central/State Government rules.',
+    payScale: 'Pay Level-6 (₹35,400 to ₹1,12,400/-) + DA, HRA as per Central/State Government rules.',
     selectionProcess: [
       'Tier-I Computer Based Written Exam (CBT)',
       'Tier-II Main Examination / Skill Test',
@@ -183,6 +184,8 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose, onSave,
       setFormData({
         ...enriched,
         postDate: enriched.postDate || formatInitialDate(),
+        salary: enriched.salary || enriched.payScale || '',
+        payScale: enriched.payScale || enriched.salary || '',
         dates: {
           start: enriched.dates?.start || '',
           last: enriched.dates?.last || '',
@@ -514,7 +517,8 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose, onSave,
       eligibility: formData.eligibility || '',
       qualifications: formData.qualifications || [],
       postWiseVacancies: formData.postWiseVacancies || [],
-      salary: formData.salary || '',
+      salary: formData.salary || formData.payScale || '',
+      payScale: formData.payScale || formData.salary || '',
       selectionProcess: formData.selectionProcess || [],
       howToApply: formData.howToApply || [],
       importantDocuments: formData.importantDocuments || [],
@@ -801,6 +805,24 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose, onSave,
                   placeholder="e.g. 17,727 Posts / Multiple Vacancies"
                   value={formData.totalVacancies || ''}
                   onChange={e => handleChange('totalVacancies', e.target.value)}
+                  className="w-full border border-slate-300 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50 rounded-xl p-2.5 text-slate-900 dark:text-white focus:outline-none focus:border-amber-500 transition-all"
+                />
+              </div>
+
+              {/* Pay Scale / Salary Information */}
+              <div>
+                <label className="block mb-1.5 text-slate-900 dark:text-slate-100 font-bold flex items-center justify-between">
+                  <span>Pay Scale / Salary Information</span>
+                  <span className="text-[10px] text-amber-600 dark:text-amber-400 font-semibold">Monthly / Pay Level</span>
+                </label>
+                <input
+                  type="text"
+                  placeholder="e.g. Pay Level-6 (₹35,400 - ₹1,12,400/-) + DA, HRA"
+                  value={formData.payScale || formData.salary || ''}
+                  onChange={e => {
+                    handleChange('payScale', e.target.value);
+                    handleChange('salary', e.target.value);
+                  }}
                   className="w-full border border-slate-300 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50 rounded-xl p-2.5 text-slate-900 dark:text-white focus:outline-none focus:border-amber-500 transition-all"
                 />
               </div>
@@ -1396,20 +1418,54 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose, onSave,
               <div className="bg-slate-50/80 dark:bg-slate-800/40 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 space-y-4">
                 <h3 className="font-black text-sm text-slate-900 dark:text-white uppercase tracking-wider flex items-center gap-1.5 pb-2 border-b border-slate-200 dark:border-slate-700">
                   <DollarSign className="w-4 h-4 text-emerald-500" />
-                  <span>Salary & Pay Scale Details</span>
+                  <span>Pay Scale & Salary Information Details</span>
                 </h3>
 
                 <div>
                   <label className="block mb-1 text-xs font-bold text-slate-900 dark:text-slate-200">
-                    Pay Scale / Matrix Level
+                    Pay Scale / Matrix Level / Remuneration Details
                   </label>
                   <textarea
                     rows={4}
                     placeholder="e.g. Pay Level-6 (₹35,400 - ₹1,12,400/-) to Level-8 (₹47,600 - ₹1,51,100/-) as per 7th CPC plus Dearness Allowance (DA), House Rent Allowance (HRA) and Transport Allowance."
-                    value={formData.salary || ''}
-                    onChange={e => handleChange('salary', e.target.value)}
+                    value={formData.payScale || formData.salary || ''}
+                    onChange={e => {
+                      handleChange('payScale', e.target.value);
+                      handleChange('salary', e.target.value);
+                    }}
                     className="w-full border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 rounded-xl p-3 text-xs font-medium text-slate-900 dark:text-white leading-relaxed"
                   />
+                </div>
+
+                <div>
+                  <span className="text-[11px] font-bold text-slate-500 dark:text-slate-400 block mb-1.5">
+                    Quick Pay Scale Presets:
+                  </span>
+                  <div className="flex flex-wrap gap-1.5">
+                    {[
+                      'Level-1 (₹18,000 - ₹56,900/-)',
+                      'Level-2 (₹19,900 - ₹63,200/-)',
+                      'Level-4 (₹25,500 - ₹81,100/-)',
+                      'Level-6 (₹35,400 - ₹1,12,400/-)',
+                      'Level-7 (₹44,900 - ₹1,42,400/-)',
+                      'Level-8 (₹47,600 - ₹1,51,100/-)',
+                      'Level-10 (₹56,100 - ₹1,77,500/-)',
+                      'Fixed Stipend: ₹25,000/Month'
+                    ].map(preset => (
+                      <button
+                        key={preset}
+                        type="button"
+                        onClick={() => {
+                          const val = `${preset} + DA, HRA and admissible allowances as per Govt rules.`;
+                          handleChange('payScale', val);
+                          handleChange('salary', val);
+                        }}
+                        className="text-[10px] font-bold px-2.5 py-1 bg-white dark:bg-slate-800 hover:bg-amber-100 dark:hover:bg-amber-950/60 text-slate-700 dark:text-slate-300 hover:text-amber-800 dark:hover:text-amber-300 border border-slate-300 dark:border-slate-700 rounded-lg cursor-pointer transition-all"
+                      >
+                        {preset.split(' ')[0]}
+                      </button>
+                    ))}
+                  </div>
                 </div>
               </div>
 
@@ -1818,6 +1874,21 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose, onSave,
                   </div>
                 </div>
               </div>
+
+              {/* Pay Scale / Salary Information in Preview */}
+              {(formData.payScale || formData.salary) && (
+                <div className="p-4 pt-0">
+                  <div className="border-2 border-emerald-300 dark:border-emerald-700/60 bg-emerald-50/60 dark:bg-emerald-950/20 rounded-xl p-3.5 text-xs sm:text-sm">
+                    <strong className="text-emerald-800 dark:text-emerald-400 block mb-1 font-black uppercase text-xs flex items-center gap-1.5">
+                      <DollarSign className="w-3.5 h-3.5" />
+                      <span>Pay Scale / Salary Information :</span>
+                    </strong>
+                    <p className="font-semibold text-slate-800 dark:text-slate-200 leading-relaxed">
+                      {formData.payScale || formData.salary}
+                    </p>
+                  </div>
+                </div>
+              )}
 
               {/* Vacancy Reservation Table */}
               {formData.postWiseVacancies && formData.postWiseVacancies.length > 0 && (

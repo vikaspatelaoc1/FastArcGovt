@@ -92,7 +92,7 @@ export const SubscribeModal: React.FC<SubscribeModalProps> = ({
               <img 
                 src={siteLogo || "/logo.png"} 
                 alt="FastArc Logo" 
-                className="w-full h-full object-cover scale-125 rounded-full"
+                className="w-full h-full object-contain rounded-full"
                 onError={(e) => {
                   (e.target as HTMLImageElement).src = "https://lh3.googleusercontent.com/d/1IE6MQ8EUwyKmGeXnpLTXx7d5HBLJiKb4";
                 }}

@@ -358,6 +358,7 @@ interface DatabaseSchema {
     maintenanceMode: boolean;
     autoWatcherEnabled: boolean;
     appName: string;
+    shortName?: string;
     appVersion: string;
   };
   users: Array<{ id: string; username: string; email: string; passwordHash: string; name: string; role: string }>;
@@ -400,6 +401,7 @@ let dbState: DatabaseSchema = {
     maintenanceMode: false,
     autoWatcherEnabled: false,
     appName: 'FastARC Result',
+    shortName: 'FastArc',
     appVersion: '1.0.0'
   },
   users: [
@@ -920,8 +922,9 @@ function serverEnrichJob(raw: any): any {
     shortInfo = `${orgName} has released the official recruitment advertisement for the post of ${postName} across various departments. All eligible candidates who meet the educational criteria and age limit can check the vacancy details, syllabus, exam pattern, and apply online before the last date (${lastDate}). Read the complete notification carefully before filling the online application form.`;
   }
 
-  // Salary
-  const salary = raw.salary || 'Pay Matrix Level-6 / Level-7 (₹35,400 to ₹1,12,400/-) plus Dearness Allowance (DA), House Rent Allowance (HRA) & Transport Allowance as per 7th Central Pay Commission rules.';
+  // Salary & Pay Scale
+  const payScale = raw.payScale || raw.salaryInfo || raw.salary || 'Pay Matrix Level-6 / Level-7 (₹35,400 to ₹1,12,400/-) plus Dearness Allowance (DA), House Rent Allowance (HRA) & Transport Allowance as per 7th Central Pay Commission rules.';
+  const salary = raw.salary || payScale;
 
   // Selection Process
   const selectionProcess = Array.isArray(raw.selectionProcess) && raw.selectionProcess.length > 0
@@ -994,6 +997,7 @@ function serverEnrichJob(raw: any): any {
     dates,
     fees,
     salary,
+    payScale,
     selectionProcess,
     howToApply,
     importantDocuments,
@@ -1239,24 +1243,45 @@ app.post('/api/v1/update-site-config', async (req, res) => {
 
 app.get('/manifest.json', async (req, res) => {
   const manifest = {
-    "name": dbState.siteConfig.appName || "FastARC Result",
-    "short_name": dbState.siteConfig.appName || "FastArc",
+    "id": "/",
+    "name": dbState.siteConfig.appName || "FastArc Govt Result",
+    "short_name": dbState.siteConfig.shortName || (dbState.siteConfig.appName?.toLowerCase().includes('fastarc') ? "FastArc" : (dbState.siteConfig.appName || "FastArc")),
+    "description": "WWW.FASTARCGOVT.INFO - FastArc Government Jobs Portal: Get instant updates for latest Sarkari Naukri, Online Forms, Admit Cards, Exam Results, Answer Keys, Syllabus & Admissions 2026.",
     "start_url": "/",
+    "scope": "/",
     "display": "standalone",
-    "background_color": "#ffffff",
-    "theme_color": "#f59e0b",
+    "background_color": "#020617",
+    "theme_color": "#020617",
     "icons": [
       {
-        "src": "/logo.png",
+        "src": "/pwa-192x192.png",
         "sizes": "192x192",
         "type": "image/png",
-        "purpose": "any maskable"
+        "purpose": "any"
+      },
+      {
+        "src": "/pwa-512x512.png",
+        "sizes": "512x512",
+        "type": "image/png",
+        "purpose": "any"
+      },
+      {
+        "src": "/pwa-maskable-192x192.png",
+        "sizes": "192x192",
+        "type": "image/png",
+        "purpose": "maskable"
+      },
+      {
+        "src": "/pwa-maskable-512x512.png",
+        "sizes": "512x512",
+        "type": "image/png",
+        "purpose": "maskable"
       },
       {
         "src": "/logo.png",
         "sizes": "512x512",
         "type": "image/png",
-        "purpose": "any maskable"
+        "purpose": "any"
       }
     ]
   };

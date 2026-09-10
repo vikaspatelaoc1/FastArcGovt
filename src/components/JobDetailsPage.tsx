@@ -662,14 +662,14 @@ export const JobDetailsPage: React.FC<JobDetailsPageProps> = ({
                 </div>
               )}
 
-              {job.salary && (
+              {(job.payScale || job.salary) && (
                 <div className="border-2 border-slate-300 dark:border-slate-700 rounded-xl p-4 bg-white dark:bg-slate-900 shadow-sm">
                   <h3 className="font-black text-sm sm:text-base text-emerald-600 dark:text-emerald-400 mb-2.5 uppercase tracking-wider flex items-center gap-2">
                     <DollarSign className="w-4 h-4" />
-                    <span>Salary / Pay Scale</span>
+                    <span>Pay Scale / Salary Information</span>
                   </h3>
                   <p className="text-xs sm:text-sm font-semibold text-slate-800 dark:text-slate-200 leading-relaxed">
-                    {job.salary}
+                    {job.payScale || job.salary}
                   </p>
                   <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-2">
                     * Plus DA, HRA, Transport Allowance, Medical Benefits as admissible under Govt Rules.
@@ -1090,7 +1090,7 @@ export const JobDetailsPage: React.FC<JobDetailsPageProps> = ({
                   <img 
                     src={siteLogo || "/logo.png"} 
                     alt="FastArc Logo" 
-                    className="w-full h-full object-cover scale-125 rounded-full"
+                    className="w-full h-full object-contain rounded-full"
                     onError={(e) => {
                       (e.target as HTMLImageElement).src = "https://lh3.googleusercontent.com/d/1IE6MQ8EUwyKmGeXnpLTXx7d5HBLJiKb4";
                     }}
