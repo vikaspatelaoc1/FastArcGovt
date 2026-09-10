@@ -30,10 +30,10 @@ export interface CategorySeoItem {
 export type CategorySeoConfigMap = Record<string, CategorySeoItem>;
 
 export const DEFAULT_GLOBAL_SEO: GlobalSeoConfig = {
-  siteTitle: "Fast_Arc Govt Result | Latest Online Form, Admit Card & Results 2026",
-  metaDescription: "FastArc Government Jobs Portal: Get instant updates for latest Sarkari Naukri, Online Forms, Admit Cards, Exam Results, Answer Keys, Syllabus & Admissions 2026.",
-  metaKeywords: "Sarkari Result, Govt Jobs 2026, Latest Online Form, Admit Card, Exam Results, Answer Key, FastArc, Recruitment Notification",
-  authorName: "FastArc Portal Team",
+  siteTitle: "WWW.FASTARCGOVT.INFO | FastArc Govt Result - Latest Online Form, Admit Card & Results 2026",
+  metaDescription: "WWW.FASTARCGOVT.INFO - FastArc Government Jobs Portal: Get instant updates for latest Sarkari Naukri, Online Forms, Admit Cards, Exam Results, Answer Keys, Syllabus & Admissions 2026.",
+  metaKeywords: "WWW.FASTARCGOVT.INFO, Sarkari Result, Govt Jobs 2026, Latest Online Form, Admit Card, Exam Results, Answer Key, FastArc, Recruitment Notification",
+  authorName: "WWW.FASTARCGOVT.INFO",
   ogImageUrl: "/logo.png",
   robotsDirective: "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"
 };
@@ -277,14 +277,14 @@ export function updateJobDetailSeo(job: JobAlert) {
 
   const baseUrl = window.location.origin;
   const canonicalUrl = `${baseUrl}/?jobId=${encodeURIComponent(job.id)}`;
-  const siteName = "FastArc Govt Result";
+  const siteName = "WWW.FASTARCGOVT.INFO";
 
   const categoryName = job.category
     .split('-')
     .map(w => w.charAt(0).toUpperCase() + w.slice(1))
     .join(' ');
 
-  const fullTitle = `${job.title} - ${categoryName} 2026 | FastArc`;
+  const fullTitle = `${job.title} - ${categoryName} 2026 | WWW.FASTARCGOVT.INFO`;
   const description = job.shortInfo && job.shortInfo.trim().length > 20
     ? `${job.title}: ${job.shortInfo.slice(0, 160)}... Check eligibility, important dates, and apply online on FastArc.`
     : `${job.title} notification released. Check latest eligibility, total vacancies, examination dates, admit card, and direct online form links at FastArc.`;
@@ -466,7 +466,7 @@ export function resetDefaultSeo(activeTab = 'home') {
       .split('-')
       .map(w => w.charAt(0).toUpperCase() + w.slice(1))
       .join(' ');
-    title = `${tabName} 2026 - Latest Notifications & Updates | FastArc`;
+    title = `${tabName} 2026 - Latest Notifications & Updates | WWW.FASTARCGOVT.INFO`;
     canonicalUrl = `${baseUrl}/?tab=${encodeURIComponent(activeTab)}`;
   }
 
@@ -483,7 +483,7 @@ export function resetDefaultSeo(activeTab = 'home') {
   setMetaTag('name', 'title', title);
   setMetaTag('name', 'description', description);
   setMetaTag('name', 'keywords', keywords);
-  setMetaTag('name', 'author', globalSeo.authorName || 'FastArc');
+  setMetaTag('name', 'author', globalSeo.authorName || 'WWW.FASTARCGOVT.INFO');
   setMetaTag('name', 'robots', globalSeo.robotsDirective || DEFAULT_GLOBAL_SEO.robotsDirective);
 
   // 3. Canonical Link
@@ -495,7 +495,7 @@ export function resetDefaultSeo(activeTab = 'home') {
   setMetaTag('property', 'og:title', title);
   setMetaTag('property', 'og:description', description);
   setMetaTag('property', 'og:image', imageUrl);
-  setMetaTag('property', 'og:site_name', "FastArc Govt Result");
+  setMetaTag('property', 'og:site_name', "WWW.FASTARCGOVT.INFO");
 
   // 5. Twitter Meta Tags
   setMetaTag('name', 'twitter:card', 'summary_large_image');
@@ -508,11 +508,12 @@ export function resetDefaultSeo(activeTab = 'home') {
   const baseSchema = {
     "@context": "https://schema.org",
     "@type": "WebSite",
-    "name": "FastArc Govt Result",
+    "name": "WWW.FASTARCGOVT.INFO",
+    "alternateName": "FastArc Govt Result",
     "url": canonicalUrl,
     "author": {
       "@type": "Organization",
-      "name": globalSeo.authorName || "FastArc"
+      "name": globalSeo.authorName || "WWW.FASTARCGOVT.INFO"
     },
     "potentialAction": {
       "@type": "SearchAction",

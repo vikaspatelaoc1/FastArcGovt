@@ -504,7 +504,7 @@ import requests
 import xml.etree.ElementTree as ET
 import time
 
-API_ENDPOINT = "https://fastarc.in/api/v1/sarkari-posts"
+API_ENDPOINT = "https://fastarcgovt.info/api/v1/sarkari-posts"
 API_SECRET = "FASTARC_SECRET_KEY_12345"
 
 def scrape_and_push(feed_url, default_category="latest-jobs"):

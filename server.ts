@@ -366,9 +366,9 @@ interface DatabaseSchema {
 const defaultNotificationConfig = {
   autoSendOnPublish: true,
   provider: 'built-in' as const,
-  fromName: 'FastArc Govt Job Alerts',
-  fromEmail: 'alerts@fastarc.in',
-  replyToEmail: 'support@fastarc.in',
+  fromName: 'WWW.FASTARCGOVT.INFO - Govt Job Alerts',
+  fromEmail: 'alerts@fastarcgovt.info',
+  replyToEmail: 'support@fastarcgovt.info',
   smtpHost: 'smtp.gmail.com',
   smtpPort: 587,
   smtpUser: '',
@@ -1398,8 +1398,8 @@ function generateJobAlertEmailHtml(job: any, config: any, recipientEmail: string
   const startDate = typeof job.dates === 'object' ? (job.dates.start || postDate) : postDate;
   const genFee = typeof job.fees === 'object' ? (job.fees.general || '₹100') : '₹100';
   const scStFee = typeof job.fees === 'object' ? (job.fees.scSt || '₹0') : '₹0';
-  const applyLink = job.links?.apply || 'https://fastarc.in';
-  const pdfLink = job.links?.notification || job.links?.official || 'https://fastarc.in';
+  const applyLink = job.links?.apply || 'https://www.fastarcgovt.info';
+  const pdfLink = job.links?.notification || job.links?.official || 'https://www.fastarcgovt.info';
   const shortInfo = job.shortInfo || 'Official notification released by government department/commission. Check eligibility, vacancies, fee and application dates below.';
 
   const subject = (config?.subjectTemplate || '⚡ [FastArc Alert] {job_title} - {state} Apply Online')
@@ -1512,12 +1512,12 @@ function generateJobAlertEmailHtml(job: any, config: any, recipientEmail: string
         <p style="margin:0 0 8px 0;">${config?.footerNote || 'You received this notification because you subscribed on FastArc Govt Jobs Portal.'}</p>
         <p style="margin:0 0 8px 0;">Recipient: <strong>${recipientEmail}</strong></p>
         <p style="margin:0;">
-          <a href="https://fastarc.in">FastArc Portal</a> &bull;
-          <a href="https://fastarc.in/#helpdesk">Candidate Helpdesk</a> &bull;
-          <a href="https://fastarc.in/#unsubscribe?email=${encodeURIComponent(recipientEmail)}">Unsubscribe</a>
+          <a href="https://www.fastarcgovt.info">WWW.FASTARCGOVT.INFO</a> &bull;
+          <a href="https://www.fastarcgovt.info/#helpdesk">Candidate Helpdesk</a> &bull;
+          <a href="https://www.fastarcgovt.info/#unsubscribe?email=${encodeURIComponent(recipientEmail)}">Unsubscribe</a>
         </p>
         <p style="margin:8px 0 0 0; font-size:10px; color:#64748b;">
-          &copy; 2026 FastArc Sarkari Portal. Verified Public Job Notice Alert.
+          &copy; 2026 WWW.FASTARCGOVT.INFO - FastArc Govt Result. Verified Public Job Notice Alert.
         </p>
       </div>
     </div>
@@ -1535,7 +1535,7 @@ ${shortInfo}
 Apply Online: ${applyLink}
 Official PDF: ${pdfLink}
 
-To unsubscribe: https://fastarc.in/#unsubscribe?email=${encodeURIComponent(recipientEmail)}`;
+To unsubscribe: https://www.fastarcgovt.info/#unsubscribe?email=${encodeURIComponent(recipientEmail)}`;
 
   return { subject, html, text };
 }
@@ -2223,7 +2223,7 @@ app.get('/api/v1/rss/feed.xml', async (req, res) => {
     jobsList = jobsList.filter(j => (j.state || '').toLowerCase() === state.toLowerCase());
   }
 
-  const siteUrl = 'https://fastarc.in';
+  const siteUrl = 'https://www.fastarcgovt.info';
   const now = new Date().toUTCString();
 
   const itemsXml = jobsList.slice(0, 50).map(job => {

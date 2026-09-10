@@ -662,7 +662,7 @@ export const CategorySeoEditorTab: React.FC<CategorySeoEditorTabProps> = ({ onSh
                           FastArc Govt Result › {activeCategory.name}
                         </span>
                         <span className="text-[11px] text-slate-500 dark:text-slate-400 leading-tight">
-                          https://fastarc.in › ?tab={activeCategory.id}
+                          https://fastarcgovt.info › ?tab={activeCategory.id}
                         </span>
                       </div>
                     </div>
@@ -711,7 +711,7 @@ export const CategorySeoEditorTab: React.FC<CategorySeoEditorTabProps> = ({ onSh
                   </div>
                   <div className="p-3.5 space-y-1 bg-slate-900/60">
                     <span className="text-[10px] uppercase font-extrabold tracking-wider text-slate-500">
-                      FASTARC.IN › {activeCategory.id}
+                      WWW.FASTARCGOVT.INFO › {activeCategory.id}
                     </span>
                     <h4 className="text-xs font-bold text-white line-clamp-1">
                       {activeCategory.ogTitle || activeCategory.metaTitle || activeCategory.name}

@@ -1785,7 +1785,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose, onSave,
                   {formData.postName || formData.title} : Short Details of Notification
                 </p>
                 <div className="inline-block py-1 px-4 rounded-md my-1 font-black text-xs sm:text-sm text-[#dc2626] dark:text-[#f87171] uppercase tracking-wider">
-                  FastArc Result Official • WWW.FASTARCGOVT.IN
+                  FastArc Result Official • WWW.FASTARCGOVT.INFO
                 </div>
               </div>
 
