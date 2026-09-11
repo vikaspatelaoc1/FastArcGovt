@@ -6,6 +6,7 @@ interface HeroProps {
   searchQuery: string;
   setSearchQuery: (query: string) => void;
   jobs: JobAlert[];
+  marqueeText?: string;
 }
 
 // Global declaration for SpeechRecognition
@@ -16,13 +17,55 @@ declare global {
   }
 }
 
-export const Hero: React.FC<HeroProps> = ({ searchQuery, setSearchQuery, jobs }) => {
+export const Hero: React.FC<HeroProps> = ({ searchQuery, setSearchQuery, jobs, marqueeText }) => {
   const [isFocused, setIsFocused] = useState(false);
   const [isListening, setIsListening] = useState(false);
   const [searchHistory, setSearchHistory] = useState<string[]>([]);
   const [selectedIndex, setSelectedIndex] = useState<number>(-1);
+  const [isApplication, setIsApplication] = useState<boolean>(() => {
+    if (typeof window === 'undefined') return false;
+    const isStandalone =
+      window.matchMedia('(display-mode: standalone)').matches ||
+      window.matchMedia('(display-mode: fullscreen)').matches ||
+      window.matchMedia('(display-mode: minimal-ui)').matches ||
+      (window.navigator as any).standalone === true ||
+      document.referrer.includes('android-app://') ||
+      new URLSearchParams(window.location.search).get('source') === 'pwa' ||
+      new URLSearchParams(window.location.search).get('mode') === 'app';
+    return !!isStandalone;
+  });
   const dropdownRef = useRef<HTMLDivElement>(null);
   const recognitionRef = useRef<any>(null);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const checkAppMode = () => {
+      const isStandalone =
+        window.matchMedia('(display-mode: standalone)').matches ||
+        window.matchMedia('(display-mode: fullscreen)').matches ||
+        window.matchMedia('(display-mode: minimal-ui)').matches ||
+        (window.navigator as any).standalone === true ||
+        document.referrer.includes('android-app://') ||
+        new URLSearchParams(window.location.search).get('source') === 'pwa' ||
+        new URLSearchParams(window.location.search).get('mode') === 'app';
+      setIsApplication(!!isStandalone);
+    };
+    checkAppMode();
+
+    const mqStandalone = window.matchMedia('(display-mode: standalone)');
+    const mqFullscreen = window.matchMedia('(display-mode: fullscreen)');
+    const mqMinimal = window.matchMedia('(display-mode: minimal-ui)');
+
+    mqStandalone.addEventListener?.('change', checkAppMode);
+    mqFullscreen.addEventListener?.('change', checkAppMode);
+    mqMinimal.addEventListener?.('change', checkAppMode);
+
+    return () => {
+      mqStandalone.removeEventListener?.('change', checkAppMode);
+      mqFullscreen.removeEventListener?.('change', checkAppMode);
+      mqMinimal.removeEventListener?.('change', checkAppMode);
+    };
+  }, []);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -198,9 +241,27 @@ export const Hero: React.FC<HeroProps> = ({ searchQuery, setSearchQuery, jobs })
           Fast_<span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-300">Arc</span> - Instant Updates
         </h2>
         
-        <p className="text-slate-300 md:text-lg max-w-2xl mx-auto mb-8">
+        <p className="text-slate-300 text-sm md:text-base max-w-2xl mx-auto mb-3 sm:mb-4 px-2">
           Find Latest Government Jobs, Results, Hall Ticket / Admit Cards, Syllabus & Answer Keys instantly in one portal.
         </p>
+
+        {/* Compact Trending Ticker Text (Shown ONLY on Website, hidden in installed Application/PWA) */}
+        {!isApplication && marqueeText && (
+          <div className="web-only-trending w-full max-w-2xl mx-auto mb-4 px-2 flex items-center gap-2 overflow-hidden select-none">
+            <div className="shrink-0 flex items-center gap-1 text-amber-400 font-extrabold text-[11px] sm:text-xs">
+              <span className="text-sm leading-none">🔥</span>
+              <span className="uppercase tracking-wider font-black text-amber-400">Trending:</span>
+            </div>
+            <div className="w-full overflow-hidden whitespace-nowrap">
+              <div 
+                className="inline-block animate-marquee hover:[animation-play-state:paused] cursor-pointer text-amber-200/90 hover:text-amber-100 text-xs sm:text-sm font-medium transition-colors"
+                style={{ animationName: 'marquee' }}
+              >
+                {marqueeText}
+              </div>
+            </div>
+          </div>
+        )}
         
         <div className="w-full max-w-2xl mx-auto relative" ref={dropdownRef}>
           <div className="bg-slate-900/80 border border-amber-500/30 p-1.5 rounded-xl flex items-center hover:border-amber-500/60 transition-colors shadow-lg relative z-20">

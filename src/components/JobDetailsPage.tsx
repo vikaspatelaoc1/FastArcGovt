@@ -181,27 +181,32 @@ export const JobDetailsPage: React.FC<JobDetailsPageProps> = ({
   if (!job) {
     return (
       <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col">
-        <Header 
-          themeMode={themeMode}
-          onSetThemeMode={onSetThemeMode}
-          onToggleDarkMode={onToggleDarkMode}
-          isDarkMode={isDarkMode}
-          onAdminLoginClick={onAdminLoginClick}
-          isLoggedIn={isLoggedIn}
-          isSuperAdmin={isSuperAdmin}
-          employeeName={employeeName}
-          onOpenSuperAdminModal={onOpenSuperAdminModal}
-          onOpenNpmSystem={onOpenNpmSystem}
-          onLogout={onLogout}
-          onInfoClick={onInfoClick}
-          activeTab="latest-jobs"
-          onTabChange={(tab) => {
-            onSelectCategory(tab);
-            onBackToHome();
-          }}
-          socialLinks={socialLinks}
-          siteLogo={siteLogo}
-        />
+        <div 
+          className="sticky top-0 z-50 bg-white dark:bg-slate-900 shadow-sm"
+          style={{ paddingTop: 'env(safe-area-inset-top, 0px)' }}
+        >
+          <Header 
+            themeMode={themeMode}
+            onSetThemeMode={onSetThemeMode}
+            onToggleDarkMode={onToggleDarkMode}
+            isDarkMode={isDarkMode}
+            onAdminLoginClick={onAdminLoginClick}
+            isLoggedIn={isLoggedIn}
+            isSuperAdmin={isSuperAdmin}
+            employeeName={employeeName}
+            onOpenSuperAdminModal={onOpenSuperAdminModal}
+            onOpenNpmSystem={onOpenNpmSystem}
+            onLogout={onLogout}
+            onInfoClick={onInfoClick}
+            activeTab="latest-jobs"
+            onTabChange={(tab) => {
+              onSelectCategory(tab);
+              onBackToHome();
+            }}
+            socialLinks={socialLinks}
+            siteLogo={siteLogo}
+          />
+        </div>
         <main className="flex-1 max-w-4xl mx-auto px-4 py-16 text-center">
           <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-8 shadow-xl max-w-md mx-auto">
             <div className="w-16 h-16 bg-amber-100 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 rounded-2xl flex items-center justify-center mx-auto mb-4">
@@ -229,7 +234,10 @@ export const JobDetailsPage: React.FC<JobDetailsPageProps> = ({
   return (
     <div className="min-h-screen bg-[#f8fafc] dark:bg-[#0b1120] text-slate-900 dark:text-slate-100 flex flex-col selection:bg-amber-500 selection:text-slate-950 font-sans print:bg-white print:text-black">
       {/* 1. Standard FastArc Full-width Responsive Header */}
-      <div className="print:hidden sticky top-0 z-50">
+      <div 
+        className="print:hidden sticky top-0 z-50 bg-white dark:bg-slate-900 shadow-sm"
+        style={{ paddingTop: 'env(safe-area-inset-top, 0px)' }}
+      >
         <Header 
           themeMode={themeMode}
           onSetThemeMode={onSetThemeMode}

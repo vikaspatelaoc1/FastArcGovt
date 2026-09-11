@@ -1250,8 +1250,8 @@ app.get('/manifest.json', async (req, res) => {
     "start_url": "/",
     "scope": "/",
     "display": "standalone",
-    "background_color": "#020617",
-    "theme_color": "#020617",
+    "background_color": "#ffffff",
+    "theme_color": "#ffffff",
     "icons": [
       {
         "src": "/pwa-192x192.png",

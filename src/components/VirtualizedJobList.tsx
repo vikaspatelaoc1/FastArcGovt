@@ -116,7 +116,7 @@ const VirtualJobRow: React.FC<VirtualJobRowProps> = ({
                 </>
               )}
               {item.isNew && (
-                <span className="bg-red-500 text-white text-[9.5px] sm:text-[10px] md:text-[10.5px] font-black tracking-wider px-1.5 py-0.5 rounded uppercase badge-pulse shadow-xs">
+                <span className="bg-red-500 text-white text-[8px] sm:text-[8.5px] md:text-[9px] font-black tracking-wider px-1 py-[1.5px] sm:py-[2px] rounded-sm uppercase badge-pulse shadow-xs">
                   NEW
                 </span>
               )}

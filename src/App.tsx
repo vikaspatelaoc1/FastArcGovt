@@ -92,6 +92,7 @@ export default function App() {
       }
 
       setIsDarkMode(effectiveDark);
+      const effectiveThemeColor = effectiveDark ? '#020617' : '#ffffff';
       if (effectiveDark) {
         document.documentElement.classList.add('dark');
         document.body.classList.add('dark');
@@ -100,6 +101,13 @@ export default function App() {
         document.documentElement.classList.remove('dark');
         document.body.classList.remove('dark');
         localStorage.setItem('theme', 'light');
+      }
+
+      // Dynamically update mobile browser & PWA status bar theme-color
+      // We only update the generic one, not the media-query specific ones to prevent OS confusion
+      const metaThemeColor = document.getElementById('meta-theme-color');
+      if (metaThemeColor) {
+        metaThemeColor.setAttribute('content', effectiveThemeColor);
       }
     };
 
@@ -1315,11 +1323,17 @@ export default function App() {
   }
 
   return (
-    <div className="bg-slate-50 text-slate-800 dark:bg-slate-950 dark:text-slate-100 min-h-screen flex flex-col transition-colors duration-300 w-full">
+    <div className="app-container bg-slate-50 text-slate-800 dark:bg-slate-950 dark:text-slate-100 min-h-screen flex flex-col transition-colors duration-300 w-full">
       <SplashScreen siteLogo={siteLogo} />
       <InstallPrompt />
-      <div className="fixed top-0 left-0 right-0 z-50 w-full shadow-md bg-white dark:bg-slate-900">
-        <Marquee text={marqueeText} />
+      {/* Mobile System Status Bar Safe Area & Fixed Top Navigation */}
+      <div 
+        id="app-fixed-top-header"
+        className="fixed top-0 left-0 right-0 z-50 w-full shadow-md bg-white dark:bg-slate-900 transition-colors"
+        style={{
+          paddingTop: 'env(safe-area-inset-top, 0px)'
+        }}
+      >
         <Header 
           siteLogo={siteLogo}
           themeMode={themeMode}
@@ -1344,7 +1358,10 @@ export default function App() {
         />
       </div>
       {isSuperAdminModalOpen ? (
-        <div className="pt-[72px] lg:pt-[84px] flex-1 w-full flex flex-col mx-auto px-2 sm:px-4 lg:px-6 py-4 lg:py-6 min-h-[calc(100vh-80px)]">
+        <div 
+          className="flex-1 w-full flex flex-col mx-auto px-2 sm:px-4 lg:px-6 py-4 lg:py-6 min-h-[calc(100vh-80px)]"
+          style={{ paddingTop: 'calc(64px + env(safe-area-inset-top, 0px))' }}
+        >
           <SuperAdminDashboardModal
             siteLogo={siteLogo}
             setSiteLogo={async (logo) => {
@@ -1403,7 +1420,10 @@ export default function App() {
           />
         </div>
       ) : isAdminPanelOpen ? (
-        <div className="pt-[72px] lg:pt-[84px] flex-1 w-full flex flex-col mx-auto px-2 sm:px-4 lg:px-6 py-4 lg:py-6 min-h-[calc(100vh-80px)]">
+        <div 
+          className="flex-1 w-full flex flex-col mx-auto px-2 sm:px-4 lg:px-6 py-4 lg:py-6 min-h-[calc(100vh-80px)]"
+          style={{ paddingTop: 'calc(64px + env(safe-area-inset-top, 0px))' }}
+        >
           <AdminPanel
             isOpen={isAdminPanelOpen}
             onClose={() => {
@@ -1420,8 +1440,8 @@ export default function App() {
         </div>
       ) : (
         <>
-          <div className="pt-[84px]">
-            <Hero searchQuery={searchQuery} setSearchQuery={setSearchQuery} jobs={jobs} />
+          <div style={{ paddingTop: 'calc(60px + env(safe-area-inset-top, 0px))' }}>
+            <Hero searchQuery={searchQuery} setSearchQuery={setSearchQuery} jobs={jobs} marqueeText={marqueeText} />
           </div>
 
           

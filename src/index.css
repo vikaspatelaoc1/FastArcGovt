@@ -6,15 +6,48 @@
   --font-sans: 'Inter', sans-serif;
 }
 
+:root {
+  --sat: env(safe-area-inset-top, 0px);
+  --sab: env(safe-area-inset-bottom, 0px);
+  --sal: env(safe-area-inset-left, 0px);
+  --sar: env(safe-area-inset-right, 0px);
+}
+
+/* Global Safe-Area Inset Top adjustments for consistent mobile screen geometries */
+#app-fixed-top-header,
+header.fixed,
+.fixed.top-0,
+[data-safe-top="true"] {
+  padding-top: env(safe-area-inset-top, 0px);
+}
+
+/* Safe area padding for the root application shell and viewport */
+.app-container,
+#root,
+#app {
+  padding-left: env(safe-area-inset-left, 0px);
+  padding-right: env(safe-area-inset-right, 0px);
+}
+
 html, body {
-  background-color: #020617;
-  color: #f8fafc;
+  min-height: 100%;
+  padding-top: 0;
+  margin: 0;
   transition: background-color 0.2s ease, color 0.2s ease;
 }
 
+:root:not(.dark),
+:root:not(.dark) html,
 :root:not(.dark) body {
-  background-color: #f8fafc;
+  background-color: #ffffff;
   color: #1e293b;
+}
+
+.dark,
+html.dark,
+body.dark {
+  background-color: #020617;
+  color: #f8fafc;
 }
 
 @keyframes marquee {

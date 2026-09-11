@@ -234,7 +234,7 @@ export const Header: React.FC<HeaderProps> = ({
 
   return (
     <>
-      <header className="sticky top-0 z-50 bg-white border-b border-slate-200 dark:bg-slate-900 dark:border-slate-800 w-full shadow-sm transition-colors duration-300">
+      <header className="bg-white border-b border-slate-200 dark:bg-slate-900 dark:border-slate-800 w-full transition-colors duration-300">
       <div className="w-full mx-auto px-3 sm:px-5 lg:px-6">
         <div className="flex justify-between h-14 sm:h-16 items-center py-1">
           
@@ -398,15 +398,26 @@ export const Header: React.FC<HeaderProps> = ({
           <div className="flex items-center space-x-2">
             <button 
               onClick={onToggleDarkMode} 
-              className="p-2 text-slate-600 hover:text-red-600 dark:text-slate-300 dark:hover:text-red-500 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-all focus:outline-none cursor-pointer shrink-0" 
+              className="relative w-9 h-9 flex items-center justify-center text-slate-600 hover:text-red-600 dark:text-slate-300 dark:hover:text-red-500 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-all focus:outline-none cursor-pointer shrink-0 overflow-hidden" 
               title={isDarkMode ? "Switch to Light Mode" : "Switch to Dark Mode"}
               aria-label="Toggle Theme"
             >
-              {isDarkMode ? (
-                <Sun className="w-5 h-5 text-amber-400 fill-amber-400/20" />
-              ) : (
-                <Moon className="w-5 h-5 text-slate-600 dark:text-slate-300" />
-              )}
+              <AnimatePresence mode="wait" initial={false}>
+                <motion.div
+                  key={isDarkMode ? 'dark' : 'light'}
+                  initial={{ y: -25, opacity: 0, rotate: -90 }}
+                  animate={{ y: 0, opacity: 1, rotate: 0 }}
+                  exit={{ y: 25, opacity: 0, rotate: 90 }}
+                  transition={{ duration: 0.3, type: "spring", stiffness: 250, damping: 15 }}
+                  className="absolute"
+                >
+                  {isDarkMode ? (
+                    <Sun className="w-5 h-5 text-amber-400 fill-amber-400/20 drop-shadow-md" />
+                  ) : (
+                    <Moon className="w-5 h-5 text-slate-600 dark:text-slate-300" />
+                  )}
+                </motion.div>
+              </AnimatePresence>
             </button>
             
             {/* Official Social Media Channels with Original Logos (Telegram & WhatsApp) */}
@@ -471,6 +482,10 @@ export const Header: React.FC<HeaderProps> = ({
               animate={{ x: 0, opacity: 1 }}
               exit={{ x: '-100%', opacity: 0.5 }}
               transition={{ type: 'spring', damping: 28, stiffness: 300 }}
+              style={{
+                paddingTop: 'env(safe-area-inset-top, 0px)',
+                paddingBottom: 'env(safe-area-inset-bottom, 0px)'
+              }}
               className="relative w-64 sm:w-72 max-w-[75vw] bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 h-full shadow-2xl border-r border-slate-200 dark:border-slate-800 flex flex-col z-10 overflow-y-auto"
             >
               

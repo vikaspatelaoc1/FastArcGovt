@@ -949,7 +949,7 @@ export const WebsiteControlTab: React.FC<WebsiteControlTabProps> = ({
                           >
                             SSC Combined Graduate Level CGL 2026 Tier-I Final Result & Cutoff
                           </span>
-                          <span className="bg-red-500 text-white text-[10px] font-black px-1.5 py-0.5 rounded shrink-0">NEW</span>
+                          <span className="bg-red-500 text-white text-[8px] font-black px-1 py-[1.5px] rounded-sm shrink-0">NEW</span>
                         </div>
                         <div className="flex items-center gap-2 mt-1 text-[12px] text-slate-500">
                           <span>📅 12/08/2026</span>
@@ -1000,7 +1000,7 @@ export const WebsiteControlTab: React.FC<WebsiteControlTabProps> = ({
                           >
                             SSC Combined Graduate Level CGL 2026 Tier-I Final Result & Cutoff
                           </span>
-                          <span className="bg-red-500 text-white text-[10px] font-black px-1.5 py-0.5 rounded shrink-0">NEW</span>
+                          <span className="bg-red-500 text-white text-[8px] font-black px-1 py-[1.5px] rounded-sm shrink-0">NEW</span>
                         </div>
                         <div className="flex items-center gap-2 mt-1 text-[11px] text-slate-500">
                           <span>📅 12/08/2026</span>
@@ -1061,7 +1061,7 @@ export const WebsiteControlTab: React.FC<WebsiteControlTabProps> = ({
                               {item.title}
                             </span>
                             {item.isNew && (
-                              <span className="bg-red-500 text-white text-[9px] font-black px-1.5 py-0.2 rounded uppercase shrink-0">NEW</span>
+                              <span className="bg-red-500 text-white text-[8px] font-black px-1 py-[1.5px] rounded-sm uppercase shrink-0">NEW</span>
                             )}
                           </div>
                           <div className="flex items-center gap-1.5 mt-1 text-[11px] text-slate-500">
@@ -1102,7 +1102,7 @@ export const WebsiteControlTab: React.FC<WebsiteControlTabProps> = ({
                               {item.title}
                             </span>
                             {item.isNew && (
-                              <span className="bg-red-500 text-white text-[9px] font-black px-1.5 py-0.2 rounded uppercase shrink-0">NEW</span>
+                              <span className="bg-red-500 text-white text-[8px] font-black px-1 py-[1.5px] rounded-sm uppercase shrink-0">NEW</span>
                             )}
                           </div>
                           <div className="flex items-center gap-1.5 mt-1 text-[11px] text-slate-500">
@@ -1143,7 +1143,7 @@ export const WebsiteControlTab: React.FC<WebsiteControlTabProps> = ({
                               {item.title}
                             </span>
                             {item.isNew && (
-                              <span className="bg-red-500 text-white text-[9px] font-black px-1.5 py-0.2 rounded uppercase shrink-0">NEW</span>
+                              <span className="bg-red-500 text-white text-[8px] font-black px-1 py-[1.5px] rounded-sm uppercase shrink-0">NEW</span>
                             )}
                           </div>
                           <div className="flex items-center gap-1.5 mt-1 text-[11px] text-slate-500">
