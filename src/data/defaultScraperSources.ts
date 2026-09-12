@@ -105,7 +105,7 @@ export const generateAllScraperSources = (): ScraperSource[] => {
   const indianStates = ['UP', 'MP', 'Bihar', 'Rajasthan', 'Gujarat', 'Maharashtra', 'Punjab', 'Haryana', 'Tamil Nadu', 'Kerala', 'Karnataka', 'Odisha', 'West Bengal', 'Assam', 'Jharkhand', 'Chhattisgarh', 'Uttarakhand', 'Himachal Pradesh', 'Telangana', 'Andhra Pradesh', 'Delhi', 'Jammu & Kashmir'];
   const orgTypes = ['Police', 'PSC', 'SSC', 'High Court', 'Education Board', 'Health Dept', 'Transport', 'Electricity Board', 'Metro', 'University', 'Municipal Corp', 'Panchayat', 'Forest Dept', 'Water Board', 'Housing Board', 'PWD', 'Tourism Dept', 'Social Welfare', 'Rural Development', 'Urban Development', 'Agriculture Dept', 'Revenue Dept', 'Tax Dept', 'State Cooperative Bank'];
   const centralOrgs = ['UPSC', 'SSC', 'RRB', 'IBPS', 'SBI', 'RBI', 'LIC', 'DRDO', 'ISRO', 'BARC', 'ONGC', 'NTPC', 'BHEL', 'GAIL', 'SAIL', 'IOCL', 'BPCL', 'HPCL', 'CIL', 'AAI', 'FCI', 'NHAI', 'BSF', 'CRPF', 'CISF', 'ITBP', 'SSB', 'Indian Army', 'Indian Navy', 'Indian Air Force', 'Coast Guard', 'Post Office', 'NTA', 'CBSE', 'KVS', 'NVS', 'DSSSB'];
-  const categories: JobCategory[] = ['latest-jobs', 'admit-cards', 'results', 'syllabus', 'answer-key', 'admission'];
+  const categories: JobCategory[] = ['latest-jobs', 'admit-cards', 'results', 'syllabus', 'answer-key', 'admission', 'documents', 'important'];
 
   let extraSourceId = 1;
 

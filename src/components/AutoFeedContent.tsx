@@ -130,11 +130,16 @@ export const AutoFeedContent: React.FC<AutoFeedContentProps> = ({
     const active = targetSources.filter(s => s.enabled);
     const pool = active.length > 0 ? active : [
       { id: 'src-ssc', name: 'Staff Selection Commission (SSC)', url: 'https://ssc.gov.in', defaultCategory: 'latest-jobs' as JobCategory, state: 'Central', enabled: true },
-      { id: 'src-upsc', name: 'Union Public Service Commission (UPSC)', url: 'https://upsc.gov.in', defaultCategory: 'latest-jobs' as JobCategory, state: 'Central', enabled: true },
+      { id: 'src-nta', name: 'National Testing Agency (NTA)', url: 'https://nta.ac.in', defaultCategory: 'admit-cards' as JobCategory, state: 'Central', enabled: true },
+      { id: 'src-upsc-results', name: 'UPSC Results', url: 'https://upsc.gov.in/results', defaultCategory: 'results' as JobCategory, state: 'Central', enabled: true },
+      { id: 'src-ssc-answer-key', name: 'SSC Answer Key', url: 'https://ssc.gov.in/answer-key', defaultCategory: 'answer-key' as JobCategory, state: 'Central', enabled: true },
+      { id: 'src-ugc-syllabus', name: 'UGC Syllabus', url: 'https://ugc.ac.in/syllabus', defaultCategory: 'syllabus' as JobCategory, state: 'Central', enabled: true },
+      { id: 'src-delhi-admission', name: 'Delhi University Admission', url: 'https://du.ac.in/admission', defaultCategory: 'admission' as JobCategory, state: 'Delhi', enabled: true },
+      { id: 'src-digilocker', name: 'DigiLocker Services (Certificates)', url: 'https://digilocker.gov.in', defaultCategory: 'documents' as JobCategory, state: 'Central', enabled: true },
+      { id: 'src-scholarship', name: 'National Scholarship Portal', url: 'https://scholarships.gov.in', defaultCategory: 'important' as JobCategory, state: 'Central', enabled: true },
       { id: 'src-railway', name: 'Railway Recruitment Control Board (RRB)', url: 'https://indianrailways.gov.in', defaultCategory: 'latest-jobs' as JobCategory, state: 'Central', enabled: true },
-      { id: 'src-ibps', name: 'Institute of Banking Personnel Selection (IBPS)', url: 'https://ibps.in', defaultCategory: 'latest-jobs' as JobCategory, state: 'Central', enabled: true },
-      { id: 'src-police', name: 'State Police Recruitment Board', url: 'https://uppbpb.gov.in', defaultCategory: 'latest-jobs' as JobCategory, state: 'Uttar Pradesh', enabled: true },
-      { id: 'src-nta', name: 'National Testing Agency (NTA)', url: 'https://nta.ac.in', defaultCategory: 'admit-card' as JobCategory, state: 'Central', enabled: true }
+      { id: 'src-ibps-results', name: 'IBPS Banking Results', url: 'https://ibps.in/results', defaultCategory: 'results' as JobCategory, state: 'Central', enabled: true },
+      { id: 'src-police-admit', name: 'State Police Admit Card', url: 'https://uppbpb.gov.in/admit-card', defaultCategory: 'admit-cards' as JobCategory, state: 'UP', enabled: true }
     ];
 
     // Pick a varied selection up to 25 items
@@ -147,13 +152,25 @@ export const AutoFeedContent: React.FC<AutoFeedContentProps> = ({
     const sample = pool.slice(0, 25);
     return sample.map((src, idx) => {
       const cleanOfficial = cleanOfficialUrl(src.url);
+      const cat = (src.defaultCategory || 'latest-jobs') as JobCategory;
+      
+      let titleTemplate = `${src.name} - Latest Recruitment 2026`;
+      if (cat === 'admit-cards') titleTemplate = `${src.name.split(' (')[0]} Exam Admit Card 2026`;
+      else if (cat === 'results') titleTemplate = `${src.name.split(' (')[0]} Final Result & Merit List 2026`;
+      else if (cat === 'answer-key') titleTemplate = `${src.name.split(' (')[0]} Official Answer Key 2026`;
+      else if (cat === 'syllabus') titleTemplate = `${src.name.split(' (')[0]} Exam Syllabus 2026`;
+      else if (cat === 'admission') titleTemplate = `${src.name.split(' (')[0]} Admission Online Form 2026`;
+      else if (cat === 'documents') titleTemplate = `${src.name.split(' (')[0]} Certificate Download / Apply 2026`;
+      else if (cat === 'important') titleTemplate = `${src.name.split(' (')[0]} Online Form / Registration 2026`;
+      else titleTemplate = `${src.name.split(' (')[0]} Recruitment Online Form 2026`;
+
       return {
         id: `live-feed-${Date.now()}-${idx}`,
         sourceId: src.id,
         sourceName: src.name,
-        title: `${src.name} - Latest Recruitment & Exam Notification 2026`,
+        title: titleTemplate,
         shortInfo: `Extracted from official portal ${cleanOfficial}. Check eligibility and online application process.`,
-        category: (src.defaultCategory || 'latest-jobs') as JobCategory,
+        category: cat,
         state: src.state || 'Central',
         dates: { start: todayStr, last: defaultLastDate },
         fees: { general: '₹100', scSt: '₹0' },
@@ -769,7 +786,7 @@ if __name__ == "__main__":
             </div>
 
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3 relative z-10">
-              {['latest-jobs', 'admit-cards', 'results', 'syllabus', 'answer-key', 'admission'].map(cat => {
+              {['latest-jobs', 'admit-cards', 'results', 'syllabus', 'answer-key', 'admission', 'documents', 'important'].map(cat => {
                 const catSources = sources.filter(s => s.defaultCategory === cat && s.enabled);
                 const successCount = catSources.filter(s => s.status === 'success').length;
                 const failCount = catSources.filter(s => s.status === 'error').length;
