@@ -289,7 +289,7 @@ export const JobDetailModal: React.FC<JobDetailModalProps> = ({ job, onClose }) 
               </div>
               <div style="text-align: right; font-size: 11px; color: #64748b;">
                 <div>Printed: ${new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}</div>
-                <div>Portal: WWW.FASTARCGOVT.INFO</div>
+                <div>Portal: FastArcGovt.info</div>
               </div>
             </div>
 
@@ -362,7 +362,7 @@ export const JobDetailModal: React.FC<JobDetailModalProps> = ({ job, onClose }) 
             </div>
 
             <div class="footer">
-              WWW.FASTARCGOVT.INFO — Verified Govt Job Updates & Exam Notices<br/>
+              FastArcGovt.info — Verified Govt Job Updates & Exam Notices<br/>
               <em>Please verify all details with official government notifications before applying.</em>
             </div>
 

@@ -611,7 +611,7 @@ let mysqlPool: mysql.Pool | null = null;
 let useMySQL = false;
 
 async function initDB() {
-  if (process.env.MYSQL_HOST && process.env.MYSQL_USER) {
+  if (process.env.MYSQL_HOST && process.env.MYSQL_USER && process.env.MYSQL_HOST.toLowerCase() !== 'vikaspatelaoc') {
     try {
       mysqlPool = mysql.createPool({
         host: process.env.MYSQL_HOST,

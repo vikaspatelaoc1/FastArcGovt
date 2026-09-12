@@ -288,7 +288,7 @@ export const DEFAULT_WEBSITE_CONTROL_CONFIG: WebsiteControlConfig = {
     footerLogo: '/logo.png',
     footerTitle: 'Fast_Arc_Govt  Naukri',
     footerDescription: 'Fast_Arc_Govt  Naukri Result Info portal offers lightning-fast notification updates for Central & State Government examinations, admit cards, answer keys, results, and curriculum PDF patterns.',
-    copyrightText: '© 2026 WWW.FASTARCGOVT.INFO - FastArc Govt Result. All Rights Reserved.',
+    copyrightText: '© 2026 FastArcGovt.info - FastArc Govt Result. All Rights Reserved.',
     contactEmail: 'support@fastarcgovt.info',
     contactPhone: '+91 98765 43210',
     contactAddress: 'New Delhi, India',

@@ -2236,7 +2236,7 @@ export default function App() {
             </div>
           </div>
           <div className="border-t border-slate-800 pt-6 flex flex-col md:flex-row items-center justify-between gap-4">
-            <p className="text-sm text-slate-400 font-medium">{websiteControlConfig.footer?.copyrightText || '© 2026 WWW.FASTARCGOVT.INFO - FastArc Govt Result. All Rights Reserved.'}</p>
+            <p className="text-sm text-slate-400 font-medium">{websiteControlConfig.footer?.copyrightText || '© 2026 FastArcGovt.info - FastArc Govt Result. All Rights Reserved.'}</p>
             <div className="flex flex-col items-center gap-2">
               <span className="text-xs sm:text-[13px] font-black text-slate-300 uppercase tracking-widest text-center">
                 Official Channels & Social Links
