@@ -46,6 +46,7 @@ import { generateSitemapXml } from './src/utils/sitemapGenerator';
 import { initializeApp } from 'firebase/app';
 import { getFirestore, collection, getDocs, doc, setDoc, getDoc, deleteDoc, writeBatch, setLogLevel } from 'firebase/firestore/lite';
 import { defaultScraperSources } from './src/data/defaultScraperSources';
+import { scrapeHtml, parsePdfFromUrl } from './src/server/scraperUtils';
 
 dotenv.config();
 setLogLevel("silent");
@@ -2072,18 +2073,46 @@ async function runAutomatedScraper(sourceId?: string) {
     // Clean feed URL to official website URL (remove /rss.xml, /feed.xml, etc.)
     const cleanSourceOfficial = cleanOfficialUrl(src.url);
 
-    // If live feed template exists, load items
-    const items = curatedLiveFeeds[src.id] || [
-      {
-        title: `${src.name} - Latest Public Notice 2026`,
-        shortInfo: `${src.name} has published an official notification and recruitment notice for candidates. Read eligibility and apply online.`,
-        category: src.defaultCategory,
-        state: src.state,
-        dates: { start: todayStr, last: defaultLastDate },
-        fees: { general: '₹100', scSt: '₹0' },
-        links: { apply: cleanSourceOfficial, official: cleanSourceOfficial, notification: cleanSourceOfficial }
+    let items = curatedLiveFeeds[src.id];
+    
+    if (!items && src.type === 'html_scraper' && !src.id.startsWith('src-auto-')) {
+      try {
+        // Attempt real HTML scraping using cheerio if it's an html_scraper and no curated template exists
+        console.log(`[Scraper] Fetching real HTML for source: ${src.name} (${cleanSourceOfficial})`);
+        const $ = await scrapeHtml(cleanSourceOfficial, { timeoutMs: 8000, maxRetries: 1 });
+        const pageTitle = $('title').text() || src.name;
+        
+        items = [
+          {
+            title: `${pageTitle.slice(0, 80)} - Latest Update`,
+            shortInfo: `Successfully scraped HTML content from ${cleanSourceOfficial}. Read eligibility and apply online.`,
+            category: src.defaultCategory,
+            state: src.state,
+            dates: { start: todayStr, last: defaultLastDate },
+            fees: { general: '₹100', scSt: '₹0' },
+            links: { apply: cleanSourceOfficial, official: cleanSourceOfficial, notification: cleanSourceOfficial }
+          }
+        ];
+      } catch (err) {
+        console.warn(`[Scraper] HTML Scrape failed for ${src.id}:`, err);
+        // Fallback to mock item if HTML fetch fails
       }
-    ];
+    }
+
+    // If live feed template doesn't exist and HTML scrape failed/skipped, load mock item
+    if (!items) {
+      items = [
+        {
+          title: `${src.name} - Latest Public Notice 2026`,
+          shortInfo: `${src.name} has published an official notification and recruitment notice for candidates. Read eligibility and apply online.`,
+          category: src.defaultCategory,
+          state: src.state,
+          dates: { start: todayStr, last: defaultLastDate },
+          fees: { general: '₹100', scSt: '₹0' },
+          links: { apply: cleanSourceOfficial, official: cleanSourceOfficial, notification: cleanSourceOfficial }
+        }
+      ];
+    }
 
     items.forEach((item, idx) => {
       const autoCat = categorizeScrapedTitle(item.title, item.category || src.defaultCategory);
