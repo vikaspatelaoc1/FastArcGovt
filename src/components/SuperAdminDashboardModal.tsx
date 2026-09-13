@@ -1179,7 +1179,11 @@ export const SuperAdminDashboardModal: React.FC<SuperAdminDashboardModalProps> =
             {/* TAB: THEME & COLOR CUSTOMIZER */}
             {activeTab === 'colors' && (
               <div className="space-y-6 animate-in fade-in duration-200">
-                <ThemeColorCustomizerTab onToast={onToast} />
+                <ThemeColorCustomizerTab 
+                  onToast={onToast} 
+                  siteLogo={siteLogo}
+                  appName={appName}
+                />
               </div>
             )}
 

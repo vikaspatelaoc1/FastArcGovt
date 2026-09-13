@@ -33,9 +33,11 @@ import { saveThemeColorsToFirestore } from '../services/firestoreService';
 
 interface ThemeColorCustomizerTabProps {
   onToast: (msg: string) => void;
+  siteLogo?: string;
+  appName?: string;
 }
 
-export const ThemeColorCustomizerTab: React.FC<ThemeColorCustomizerTabProps> = ({ onToast }) => {
+export const ThemeColorCustomizerTab: React.FC<ThemeColorCustomizerTabProps> = ({ onToast, siteLogo, appName }) => {
   const [colors, setColors] = useState<ThemeColorConfig>(loadThemeColors());
   const [selectedPreset, setSelectedPreset] = useState<string>('default-cyber');
   const [selectedAccentId, setSelectedAccentId] = useState<string>(() => {
@@ -620,13 +622,19 @@ export const ThemeColorCustomizerTab: React.FC<ThemeColorCustomizerTabProps> = (
           >
             <div className="flex items-center gap-2 font-black text-sm">
               <div 
-                className="w-7 h-7 rounded-full p-0.5 bg-black border-2 flex items-center justify-center shrink-0"
+                className="w-7 h-7 rounded-full p-0.5 bg-black border-2 flex items-center justify-center overflow-hidden shrink-0"
                 style={{ borderColor: activeAccentHex }}
               >
-                <span className="text-[10px] font-black" style={{ color: activeAccentHex }}>FA</span>
+                {siteLogo ? (
+                  <img src={siteLogo} alt="Site Logo" className="w-full h-full object-contain rounded-full" />
+                ) : (
+                  <span className="text-[10px] font-black" style={{ color: activeAccentHex }}>FA</span>
+                )}
               </div>
-              <span className="text-white">Fast<span style={{ color: activeAccentHex }}>Arc</span></span>
-              <span className="text-[9px] uppercase tracking-widest font-extrabold" style={{ color: activeAccentHex }}>Govt Jobs</span>
+              <span className="text-white" style={{ color: colors.headerText }}>
+                {appName ? appName : <>Fast<span style={{ color: activeAccentHex }}>Arc</span></>}
+              </span>
+              {!appName && <span className="text-[9px] uppercase tracking-widest font-extrabold" style={{ color: activeAccentHex }}>Govt Jobs</span>}
             </div>
             <div className="flex items-center gap-2">
               <span 

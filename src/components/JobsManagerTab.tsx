@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { JobAlert } from '../types';
 import { bulkDeleteJobsFromFirestore } from '../services/firestoreService';
-import { Search, Trash2, CheckSquare, Square, AlertTriangle, Edit2, CheckCircle2, RefreshCw } from 'lucide-react';
+import { Search, Trash2, CheckSquare, Square, AlertTriangle, Edit2, CheckCircle2, RefreshCw, Filter } from 'lucide-react';
 
 interface JobsManagerTabProps {
   jobs: JobAlert[];
@@ -20,9 +20,22 @@ export const JobsManagerTab: React.FC<JobsManagerTabProps> = ({
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [selectedStateFilter, setSelectedStateFilter] = useState<string>('all');
+  const [sortOrder, setSortOrder] = useState<'desc' | 'asc'>('desc');
   const [selectedJobIds, setSelectedJobIds] = useState<string[]>([]);
   const [isBulkDeleting, setIsBulkDeleting] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
+
+  const uniqueStates = Array.from(new Set(jobs.map(j => j.state || 'Central'))).sort();
+
+  const parseDate = (dateStr: string) => {
+    if (!dateStr) return 0;
+    const parts = dateStr.split('-');
+    if (parts.length === 3) {
+      return new Date(`${parts[2]}-${parts[1]}-${parts[0]}`).getTime();
+    }
+    return new Date(dateStr).getTime() || 0;
+  };
 
   const filteredJobs = jobs.filter(job => {
     const matchesSearch = 
@@ -32,8 +45,14 @@ export const JobsManagerTab: React.FC<JobsManagerTabProps> = ({
       job.postDate?.toLowerCase().includes(searchQuery.toLowerCase());
 
     const matchesCat = selectedCategory === 'all' || job.category === selectedCategory;
+    const matchesState = selectedStateFilter === 'all' || (job.state || 'Central') === selectedStateFilter;
 
-    return matchesSearch && matchesCat;
+    return matchesSearch && matchesCat && matchesState;
+  }).sort((a, b) => {
+    const dateA = parseDate(a.postDate);
+    const dateB = parseDate(b.postDate);
+    if (sortOrder === 'desc') return dateB - dateA;
+    return dateA - dateB;
   });
 
   const handleSelectAll = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -126,27 +145,16 @@ export const JobsManagerTab: React.FC<JobsManagerTabProps> = ({
         </div>
 
         <div className="flex items-center gap-2 w-full sm:w-auto">
-          <select
-            value={selectedCategory}
-            onChange={(e) => setSelectedCategory(e.target.value)}
-            className="px-3 py-2 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg text-xs text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-rose-500 font-medium w-full sm:w-auto"
-          >
-            <option value="all">All Categories ({jobs.length})</option>
-            <option value="latest-jobs">Latest Jobs</option>
-            <option value="admit-cards">Admit Cards</option>
-            <option value="results">Results</option>
-            <option value="answer-key">Answer Key</option>
-            <option value="syllabus">Syllabus</option>
-            <option value="admission">Admission</option>
-            <option value="documents">Certificates & Services</option>
-          </select>
-
-          {selectedJobIds.length > 0 && (
+          {(selectedJobIds.length > 0 || selectedCategory !== 'all' || selectedStateFilter !== 'all') && (
             <button
-              onClick={() => setSelectedJobIds([])}
+              onClick={() => {
+                setSelectedJobIds([]);
+                setSelectedCategory('all');
+                setSelectedStateFilter('all');
+              }}
               className="text-xs text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 underline shrink-0 cursor-pointer px-2"
             >
-              Clear Selection
+              Clear Filters & Selection
             </button>
           )}
         </div>
@@ -168,9 +176,70 @@ export const JobsManagerTab: React.FC<JobsManagerTabProps> = ({
                   />
                 </th>
                 <th className="p-3">Job Title & Details</th>
-                <th className="p-3">Category</th>
-                <th className="p-3">State</th>
-                <th className="p-3">Post Date</th>
+                <th className="p-3">
+                  <div className="flex items-center gap-1.5">
+                    CATEGORY
+                    <div className="relative group">
+                      <button className={`transition-colors p-1 ${selectedCategory !== 'all' ? 'text-amber-500' : 'text-slate-400 hover:text-amber-500 dark:hover:text-amber-400'}`}>
+                        <Filter className="w-3.5 h-3.5" />
+                      </button>
+                      <select 
+                        value={selectedCategory}
+                        onChange={(e) => setSelectedCategory(e.target.value)}
+                        className="absolute inset-0 opacity-0 cursor-pointer w-full h-full z-10"
+                        title="Filter by Category"
+                      >
+                        <option value="all">ALL</option>
+                        <option value="latest-jobs">LATEST JOBS</option>
+                        <option value="admit-cards">ADMIT CARDS</option>
+                        <option value="results">RESULTS</option>
+                        <option value="answer-key">ANSWER KEY</option>
+                        <option value="syllabus">SYLLABUS</option>
+                        <option value="admission">ADMISSION</option>
+                        <option value="documents">CERTIFICATES</option>
+                      </select>
+                    </div>
+                    {selectedCategory !== 'all' && (
+                      <span className="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
+                    )}
+                  </div>
+                </th>
+                <th className="p-3">
+                  <div className="flex items-center gap-1.5">
+                    STATE
+                    <div className="relative group">
+                      <button className={`transition-colors p-1 ${selectedStateFilter !== 'all' ? 'text-amber-500' : 'text-slate-400 hover:text-amber-500 dark:hover:text-amber-400'}`}>
+                        <Filter className="w-3.5 h-3.5" />
+                      </button>
+                      <select 
+                        value={selectedStateFilter}
+                        onChange={(e) => setSelectedStateFilter(e.target.value)}
+                        className="absolute inset-0 opacity-0 cursor-pointer w-full h-full z-10"
+                        title="Filter by State"
+                      >
+                        <option value="all">ALL</option>
+                        {uniqueStates.map(st => (
+                          <option key={st} value={st}>{st.toUpperCase()}</option>
+                        ))}
+                      </select>
+                    </div>
+                    {selectedStateFilter !== 'all' && (
+                      <span className="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
+                    )}
+                  </div>
+                </th>
+                <th className="p-3">
+                  <div 
+                    className="flex items-center gap-1 cursor-pointer hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
+                    onClick={() => setSortOrder(sortOrder === 'desc' ? 'asc' : 'desc')}
+                    title="Sort by Date"
+                  >
+                    POST DATE
+                    <span className="text-[10px] bg-slate-200 dark:bg-slate-700 rounded px-1.5 py-0.5 flex items-center justify-center">
+                      {sortOrder === 'desc' ? '▼' : '▲'}
+                    </span>
+                  </div>
+                </th>
                 <th className="p-3 text-right">Actions</th>
               </tr>
             </thead>

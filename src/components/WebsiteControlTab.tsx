@@ -322,27 +322,35 @@ export const WebsiteControlTab: React.FC<WebsiteControlTabProps> = ({
               <span className="text-xs text-slate-500">Instant complete portal makeover</span>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-              {GLOBAL_THEME_PRESETS.map(preset => (
-                <div
-                  key={preset.id}
-                  onClick={() => handleApplyPreset(preset)}
-                  className="p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 hover:border-indigo-500 dark:hover:border-indigo-500 bg-slate-50/50 dark:bg-slate-950/50 cursor-pointer transition-all hover:scale-[1.02] active:scale-[0.98] group"
-                >
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="font-bold text-xs text-slate-900 dark:text-white group-hover:text-indigo-400">
-                      {preset.name}
-                    </span>
-                    <div className="flex gap-1">
-                      {preset.previewColors.map((c, i) => (
-                        <span key={i} className="w-3.5 h-3.5 rounded-full border border-black/20" style={{ backgroundColor: c }} />
-                      ))}
+              {GLOBAL_THEME_PRESETS.map(preset => {
+                // Check if current colors match this preset's primary signature colors
+                const isActivePreset = 
+                  config.colors.primaryColor === preset.colors.primaryColor &&
+                  config.colors.headerColor === preset.colors.headerColor;
+                  
+                return (
+                  <div
+                    key={preset.id}
+                    onClick={() => handleApplyPreset(preset)}
+                    className={`p-3.5 rounded-xl border ${isActivePreset ? 'border-indigo-500 ring-2 ring-indigo-500/20 bg-indigo-50/50 dark:bg-indigo-900/20' : 'border-slate-200 dark:border-slate-800 hover:border-indigo-500 dark:hover:border-indigo-500 bg-slate-50/50 dark:bg-slate-950/50'} cursor-pointer transition-all hover:scale-[1.02] active:scale-[0.98] group`}
+                  >
+                    <div className="flex items-center justify-between mb-2">
+                      <span className={`font-bold text-xs ${isActivePreset ? 'text-indigo-700 dark:text-indigo-400' : 'text-slate-900 dark:text-white group-hover:text-indigo-400'}`}>
+                        {preset.name}
+                        {isActivePreset && <CheckCircle2 className="w-3.5 h-3.5 inline-block ml-2 text-indigo-500" />}
+                      </span>
+                      <div className="flex gap-1">
+                        {preset.previewColors.map((c, i) => (
+                          <span key={i} className="w-3.5 h-3.5 rounded-full border border-black/20" style={{ backgroundColor: c }} />
+                        ))}
+                      </div>
                     </div>
+                    <p className={`text-[11px] leading-tight ${isActivePreset ? 'text-indigo-600/70 dark:text-indigo-400/70' : 'text-slate-500 dark:text-slate-400'}`}>
+                      {preset.description}
+                    </p>
                   </div>
-                  <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-tight">
-                    {preset.description}
-                  </p>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
 
