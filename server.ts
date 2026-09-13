@@ -1242,6 +1242,32 @@ app.post('/api/v1/update-site-config', async (req, res) => {
   return res.json({ success: true, siteConfig: dbState.siteConfig });
 });
 
+app.post('/api/v1/update-website-control-config', async (req, res) => {
+  const { config } = req.body;
+  if (!config) {
+    return res.status(400).json({ success: false, error: 'Config is required' });
+  }
+  
+  if (firestoreDb && !isFirestoreQuotaExhausted) {
+    try {
+      const configRef = doc(firestoreDb, 'site_config', 'website_control_config');
+      await setDoc(configRef, {
+        config,
+        updatedAt: new Date().toISOString()
+      }, { merge: true });
+      return res.json({ success: true });
+    } catch (fsErr: any) {
+      if (isQuotaError(fsErr)) {
+        markFirestoreQuotaExhausted();
+      }
+      console.warn('⚠️ Firestore website_control_config sync warning:', fsErr?.message || fsErr);
+      return res.status(500).json({ success: false, error: 'Failed to sync with Firebase' });
+    }
+  }
+  
+  return res.status(500).json({ success: false, error: 'Firebase is not connected on the server' });
+});
+
 app.get('/manifest.json', async (req, res) => {
   const manifest = {
     "id": "/",

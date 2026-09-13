@@ -930,13 +930,23 @@ export function subscribeToWebsiteControlConfig(onUpdate: (config: any) => void)
 }
 
 export async function saveWebsiteControlConfigToFirestore(config: any): Promise<void> {
-  if (isClientFirestoreQuotaExceeded) return;
   try {
-    const configRef = doc(db, 'site_config', 'website_control_config');
-    await setDoc(configRef, {
-      config,
-      updatedAt: new Date().toISOString()
-    }, { merge: true });
+    const res = await fetch('/api/v1/update-website-control-config', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ config })
+    });
+    
+    if (!res.ok) {
+      // Fallback to direct client-side save if backend route fails or is unavailable on Vercel edge
+      if (!isClientFirestoreQuotaExceeded) {
+        const configRef = doc(db, 'site_config', 'website_control_config');
+        await setDoc(configRef, {
+          config,
+          updatedAt: new Date().toISOString()
+        }, { merge: true });
+      }
+    }
   } catch (err) {
     handleFirestoreQuotaError(err, 'saveWebsiteControlConfigToFirestore');
   }
