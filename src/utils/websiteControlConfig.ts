@@ -286,7 +286,7 @@ export const DEFAULT_WEBSITE_CONTROL_CONFIG: WebsiteControlConfig = {
       { id: 'nl-answerkey', label: 'Answer Key', url: '#answer-key', enabled: true },
       { id: 'nl-syllabus', label: 'Syllabus', url: '#syllabus', enabled: true },
       { id: 'nl-admission', label: 'Admission', url: '#admission', enabled: true },
-      { id: 'nl-student-docs', label: '📄 Student Document Tool', url: '/student-documents', enabled: true }
+      { id: 'nl-student-docs', label: 'Tools', url: '/student-documents', enabled: true }
     ]
   },
   footer: {

@@ -386,7 +386,7 @@ export const Header: React.FC<HeaderProps> = ({
     },
     { 
       id: 'student-docs', 
-      label: '📄 Student Document Tool', 
+      label: 'Tools', 
       icon: FileText,
       iconColor: 'text-fuchsia-600 dark:text-fuchsia-400',
       iconBg: 'bg-fuchsia-50 dark:bg-fuchsia-950/50 border-fuchsia-200/80 dark:border-fuchsia-800/60',
