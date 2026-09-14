@@ -170,7 +170,7 @@ export const ModernAppView: React.FC<ModernAppViewProps> = ({
       configKey: 'latest-jobs',
       icon: (
         // Bright Golden 5-Point Star matching Screenshot PNG
-        <svg viewBox="0 0 48 48" className="w-8 h-8 sm:w-10 sm:h-10 md:w-11 md:h-11" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <svg viewBox="0 0 48 48" className="w-5.5 h-5.5 sm:w-6.5 sm:h-6.5 md:w-7 md:h-7" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path 
             d="M24 5.5l5.8 11.8 13 1.9-9.4 9.2 2.2 13-11.6-6.1-11.6 6.1 2.2-13-9.4-9.2 13-1.9L24 5.5z" 
             fill="url(#goldStarGrad)" 
@@ -197,7 +197,7 @@ export const ModernAppView: React.FC<ModernAppViewProps> = ({
       configKey: 'results',
       icon: (
         // Golden Trophy Cup matching Screenshot PNG
-        <svg viewBox="0 0 48 48" className="w-8 h-8 sm:w-10 sm:h-10 md:w-11 md:h-11" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <svg viewBox="0 0 48 48" className="w-5.5 h-5.5 sm:w-6.5 sm:h-6.5 md:w-7 md:h-7" fill="none" xmlns="http://www.w3.org/2000/svg">
           <defs>
             <linearGradient id="goldTrophyGrad" x1="24" y1="7" x2="24" y2="39" gradientUnits="userSpaceOnUse">
               <stop offset="0%" stopColor="#FDE047" />
@@ -222,7 +222,7 @@ export const ModernAppView: React.FC<ModernAppViewProps> = ({
       configKey: 'admit-cards',
       icon: (
         // White Document with blue header band matching Screenshot PNG
-        <svg viewBox="0 0 48 48" className="w-8 h-8 sm:w-10 sm:h-10 md:w-11 md:h-11" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <svg viewBox="0 0 48 48" className="w-5.5 h-5.5 sm:w-6.5 sm:h-6.5 md:w-7 md:h-7" fill="none" xmlns="http://www.w3.org/2000/svg">
           <rect x="12" y="8" width="24" height="32" rx="3" fill="#FFFFFF" stroke="#0284C7" strokeWidth="1.5" />
           <path d="M12 11a3 3 0 0 1 3-3h18a3 3 0 0 1 3 3v5H12v-5z" fill="#0284C7" />
           <line x1="17" y1="21" x2="31" y2="21" stroke="#38BDF8" strokeWidth="2" strokeLinecap="round" />
@@ -239,7 +239,7 @@ export const ModernAppView: React.FC<ModernAppViewProps> = ({
       configKey: 'admission',
       icon: (
         // Graduation mortarboard cap with golden tassel matching Screenshot PNG
-        <svg viewBox="0 0 48 48" className="w-8 h-8 sm:w-10 sm:h-10 md:w-11 md:h-11" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <svg viewBox="0 0 48 48" className="w-5.5 h-5.5 sm:w-6.5 sm:h-6.5 md:w-7 md:h-7" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M24 10L6 19l18 9 18-9-18-9z" fill="#1E293B" stroke="#38BDF8" strokeWidth="1.5" />
           <path d="M14 23.5v8c0 3.2 4.5 5.5 10 5.5s10-2.3 10-5.5v-8" fill="#0F172A" stroke="#38BDF8" strokeWidth="1.5" />
           <path d="M38 20.5v11" stroke="#FBBF24" strokeWidth="2" strokeLinecap="round" />
@@ -255,7 +255,7 @@ export const ModernAppView: React.FC<ModernAppViewProps> = ({
       configKey: 'answer-key',
       icon: (
         // Golden diagonal key matching Screenshot PNG
-        <svg viewBox="0 0 48 48" className="w-8 h-8 sm:w-10 sm:h-10 md:w-11 md:h-11" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <svg viewBox="0 0 48 48" className="w-5.5 h-5.5 sm:w-6.5 sm:h-6.5 md:w-7 md:h-7" fill="none" xmlns="http://www.w3.org/2000/svg">
           <circle cx="17" cy="17" r="7.5" fill="none" stroke="#FBBF24" strokeWidth="3" />
           <path d="M23 23l14 14" stroke="#FBBF24" strokeWidth="3" strokeLinecap="round" />
           <path d="M32 32l3-3" stroke="#FBBF24" strokeWidth="2.8" strokeLinecap="round" />
@@ -271,7 +271,7 @@ export const ModernAppView: React.FC<ModernAppViewProps> = ({
       configKey: 'syllabus',
       icon: (
         // Open book with graduation cap
-        <svg viewBox="0 0 48 48" className="w-8 h-8 sm:w-10 sm:h-10 md:w-11 md:h-11" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <svg viewBox="0 0 48 48" className="w-5.5 h-5.5 sm:w-6.5 sm:h-6.5 md:w-7 md:h-7" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M12 28c4-2 8-2 12 1 4-3 8-3 12-1v10c-4-2-8-2-12 1-4-3-8-3-12-1V28z" fill="#1E293B" stroke="#38BDF8" strokeWidth="1.8" />
           <path d="M24 29v10" stroke="#38BDF8" strokeWidth="1.8" />
           {/* Cap */}
@@ -289,7 +289,7 @@ export const ModernAppView: React.FC<ModernAppViewProps> = ({
       configKey: 'documents',
       icon: (
         // Certificate with rosette seal
-        <svg viewBox="0 0 48 48" className="w-8 h-8 sm:w-10 sm:h-10 md:w-11 md:h-11" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <svg viewBox="0 0 48 48" className="w-5.5 h-5.5 sm:w-6.5 sm:h-6.5 md:w-7 md:h-7" fill="none" xmlns="http://www.w3.org/2000/svg">
           <rect x="11" y="9" width="26" height="30" rx="3" fill="#1E293B" stroke="#F59E0B" strokeWidth="1.5" />
           <circle cx="24" cy="22" r="5.5" fill="#FBBF24" stroke="#D97706" strokeWidth="1.2" />
           <path d="M22 26.5l-2.5 6.5 4.5-2 4.5 2-2.5-6.5" fill="#EF4444" />
@@ -305,7 +305,7 @@ export const ModernAppView: React.FC<ModernAppViewProps> = ({
       configKey: 'important',
       icon: (
         // Important warning / notice
-        <svg viewBox="0 0 48 48" className="w-8 h-8 sm:w-10 sm:h-10 md:w-11 md:h-11" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <svg viewBox="0 0 48 48" className="w-5.5 h-5.5 sm:w-6.5 sm:h-6.5 md:w-7 md:h-7" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M24 7l18 31H6L24 7z" fill="#1E293B" stroke="#F59E0B" strokeWidth="2" strokeLinejoin="round" />
           <line x1="24" y1="18" x2="24" y2="28" stroke="#FBBF24" strokeWidth="3.5" strokeLinecap="round" />
           <circle cx="24" cy="33.5" r="2.2" fill="#FBBF24" />
@@ -323,13 +323,13 @@ export const ModernAppView: React.FC<ModernAppViewProps> = ({
           <img
             src={customIcon}
             alt={cat.label}
-            className="w-8 h-8 sm:w-10 sm:h-10 md:w-11 md:h-11 object-contain rounded-full"
+            className="w-5.5 h-5.5 sm:w-6.5 sm:h-6.5 md:w-7 md:h-7 object-contain rounded-full"
           />
         );
       }
       // If emoji or text string
       return (
-        <span className="text-2xl sm:text-3xl md:text-3xl select-none" role="img" aria-label={cat.label}>
+        <span className="text-xl sm:text-2xl select-none" role="img" aria-label={cat.label}>
           {customIcon}
         </span>
       );
@@ -346,7 +346,7 @@ export const ModernAppView: React.FC<ModernAppViewProps> = ({
       platform: 'telegram',
       url: socialLinks?.find(s => s.platform === 'telegram')?.url || 'https://t.me/fastarcgovtofficial',
       icon: (
-        <svg viewBox="0 0 24 24" className="w-7 h-7 sm:w-8 sm:h-8" fill="none">
+        <svg viewBox="0 0 24 24" className="w-5 h-5 sm:w-5.5 sm:h-5.5" fill="none">
           <path 
             d="M21.5 3.5L2.5 10.8C1.2 11.3 1.2 12.1 2.3 12.4L7.2 13.9L18.5 6.8C19 6.5 19.5 6.7 19.1 7.1L10 15.3L9.6 19.8C10.1 19.8 10.3 19.6 10.6 19.3L13.5 16.5L18.8 20.4C19.8 21 20.5 20.7 20.7 19.5L22.8 4.6C23.2 3.2 22.3 2.6 21.5 3.5Z" 
             fill="#29B6F6" 
@@ -360,7 +360,7 @@ export const ModernAppView: React.FC<ModernAppViewProps> = ({
       platform: 'whatsapp',
       url: socialLinks?.find(s => s.platform === 'whatsapp')?.url || 'https://whatsapp.com/channel/fastarcgovtofficial',
       icon: (
-        <svg viewBox="0 0 24 24" className="w-7 h-7 sm:w-8 sm:h-8" fill="none">
+        <svg viewBox="0 0 24 24" className="w-5 h-5 sm:w-5.5 sm:h-5.5" fill="none">
           <path 
             fillRule="evenodd" 
             clipRule="evenodd" 
@@ -376,7 +376,7 @@ export const ModernAppView: React.FC<ModernAppViewProps> = ({
       platform: 'youtube',
       url: socialLinks?.find(s => s.platform === 'youtube')?.url || 'https://youtube.com/@fastarcgovtofficial',
       icon: (
-        <svg viewBox="0 0 24 24" className="w-8 h-8 sm:w-9 sm:h-9" fill="none">
+        <svg viewBox="0 0 24 24" className="w-5.5 h-5.5 sm:w-6 sm:h-6" fill="none">
           <rect x="2" y="5" width="20" height="14" rx="4.5" fill="#FF0000" />
           <path d="M10 8.5L15.5 12L10 15.5V8.5Z" fill="#FFFFFF" />
         </svg>
@@ -388,7 +388,7 @@ export const ModernAppView: React.FC<ModernAppViewProps> = ({
       platform: 'instagram',
       url: socialLinks?.find(s => s.platform === 'instagram')?.url || 'https://instagram.com/fastarcgovtofficial',
       icon: (
-        <svg viewBox="0 0 24 24" className="w-7 h-7 sm:w-8 sm:h-8" fill="none">
+        <svg viewBox="0 0 24 24" className="w-5 h-5 sm:w-5.5 sm:h-5.5" fill="none">
           <defs>
             <linearGradient id="ig-grad-modern" x1="2" y1="22" x2="22" y2="2" gradientUnits="userSpaceOnUse">
               <stop offset="0%" stopColor="#FFDC80" />
@@ -410,7 +410,7 @@ export const ModernAppView: React.FC<ModernAppViewProps> = ({
       platform: 'twitter',
       url: socialLinks?.find(s => s.platform === 'twitter')?.url || 'https://x.com/fastarcgovt',
       icon: (
-        <svg viewBox="0 0 24 24" className="w-7 h-7 sm:w-8 sm:h-8" fill="none">
+        <svg viewBox="0 0 24 24" className="w-5 h-5 sm:w-5.5 sm:h-5.5" fill="none">
           <path 
             d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" 
             fill="#00BAF2" 
@@ -424,7 +424,7 @@ export const ModernAppView: React.FC<ModernAppViewProps> = ({
       platform: 'facebook',
       url: socialLinks?.find(s => s.platform === 'facebook')?.url || 'https://facebook.com/fastarcgovtofficial',
       icon: (
-        <svg viewBox="0 0 24 24" className="w-8 h-8 sm:w-9 sm:h-9" fill="none">
+        <svg viewBox="0 0 24 24" className="w-5.5 h-5.5 sm:w-6 sm:h-6" fill="none">
           <circle cx="12" cy="12" r="10" fill="#1877F2" />
           <path 
             d="M13.5 12H15.2L15.5 9.8H13.5V8.4C13.5 7.8 13.7 7.3 14.6 7.3H15.6V5.4C15.1 5.3 14.3 5.2 13.5 5.2C11.8 5.2 10.6 6.2 10.6 8.1V9.8H8.8V12H10.6V17.8C11.1 17.9 11.6 18 12.1 18C12.6 18 13.1 17.9 13.5 17.8V12Z" 
@@ -577,24 +577,24 @@ export const ModernAppView: React.FC<ModernAppViewProps> = ({
         </div>
       </section>
 
-      {/* 2. CATEGORIES SECTION (Squircle Buttons matching PNG) */}
-      <section className="w-full mt-3 bg-[#0B1120] border-y border-slate-800 shadow-sm py-3.5 sm:py-4">
+      {/* 2. CATEGORIES SECTION (Squircle Buttons with Light/Dark Mode Theme) */}
+      <section className="w-full mt-2.5 bg-white dark:bg-[#0B1120] border-y border-slate-200 dark:border-slate-800 shadow-xs dark:shadow-sm py-2.5 sm:py-3 transition-colors duration-300">
         {/* Category Header Bar */}
-        <div className="max-w-6xl mx-auto px-4 flex items-center justify-between mb-3 sm:mb-4">
+        <div className="max-w-6xl mx-auto px-4 flex items-center justify-between mb-2 sm:mb-2.5">
           <div className="flex items-center space-x-2">
-            <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
-            <h2 className="text-xs sm:text-sm md:text-base font-black tracking-[0.16em] sm:tracking-[0.2em] text-white uppercase drop-shadow-sm">
+            <span className="w-1.5 h-1.5 rounded-full bg-amber-500 dark:bg-amber-400 animate-pulse" />
+            <h2 className="text-[11px] sm:text-xs md:text-sm font-black tracking-[0.16em] sm:tracking-[0.2em] text-slate-900 dark:text-white uppercase drop-shadow-xs transition-colors">
               CATEGORIES
             </h2>
           </div>
-          <span className="text-[11px] text-slate-400 font-bold hidden sm:inline uppercase tracking-wider">
+          <span className="text-[10px] text-slate-500 dark:text-slate-400 font-bold hidden sm:inline uppercase tracking-wider transition-colors">
             Select category to view notices
           </span>
         </div>
 
         {/* Categories Squircle Scroll Strip */}
         <div className="max-w-6xl mx-auto px-2 sm:px-4 overflow-x-auto no-scrollbar scroll-smooth">
-          <div className="flex items-start justify-start sm:justify-center gap-3 sm:gap-4 md:gap-6 min-w-max px-2">
+          <div className="flex items-start justify-start sm:justify-center gap-2 sm:gap-3 md:gap-4 min-w-max px-2">
             {categories.map((cat) => {
               const isCatActive = activeTab === cat.targetTab;
               return (
@@ -612,20 +612,20 @@ export const ModernAppView: React.FC<ModernAppViewProps> = ({
                   }}
                   className="flex flex-col items-center group cursor-pointer focus:outline-none transition-transform active:scale-95 shrink-0"
                 >
-                  {/* Squircle Container matching PNG */}
-                  <div className={`relative w-14 h-14 sm:w-16 sm:h-16 md:w-18 md:h-18 rounded-2xl sm:rounded-[22px] flex items-center justify-center transition-all duration-200 group-hover:-translate-y-1 shadow-md shadow-black/40 aspect-square ${
+                  {/* Squircle Container matching PNG with Light & Dark Mode */}
+                  <div className={`relative w-11 h-11 sm:w-12 sm:h-12 md:w-13 md:h-13 rounded-xl sm:rounded-2xl flex items-center justify-center transition-all duration-200 group-hover:-translate-y-0.5 aspect-square ${
                     isCatActive 
-                      ? 'bg-[#15233e] border-2 border-amber-400 ring-4 ring-amber-400/20 shadow-lg scale-105' 
-                      : 'bg-[#0f172a] hover:bg-[#162238] border border-slate-700/70 group-hover:border-amber-400/70 group-hover:shadow-lg'
+                      ? 'bg-amber-50/90 dark:bg-[#15233e] border-2 border-amber-500 dark:border-amber-400 ring-2 ring-amber-400/30 shadow-md scale-105' 
+                      : 'bg-slate-100 hover:bg-slate-200/90 dark:bg-[#0f172a] dark:hover:bg-[#162238] border border-slate-200 dark:border-slate-700/70 group-hover:border-amber-500/70 dark:group-hover:border-amber-400/70 shadow-xs dark:shadow-md dark:shadow-black/40 group-hover:shadow-md'
                   }`}>
                     {/* Inside Icon */}
-                    <div className="relative z-10 flex items-center justify-center w-full h-full p-2.5">
+                    <div className="relative z-10 flex items-center justify-center w-full h-full p-1.5 sm:p-2">
                       {cat.type === 'logo' ? (
-                        <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl overflow-hidden p-0.5 bg-white/10 flex items-center justify-center">
+                        <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg overflow-hidden p-0.5 bg-slate-200/70 dark:bg-white/10 flex items-center justify-center transition-colors">
                           <img 
                             src={siteLogo} 
                             alt="Home" 
-                            className="w-full h-full object-contain rounded-lg"
+                            className="w-full h-full object-contain rounded-md"
                             onError={(e) => {
                               (e.target as HTMLImageElement).src = "https://lh3.googleusercontent.com/d/1IE6MQ8EUwyKmGeXnpLTXx7d5HBLJiKb4";
                             }}
@@ -638,10 +638,10 @@ export const ModernAppView: React.FC<ModernAppViewProps> = ({
                   </div>
 
                   {/* Label underneath */}
-                  <span className={`text-[10px] sm:text-xs font-bold uppercase tracking-wider text-center mt-2 max-w-[85px] truncate transition-colors ${
+                  <span className={`text-[9px] sm:text-[10px] font-bold uppercase tracking-wider text-center mt-1.5 max-w-[72px] truncate transition-colors ${
                     isCatActive 
-                      ? 'text-amber-400 font-black underline underline-offset-4' 
-                      : 'text-slate-300 group-hover:text-amber-400'
+                      ? 'text-amber-600 dark:text-amber-400 font-black underline underline-offset-4' 
+                      : 'text-slate-700 dark:text-slate-300 group-hover:text-amber-600 dark:group-hover:text-amber-400'
                   }`}>
                     {cat.label}
                   </span>
@@ -652,18 +652,18 @@ export const ModernAppView: React.FC<ModernAppViewProps> = ({
         </div>
       </section>
 
-      {/* 3. FOLLOW US SECTION (Squircle Buttons matching PNG) */}
-      <section className="w-full mt-3 bg-[#0B1120] border-y border-slate-800 shadow-sm py-3.5 sm:py-4">
-        {/* Follow Us Header Bar matching PNG title */}
-        <div className="max-w-6xl mx-auto px-4 text-center mb-3 sm:mb-4">
-          <h2 className="text-xs sm:text-sm md:text-base font-black tracking-[0.16em] sm:tracking-[0.22em] text-white uppercase drop-shadow-sm">
+      {/* 3. FOLLOW US SECTION (Squircle Buttons with Light/Dark Mode Theme) */}
+      <section className="w-full mt-2.5 bg-white dark:bg-[#0B1120] border-y border-slate-200 dark:border-slate-800 shadow-xs dark:shadow-sm py-2.5 sm:py-3 transition-colors duration-300">
+        {/* Follow Us Header Bar */}
+        <div className="max-w-6xl mx-auto px-4 text-center mb-2 sm:mb-2.5">
+          <h2 className="text-[11px] sm:text-xs md:text-sm font-black tracking-[0.16em] sm:tracking-[0.22em] text-slate-900 dark:text-white uppercase drop-shadow-xs transition-colors">
             OFFICIAL CHANNELS &amp; SOCIAL LINKS
           </h2>
         </div>
 
         {/* Social Squircle Scroll Strip */}
         <div className="max-w-6xl mx-auto px-2 sm:px-4 overflow-x-auto no-scrollbar scroll-smooth">
-          <div className="flex items-start justify-start sm:justify-center gap-3 sm:gap-4 md:gap-6 min-w-max px-2">
+          <div className="flex items-start justify-start sm:justify-center gap-2 sm:gap-3 md:gap-4 min-w-max px-2">
             {socials.map((soc) => (
               <a
                 key={soc.id}
@@ -672,16 +672,16 @@ export const ModernAppView: React.FC<ModernAppViewProps> = ({
                 rel="noopener noreferrer"
                 className="flex flex-col items-center group cursor-pointer focus:outline-none transition-transform active:scale-95 shrink-0"
               >
-                {/* Squircle Container matching PNG */}
-                <div className="relative w-14 h-14 sm:w-16 sm:h-16 md:w-18 md:h-18 rounded-2xl sm:rounded-[22px] flex items-center justify-center bg-[#0f172a] hover:bg-[#162238] border border-slate-700/70 group-hover:border-sky-400/80 group-hover:shadow-lg transition-all duration-200 group-hover:-translate-y-1 shadow-md shadow-black/40 aspect-square">
+                {/* Squircle Container matching PNG with Light & Dark Mode */}
+                <div className="relative w-11 h-11 sm:w-12 sm:h-12 md:w-13 md:h-13 rounded-xl sm:rounded-2xl flex items-center justify-center bg-slate-100 hover:bg-slate-200/90 dark:bg-[#0f172a] dark:hover:bg-[#162238] border border-slate-200 dark:border-slate-700/70 group-hover:border-sky-500/80 dark:group-hover:border-sky-400/80 group-hover:shadow-md transition-all duration-200 group-hover:-translate-y-0.5 shadow-xs dark:shadow-md dark:shadow-black/40 aspect-square">
                   {/* Inside Social Icon */}
-                  <div className="relative z-10 flex items-center justify-center w-full h-full p-2.5">
+                  <div className="relative z-10 flex items-center justify-center w-full h-full p-1.5 sm:p-2">
                     {soc.icon}
                   </div>
                 </div>
 
                 {/* Label underneath */}
-                <span className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-slate-300 group-hover:text-amber-400 text-center mt-2 max-w-[85px] truncate transition-colors">
+                <span className="text-[9px] sm:text-[10px] font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 group-hover:text-amber-600 dark:group-hover:text-amber-400 text-center mt-1.5 max-w-[72px] truncate transition-colors">
                   {soc.label}
                 </span>
               </a>

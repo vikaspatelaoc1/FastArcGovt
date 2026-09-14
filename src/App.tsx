@@ -2299,11 +2299,12 @@ export default function App() {
         )}
       </main>
 
-      <FAQ />
+      {!isApplication && <FAQ />}
         </>
       )}
 
-      <footer className="custom-footer-override relative bg-slate-900 pt-0 pb-8 mt-12 transition-colors duration-300 overflow-hidden">
+      {!isApplication && (
+        <footer className="custom-footer-override relative bg-slate-900 pt-0 pb-8 mt-12 transition-colors duration-300 overflow-hidden">
         {/* Tricolor Border Line matching image (Saffron -> White -> Green) */}
         <div className="h-1.5 w-full bg-gradient-to-r from-[#FF671F] via-[#FFFFFF] to-[#046A38] shadow-sm mb-4 sm:mb-5" />
         <div className="w-full mx-auto px-4 sm:px-6 lg:px-8">
@@ -2476,6 +2477,7 @@ export default function App() {
           </div>
         </div>
       </footer>
+      )}
 
       {jobToDelete && (() => {
         const targetJob = jobs.find(j => j.id === jobToDelete);

@@ -82,6 +82,9 @@ export const Header: React.FC<HeaderProps> = ({
   const [isDesktopAdminOpen, setIsDesktopAdminOpen] = useState(false);
   const [isHeader3DotOpen, setIsHeader3DotOpen] = useState(false);
   const [isLanguageModalOpen, setIsLanguageModalOpen] = useState(false);
+  const [isAppSearchOpen, setIsAppSearchOpen] = useState(false);
+  const [voiceListening, setVoiceListening] = useState(false);
+  const searchInputRef = useRef<HTMLInputElement>(null);
   
   const [isApplication, setIsApplication] = useState<boolean>(() => {
     if (typeof window === 'undefined') return false;
@@ -189,6 +192,66 @@ export const Header: React.FC<HeaderProps> = ({
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
+
+  useEffect(() => {
+    if (isAppSearchOpen) {
+      const timer = setTimeout(() => {
+        searchInputRef.current?.focus();
+      }, 60);
+      return () => clearTimeout(timer);
+    }
+  }, [isAppSearchOpen]);
+
+  const handleVoiceSearch = () => {
+    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      alert('Voice search is not supported in this browser.');
+      return;
+    }
+    try {
+      const recognition = new SpeechRecognition();
+      recognition.continuous = false;
+      recognition.interimResults = false;
+      recognition.lang = 'hi-IN';
+
+      recognition.onstart = () => {
+        setVoiceListening(true);
+      };
+      recognition.onresult = (event: any) => {
+        const transcript = Array.from(event.results)
+          .map((result: any) => result[0])
+          .map((result: any) => result.transcript)
+          .join('');
+        if (setSearchQuery) {
+          setSearchQuery(transcript);
+        }
+        setVoiceListening(false);
+      };
+      recognition.onerror = () => {
+        setVoiceListening(false);
+      };
+      recognition.onend = () => {
+        setVoiceListening(false);
+      };
+      recognition.start();
+    } catch (err) {
+      console.error('Voice search error:', err);
+      setVoiceListening(false);
+    }
+  };
+
+  const searchSuggestions = useMemo(() => {
+    if (!searchQuery || searchQuery.trim().length < 2 || !jobs) return [];
+    const q = searchQuery.toLowerCase().trim();
+    return jobs
+      .filter(j => 
+        j.title?.toLowerCase().includes(q) || 
+        j.shortInfo?.toLowerCase().includes(q) ||
+        j.category?.toLowerCase().includes(q) ||
+        j.state?.toLowerCase().includes(q)
+      )
+      .slice(0, 5);
+  }, [searchQuery, jobs]);
 
   const handleInstallClick = async () => {
     if (deferredPrompt) {
@@ -325,9 +388,81 @@ export const Header: React.FC<HeaderProps> = ({
 
   return (
     <>
-      <header className="bg-white border-b border-slate-200 dark:bg-slate-900 dark:border-slate-800 w-full transition-colors duration-300">
+      <header className="bg-white border-b border-slate-200 dark:bg-slate-900 dark:border-slate-800 w-full transition-colors duration-300 relative">
       <div className="w-full mx-auto px-3 sm:px-5 lg:px-6">
-        <div className="flex justify-between h-14 sm:h-16 items-center py-1">
+        {isApplication && isAppSearchOpen ? (
+          /* Mobile App View: Full Header Search Column (matching image.png) */
+          <div className="flex items-center w-full h-14 sm:h-16 gap-2 py-1 animate-in fade-in duration-200">
+            <form 
+              onSubmit={(e) => {
+                e.preventDefault();
+                const el = document.getElementById('main-job-columns') || document.getElementById('section-latest-jobs');
+                if (el) el.scrollIntoView({ behavior: 'smooth' });
+              }}
+              className="flex-1 relative flex items-center bg-[#0d1527] dark:bg-[#070d1a] border border-amber-500/50 dark:border-amber-500/40 rounded-2xl shadow-lg px-2.5 sm:px-3 py-1 sm:py-1.5 focus-within:border-amber-400 focus-within:ring-2 focus-within:ring-amber-400/20 transition-all"
+            >
+              {/* Yellow/Amber Magnifier Icon */}
+              <Search className="w-4.5 h-4.5 sm:w-5 sm:h-5 text-[#f59e0b] shrink-0 mr-2" />
+
+              {/* Search Input Field */}
+              <input
+                ref={searchInputRef}
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery?.(e.target.value)}
+                placeholder="Search Jobs, Admit Cards, Results..."
+                className="w-full bg-transparent text-slate-100 placeholder-slate-400 text-xs sm:text-sm font-medium focus:outline-none border-none pr-1"
+              />
+
+              {/* Clear Text button */}
+              {searchQuery && (
+                <button
+                  type="button"
+                  onClick={() => setSearchQuery?.('')}
+                  className="p-1 text-slate-400 hover:text-white transition-colors mr-1 cursor-pointer"
+                  title="Clear text"
+                >
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              )}
+
+              {/* Voice Search Mic Button */}
+              <button
+                type="button"
+                onClick={handleVoiceSearch}
+                className={`p-1.5 rounded-full transition-colors mr-1.5 sm:mr-2 cursor-pointer ${
+                  voiceListening 
+                    ? 'text-red-400 bg-red-500/20 animate-pulse' 
+                    : 'text-slate-400 hover:text-amber-400'
+                }`}
+                title="Voice Search (Hindi / English)"
+              >
+                <Mic className="w-4 h-4 sm:w-4.5 sm:h-4.5" />
+              </button>
+
+              {/* Orange/Amber Search Button (exact match with image.png) */}
+              <button
+                type="submit"
+                className="bg-[#f59e0b] hover:bg-[#d97706] active:bg-[#b45309] text-slate-950 font-black text-xs sm:text-sm px-3.5 sm:px-5 py-1.5 rounded-xl shadow-md transition-all shrink-0 hover:scale-105 active:scale-95 cursor-pointer"
+              >
+                Search
+              </button>
+            </form>
+
+            {/* Close Search Column Button */}
+            <button
+              type="button"
+              onClick={() => setIsAppSearchOpen(false)}
+              className="w-9 h-9 flex items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors shrink-0 cursor-pointer shadow-xs"
+              title="Close Search"
+              aria-label="Close Search"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
+        ) : (
+          /* Normal Header Bar */
+          <div className="flex justify-between h-14 sm:h-16 items-center py-1">
           
           {/* Left Side: All Options Hamburger Button + FastArc Logo */}
           <div className="flex items-center space-x-2.5 sm:space-x-3">
@@ -488,6 +623,18 @@ export const Header: React.FC<HeaderProps> = ({
           </nav>
 
           <div className="flex items-center space-x-1.5 sm:space-x-2">
+            {/* Mobile App Search Button (Just to the left of Bell Icon, ONLY in Mobile App View) */}
+            {isApplication && (
+              <button 
+                onClick={() => setIsAppSearchOpen(true)}
+                className="relative w-9 h-9 flex items-center justify-center text-slate-700 hover:text-amber-500 dark:text-slate-200 dark:hover:text-amber-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-all focus:outline-none cursor-pointer shrink-0" 
+                title="Search Jobs, Admit Cards, Results"
+                aria-label="Search Jobs"
+              >
+                <Search className="w-5 h-5 text-amber-500 dark:text-amber-400" />
+              </button>
+            )}
+
             {/* 1. Notifications Button */}
             <button 
               onClick={onOpenNotifications}
@@ -563,7 +710,45 @@ export const Header: React.FC<HeaderProps> = ({
             </div>
           </div>
         </div>
+        )}
       </div>
+
+      {/* Floating Live Autocomplete Dropdown when searching in Mobile App */}
+      {isApplication && isAppSearchOpen && searchSuggestions.length > 0 && (
+        <div className="absolute top-full left-0 right-0 max-w-2xl mx-auto px-3 sm:px-4 mt-1 z-50 animate-in fade-in slide-in-from-top-1 duration-150">
+          <div className="bg-[#0b1220]/95 dark:bg-[#070d18]/95 backdrop-blur-md border border-amber-500/30 rounded-2xl shadow-2xl overflow-hidden py-1.5 divide-y divide-slate-800">
+            <div className="px-3.5 py-1 text-[11px] font-bold text-amber-400 flex items-center justify-between">
+              <span>Matching Jobs & Alerts ({searchSuggestions.length})</span>
+              <span className="text-[10px] text-slate-400">Tap to view</span>
+            </div>
+            {searchSuggestions.map((job) => (
+              <button
+                key={job.id}
+                type="button"
+                onClick={() => {
+                  if (setSearchQuery) setSearchQuery(job.title);
+                  setIsAppSearchOpen(false);
+                  const el = document.getElementById('main-job-columns') || document.getElementById('section-latest-jobs');
+                  if (el) el.scrollIntoView({ behavior: 'smooth' });
+                }}
+                className="w-full text-left px-3.5 py-2.5 hover:bg-white/5 transition-colors flex items-center justify-between group cursor-pointer"
+              >
+                <div className="min-w-0 pr-2">
+                  <p className="text-xs font-bold text-slate-200 group-hover:text-amber-300 truncate">
+                    {job.title}
+                  </p>
+                  <p className="text-[10px] text-slate-400 flex items-center gap-2 mt-0.5">
+                    <span className="capitalize bg-amber-500/10 text-amber-300 px-1.5 py-0.2 rounded font-semibold">{job.category?.replace('-', ' ')}</span>
+                    <span>{job.postDate}</span>
+                    {job.state && <span>• {job.state}</span>}
+                  </p>
+                </div>
+                <ChevronRight className="w-4 h-4 text-slate-500 group-hover:text-amber-400 shrink-0" />
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
     </header>
 
       {/* Slide-out Navigation Drawer Menu (All Options Panel) */}
