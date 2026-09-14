@@ -1,3 +1,4 @@
+import { getDomainName, getDomainNameLowercase } from '../utils/domain';
 import React, { useState, useEffect, useMemo } from 'react';
 import { 
   Printer, Bell, Check, Mail, Share2, ExternalLink, FileText, Globe, 
@@ -335,7 +336,7 @@ export const JobDetailsPage: React.FC<JobDetailsPageProps> = ({
             <div className="inline-block py-1 px-4 rounded-md my-1 font-black text-sm sm:text-base text-[#dc2626] dark:text-[#f87171] uppercase tracking-wider">
               FastArc Result Official
               <div className="text-xs sm:text-sm font-extrabold tracking-widest text-[#b91c1c] dark:text-[#ef4444]">
-                FastArcGovt.info
+                {getDomainName()}
               </div>
             </div>
 
@@ -1216,7 +1217,7 @@ export const JobDetailsPage: React.FC<JobDetailsPageProps> = ({
           </div>
 
           <div className="border-t border-slate-800 pt-6 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-slate-400">
-            <p>&copy; 2026 FastArcGovt.info - FastArc Govt Result. All Rights Reserved.</p>
+            <p>&copy; 2026 {getDomainName()} - FastArc Govt Result. All Rights Reserved.</p>
             <div className="flex items-center gap-3">
               {socialLinks.filter(l => l.enabled).map(item => (
                 <a

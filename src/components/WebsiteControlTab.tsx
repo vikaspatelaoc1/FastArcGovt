@@ -1244,6 +1244,21 @@ export const WebsiteControlTab: React.FC<WebsiteControlTabProps> = ({
                 />
               </div>
 
+              {/* Domain Name */}
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-slate-800 dark:text-slate-200">Domain Name</label>
+                <input
+                  type="text"
+                  value={config.header?.domainName || ''}
+                  onChange={(e) => handleUpdate(prev => ({
+                    ...prev,
+                    header: { ...prev.header, domainName: e.target.value }
+                  }))}
+                  className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-900 dark:text-white font-mono"
+                  placeholder="e.g. FastArcGovt.info"
+                />
+              </div>
+
               {/* Logo URL */}
               <div className="space-y-1.5">
                 <label className="text-xs font-bold text-slate-800 dark:text-slate-200">Logo Image URL</label>
@@ -1668,6 +1683,22 @@ export const WebsiteControlTab: React.FC<WebsiteControlTabProps> = ({
                   <option value="sm">Subtle Elevation (Light)</option>
                   <option value="md">Medium Depth</option>
                   <option value="lg">Floating High Shadow</option>
+                </select>
+              </div>
+
+              {/* Mobile Column Layout */}
+              <div className="space-y-2">
+                <label className="text-xs font-bold text-slate-800 dark:text-slate-200">Mobile Column Layout</label>
+                <select
+                  value={config.layout?.mobileColumnLayout || '1-col'}
+                  onChange={(e) => handleUpdate(prev => ({
+                    ...prev,
+                    layout: { ...prev.layout, mobileColumnLayout: e.target.value as any }
+                  }))}
+                  className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-900 dark:text-white"
+                >
+                  <option value="1-col">1 Column (Default Mobile)</option>
+                  <option value="2-col">2 Columns (Compact Grid)</option>
                 </select>
               </div>
             </div>

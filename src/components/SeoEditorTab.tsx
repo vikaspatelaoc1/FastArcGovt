@@ -1,3 +1,4 @@
+import { getDomainName, getDomainNameLowercase } from '../utils/domain';
 import React, { useState, useEffect } from 'react';
 import { 
   Globe, 
@@ -284,7 +285,7 @@ export const SeoEditorTab: React.FC<SeoEditorTabProps> = ({ onShowToast }) => {
                       FastArc Govt Result
                     </span>
                     <span className="text-[11px] text-slate-500 dark:text-slate-400 leading-tight">
-                      https://fastarcgovt.info › govt-result
+                      https://{getDomainNameLowercase()} › govt-result
                     </span>
                   </div>
                 </div>
@@ -315,7 +316,7 @@ export const SeoEditorTab: React.FC<SeoEditorTabProps> = ({ onShowToast }) => {
                 </div>
                 <div className="p-3 space-y-1 bg-slate-900/60">
                   <span className="text-[10px] uppercase font-extrabold tracking-wider text-slate-500">
-                    FastArcGovt.info
+                    {getDomainName()}
                   </span>
                   <h4 className="text-xs font-bold text-white line-clamp-1">
                     {seoConfig.siteTitle}

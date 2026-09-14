@@ -1,3 +1,4 @@
+import { getDomainName, getDomainNameLowercase } from '../utils/domain';
 import React, { useState, useEffect } from 'react';
 import { 
   Code, Copy, Check, Plus, Terminal, Zap, Sparkles, 
@@ -547,7 +548,7 @@ import requests
 import xml.etree.ElementTree as ET
 import time
 
-API_ENDPOINT = "https://fastarcgovt.info/api/v1/sarkari-posts"
+API_ENDPOINT = "https://${getDomainNameLowercase()}/api/v1/sarkari-posts"
 API_SECRET = "FASTARC_SECRET_KEY_12345"
 
 def scrape_and_push(feed_url, default_category="latest-jobs"):

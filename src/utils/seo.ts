@@ -1,3 +1,4 @@
+import { getDomainName, getDomainNameLowercase } from '../utils/domain';
 import { JobAlert } from '../types';
 import { saveSeoConfigToFirestore, saveCategorySeoConfigToFirestore } from '../services/firestoreService';
 
@@ -30,10 +31,10 @@ export interface CategorySeoItem {
 export type CategorySeoConfigMap = Record<string, CategorySeoItem>;
 
 export const DEFAULT_GLOBAL_SEO: GlobalSeoConfig = {
-  siteTitle: "FastArcGovt.info | FastArc Govt Result - Latest Online Form, Admit Card & Results 2026",
-  metaDescription: "FastArcGovt.info - FastArc Government Jobs Portal: Get instant updates for latest Sarkari Naukri, Online Forms, Admit Cards, Exam Results, Answer Keys, Syllabus & Admissions 2026.",
-  metaKeywords: "FastArcGovt.info, Sarkari Result, Govt Jobs 2026, Latest Online Form, Admit Card, Exam Results, Answer Key, FastArc, Recruitment Notification",
-  authorName: "FastArcGovt.info",
+  siteTitle: `${getDomainName()} | FastArc Govt Result - Latest Online Form, Admit Card & Results 2026`,
+  metaDescription: `${getDomainName()} - FastArc Government Jobs Portal: Get instant updates for latest Sarkari Naukri, Online Forms, Admit Cards, Exam Results, Answer Keys, Syllabus & Admissions 2026.`,
+  metaKeywords: `${getDomainName()}, Sarkari Result, Govt Jobs 2026, Latest Online Form, Admit Card, Exam Results, Answer Key, FastArc, Recruitment Notification`,
+  authorName: `${getDomainName()}`,
   ogImageUrl: "/logo.png",
   robotsDirective: "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"
 };
@@ -277,14 +278,14 @@ export function updateJobDetailSeo(job: JobAlert) {
 
   const baseUrl = window.location.origin;
   const canonicalUrl = `${baseUrl}/?jobId=${encodeURIComponent(job.id)}`;
-  const siteName = "FastArcGovt.info";
+  const siteName = getDomainName();
 
   const categoryName = job.category
     .split('-')
     .map(w => w.charAt(0).toUpperCase() + w.slice(1))
     .join(' ');
 
-  const fullTitle = `${job.title} - ${categoryName} 2026 | FastArcGovt.info`;
+  const fullTitle = `${job.title} - ${categoryName} 2026 | ${getDomainName()}`;
   const description = job.shortInfo && job.shortInfo.trim().length > 20
     ? `${job.title}: ${job.shortInfo.slice(0, 160)}... Check eligibility, important dates, and apply online on FastArc.`
     : `${job.title} notification released. Check latest eligibility, total vacancies, examination dates, admit card, and direct online form links at FastArc.`;
@@ -461,7 +462,7 @@ export function resetDefaultSeo(activeTab = 'home') {
   let title = globalSeo.siteTitle || DEFAULT_GLOBAL_SEO.siteTitle;
   
   // Ensure we don't show the ugly all-caps WWW...
-  title = title.replace(/WWW\.FASTARCGOVT\.INFO/ig, 'FastArcGovt.info');
+  title = title.replace(/WWW\.FASTARCGOVT\.INFO/ig, getDomainName());
 
   let canonicalUrl = `${baseUrl}/`;
 
@@ -472,12 +473,12 @@ export function resetDefaultSeo(activeTab = 'home') {
       .split('-')
       .map(w => w.charAt(0).toUpperCase() + w.slice(1))
       .join(' ');
-    title = `${tabName} 2026 - Latest Notifications & Updates | FastArcGovt.info`;
+    title = `${tabName} 2026 - Latest Notifications & Updates | ${getDomainName()}`;
     canonicalUrl = `${baseUrl}/?tab=${encodeURIComponent(activeTab)}`;
   }
 
-  const description = (globalSeo.metaDescription || DEFAULT_GLOBAL_SEO.metaDescription).replace(/WWW\.FASTARCGOVT\.INFO/ig, 'FastArcGovt.info');
-  const keywords = (globalSeo.metaKeywords || DEFAULT_GLOBAL_SEO.metaKeywords).replace(/WWW\.FASTARCGOVT\.INFO/ig, 'FastArcGovt.info');
+  const description = (globalSeo.metaDescription || DEFAULT_GLOBAL_SEO.metaDescription).replace(/WWW\.FASTARCGOVT\.INFO/ig, getDomainName());
+  const keywords = (globalSeo.metaKeywords || DEFAULT_GLOBAL_SEO.metaKeywords).replace(/WWW\.FASTARCGOVT\.INFO/ig, getDomainName());
   const imageUrl = globalSeo.ogImageUrl?.startsWith('http')
     ? globalSeo.ogImageUrl
     : `${baseUrl}${globalSeo.ogImageUrl || '/logo.png'}`;
@@ -489,7 +490,7 @@ export function resetDefaultSeo(activeTab = 'home') {
   setMetaTag('name', 'title', title);
   setMetaTag('name', 'description', description);
   setMetaTag('name', 'keywords', keywords);
-  setMetaTag('name', 'author', (globalSeo.authorName || 'FastArcGovt.info').replace(/WWW\.FASTARCGOVT\.INFO/ig, 'FastArcGovt.info'));
+  setMetaTag('name', 'author', (globalSeo.authorName || getDomainName()).replace(/WWW\.FASTARCGOVT\.INFO/ig, getDomainName()));
   setMetaTag('name', 'robots', globalSeo.robotsDirective || DEFAULT_GLOBAL_SEO.robotsDirective);
 
   // 3. Canonical Link
@@ -501,7 +502,7 @@ export function resetDefaultSeo(activeTab = 'home') {
   setMetaTag('property', 'og:title', title);
   setMetaTag('property', 'og:description', description);
   setMetaTag('property', 'og:image', imageUrl);
-  setMetaTag('property', 'og:site_name', "FastArcGovt.info");
+  setMetaTag('property', 'og:site_name', `${getDomainName()}`);
 
   // 5. Twitter Meta Tags
   setMetaTag('name', 'twitter:card', 'summary_large_image');
@@ -514,12 +515,12 @@ export function resetDefaultSeo(activeTab = 'home') {
   const baseSchema = {
     "@context": "https://schema.org",
     "@type": "WebSite",
-    "name": "FastArcGovt.info",
+    "name": `${getDomainName()}`,
     "alternateName": "FastArc Govt Result",
     "url": canonicalUrl,
     "author": {
       "@type": "Organization",
-      "name": globalSeo.authorName || "FastArcGovt.info"
+      "name": globalSeo.authorName || `${getDomainName()}`
     },
     "potentialAction": {
       "@type": "SearchAction",

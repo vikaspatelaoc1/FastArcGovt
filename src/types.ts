@@ -190,7 +190,10 @@ export type SuperAdminTabType =
   | 'autoBroadcast'
   | 'adsManager'
   | 'jobsManager'
-  | 'approvals';
+  | 'mobileTabs'
+  | 'mobileCardSizing'
+  | 'approvals'
+  | 'documentCenter';
 
 export interface EmailNotificationConfig {
   autoSendOnPublish: boolean;
@@ -304,3 +307,111 @@ export interface SyncLogEntry {
   endpoint?: string;
 }
 
+export interface AppToolItem {
+  id: string;
+  title: string;
+  subtitle: string;
+  badge?: string;
+  badgeColor?: string;
+  icon: string;
+  gradient: string;
+  accentColor?: string;
+  enabled: boolean;
+  order: number;
+  category?: string;
+  description: string;
+  examSpecs?: string[];
+  howToUse: string[];
+  features: string[];
+}
+
+export interface AppCategoryButton {
+  id: string;
+  label: string;
+  color: string;
+  textColor: string;
+  filterKey: string;
+  enabled: boolean;
+  order: number;
+}
+
+export interface MobilePwaCardConfig {
+  // Job Card Dimensions (Mobile PWA)
+  cardWidthPercent: number;       // 80 to 100 (%)
+  cardCustomMaxWidth: number;     // 0 for 100%, or 280 to 600 (px)
+  cardHeightMode: 'auto' | 'compact' | 'standard' | 'spacious' | 'custom';
+  cardMinHeight: number;          // in px: 48 to 160
+  cardPaddingY: number;           // in px: 4 to 20
+  cardPaddingX: number;           // in px: 6 to 24
+  cardBorderRadius: number;       // in px: 0 to 24
+  
+  // Job Card Icon Dimensions (Mobile PWA)
+  showCardIcon: boolean;          // boolean: whether icon is shown
+  iconContainerWidth: number;     // in px: 20 to 60
+  iconContainerHeight: number;    // in px: 20 to 60
+  iconGraphicSize: number;        // in px: 12 to 36
+  iconShape: 'squircle' | 'rounded' | 'circle' | 'square';
+  iconBgStyle: 'brand' | 'subtle' | 'gradient' | 'minimal';
+  
+  // Column Card & Header Icon
+  columnCardWidthPercent: number; // 85 to 100 (%)
+  columnHeaderIconWidth: number;  // in px: 20 to 48
+  columnHeaderIconHeight: number; // in px: 20 to 48
+  columnBorderRadius: number;     // in px: 8 to 28
+  
+  // Font sizes for mobile
+  cardTitleFontSize: number;      // in px: 12 to 18
+  cardMetaFontSize: number;       // in px: 9 to 13
+}
+
+export interface MobileTabsConfig {
+  tools: AppToolItem[];
+  categoryButtons: AppCategoryButton[];
+  toolsSectionTitle?: string;
+  categorySectionTitle?: string;
+  pwaCardConfig?: MobilePwaCardConfig;
+  updatedAt?: string;
+}
+
+
+
+
+export interface StudentDocument {
+  id: string;
+  title: string;
+  slug: string;
+  category: string;
+  description: string;
+  shortDescription: string;
+  icon: string;
+  officialAuthority: string;
+  officialWebsite: string;
+  applyUrl: string;
+  downloadUrl: string;
+  verificationUrl: string;
+  eligibility: string;
+  requiredDocuments: string[];
+  applicationProcess: string;
+  applicationFee: string;
+  processingTime: string;
+  importantNotes: string;
+  tags: string[];
+  isPopular: boolean;
+  isFeatured: boolean;
+  isActive: boolean;
+  lastUpdated: string;
+  createdAt: string;
+}
+
+export const DOCUMENT_CATEGORIES = [
+  { id: 'identity', label: '🪪 Identity Documents' },
+  { id: 'education', label: '🎓 Education Documents' },
+  { id: 'government', label: '🏛️ Government Certificates' },
+  { id: 'exam', label: '📝 Examination Documents' },
+  { id: 'job', label: '💼 Career & Job Documents' },
+  { id: 'scholarship', label: '💰 Scholarship Documents' },
+  { id: 'financial', label: '🏦 Financial Documents' },
+  { id: 'pdf-tools', label: '📑 PDF & Document Tools' },
+  { id: 'photo-tools', label: '🪪 Photo & Signature Tools' },
+  { id: 'verification', label: '🔐 Verification Services' }
+];

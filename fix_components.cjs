@@ -1,0 +1,9 @@
+const fs = require('fs');
+let file, content;
+
+// src/components/AdminPanel.tsx
+file = 'src/components/AdminPanel.tsx';
+content = fs.readFileSync(file, 'utf8');
+content = content.replace(/FastArc Result Official • \{getDomainName\(\)\}/g, 'FastArc Result Official • {getDomainName()}');
+fs.writeFileSync(file, content, 'utf8');
+

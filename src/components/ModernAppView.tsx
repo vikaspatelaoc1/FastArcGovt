@@ -1,10 +1,16 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Search, Mic, MicOff, X, Sparkles } from 'lucide-react';
-import { JobAlert, SocialLinkItem } from '../types';
+import { 
+  Search, Mic, MicOff, X, Sparkles, ChevronLeft, ChevronRight,
+  Crop, FileText, HeartHandshake, Calendar, Keyboard, ArrowRight,
+  Wrench, Clock, Layers, ExternalLink, ShieldCheck, Flame
+} from 'lucide-react';
+import { JobAlert, SocialLinkItem, MobileTabsConfig, AppToolItem } from '../types';
 import { ColumnConfigsMap } from '../utils/columnConfig';
 import { isImageIconUrl } from './CategoryIcon';
 import { OfficialSocialLogo } from './SocialIcons';
+import { ToolDetailModal } from './ToolDetailModal';
+import { DEFAULT_MOBILE_TABS_CONFIG } from '../data/mobileTabsData';
 
 interface ModernAppViewProps {
   jobs: JobAlert[];
@@ -16,6 +22,7 @@ interface ModernAppViewProps {
   searchQuery?: string;
   setSearchQuery?: (query: string) => void;
   columnConfigs?: ColumnConfigsMap;
+  mobileTabsConfig?: MobileTabsConfig;
 }
 
 export const ModernAppView: React.FC<ModernAppViewProps> = ({
@@ -27,11 +34,33 @@ export const ModernAppView: React.FC<ModernAppViewProps> = ({
   siteLogo = "/logo.png",
   searchQuery = "",
   setSearchQuery,
-  columnConfigs
+  columnConfigs,
+  mobileTabsConfig = DEFAULT_MOBILE_TABS_CONFIG
 }) => {
-  const [currentSlide, setCurrentSlide] = useState(0);
+  const [page, setPage] = useState(0);
+  const [direction, setDirection] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
-  const touchStartX = useRef<number | null>(null);
+  const lastTapRef = useRef<{ [key: string]: number }>({});
+
+  const handleGoHome = () => {
+    onTabChange('home');
+    if (setSearchQuery) {
+      setSearchQuery('');
+    }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const checkDoubleTap = (btnKey: string, singleTapAction: () => void) => {
+    const now = Date.now();
+    const last = lastTapRef.current[btnKey] || 0;
+    if (now - last < 400) {
+      lastTapRef.current[btnKey] = 0;
+      handleGoHome();
+    } else {
+      lastTapRef.current[btnKey] = now;
+      singleTapAction();
+    }
+  };
 
   // Trending slides with recruitment themes matching the screenshot
   const trendingSlides = [
@@ -109,45 +138,72 @@ export const ModernAppView: React.FC<ModernAppViewProps> = ({
     }
   ];
 
+  // Pagination and slide animation helpers
+  const paginate = (newDirection: number) => {
+    setDirection(newDirection);
+    setPage(prev => (prev + newDirection + trendingSlides.length) % trendingSlides.length);
+  };
+
+  const goToSlide = (idx: number) => {
+    setDirection(idx > page ? 1 : -1);
+    setPage(idx);
+  };
+
   // Auto-play timer
   useEffect(() => {
     if (isPaused) return;
     const timer = setInterval(() => {
-      setCurrentSlide(prev => (prev + 1) % trendingSlides.length);
+      paginate(1);
     }, 4500);
     return () => clearInterval(timer);
-  }, [isPaused, trendingSlides.length]);
+  }, [isPaused, page, trendingSlides.length]);
 
-  const handleTouchStart = (e: React.TouchEvent) => {
-    touchStartX.current = e.touches[0].clientX;
-  };
-
-  const handleTouchEnd = (e: React.TouchEvent) => {
-    if (touchStartX.current === null) return;
-    const diff = touchStartX.current - e.changedTouches[0].clientX;
-    if (diff > 40) {
-      // Next slide
-      setCurrentSlide(prev => (prev + 1) % trendingSlides.length);
-    } else if (diff < -40) {
-      // Prev slide
-      setCurrentSlide(prev => (prev - 1 + trendingSlides.length) % trendingSlides.length);
-    }
-    touchStartX.current = null;
+  // Spring slide variants for real horizontal swipe feedback
+  const slideVariants = {
+    enter: (dir: number) => ({
+      x: dir > 0 ? '100%' : dir < 0 ? '-100%' : 0,
+      opacity: 0.3,
+      scale: 0.95
+    }),
+    center: {
+      x: 0,
+      opacity: 1,
+      scale: 1,
+      zIndex: 1,
+      transition: {
+        x: { type: "spring", stiffness: 320, damping: 32 },
+        opacity: { duration: 0.25 },
+        scale: { duration: 0.25 }
+      }
+    },
+    exit: (dir: number) => ({
+      x: dir > 0 ? '-100%' : '100%',
+      opacity: 0.3,
+      scale: 0.95,
+      zIndex: 0,
+      transition: {
+        x: { type: "spring", stiffness: 320, damping: 32 },
+        opacity: { duration: 0.2 },
+        scale: { duration: 0.2 }
+      }
+    })
   };
 
   // Find matching job or fallback
   const handleReadMore = (slide: typeof trendingSlides[0]) => {
+    const terms = [slide.id, slide.title, slide.category];
     const matching = jobs.find(j => 
-      j.title.toLowerCase().includes('ssc') || 
-      j.title.toLowerCase().includes('chsl') ||
-      j.category === slide.category
-    ) || jobs[0];
+      terms.some(t => j.title.toLowerCase().includes(t.toLowerCase()) || (j.shortInfo && j.shortInfo.toLowerCase().includes(t.toLowerCase())))
+    ) || jobs.find(j => j.category === slide.category) || jobs[0];
 
     if (matching && onSelectJob) {
       onSelectJob(matching);
     } else {
       onTabChange(slide.category);
-      const el = document.getElementById(`section-${slide.category}`);
+      if (setSearchQuery) {
+        setSearchQuery(slide.title.split(' ')[0]);
+      }
+      const el = document.getElementById(`section-${slide.category}`) || document.getElementById('main-job-columns');
       if (el) el.scrollIntoView({ behavior: 'smooth' });
     }
   };
@@ -435,47 +491,79 @@ export const ModernAppView: React.FC<ModernAppViewProps> = ({
     }
   ];
 
-  const activeSlideData = trendingSlides[currentSlide];
+  const activeSlideData = trendingSlides[page];
 
   return (
-    <div className="w-full bg-slate-50 dark:bg-slate-900/50 pb-6 transition-colors">
+    <div className="w-full bg-slate-50 dark:bg-slate-900/50 pb-2 transition-colors">
       {/* 1. TRENDING SECTION */}
       <section className="w-full max-w-6xl mx-auto pt-3 px-3 sm:px-4 md:px-6">
         <div className="flex items-center justify-between mb-3 px-1">
-          <h2 className="text-lg sm:text-xl font-black text-slate-900 dark:text-white tracking-tight flex items-center gap-2">
-            <span>Trending</span>
-          </h2>
-          <span className="text-[11px] sm:text-xs font-bold text-slate-500 dark:text-slate-400">
-            {currentSlide + 1} / {trendingSlides.length}
+          <div className="flex items-center gap-2">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+            <h2 className="text-sm sm:text-base font-bold text-slate-800 dark:text-slate-100 tracking-wide flex items-center gap-2 uppercase">
+              <span>Trending</span>
+            </h2>
+          </div>
+          <span className="text-[10px] sm:text-[11px] font-semibold tracking-wide text-slate-600 dark:text-slate-400 bg-slate-200/50 dark:bg-slate-800 px-2 py-0.5 rounded-full border border-slate-300/50 dark:border-slate-700">
+            {page + 1} / {trendingSlides.length}
           </span>
         </div>
 
-        {/* Carousel Container with Side Peeks */}
+        {/* Carousel Container with Interactive Drag & Touch Swipe */}
         <div 
-          className="relative w-full overflow-hidden flex items-center justify-center py-1 select-none"
+          className="relative w-full max-w-4xl mx-auto h-44 sm:h-56 md:h-64 overflow-hidden rounded-2xl sm:rounded-3xl shadow-xl select-none"
           onMouseEnter={() => setIsPaused(true)}
           onMouseLeave={() => setIsPaused(false)}
-          onTouchStart={handleTouchStart}
-          onTouchEnd={handleTouchEnd}
         >
-          {/* Peeking Left Card */}
-          <div 
-            onClick={() => setCurrentSlide(prev => (prev - 1 + trendingSlides.length) % trendingSlides.length)}
-            className="hidden sm:block absolute -left-8 md:-left-12 w-14 md:w-20 h-40 md:h-52 rounded-r-3xl bg-gradient-to-r from-orange-500 to-amber-500 opacity-60 hover:opacity-100 transition-all cursor-pointer shadow-lg z-0 scale-90"
-          />
+          {/* Navigation Chevrons for Quick Slide Navigation */}
+          <button 
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              paginate(-1);
+            }}
+            className="absolute left-2 sm:left-3 top-1/2 -translate-y-1/2 z-20 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-black/45 hover:bg-black/75 text-white flex items-center justify-center backdrop-blur-xs shadow-lg transition-transform active:scale-90 cursor-pointer border border-white/20"
+            aria-label="Previous slide"
+          >
+            <ChevronLeft className="w-5 h-5" />
+          </button>
 
-          {/* Active Main Card */}
-          <AnimatePresence mode="wait">
+          <button 
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              paginate(1);
+            }}
+            className="absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 z-20 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-black/45 hover:bg-black/75 text-white flex items-center justify-center backdrop-blur-xs shadow-lg transition-transform active:scale-90 cursor-pointer border border-white/20"
+            aria-label="Next slide"
+          >
+            <ChevronRight className="w-5 h-5" />
+          </button>
+
+          {/* Active Sliding Card with Real Horizontal Spring Physics */}
+          <AnimatePresence initial={false} custom={direction} mode="popLayout">
             <motion.div
-              key={activeSlideData.id}
-              initial={{ opacity: 0.8, scale: 0.98 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0.8, scale: 0.98 }}
-              transition={{ duration: 0.35, ease: "easeInOut" }}
-              className={`w-full max-w-4xl h-44 sm:h-56 md:h-64 rounded-2xl sm:rounded-3xl bg-gradient-to-r ${activeSlideData.gradient} p-4 sm:p-6 md:p-8 flex items-center justify-between shadow-xl relative overflow-hidden text-white z-10`}
+              key={page}
+              custom={direction}
+              variants={slideVariants}
+              initial="enter"
+              animate="center"
+              exit="exit"
+              drag="x"
+              dragConstraints={{ left: 0, right: 0 }}
+              dragElastic={0.25}
+              onDragEnd={(_, { offset, velocity }) => {
+                const swipe = offset.x;
+                if (swipe < -40 || velocity.x < -300) {
+                  paginate(1);
+                } else if (swipe > 40 || velocity.x > 300) {
+                  paginate(-1);
+                }
+              }}
+              className={`absolute inset-0 w-full h-full rounded-2xl sm:rounded-3xl bg-gradient-to-r ${activeSlideData.gradient} p-4 sm:p-6 md:p-8 flex items-center justify-between shadow-xl overflow-hidden text-white cursor-grab active:cursor-grabbing touch-pan-y`}
             >
               {/* Left Side Scene Illustration (Blackboard "इतिहास", Teacher/Student, Desk, Globe, Plant) */}
-              <div className="w-1/2 sm:w-5/12 h-full flex items-center justify-center relative shrink-0">
+              <div className="w-1/2 sm:w-5/12 h-full flex items-center justify-center relative shrink-0 pointer-events-none">
                 <svg viewBox="0 0 280 200" className="w-full h-full max-h-52 drop-shadow-md" fill="none" xmlns="http://www.w3.org/2000/svg">
                   {/* Green Chalkboard with wooden frame */}
                   <rect x="20" y="20" width="130" height="85" rx="4" fill="#654321" stroke="#4a3525" strokeWidth="2.5" />
@@ -532,18 +620,20 @@ export const ModernAppView: React.FC<ModernAppViewProps> = ({
 
               {/* Right Side Info & Action Button */}
               <div className="w-1/2 sm:w-7/12 pl-2 sm:pl-6 flex flex-col items-start justify-center z-10">
-                <span className="bg-white/20 backdrop-blur-xs text-white text-[10px] sm:text-xs font-extrabold px-2.5 py-0.5 rounded-full uppercase tracking-wider mb-1.5 sm:mb-2.5">
+                <span className="bg-white/20 backdrop-blur-xs text-white text-[10px] sm:text-xs font-extrabold px-2.5 py-0.5 rounded-full uppercase tracking-wider mb-1.5 sm:mb-2.5 pointer-events-none">
                   Top Alert
                 </span>
-                <h3 className="text-base sm:text-2xl md:text-3xl font-black text-white leading-snug sm:leading-tight mb-2 sm:mb-4 drop-shadow-sm">
+                <h3 className="text-base sm:text-2xl md:text-3xl font-black text-white leading-snug sm:leading-tight mb-2 sm:mb-4 drop-shadow-sm pointer-events-none">
                   {activeSlideData.title}
                 </h3>
-                <p className="text-[11px] sm:text-xs text-white/90 line-clamp-1 sm:line-clamp-2 mb-3 sm:mb-4 hidden sm:block">
+                <p className="text-[11px] sm:text-xs text-white/90 line-clamp-1 sm:line-clamp-2 mb-3 sm:mb-4 hidden sm:block pointer-events-none">
                   {activeSlideData.subtitle}
                 </p>
                 <button
                   type="button"
-                  onClick={() => handleReadMore(activeSlideData)}
+                  onPointerDown={(e) => e.stopPropagation()}
+                  onClick={() => checkDoubleTap(activeSlideData.id, () => handleReadMore(activeSlideData))}
+                  onDoubleClick={handleGoHome}
                   className={`bg-white ${activeSlideData.readMoreColor} font-black text-xs sm:text-sm px-4 sm:px-6 py-1.5 sm:py-2.5 rounded-full shadow-lg hover:bg-slate-100 hover:scale-105 active:scale-95 transition-all cursor-pointer`}
                 >
                   Read More
@@ -551,24 +641,19 @@ export const ModernAppView: React.FC<ModernAppViewProps> = ({
               </div>
             </motion.div>
           </AnimatePresence>
-
-          {/* Peeking Right Card */}
-          <div 
-            onClick={() => setCurrentSlide(prev => (prev + 1) % trendingSlides.length)}
-            className="hidden sm:block absolute -right-8 md:-right-12 w-14 md:w-20 h-40 md:h-52 rounded-l-3xl bg-gradient-to-r from-lime-500 to-emerald-600 opacity-60 hover:opacity-100 transition-all cursor-pointer shadow-lg z-0 scale-90"
-          />
         </div>
 
-        {/* Carousel Pagination Dots */}
-        <div className="flex items-center justify-center space-x-2 sm:space-x-2.5 mt-3.5 mb-2">
+        {/* Carousel Pagination Dots with Expanding Active Pill */}
+        <div className="flex items-center justify-center space-x-1.5 sm:space-x-2 mt-3.5 mb-2">
           {trendingSlides.map((_, idx) => (
             <button
               key={idx}
               type="button"
-              onClick={() => setCurrentSlide(idx)}
+              onClick={() => checkDoubleTap(`dot-${idx}`, () => goToSlide(idx))}
+              onDoubleClick={handleGoHome}
               className={`transition-all duration-300 rounded-full cursor-pointer focus:outline-none ${
-                currentSlide === idx
-                  ? 'w-3 h-3 bg-[#8c1328] dark:bg-[#e11d48] scale-110 shadow-xs'
+                page === idx
+                  ? 'w-7 h-2.5 bg-[#8c1328] dark:bg-[#e11d48] scale-105 shadow-sm'
                   : 'w-2.5 h-2.5 border-2 border-slate-400 dark:border-slate-500 bg-transparent hover:border-slate-600'
               }`}
               aria-label={`Go to slide ${idx + 1}`}
@@ -602,14 +687,22 @@ export const ModernAppView: React.FC<ModernAppViewProps> = ({
                   key={cat.id}
                   type="button"
                   onClick={() => {
-                    onTabChange(cat.targetTab);
-                    if (cat.targetTab === 'home') {
-                      window.scrollTo({ top: 0, behavior: 'smooth' });
-                    } else {
-                      const el = document.getElementById(`section-${cat.targetTab}`) || document.getElementById('main-job-columns');
-                      if (el) el.scrollIntoView({ behavior: 'smooth' });
-                    }
+                    checkDoubleTap(cat.id, () => {
+                      onTabChange(cat.targetTab);
+                      if (cat.targetTab === 'home') {
+                        if (setSearchQuery) setSearchQuery('');
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                      } else {
+                        const el = document.getElementById(`section-${cat.targetTab}`) || document.getElementById('main-job-columns');
+                        if (el) {
+                          el.scrollIntoView({ behavior: 'smooth' });
+                        } else {
+                          window.scrollTo({ top: 260, behavior: 'smooth' });
+                        }
+                      }
+                    });
                   }}
+                  onDoubleClick={handleGoHome}
                   className="flex flex-col items-center group cursor-pointer focus:outline-none transition-transform active:scale-95 shrink-0"
                 >
                   {/* Squircle Container matching PNG with Light & Dark Mode */}
@@ -670,6 +763,15 @@ export const ModernAppView: React.FC<ModernAppViewProps> = ({
                 href={soc.url}
                 target="_blank"
                 rel="noopener noreferrer"
+                onClick={(e) => {
+                  checkDoubleTap(soc.id, () => {
+                    // normal link click continues
+                  });
+                }}
+                onDoubleClick={(e) => {
+                  e.preventDefault();
+                  handleGoHome();
+                }}
                 className="flex flex-col items-center group cursor-pointer focus:outline-none transition-transform active:scale-95 shrink-0"
               >
                 {/* Squircle Container matching PNG with Light & Dark Mode */}
@@ -689,7 +791,238 @@ export const ModernAppView: React.FC<ModernAppViewProps> = ({
           </div>
         </div>
       </section>
+    </div>
+  );
+};
 
+export interface ModernAppBottomSectionProps {
+  mobileTabsConfig?: MobileTabsConfig;
+  searchQuery?: string;
+  setSearchQuery?: (q: string) => void;
+  siteLogo?: string;
+  onTabChange?: (tabId: string) => void;
+  onSelectJob?: (job: JobAlert) => void;
+  jobs?: JobAlert[];
+}
+
+export const ModernAppBottomSection: React.FC<ModernAppBottomSectionProps> = ({
+  mobileTabsConfig,
+  searchQuery = '',
+  setSearchQuery,
+  siteLogo,
+  onTabChange,
+  onSelectJob,
+  jobs
+}) => {
+  const [selectedTool, setSelectedTool] = useState<AppToolItem | null>(null);
+  const [isToolModalOpen, setIsToolModalOpen] = useState<boolean>(false);
+  const lastTapRef = useRef<{ [key: string]: number }>({});
+
+  const handleGoHome = () => {
+    if (onTabChange) {
+      onTabChange('home');
+    }
+    if (setSearchQuery) {
+      setSearchQuery('');
+    }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const checkDoubleTap = (btnKey: string, singleTapAction: () => void) => {
+    const now = Date.now();
+    const last = lastTapRef.current[btnKey] || 0;
+    if (now - last < 400) {
+      lastTapRef.current[btnKey] = 0;
+      handleGoHome();
+    } else {
+      lastTapRef.current[btnKey] = now;
+      singleTapAction();
+    }
+  };
+
+  const handleToolClick = (tool: AppToolItem) => {
+    setSelectedTool(tool);
+    setIsToolModalOpen(true);
+  };
+
+  const handleCategoryClick = (filterKey: string) => {
+    if (onTabChange) {
+      onTabChange('home');
+    }
+    if (setSearchQuery) {
+      if (searchQuery.toLowerCase().trim() === filterKey.toLowerCase().trim()) {
+        setSearchQuery('');
+      } else {
+        setSearchQuery(filterKey);
+      }
+    }
+    const el = document.getElementById('main-job-columns') || document.getElementById('section-latest-jobs');
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth' });
+    } else {
+      window.scrollTo({ top: 250, behavior: 'smooth' });
+    }
+  };
+
+  const renderToolIcon = (iconName: string) => {
+    switch (iconName) {
+      case 'image-resizer':
+        return <Crop className="w-5 h-5 sm:w-6 sm:h-6 text-white" />;
+      case 'bg-remover':
+        return <Layers className="w-5 h-5 sm:w-6 sm:h-6 text-sky-300" />;
+      case 'pdf-portal':
+        return <FileText className="w-5 h-5 sm:w-6 sm:h-6 text-rose-300" />;
+      case 'biodata-maker':
+        return <HeartHandshake className="w-5 h-5 sm:w-6 sm:h-6 text-amber-300" />;
+      case 'name-date':
+        return <Calendar className="w-5 h-5 sm:w-6 sm:h-6 text-orange-300" />;
+      case 'age-calculator':
+        return <Clock className="w-5 h-5 sm:w-6 sm:h-6 text-emerald-300" />;
+      case 'typing-test':
+        return <Keyboard className="w-5 h-5 sm:w-6 sm:h-6 text-indigo-300" />;
+      default:
+        return <Wrench className="w-5 h-5 sm:w-6 sm:h-6 text-amber-400" />;
+    }
+  };
+
+  const enabledCategoryButtons = useMemo(() => {
+    const list = mobileTabsConfig?.categoryButtons || DEFAULT_MOBILE_TABS_CONFIG.categoryButtons;
+    return [...list].filter(c => c.enabled !== false).sort((a, b) => a.order - b.order);
+  }, [mobileTabsConfig?.categoryButtons]);
+
+  const enabledTools = useMemo(() => {
+    const list = mobileTabsConfig?.tools || DEFAULT_MOBILE_TABS_CONFIG.tools;
+    return [...list].filter(t => t.enabled !== false).sort((a, b) => a.order - b.order);
+  }, [mobileTabsConfig?.tools]);
+
+  return (
+    <div className="w-full bg-slate-50 dark:bg-slate-900/80 pt-4 pb-12 mt-6 border-t border-slate-200 dark:border-slate-800 transition-colors">
+      {/* 1. ONLINE TOOLS & UTILITIES SECTION (Modern brand cards with badges & click to open) */}
+      {enabledTools.length > 0 && (
+        <section className="w-full bg-white dark:bg-[#0B1120] border-y border-slate-200 dark:border-slate-800 shadow-xs dark:shadow-sm py-3.5 sm:py-4 transition-colors duration-300 mb-3">
+          <div className="max-w-6xl mx-auto px-4 flex items-center justify-between mb-3">
+            <div className="flex items-center space-x-2">
+              <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
+              <h2 className="text-[11px] sm:text-xs md:text-sm font-black tracking-[0.16em] sm:tracking-[0.2em] text-slate-900 dark:text-white uppercase drop-shadow-xs transition-colors">
+                {mobileTabsConfig?.toolsSectionTitle || 'TOOLS'}
+              </h2>
+            </div>
+            <span className="text-[10px] text-slate-500 dark:text-slate-400 font-bold hidden sm:inline uppercase tracking-wider transition-colors">
+              Free utilities for exam applications
+            </span>
+          </div>
+
+          <div className="max-w-6xl mx-auto px-3 sm:px-4">
+            <div className="flex overflow-x-auto no-scrollbar scroll-smooth gap-3 sm:gap-4 pb-2 -mx-3 px-3 sm:-mx-4 sm:px-4 snap-x">
+              {enabledTools.map((tool) => (
+                <div
+                  key={tool.id}
+                  onClick={() => checkDoubleTap(tool.id, () => handleToolClick(tool))}
+                  onDoubleClick={handleGoHome}
+                  className={`bg-gradient-to-r ${tool.gradient} rounded-2xl p-3.5 sm:p-4 text-white shadow-md hover:shadow-xl hover:-translate-y-0.5 active:scale-[0.98] transition-all duration-200 cursor-pointer relative overflow-hidden flex flex-col justify-between group border border-white/10 w-[240px] sm:w-[280px] shrink-0 snap-start`}
+                >
+                  {/* Subtle decorative background shape */}
+                  <div className="absolute -right-6 -bottom-6 w-24 h-24 rounded-full bg-white/10 blur-xl pointer-events-none group-hover:scale-150 transition-transform duration-500" />
+
+                  {/* Top row: Badge & Icon */}
+                  <div className="flex items-start justify-between gap-2 mb-2 relative z-10">
+                    {tool.badge ? (
+                      <span className={`text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full ${tool.badgeColor || 'bg-amber-400 text-slate-950'} shadow-2xs`}>
+                        {tool.badge}
+                      </span>
+                    ) : (
+                      <span />
+                    )}
+
+                    <div className="w-8 h-8 rounded-full bg-white/20 backdrop-blur-xs flex items-center justify-center shrink-0 shadow-inner group-hover:rotate-6 transition-transform">
+                      {renderToolIcon(tool.icon)}
+                    </div>
+                  </div>
+
+                  {/* Middle content: Title & Subtitle */}
+                  <div className="relative z-10 my-1">
+                    <h3 className="font-black text-xs sm:text-sm tracking-tight text-white uppercase drop-shadow-xs group-hover:text-amber-200 transition-colors">
+                      {tool.title}
+                    </h3>
+                    <p className="text-[11px] text-white/90 font-medium line-clamp-2 mt-0.5 leading-snug">
+                      {tool.subtitle}
+                    </p>
+                  </div>
+
+                  {/* Bottom Action Pill */}
+                  <div className="relative z-10 pt-2 flex items-center justify-between border-t border-white/15 text-[10px] font-bold">
+                    <span className="text-rose-100 flex items-center gap-1">
+                      <span>Open Tool &amp; Guide</span>
+                      <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
+                    </span>
+                    <span className="text-white/60 text-[9px] uppercase">
+                      FastArc
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* 2. CATEGORY WISE UPDATES SECTION (Placed below Tools section in footer) */}
+      {enabledCategoryButtons.length > 0 && (
+        <section className="w-full bg-white dark:bg-[#0B1120] border-y border-slate-200 dark:border-slate-800 shadow-xs dark:shadow-sm py-2.5 sm:py-3 transition-colors duration-300 mb-6">
+          <div className="max-w-6xl mx-auto px-4 flex items-center justify-between mb-2 sm:mb-2.5">
+            <div className="flex items-center space-x-2">
+              <span className="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse" />
+              <h2 className="text-[11px] sm:text-xs md:text-sm font-black tracking-[0.16em] sm:tracking-[0.2em] text-slate-900 dark:text-white uppercase drop-shadow-xs transition-colors">
+                {mobileTabsConfig?.categorySectionTitle || 'CATEGORY WISE UPDATES'}
+              </h2>
+            </div>
+            <span className="text-[10px] text-slate-500 dark:text-slate-400 font-bold hidden sm:inline uppercase tracking-wider transition-colors">
+              Tap to view recruitment notices
+            </span>
+          </div>
+
+          {/* Horizontal scroll strip */}
+          <div className="max-w-6xl mx-auto px-2 sm:px-4 overflow-x-auto no-scrollbar scroll-smooth">
+            <div className="flex items-center justify-start sm:justify-center gap-2 sm:gap-2.5 min-w-max px-2 py-0.5">
+              {enabledCategoryButtons.map((cat) => {
+                const isActive = searchQuery?.toLowerCase().trim() === cat.filterKey.toLowerCase().trim();
+                return (
+                  <button
+                    key={cat.id}
+                    type="button"
+                    onClick={() => checkDoubleTap(cat.id, () => handleCategoryClick(cat.filterKey))}
+                    onDoubleClick={handleGoHome}
+                    style={{ backgroundColor: cat.color, color: cat.textColor || '#ffffff' }}
+                    className={`px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-xl font-black text-xs tracking-wide shadow-sm hover:shadow-md hover:scale-105 active:scale-95 transition-all duration-200 flex items-center justify-center gap-1.5 shrink-0 min-w-[78px] sm:min-w-[90px] border cursor-pointer select-none ${
+                      isActive 
+                        ? 'ring-3 ring-amber-400 border-white scale-105 shadow-md' 
+                        : 'border-white/20'
+                    }`}
+                  >
+                    <span>{cat.label}</span>
+                    {isActive && <span className="w-1.5 h-1.5 rounded-full bg-white animate-ping" />}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Mobile Footer Brand & Copyright */}
+      <div className="max-w-6xl mx-auto px-4 text-center text-slate-500 dark:text-slate-400 text-xs py-2">
+        <p className="font-semibold text-[11px]">
+          FastArc Govt Jobs Portal &bull; All Rights Reserved
+        </p>
+      </div>
+
+      {/* Tool Detail & Interactive Utility Modal */}
+      <ToolDetailModal
+        tool={selectedTool}
+        isOpen={isToolModalOpen}
+        onClose={() => setIsToolModalOpen(false)}
+        siteLogo={siteLogo}
+      />
     </div>
   );
 };

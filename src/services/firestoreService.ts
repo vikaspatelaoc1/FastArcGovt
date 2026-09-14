@@ -9,6 +9,9 @@ import {
   getDocFromServer,
   writeBatch,
   disableNetwork,
+  query,
+  orderBy,
+  updateDoc
 } from 'firebase/firestore';
 import { db } from '../firebase';
 import { JobAlert, EmployeeUser, SocialLinkItem, EmailNotificationConfig, NotificationDispatchLog } from '../types';
@@ -1064,4 +1067,93 @@ export async function saveNotificationLogToFirestore(log: NotificationDispatchLo
   }
 }
 
+// 22. Mobile App Buttons & Tools Realtime Sync
+export function subscribeToMobileTabsConfig(onUpdate: (config: any) => void) {
+  const tabsRef = doc(db, 'site_config', 'mobile_tabs_config');
+  return onSnapshot(tabsRef, (docSnap) => {
+    if (docSnap.exists()) {
+      const data = docSnap.data();
+      if (data && data.config) {
+        onUpdate(data.config);
+      }
+    }
+  }, (err) => {
+    handleFirestoreQuotaError(err, 'subscribeToMobileTabsConfig');
+  });
+}
 
+export async function saveMobileTabsConfigToFirestore(config: any): Promise<void> {
+  if (isClientFirestoreQuotaExceeded) return;
+  try {
+    const tabsRef = doc(db, 'site_config', 'mobile_tabs_config');
+    await setDoc(tabsRef, {
+      config,
+      updatedAt: new Date().toISOString()
+    }, { merge: true });
+  } catch (err) {
+    handleFirestoreQuotaError(err, 'saveMobileTabsConfigToFirestore');
+  }
+}
+
+
+
+
+// --- Student Documents ---
+export async function getStudentDocuments(): Promise<any[]> {
+  if (!db) return [];
+  try {
+    const q = query(collection(db, 'student_documents'), orderBy('createdAt', 'desc'));
+    const snapshot = await getDocs(q);
+    return snapshot.docs.map(doc => ({ id: doc.id, ...(doc.data() as any) }));
+  } catch (err) {
+    handleFirestoreQuotaError(err, 'getStudentDocuments');
+    return [];
+  }
+}
+
+export function subscribeToStudentDocuments(onUpdate: (docs: any[]) => void) {
+  if (!db) return () => {};
+  try {
+    const q = query(collection(db, 'student_documents'), orderBy('createdAt', 'desc'));
+    return onSnapshot(q, (snapshot) => {
+      const docs = snapshot.docs.map(doc => ({ id: doc.id, ...(doc.data() as any) }));
+      onUpdate(docs);
+    });
+  } catch (err) {
+    handleFirestoreQuotaError(err, 'subscribeToStudentDocuments');
+    return () => {};
+  }
+}
+
+export async function addStudentDocument(docData: any): Promise<void> {
+  if (!db) return;
+  try {
+    const docRef = doc(collection(db, 'student_documents'));
+    await setDoc(docRef, { ...docData, id: docRef.id });
+  } catch (err) {
+    handleFirestoreQuotaError(err, 'addStudentDocument');
+    throw err;
+  }
+}
+
+export async function updateStudentDocument(id: string, docData: any): Promise<void> {
+  if (!db) return;
+  try {
+    const docRef = doc(db, 'student_documents', id);
+    await updateDoc(docRef, docData);
+  } catch (err) {
+    handleFirestoreQuotaError(err, 'updateStudentDocument');
+    throw err;
+  }
+}
+
+export async function deleteStudentDocument(id: string): Promise<void> {
+  if (!db) return;
+  try {
+    const docRef = doc(db, 'student_documents', id);
+    await deleteDoc(docRef);
+  } catch (err) {
+    handleFirestoreQuotaError(err, 'deleteStudentDocument');
+    throw err;
+  }
+}

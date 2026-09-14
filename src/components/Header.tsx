@@ -384,6 +384,14 @@ export const Header: React.FC<HeaderProps> = ({
       iconBg: 'bg-indigo-50 dark:bg-indigo-950/50 border-indigo-200/80 dark:border-indigo-800/60',
       activeCard: 'bg-indigo-50/90 dark:bg-indigo-500/15 border-indigo-300 dark:border-indigo-500/40 text-indigo-900 dark:text-indigo-300 shadow-sm shadow-indigo-500/10'
     },
+    { 
+      id: 'student-docs', 
+      label: '📄 Student Document Tool', 
+      icon: FileText,
+      iconColor: 'text-fuchsia-600 dark:text-fuchsia-400',
+      iconBg: 'bg-fuchsia-50 dark:bg-fuchsia-950/50 border-fuchsia-200/80 dark:border-fuchsia-800/60',
+      activeCard: 'bg-fuchsia-50/90 dark:bg-fuchsia-500/15 border-fuchsia-300 dark:border-fuchsia-500/40 text-fuchsia-900 dark:text-fuchsia-300 shadow-sm shadow-fuchsia-500/10'
+    },
   ];
 
   return (
@@ -399,7 +407,7 @@ export const Header: React.FC<HeaderProps> = ({
                 const el = document.getElementById('main-job-columns') || document.getElementById('section-latest-jobs');
                 if (el) el.scrollIntoView({ behavior: 'smooth' });
               }}
-              className="flex-1 relative flex items-center bg-[#0d1527] dark:bg-[#070d1a] border border-amber-500/50 dark:border-amber-500/40 rounded-2xl shadow-lg px-2.5 sm:px-3 py-1 sm:py-1.5 focus-within:border-amber-400 focus-within:ring-2 focus-within:ring-amber-400/20 transition-all"
+              className="flex-1 relative flex items-center bg-slate-100 dark:bg-[#070d1a] border border-slate-300 dark:border-amber-500/40 rounded-2xl shadow-sm dark:shadow-lg px-2.5 sm:px-3 py-1 sm:py-1.5 focus-within:border-amber-500 focus-within:ring-2 focus-within:ring-amber-500/20 transition-all"
             >
               {/* Yellow/Amber Magnifier Icon */}
               <Search className="w-4.5 h-4.5 sm:w-5 sm:h-5 text-[#f59e0b] shrink-0 mr-2" />
@@ -411,7 +419,7 @@ export const Header: React.FC<HeaderProps> = ({
                 value={searchQuery}
                 onChange={(e) => setSearchQuery?.(e.target.value)}
                 placeholder="Search Jobs, Admit Cards, Results..."
-                className="w-full bg-transparent text-slate-100 placeholder-slate-400 text-xs sm:text-sm font-medium focus:outline-none border-none pr-1"
+                className="w-full bg-transparent text-slate-900 dark:text-slate-100 placeholder-slate-500 dark:placeholder-slate-400 text-xs sm:text-sm font-medium focus:outline-none border-none pr-1"
               />
 
               {/* Clear Text button */}
@@ -419,7 +427,7 @@ export const Header: React.FC<HeaderProps> = ({
                 <button
                   type="button"
                   onClick={() => setSearchQuery?.('')}
-                  className="p-1 text-slate-400 hover:text-white transition-colors mr-1 cursor-pointer"
+                  className="p-1 text-slate-400 hover:text-slate-600 dark:hover:text-white transition-colors mr-1 cursor-pointer"
                   title="Clear text"
                 >
                   <X className="w-3.5 h-3.5" />
@@ -432,15 +440,15 @@ export const Header: React.FC<HeaderProps> = ({
                 onClick={handleVoiceSearch}
                 className={`p-1.5 rounded-full transition-colors mr-1.5 sm:mr-2 cursor-pointer ${
                   voiceListening 
-                    ? 'text-red-400 bg-red-500/20 animate-pulse' 
-                    : 'text-slate-400 hover:text-amber-400'
+                    ? 'text-red-500 bg-red-500/20 animate-pulse' 
+                    : 'text-slate-500 dark:text-slate-400 hover:text-amber-500'
                 }`}
                 title="Voice Search (Hindi / English)"
               >
                 <Mic className="w-4 h-4 sm:w-4.5 sm:h-4.5" />
               </button>
 
-              {/* Orange/Amber Search Button (exact match with image.png) */}
+              {/* Orange/Amber Search Button */}
               <button
                 type="submit"
                 className="bg-[#f59e0b] hover:bg-[#d97706] active:bg-[#b45309] text-slate-950 font-black text-xs sm:text-sm px-3.5 sm:px-5 py-1.5 rounded-xl shadow-md transition-all shrink-0 hover:scale-105 active:scale-95 cursor-pointer"
@@ -716,10 +724,10 @@ export const Header: React.FC<HeaderProps> = ({
       {/* Floating Live Autocomplete Dropdown when searching in Mobile App */}
       {isApplication && isAppSearchOpen && searchSuggestions.length > 0 && (
         <div className="absolute top-full left-0 right-0 max-w-2xl mx-auto px-3 sm:px-4 mt-1 z-50 animate-in fade-in slide-in-from-top-1 duration-150">
-          <div className="bg-[#0b1220]/95 dark:bg-[#070d18]/95 backdrop-blur-md border border-amber-500/30 rounded-2xl shadow-2xl overflow-hidden py-1.5 divide-y divide-slate-800">
-            <div className="px-3.5 py-1 text-[11px] font-bold text-amber-400 flex items-center justify-between">
-              <span>Matching Jobs & Alerts ({searchSuggestions.length})</span>
-              <span className="text-[10px] text-slate-400">Tap to view</span>
+          <div className="bg-white/95 dark:bg-[#070d18]/95 backdrop-blur-md border border-slate-200 dark:border-amber-500/30 rounded-2xl shadow-xl dark:shadow-2xl overflow-hidden py-1.5 divide-y divide-slate-100 dark:divide-slate-800">
+            <div className="px-3.5 py-1 text-[11px] font-bold text-amber-600 dark:text-amber-400 flex items-center justify-between">
+              <span>Matching Jobs &amp; Alerts ({searchSuggestions.length})</span>
+              <span className="text-[10px] text-slate-500 dark:text-slate-400">Tap to view</span>
             </div>
             {searchSuggestions.map((job) => (
               <button
@@ -731,14 +739,14 @@ export const Header: React.FC<HeaderProps> = ({
                   const el = document.getElementById('main-job-columns') || document.getElementById('section-latest-jobs');
                   if (el) el.scrollIntoView({ behavior: 'smooth' });
                 }}
-                className="w-full text-left px-3.5 py-2.5 hover:bg-white/5 transition-colors flex items-center justify-between group cursor-pointer"
+                className="w-full text-left px-3.5 py-2.5 hover:bg-slate-50 dark:hover:bg-white/5 transition-colors flex items-center justify-between group cursor-pointer"
               >
                 <div className="min-w-0 pr-2">
-                  <p className="text-xs font-bold text-slate-200 group-hover:text-amber-300 truncate">
+                  <p className="text-xs font-bold text-slate-900 dark:text-slate-200 group-hover:text-amber-600 dark:group-hover:text-amber-300 truncate">
                     {job.title}
                   </p>
-                  <p className="text-[10px] text-slate-400 flex items-center gap-2 mt-0.5">
-                    <span className="capitalize bg-amber-500/10 text-amber-300 px-1.5 py-0.2 rounded font-semibold">{job.category?.replace('-', ' ')}</span>
+                  <p className="text-[10px] text-slate-500 dark:text-slate-400 flex items-center gap-2 mt-0.5">
+                    <span className="capitalize bg-amber-100 text-amber-800 dark:bg-amber-500/10 dark:text-amber-300 px-1.5 py-0.2 rounded font-semibold">{job.category?.replace('-', ' ')}</span>
                     <span>{job.postDate}</span>
                     {job.state && <span>• {job.state}</span>}
                   </p>

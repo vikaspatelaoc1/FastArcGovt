@@ -18,6 +18,7 @@ import {
   Mail,
   Bell,
   Trash2,
+  Smartphone,
   LucideIcon 
 } from 'lucide-react';
 import { SuperAdminTabType } from '../types';
@@ -55,6 +56,30 @@ export const SUPER_ADMIN_MODULES: SuperAdminModuleConfig[] = [
     color: 'text-indigo-400',
     hoverBg: 'hover:bg-indigo-950/40',
     tag: 'MASTER-CONTROL'
+  },
+  {
+    id: 'mobileTabs',
+    label: 'Mobile App Tabs & Tools Customizer',
+    shortLabel: 'Mobile App Tabs',
+    description: 'Customize mobile app buttons, category colors, left/right movement & exam utility tools',
+    icon: Smartphone,
+    category: 'content',
+    categoryLabel: 'Content & Updates',
+    color: 'text-rose-400',
+    hoverBg: 'hover:bg-rose-950/40',
+    tag: 'MOBILE-APP'
+  },
+  {
+    id: 'mobileCardSizing',
+    label: 'Mobile PWA Job Cards & Icons Customizer',
+    shortLabel: 'PWA Card Sizing',
+    description: 'Adjust width, height, padding, and icon dimensions of job cards specifically for Mobile PWA view',
+    icon: Smartphone,
+    category: 'content',
+    categoryLabel: 'Content & Updates',
+    color: 'text-sky-400',
+    hoverBg: 'hover:bg-sky-950/40',
+    tag: 'MOBILE-PWA'
   },
   {
     id: 'analytics',
@@ -340,6 +365,18 @@ export const SUPER_ADMIN_MODULES: SuperAdminModuleConfig[] = [
     categoryLabel: 'Core Operations',
     color: 'text-green-400',
     hoverBg: 'hover:bg-green-950/40'
+  },
+  {
+    id: 'documentCenter',
+    label: 'Document Center Management',
+    shortLabel: 'Student Docs',
+    description: 'Manage student document services, verification links, and tools.',
+    icon: Database, // Will change later if FileText is imported
+    category: 'content',
+    categoryLabel: 'Content & Updates',
+    color: 'text-indigo-500',
+    hoverBg: 'hover:bg-indigo-950/40',
+    tag: 'NEW'
   }
 ];
 

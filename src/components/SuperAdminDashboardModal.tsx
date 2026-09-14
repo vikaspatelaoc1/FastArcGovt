@@ -22,8 +22,12 @@ import { CategorySeoEditorTab } from './CategorySeoEditorTab';
 import { SitemapGeneratorTab } from './SitemapGeneratorTab';
 import { WebsiteControlTab } from './WebsiteControlTab';
 import { JobsManagerTab } from './JobsManagerTab';
+import { MobileAppButtonsManagerTab } from './MobileAppButtonsManagerTab';
 import { PagesManagerTab, ApiAnalyticsTab, ActivityLogsTab, HelpdeskTab, AutoBroadcasterTab, AdsManagerTab, EmailNotificationsTab } from './NewAdminTabs';
+import { AdminStudentDocuments } from './AdminStudentDocuments';
 import { defaultSocialLinks } from '../data';
+import { DEFAULT_MOBILE_TABS_CONFIG } from '../data/mobileTabsData';
+import { MobileTabsConfig } from '../types';
 import { 
   saveEmployeeToFirestore, 
   deleteEmployeeFromFirestore, 
@@ -64,6 +68,8 @@ interface SuperAdminDashboardModalProps {
   setSiteLogo?: (logo: string) => void;
   onEditJob?: (id: string, e: React.MouseEvent) => void;
   onDeleteJob?: (id: string, e: React.MouseEvent) => void;
+  mobileTabsConfig?: MobileTabsConfig;
+  onSaveMobileTabsConfig?: (newConfig: MobileTabsConfig) => Promise<void> | void;
 }
 
 export const SuperAdminDashboardModal: React.FC<SuperAdminDashboardModalProps> = ({
@@ -95,7 +101,9 @@ export const SuperAdminDashboardModal: React.FC<SuperAdminDashboardModalProps> =
   siteLogo,
   setSiteLogo,
   onEditJob,
-  onDeleteJob
+  onDeleteJob,
+  mobileTabsConfig = DEFAULT_MOBILE_TABS_CONFIG,
+  onSaveMobileTabsConfig = () => {}
 }) => {
   const [activeTab, setActiveTab] = useState<SuperAdminTabType>(initialTab);
   const [show3DotMenu, setShow3DotMenu] = useState(false);
@@ -1121,6 +1129,26 @@ export const SuperAdminDashboardModal: React.FC<SuperAdminDashboardModalProps> =
               />
             )}
 
+            {/* TAB: MOBILE APP TABS, BUTTONS & TOOLS */}
+            {activeTab === 'mobileTabs' && (
+              <MobileAppButtonsManagerTab
+                config={mobileTabsConfig}
+                onSave={onSaveMobileTabsConfig}
+                onToast={onToast}
+                initialSubTab="categories"
+              />
+            )}
+
+            {/* TAB: MOBILE PWA JOB CARDS & ICONS SIZING */}
+            {activeTab === 'mobileCardSizing' && (
+              <MobileAppButtonsManagerTab
+                config={mobileTabsConfig}
+                onSave={onSaveMobileTabsConfig}
+                onToast={onToast}
+                initialSubTab="cardSizing"
+              />
+            )}
+
             {/* TAB: JOBS MANAGER & BULK DELETE */}
             {activeTab === 'jobsManager' && (
               <JobsManagerTab
@@ -2103,6 +2131,12 @@ export const SuperAdminDashboardModal: React.FC<SuperAdminDashboardModalProps> =
                   jobs={jobs}
                   onToast={onToast}
                 />
+              </div>
+            )}
+
+            {activeTab === 'documentCenter' && (
+              <div className="animate-in fade-in duration-200">
+                <AdminStudentDocuments />
               </div>
             )}
 

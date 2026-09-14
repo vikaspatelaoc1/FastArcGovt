@@ -52,6 +52,7 @@ export interface WebsiteLayoutConfig {
   cardBorderRadius: 'none' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl';
   cardShadow: 'none' | 'sm' | 'md' | 'lg' | 'xl';
   columnGridColumns: 2 | 3 | 4;
+  mobileColumnLayout?: '1-col' | '2-col'; // Support for 2 columns on mobile
   cardBorderWidth: string; // '0px' | '1px' | '2px'
 }
 
@@ -67,6 +68,7 @@ export interface CustomNavLinkItem {
 export interface WebsiteHeaderConfig {
   portalTitle: string;
   portalTagline: string;
+  domainName?: string; // e.g. FastArcGovt.info
   logoUrl: string;
   logoSize: number; // in px e.g. 36
   headerHeight: number; // in px e.g. 64
@@ -262,11 +264,13 @@ export const DEFAULT_WEBSITE_CONTROL_CONFIG: WebsiteControlConfig = {
     cardBorderRadius: 'xl',
     cardShadow: 'sm',
     columnGridColumns: 3,
+    mobileColumnLayout: '1-col',
     cardBorderWidth: '1px'
   },
   header: {
     portalTitle: 'Fast_Arc_Govt  Naukri',
     portalTagline: 'Fastest Central & State Govt Exam Notifications',
+    domainName: 'FastArcGovt.info',
     logoUrl: '/logo.png',
     logoSize: 38,
     headerHeight: 64,
@@ -281,7 +285,8 @@ export const DEFAULT_WEBSITE_CONTROL_CONFIG: WebsiteControlConfig = {
       { id: 'nl-results', label: 'Results', url: '#results', enabled: true },
       { id: 'nl-answerkey', label: 'Answer Key', url: '#answer-key', enabled: true },
       { id: 'nl-syllabus', label: 'Syllabus', url: '#syllabus', enabled: true },
-      { id: 'nl-admission', label: 'Admission', url: '#admission', enabled: true }
+      { id: 'nl-admission', label: 'Admission', url: '#admission', enabled: true },
+      { id: 'nl-student-docs', label: '📄 Student Document Tool', url: '/student-documents', enabled: true }
     ]
   },
   footer: {

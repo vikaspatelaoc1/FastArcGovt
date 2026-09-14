@@ -1,7 +1,7 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { ChevronDown, ChevronUp, ArrowRight, Sparkles, Edit2, ArrowUpDown } from 'lucide-react';
-import { JobAlert, JobCategory } from '../types';
+import { JobAlert, JobCategory, MobilePwaCardConfig } from '../types';
 import { CategoryIcon } from './CategoryIcon';
 import { VirtualizedJobList } from './VirtualizedJobList';
 
@@ -67,6 +67,8 @@ interface JobColumnProps {
   initialLimit?: number;
   maxHeightClass?: string;
   maxHeightExpandedClass?: string;
+  isPwaMode?: boolean;
+  pwaCardConfig?: MobilePwaCardConfig;
 }
 
 export const JobColumn: React.FC<JobColumnProps> = ({ 
@@ -95,18 +97,22 @@ export const JobColumn: React.FC<JobColumnProps> = ({
   searchQuery = '',
   initialLimit = 15,
   maxHeightClass = 'max-h-[460px]',
-  maxHeightExpandedClass = 'max-h-[700px]'
+  maxHeightExpandedClass = 'max-h-[700px]',
+  isPwaMode: isPwaModeProp,
+  pwaCardConfig
 }) => {
   const [isExpanded, setIsExpanded] = useState(defaultExpanded);
-  const [isPwaMode, setIsPwaMode] = useState(false);
+  const [detectedPwaMode, setDetectedPwaMode] = useState(false);
 
   useEffect(() => {
     const mediaQuery = window.matchMedia("(display-mode: standalone)");
-    setIsPwaMode(mediaQuery.matches);
-    const handler = (e: MediaQueryListEvent) => setIsPwaMode(e.matches);
+    setDetectedPwaMode(mediaQuery.matches);
+    const handler = (e: MediaQueryListEvent) => setDetectedPwaMode(e.matches);
     mediaQuery.addEventListener("change", handler);
     return () => mediaQuery.removeEventListener("change", handler);
   }, []);
+
+  const activePwaMode = isPwaModeProp !== undefined ? isPwaModeProp : detectedPwaMode;
   const [sortOrder, setSortOrder] = useState<'recent' | 'oldest'>(defaultSort);
 
   const sortedCategoryJobs = useMemo(() => {
@@ -121,7 +127,7 @@ export const JobColumn: React.FC<JobColumnProps> = ({
     });
   }, [jobs, categoryId, disableFilter, sortOrder]);
 
-  const effectiveLimit = isPwaMode ? 5 : initialLimit;
+  const effectiveLimit = activePwaMode ? 5 : initialLimit;
   const displayJobs = isExpanded || disableFilter ? sortedCategoryJobs : sortedCategoryJobs.slice(0, effectiveLimit);
   const hasMore = sortedCategoryJobs.length > effectiveLimit;
 
@@ -149,11 +155,14 @@ export const JobColumn: React.FC<JobColumnProps> = ({
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, ease: "easeOut" }}
       id={id} 
-      className={`bg-white dark:bg-slate-900 flex flex-col overflow-hidden transition-all duration-300 h-full scroll-mt-24 rounded-2xl border border-slate-200/90 dark:border-slate-700/90 shadow-sm hover:shadow-md hover:border-slate-300 dark:hover:border-slate-600 ${
+      className={`pwa-job-column-card bg-white dark:bg-slate-900 flex flex-col overflow-hidden transition-all duration-300 h-full scroll-mt-24 rounded-2xl border border-slate-200/90 dark:border-slate-700/90 shadow-sm hover:shadow-md hover:border-slate-300 dark:hover:border-slate-600 ${
         className
       } ${
         isExpanded ? 'ring-2 ring-amber-500/30 dark:ring-amber-400/30 shadow-lg z-10' : ''
       }`}
+      style={activePwaMode && pwaCardConfig ? {
+        borderRadius: pwaCardConfig.columnBorderRadius !== undefined ? `${pwaCardConfig.columnBorderRadius}px` : undefined,
+      } : undefined}
     >
       {/* Column Header */}
       <div 
@@ -169,7 +178,18 @@ export const JobColumn: React.FC<JobColumnProps> = ({
           role={onSeeMore && !disableFilter ? "button" : undefined}
           tabIndex={onSeeMore && !disableFilter ? 0 : undefined}
         >
-          <span className="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-white/15 flex items-center justify-center shrink-0 overflow-hidden shadow-xs">
+          <span 
+            className="pwa-column-header-icon-box rounded-lg bg-white/15 flex items-center justify-center shrink-0 overflow-hidden shadow-xs"
+            style={activePwaMode && pwaCardConfig ? {
+              width: `${pwaCardConfig.columnHeaderIconWidth || 28}px`,
+              height: `${pwaCardConfig.columnHeaderIconHeight || 28}px`,
+              minWidth: `${pwaCardConfig.columnHeaderIconWidth || 28}px`,
+              minHeight: `${pwaCardConfig.columnHeaderIconHeight || 28}px`
+            } : {
+              width: '28px',
+              height: '28px'
+            }}
+          >
             <CategoryIcon icon={icon} className="w-4 h-4 sm:w-4.5 sm:h-4.5 object-contain shrink-0" />
           </span>
           <div className="min-w-0 flex-1 flex items-center justify-center">
@@ -238,20 +258,22 @@ export const JobColumn: React.FC<JobColumnProps> = ({
         maxHeightClass={isExpanded ? 'h-auto' : 'h-auto'}
         emptyMessage={`No items found in ${title}.`}
         isExpanded={isExpanded}
+        isPwaMode={activePwaMode}
+        pwaCardConfig={pwaCardConfig}
       />
 
       {/* Action footer: See More Tab */}
       {!disableFilter && (
-        <div className={`pt-2 pb-3 px-3 flex items-center shrink-0 ${isPwaMode ? 'justify-center bg-transparent rounded-b-xl' : 'sm:px-4 sm:justify-between border-t border-slate-100 dark:border-slate-800/80 bg-slate-50/50 dark:bg-slate-900/50 rounded-b-xl'}`}>
+        <div className={`pt-2 pb-3 px-3 flex items-center shrink-0 ${activePwaMode ? 'justify-center bg-transparent rounded-b-xl' : 'sm:px-4 sm:justify-between border-t border-slate-100 dark:border-slate-800/80 bg-slate-50/50 dark:bg-slate-900/50 rounded-b-xl'}`}>
           {onSeeMore && (
             <button 
               onClick={handleOpenTab}
-              className={isPwaMode 
+              className={activePwaMode 
                 ? "inline-flex items-center justify-center px-6 py-1.5 text-[13px] font-medium text-black dark:text-white border border-[#b01a33] rounded-full hover:bg-rose-50 dark:hover:bg-rose-900/20 transition-colors cursor-pointer"
                 : "inline-flex items-center justify-center gap-1 px-2 py-2 text-xs sm:text-sm font-extrabold text-amber-600 hover:text-amber-700 dark:text-amber-500 dark:hover:text-amber-400 bg-transparent transition-colors cursor-pointer ml-auto"
               }
             >
-              {isPwaMode ? 'View More' : (
+              {activePwaMode ? 'View More' : (
                 <>
                   <span>See More</span>
                   <ArrowRight className="w-4 h-4" />

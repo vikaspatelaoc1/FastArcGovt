@@ -1,3 +1,4 @@
+import { getDomainName, getDomainNameLowercase } from '../utils/domain';
 import { DynamicPageItem } from '../types';
 
 export const defaultDynamicPages: Record<string, DynamicPageItem> = {
@@ -125,7 +126,7 @@ export const defaultDynamicPages: Record<string, DynamicPageItem> = {
       <span>Important Legal Non-Government Affiliation Disclaimer</span>
     </div>
     <p class="text-xs text-rose-200 leading-relaxed">
-      <strong>Fast_Arc Govt Result (fastarcgovt.info) is a private, independent educational and recruitment news indexing platform.</strong> We are <u>NOT</u> associated, affiliated, endorsed by, or in any way officially connected with the Government of India, UPSC, SSC, State Public Service Commissions (UPPSC, BPSC, MPPSC), NTA, Railway Recruitment Boards (RRB), or any other Central or State Government Agency.
+      <strong>Fast_Arc Govt Result (${getDomainNameLowercase()}) is a private, independent educational and recruitment news indexing platform.</strong> We are <u>NOT</u> associated, affiliated, endorsed by, or in any way officially connected with the Government of India, UPSC, SSC, State Public Service Commissions (UPPSC, BPSC, MPPSC), NTA, Railway Recruitment Boards (RRB), or any other Central or State Government Agency.
     </p>
   </div>
 
@@ -164,12 +165,12 @@ export const defaultDynamicPages: Record<string, DynamicPageItem> = {
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
       <div class="p-3 rounded-xl bg-slate-900 border border-slate-700">
         <span class="text-[10px] uppercase font-bold text-slate-400 block">General Support & Inquiries</span>
-        <strong class="text-amber-400 font-mono text-xs">support@fastarcgovt.info</strong>
+        <strong class="text-amber-400 font-mono text-xs">support@${getDomainNameLowercase()}</strong>
       </div>
 
       <div class="p-3 rounded-xl bg-slate-900 border border-slate-700">
         <span class="text-[10px] uppercase font-bold text-slate-400 block">Grievance & Legal Officer</span>
-        <strong class="text-slate-200 font-mono text-xs">contact@fastarcgovt.info</strong>
+        <strong class="text-slate-200 font-mono text-xs">contact@${getDomainNameLowercase()}</strong>
       </div>
     </div>
   </div>

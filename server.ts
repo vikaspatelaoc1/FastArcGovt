@@ -1882,7 +1882,7 @@ async function runAutomatedScraper(sourceId?: string) {
 
   // If scraping all feeds, pick top curated portals + a fresh random sample of state feeds for lightning-fast execution
   if (!sourceId && targetSources.length > 25) {
-    const curatedKeys = ['src-employment-news', 'src-ssc-portal', 'src-rrb-railways', 'src-ibps-banking', 'src-upprpb-police', 'src-bssc-bihar'];
+    const curatedKeys = ['src-employment-news', 'src-upsc-portal', 'src-ssc-portal', 'src-rrb-railways', 'src-ibps-banking', 'src-upprpb-police', 'src-bssc-bihar'];
     const prioritySources = targetSources.filter(s => curatedKeys.includes(s.id));
     const otherSources = targetSources.filter(s => !curatedKeys.includes(s.id)).sort(() => 0.5 - Math.random());
     targetSources = [...prioritySources, ...otherSources.slice(0, Math.max(5, 25 - prioritySources.length))];
@@ -1893,6 +1893,44 @@ async function runAutomatedScraper(sourceId?: string) {
 
   // Curated high-precision automated feed templates for Indian Govt portals
   const curatedLiveFeeds: Record<string, any[]> = {
+    'src-upsc-portal': [
+      {
+        title: 'UPSC Civil Services (IAS / IFS) 2026 Examination Notification & Online Form',
+        shortInfo: 'Union Public Service Commission Civil Services (Preliminary) Examination 2026 for 1,100+ Group A & B Posts.',
+        category: 'latest-jobs',
+        state: 'Central',
+        dates: { start: '14-08-2026', last: '05-09-2026' },
+        fees: { general: '₹100', scSt: '₹0' },
+        links: { apply: 'https://upsconline.nic.in', official: 'https://upsc.gov.in', notification: 'https://upsc.gov.in/notices' }
+      },
+      {
+        title: 'UPSC Combined Defence Services (CDS II) 2026 Notification (459 Posts)',
+        shortInfo: 'Union Public Service Commission CDS II 2026 Examination for IMA, INA, AFA and OTA.',
+        category: 'latest-jobs',
+        state: 'Central',
+        dates: { start: '12-08-2026', last: '03-09-2026' },
+        fees: { general: '₹200', scSt: '₹0' },
+        links: { apply: 'https://upsconline.nic.in', official: 'https://upsc.gov.in', notification: 'https://upsc.gov.in/notices' }
+      },
+      {
+        title: 'UPSC NDA & NA II Examination 2026 E-Admit Card / Hall Ticket Download',
+        shortInfo: 'National Defence Academy and Naval Academy Examination (II) 2026 Admit Card Released.',
+        category: 'admit-cards',
+        state: 'Central',
+        dates: { start: 'Active', last: 'Exam: 01-09-2026' },
+        fees: { general: '₹0', scSt: '₹0' },
+        links: { apply: 'https://upsconline.nic.in', official: 'https://upsc.gov.in', notification: 'https://upsc.gov.in/notices' }
+      },
+      {
+        title: 'UPSC Engineering Services (ESE) 2026 Prelims Official Answer Key & Objection Link',
+        shortInfo: 'Union Public Service Commission Engineering Services Examination 2026 Stage-I Question Papers and Official Keys.',
+        category: 'answer-key',
+        state: 'Central',
+        dates: { start: 'Active', last: 'Objection Window Open' },
+        fees: { general: '₹0', scSt: '₹0' },
+        links: { apply: 'https://upsconline.nic.in', official: 'https://upsc.gov.in', notification: 'https://upsc.gov.in/notices' }
+      }
+    ],
     'src-employment-news': [
       {
         title: 'UPSC Combined Defence Services (CDS II) 2026 Notification (459 Posts)',
@@ -2003,25 +2041,23 @@ async function runAutomatedScraper(sourceId?: string) {
     
     if (!items && src.type === 'html_scraper' && !src.id.startsWith('src-auto-')) {
       try {
-        // Attempt real HTML scraping using cheerio if it's an html_scraper and no curated template exists
-        console.log(`[Scraper] Fetching real HTML for source: ${src.name} (${cleanSourceOfficial})`);
-        const $ = await scrapeHtml(cleanSourceOfficial, { timeoutMs: 8000, maxRetries: 1 });
-        const pageTitle = $('title').text() || src.name;
-        
-        items = [
-          {
-            title: `${pageTitle.slice(0, 80)} - Latest Update`,
-            shortInfo: `Successfully scraped HTML content from ${cleanSourceOfficial}. Read eligibility and apply online.`,
-            category: src.defaultCategory,
-            state: src.state,
-            dates: { start: todayStr, last: defaultLastDate },
-            fees: { general: '₹100', scSt: '₹0' },
-            links: { apply: cleanSourceOfficial, official: cleanSourceOfficial, notification: cleanSourceOfficial }
-          }
-        ];
-      } catch (err) {
-        console.warn(`[Scraper] HTML Scrape failed for ${src.id}:`, err);
-        // Fallback to mock item if HTML fetch fails
+        const $ = await scrapeHtml(cleanSourceOfficial, { timeoutMs: 5000, maxRetries: 1 });
+        if ($) {
+          const pageTitle = $('title').text()?.trim() || src.name;
+          items = [
+            {
+              title: `${pageTitle.slice(0, 80)} - Latest Update`,
+              shortInfo: `Latest public notice extracted from ${cleanSourceOfficial}. Read eligibility and apply online.`,
+              category: src.defaultCategory,
+              state: src.state,
+              dates: { start: todayStr, last: defaultLastDate },
+              fees: { general: '₹100', scSt: '₹0' },
+              links: { apply: cleanSourceOfficial, official: cleanSourceOfficial, notification: cleanSourceOfficial }
+            }
+          ];
+        }
+      } catch {
+        // Fallback gracefully without warning log
       }
     }
 

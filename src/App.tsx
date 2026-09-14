@@ -1,3 +1,5 @@
+import { StudentDocumentCenter } from './components/StudentDocumentCenter';
+import { getDomainName, getDomainNameLowercase } from './utils/domain';
 /**
  * @license
  * SPDX-License-Identifier: Apache-2.0
@@ -17,7 +19,7 @@ import { LoginModal } from './components/LoginModal';
 import { SuperAdminDashboardModal } from './components/SuperAdminDashboardModal';
 import { InfoModal } from './components/InfoModal';
 import { SubscribeModal } from './components/SubscribeModal';
-import { ModernAppView } from './components/ModernAppView';
+import { ModernAppView, ModernAppBottomSection } from './components/ModernAppView';
 import { LogoutConfirmModal } from './components/LogoutConfirmModal';
 import { FAQ } from './components/FAQ';
 import { SplashScreen } from './components/SplashScreen';
@@ -25,8 +27,10 @@ import { InstallPrompt } from './components/InstallPrompt';
 import { UpdatePrompt } from './components/UpdatePrompt';
 import { getSocialTheme } from './components/SocialLinksManager';
 import { OfficialSocialLogo } from './components/SocialIcons';
-import { JobAlert, JobCategory, EmployeeUser, SocialLinkItem, SuperAdminTabType, SyncLogEntry } from './types';
+import { JobAlert, JobCategory, EmployeeUser, SocialLinkItem, SuperAdminTabType, SyncLogEntry, MobileTabsConfig } from './types';
 import { defaultJobsDatabase, defaultSocialLinks } from './data';
+import { loadMobileTabsConfig, saveMobileTabsConfigToLocal } from './data/mobileTabsData';
+import { applyMobilePwaCardStylesToDOM } from './utils/mobilePwaCardStyles';
 import { loadThemeColors, applyThemeColorsToDOM } from './utils/themeColors';
 import { loadColumnConfigs, DEFAULT_COLUMN_CONFIGS, ColumnConfigsMap } from './utils/columnConfig';
 import { loadWebsiteControlConfig, applyWebsiteControlToDOM, WebsiteControlConfig } from './utils/websiteControlConfig';
@@ -53,7 +57,9 @@ import {
   validateFirestoreConnection,
   subscribeToAutoSync,
   saveAutoSyncToFirestore,
-  isFirestoreQuotaExceeded
+  isFirestoreQuotaExceeded,
+  subscribeToMobileTabsConfig,
+  saveMobileTabsConfigToFirestore
 } from './services/firestoreService';
 
 
@@ -508,6 +514,14 @@ export default function App() {
       }
     });
 
+    const unsubscribeMobileTabs = subscribeToMobileTabsConfig((liveTabsConfig) => {
+      if (liveTabsConfig && Array.isArray(liveTabsConfig.tools) && Array.isArray(liveTabsConfig.categoryButtons)) {
+        setMobileTabsConfig(liveTabsConfig);
+        saveMobileTabsConfigToLocal(liveTabsConfig);
+        applyMobilePwaCardStylesToDOM(liveTabsConfig.pwaCardConfig);
+      }
+    });
+
     return () => {
       unsubscribeJobs();
       unsubscribeMarquee();
@@ -519,8 +533,20 @@ export default function App() {
       unsubscribeCategorySeo();
       unsubscribeTheme();
       unsubscribeWebsiteControl();
+      unsubscribeMobileTabs();
     };
   }, []);
+
+  const [mobileTabsConfig, setMobileTabsConfig] = useState<MobileTabsConfig>(loadMobileTabsConfig);
+
+  const handleSaveMobileTabsConfig = async (newConfig: MobileTabsConfig) => {
+    setMobileTabsConfig(newConfig);
+    saveMobileTabsConfigToLocal(newConfig);
+    applyMobilePwaCardStylesToDOM(newConfig.pwaCardConfig);
+    if (!isFirestoreQuotaExceeded()) {
+      await saveMobileTabsConfigToFirestore(newConfig).catch(() => {});
+    }
+  };
 
   const [socialLinks, setSocialLinks] = useState<SocialLinkItem[]>(() => {
     if (typeof window !== 'undefined') {
@@ -676,6 +702,31 @@ export default function App() {
     window.addEventListener('fastarc_website_control_updated', handleWebsiteControlUpdate);
     return () => window.removeEventListener('fastarc_website_control_updated', handleWebsiteControlUpdate);
   }, []);
+
+  // Mobile PWA Card & Icon sizing sync
+  useEffect(() => {
+    applyMobilePwaCardStylesToDOM(mobileTabsConfig?.pwaCardConfig);
+  }, [mobileTabsConfig?.pwaCardConfig]);
+
+  useEffect(() => {
+    const handlePwaCardConfigUpdated = (e: any) => {
+      if (e.detail) {
+        applyMobilePwaCardStylesToDOM(e.detail);
+      }
+    };
+    window.addEventListener('fastarc_pwa_card_config_updated', handlePwaCardConfigUpdated);
+    return () => window.removeEventListener('fastarc_pwa_card_config_updated', handlePwaCardConfigUpdated);
+  }, []);
+
+  useEffect(() => {
+    if (typeof document !== 'undefined') {
+      if (isApplication) {
+        document.body.classList.add('is-mobile-pwa', 'is-pwa-view', 'mobile-pwa-active');
+      } else {
+        document.body.classList.remove('is-mobile-pwa', 'is-pwa-view', 'mobile-pwa-active');
+      }
+    }
+  }, [isApplication]);
 
   const [selectedJobId, setSelectedJobId] = useState<string | null>(null);
   const [activeInfoPage, setActiveInfoPage] = useState<string | null>(null);
@@ -1611,6 +1662,8 @@ export default function App() {
             syncLogs={syncLogs}
             onEditJob={handleEditJob}
             onDeleteJob={handleDeleteJob}
+            mobileTabsConfig={mobileTabsConfig}
+            onSaveMobileTabsConfig={handleSaveMobileTabsConfig}
           />
         </div>
       ) : isAdminPanelOpen ? (
@@ -1646,6 +1699,7 @@ export default function App() {
                 searchQuery={searchQuery}
                 setSearchQuery={setSearchQuery}
                 columnConfigs={columnConfigs}
+                mobileTabsConfig={mobileTabsConfig}
               />
             </div>
           ) : (
@@ -1872,6 +1926,18 @@ export default function App() {
               <p className="text-xs sm:text-sm font-black text-slate-900 dark:text-white leading-tight mt-0.5">{counts.important}</p>
             </div>
           </div>
+          
+          <div onClick={() => handleTabChange('student-docs')} className={`bg-blue-50/80 dark:bg-blue-950/20 border ${activeTab === 'student-docs' ? 'border-blue-400 dark:border-blue-500 shadow-sm ring-1 ring-blue-200 dark:ring-blue-900/50' : 'border-blue-100/80 dark:border-blue-900/40'} rounded-xl py-1.5 px-2 sm:py-2 sm:px-2.5 flex items-center space-x-2 transition-all duration-200 cursor-pointer hover:shadow-md hover:-translate-y-0.5 hover:border-blue-300 dark:hover:border-blue-700`}>
+            <div className="w-6 h-6 sm:w-7 sm:h-7 bg-blue-500 rounded-lg flex items-center justify-center text-white font-bold overflow-hidden p-0.5 shrink-0 shadow-xs">
+              <span className="text-sm">🛠️</span>
+            </div>
+            <div className="min-w-0">
+              <h4 className="text-[10px] sm:text-[11px] text-slate-600 dark:text-slate-300 font-extrabold uppercase tracking-tight truncate leading-none">
+                Document Tools
+              </h4>
+              <p className="text-xs sm:text-sm font-black text-slate-900 dark:text-white leading-tight mt-0.5">3+</p>
+            </div>
+          </div>
         </div>
 
         {activeTab === 'home' && (
@@ -1942,11 +2008,14 @@ export default function App() {
 
               if (primaryCols.length === 0) return null;
 
+              const is2ColMobile = websiteControlConfig.layout?.mobileColumnLayout === '2-col';
+              const mobileGridClass = is2ColMobile ? 'grid-cols-2' : 'grid-cols-1';
+
               const gridClass = primaryCols.length === 3 
-                ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-2.5 lg:gap-3 mb-5' 
+                ? `grid ${mobileGridClass} md:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-2.5 lg:gap-3 mb-5` 
                 : primaryCols.length === 2 
-                  ? 'grid grid-cols-1 md:grid-cols-2 gap-2 sm:gap-2.5 lg:gap-3 mb-5 max-w-6xl mx-auto' 
-                  : 'grid grid-cols-1 gap-3 mb-5 max-w-3xl mx-auto';
+                  ? `grid ${mobileGridClass} md:grid-cols-2 gap-2 sm:gap-2.5 lg:gap-3 mb-5 max-w-6xl mx-auto` 
+                  : `grid ${mobileGridClass} gap-3 mb-5 max-w-3xl mx-auto`;
 
               return (
                 <div className={gridClass}>
@@ -1975,6 +2044,8 @@ export default function App() {
                       initialLimit={col.initialLimit}
                       maxHeightClass={col.maxHeightClass}
                       maxHeightExpandedClass={col.maxHeightExpandedClass}
+                      isPwaMode={isApplication}
+                      pwaCardConfig={mobileTabsConfig?.pwaCardConfig}
                     />
                   ))}
                 </div>
@@ -2003,11 +2074,14 @@ export default function App() {
 
               if (secondaryCols.length === 0) return null;
 
+              const is2ColMobile = websiteControlConfig.layout?.mobileColumnLayout === '2-col';
+              const mobileGridClass = is2ColMobile ? 'grid-cols-2' : 'grid-cols-1';
+
               const gridClass = secondaryCols.length === 3 
-                ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-2.5 lg:gap-3 mb-5' 
+                ? `grid ${mobileGridClass} md:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-2.5 lg:gap-3 mb-5` 
                 : secondaryCols.length === 2 
-                  ? 'grid grid-cols-1 md:grid-cols-2 gap-2 sm:gap-2.5 lg:gap-3 mb-5 max-w-6xl mx-auto' 
-                  : 'grid grid-cols-1 gap-3 mb-5 max-w-3xl mx-auto';
+                  ? `grid ${mobileGridClass} md:grid-cols-2 gap-2 sm:gap-2.5 lg:gap-3 mb-5 max-w-6xl mx-auto` 
+                  : `grid ${mobileGridClass} gap-3 mb-5 max-w-3xl mx-auto`;
 
               return (
                 <div className={gridClass}>
@@ -2034,6 +2108,8 @@ export default function App() {
                       onDelete={handleDeleteJob}
                       onSeeMore={handleSeeMoreCategory}
                       initialLimit={col.initialLimit}
+                      isPwaMode={isApplication}
+                      pwaCardConfig={mobileTabsConfig?.pwaCardConfig}
                     />
                   ))}
                 </div>
@@ -2057,9 +2133,12 @@ export default function App() {
 
               if (additionalCols.length === 0) return null;
 
+              const is2ColMobile = websiteControlConfig.layout?.mobileColumnLayout === '2-col';
+              const mobileGridClass = is2ColMobile ? 'grid-cols-2' : 'grid-cols-1';
+
               const gridClass = additionalCols.length === 2 
-                ? 'grid grid-cols-1 md:grid-cols-2 gap-2 sm:gap-2.5 lg:gap-3 mb-5 max-w-6xl mx-auto' 
-                : 'grid grid-cols-1 max-w-3xl mx-auto gap-3 mb-5';
+                ? `grid ${mobileGridClass} md:grid-cols-2 gap-2 sm:gap-2.5 lg:gap-3 mb-5 max-w-6xl mx-auto` 
+                : `grid ${mobileGridClass} max-w-3xl mx-auto gap-3 mb-5`;
 
               return (
                 <div className={gridClass}>
@@ -2086,6 +2165,8 @@ export default function App() {
                       onDelete={handleDeleteJob}
                       onSeeMore={handleSeeMoreCategory}
                       initialLimit={col.initialLimit}
+                      isPwaMode={isApplication}
+                      pwaCardConfig={mobileTabsConfig?.pwaCardConfig}
                     />
                   ))}
                 </div>
@@ -2129,6 +2210,8 @@ export default function App() {
                 onEdit={handleEditJob}
                 onDelete={handleDeleteJob}
                 defaultExpanded={true}
+                isPwaMode={isApplication}
+                pwaCardConfig={mobileTabsConfig?.pwaCardConfig}
               />
             )}
             {(activeTab === 'admit-card' || activeTab === 'admit-cards') && (
@@ -2150,6 +2233,8 @@ export default function App() {
                 onEdit={handleEditJob}
                 onDelete={handleDeleteJob}
                 defaultExpanded={true}
+                isPwaMode={isApplication}
+                pwaCardConfig={mobileTabsConfig?.pwaCardConfig}
               />
             )}
             {(activeTab === 'latest-jobs' || activeTab === 'latest-job') && (
@@ -2171,6 +2256,8 @@ export default function App() {
                 onEdit={handleEditJob}
                 onDelete={handleDeleteJob}
                 defaultExpanded={true}
+                isPwaMode={isApplication}
+                pwaCardConfig={mobileTabsConfig?.pwaCardConfig}
               />
             )}
             {activeTab === 'answer-key' && (
@@ -2192,6 +2279,8 @@ export default function App() {
                 onEdit={handleEditJob}
                 onDelete={handleDeleteJob}
                 defaultExpanded={true}
+                isPwaMode={isApplication}
+                pwaCardConfig={mobileTabsConfig?.pwaCardConfig}
               />
             )}
             {activeTab === 'syllabus' && (
@@ -2213,7 +2302,12 @@ export default function App() {
                 onEdit={handleEditJob}
                 onDelete={handleDeleteJob}
                 defaultExpanded={true}
+                isPwaMode={isApplication}
+                pwaCardConfig={mobileTabsConfig?.pwaCardConfig}
               />
+            )}
+            {activeTab === 'student-docs' && (
+              <StudentDocumentCenter />
             )}
             {activeTab === 'admission' && (
               <JobColumn searchQuery={searchQuery} 
@@ -2234,6 +2328,8 @@ export default function App() {
                 onEdit={handleEditJob}
                 onDelete={handleDeleteJob}
                 defaultExpanded={true}
+                isPwaMode={isApplication}
+                pwaCardConfig={mobileTabsConfig?.pwaCardConfig}
               />
             )}
             {activeTab === 'documents' && (
@@ -2255,6 +2351,8 @@ export default function App() {
                 onEdit={handleEditJob}
                 onDelete={handleDeleteJob}
                 defaultExpanded={true}
+                isPwaMode={isApplication}
+                pwaCardConfig={mobileTabsConfig?.pwaCardConfig}
               />
             )}
             {activeTab === 'important' && (
@@ -2276,6 +2374,8 @@ export default function App() {
                 onEdit={handleEditJob}
                 onDelete={handleDeleteJob}
                 defaultExpanded={true}
+                isPwaMode={isApplication}
+                pwaCardConfig={mobileTabsConfig?.pwaCardConfig}
               />
             )}
             {activeTab === 'history' && (
@@ -2293,11 +2393,25 @@ export default function App() {
                 onDelete={handleDeleteJob}
                 disableFilter={true}
                 defaultExpanded={true}
+                isPwaMode={isApplication}
+                pwaCardConfig={mobileTabsConfig?.pwaCardConfig}
               />
             )}
           </div>
         )}
       </main>
+
+      {isApplication && (
+        <ModernAppBottomSection
+          mobileTabsConfig={mobileTabsConfig}
+          searchQuery={searchQuery}
+          setSearchQuery={setSearchQuery}
+          siteLogo={siteLogo}
+          onTabChange={handleTabChange}
+          onSelectJob={handleJobClick}
+          jobs={jobs}
+        />
+      )}
 
       {!isApplication && <FAQ />}
         </>
@@ -2452,7 +2566,7 @@ export default function App() {
             </div>
           </div>
           <div className="border-t border-slate-800 pt-6 flex flex-col md:flex-row items-center justify-between gap-4">
-            <p className="text-sm text-slate-400 font-medium">{websiteControlConfig.footer?.copyrightText || '© 2026 FastArcGovt.info - FastArc Govt Result. All Rights Reserved.'}</p>
+            <p className="text-sm text-slate-400 font-medium">{websiteControlConfig.footer?.copyrightText || '© 2026 {getDomainName()} - FastArc Govt Result. All Rights Reserved.'}</p>
             <div className="flex flex-col items-center gap-2">
               <span className="text-xs sm:text-[13px] font-black text-slate-300 uppercase tracking-widest text-center">
                 Official Channels & Social Links
