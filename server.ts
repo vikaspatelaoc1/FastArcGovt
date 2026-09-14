@@ -46,6 +46,7 @@ import { generateSitemapXml } from './src/utils/sitemapGenerator';
 import { initializeApp } from 'firebase/app';
 import { getFirestore, collection, getDocs, doc, setDoc, getDoc, deleteDoc, writeBatch, setLogLevel } from 'firebase/firestore/lite';
 import { defaultScraperSources } from './src/data/defaultScraperSources';
+import { fullCatalogJobs } from './src/data/fullCatalogJobs';
 import { scrapeHtml, parsePdfFromUrl } from './src/server/scraperUtils';
 
 dotenv.config();
@@ -162,135 +163,8 @@ const sanitizeUrl = (url?: string, defaultFallback: string = 'https://india.gov.
   return cleanOfficialUrl(url, defaultFallback);
 };
 
-// Default initial dataset with complete official links
-const defaultInitialJobs = [
-  {
-    id: 'job-ssc-cgl-2026',
-    title: 'SSC CGL 2026 Online Application Form (17,727 Posts)',
-    category: 'latest-jobs',
-    postDate: '15-08-2026',
-    isNew: true,
-    state: 'Central',
-    shortInfo: 'Staff Selection Commission (SSC) has released notification for Combined Graduate Level Examination (CGL 2026) for Inspector, Assistant Section Officer, Auditor, Tax Assistant and various Group B & C vacancies.',
-    ageLimit: '18 to 32 Years (Age Relaxation Extra as per Rules)',
-    eligibility: 'Bachelor Degree in Any Stream from Recognized University in India.',
-    fees: { general: '₹100', scSt: '₹0 (Free for SC/ST/PH/Female)' },
-    dates: { start: '10-08-2026', last: '09-09-2026' },
-    links: { 
-      apply: 'https://ssc.gov.in', 
-      official: 'https://ssc.gov.in',
-      notification: 'https://ssc.gov.in/notices'
-    }
-  },
-  {
-    id: 'job-rrb-alp-2026',
-    title: 'Railway RRB ALP & Technician 2026 (18,799 Vacancies)',
-    category: 'latest-jobs',
-    postDate: '14-08-2026',
-    isNew: true,
-    state: 'Central',
-    shortInfo: 'Railway Recruitment Boards (RRBs) have announced direct recruitment for Assistant Loco Pilot (ALP) and Technicians across all Railway Zones.',
-    ageLimit: '18 to 33 Years',
-    eligibility: 'Class 10th with ITI in relevant trade OR Diploma in Engineering.',
-    fees: { general: '₹500 (Refundable ₹400 on CBT 1)', scSt: '₹250' },
-    dates: { start: '01-08-2026', last: '31-08-2026' },
-    links: { 
-      apply: 'https://rrbapply.gov.in', 
-      official: 'https://indianrailways.gov.in',
-      notification: 'https://rrbapply.gov.in/#/auth/home'
-    }
-  },
-  {
-    id: 'job-ibps-po-2026',
-    title: 'IBPS PO / MT XIV Recruitment 2026 (4,455 Posts)',
-    category: 'latest-jobs',
-    postDate: '13-08-2026',
-    isNew: true,
-    state: 'Central',
-    shortInfo: 'Institute of Banking Personnel Selection (IBPS) Probationary Officers / Management Trainees (PO/MT) CRP-PO/MT-XIV in Participating Public Sector Banks.',
-    ageLimit: '20 to 30 Years',
-    eligibility: 'Graduation Degree in any discipline from a recognized University.',
-    fees: { general: '₹850', scSt: '₹175' },
-    dates: { start: '05-08-2026', last: '28-08-2026' },
-    links: { 
-      apply: 'https://ibps.in', 
-      official: 'https://ibps.in',
-      notification: 'https://ibps.in/index.php/crp-po-mt-xiv/'
-    }
-  },
-  {
-    id: 'job-up-police-si-2026',
-    title: 'UP Police Sub Inspector (SI) & PAC Platoon Commander (3,200 Posts)',
-    category: 'latest-jobs',
-    postDate: '12-08-2026',
-    isNew: true,
-    state: 'UP',
-    shortInfo: 'Uttar Pradesh Police Recruitment and Promotion Board (UPPRPB) invites online application for Sub Inspector (Civil Police) and Platoon Commander.',
-    ageLimit: '21 to 28 Years',
-    eligibility: 'Bachelor Degree in Any Stream from Any Recognized University in India. Height: 168 CMS for Male.',
-    fees: { general: '₹400', scSt: '₹400' },
-    dates: { start: '12-08-2026', last: '15-09-2026' },
-    links: { 
-      apply: 'https://uppbpb.gov.in', 
-      official: 'https://uppbpb.gov.in',
-      notification: 'https://uppbpb.gov.in/Recruitment'
-    }
-  },
-  {
-    id: 'job-bihar-bssc-cgl',
-    title: 'Bihar BSSC 4th Graduate Level (4th CGL) 2026 (2,648 Posts)',
-    category: 'latest-jobs',
-    postDate: '11-08-2026',
-    isNew: true,
-    state: 'Bihar',
-    shortInfo: 'Bihar Staff Selection Commission (BSSC) 4th Combined Graduate Level Examination for Secretariat Assistant, Planning Assistant & Malaria Inspector.',
-    ageLimit: '21 to 37 Years (Male), 40 Years (Female)',
-    eligibility: 'Graduate in Any Discipline / Science for specific roles.',
-    fees: { general: '₹540', scSt: '₹135' },
-    dates: { start: '08-08-2026', last: '08-09-2026' },
-    links: { 
-      apply: 'https://bssc.bihar.gov.in', 
-      official: 'https://bssc.bihar.gov.in',
-      notification: 'https://bssc.bihar.gov.in/notice_board.htm'
-    }
-  },
-  {
-    id: 'job-up-police-constable-result',
-    title: 'UP Police Constable 60,244 Post Written Exam Result & Cutoff 2026',
-    category: 'results',
-    postDate: '15-08-2026',
-    isNew: true,
-    state: 'UP',
-    shortInfo: 'UP Police Recruitment Promotion Board (UPPRPB) has declared the Written Exam Scorecard, Merit List, and Category-wise Cutoff marks for DV/PST.',
-    ageLimit: '18 to 25 Years',
-    eligibility: 'Class 12th Intermediate Passed Candidates.',
-    fees: { general: 'N/A', scSt: 'N/A' },
-    dates: { start: 'Scorecard Active', last: 'DV/PST: Sept 2026' },
-    links: { 
-      apply: 'https://uppbpb.gov.in', 
-      official: 'https://uppbpb.gov.in',
-      notification: 'https://uppbpb.gov.in/Results'
-    }
-  },
-  {
-    id: 'job-rrb-ntpc-admit',
-    title: 'Railway RRB NTPC (Graduate & Under Graduate) Admit Card 2026',
-    category: 'admit-cards',
-    postDate: '15-08-2026',
-    isNew: true,
-    state: 'Central',
-    shortInfo: 'Railway Recruitment Control Board has released CBT Stage-1 Admit Card and Exam City Slip for Non-Technical Popular Categories (NTPC).',
-    ageLimit: '18 to 33 Years',
-    eligibility: 'Registered Candidates for CEN 05/2024 & 06/2024.',
-    fees: { general: 'N/A', scSt: 'N/A' },
-    dates: { start: 'Admit Card Live', last: 'Exam Date: 25-08-2026' },
-    links: { 
-      apply: 'https://rrbapply.gov.in', 
-      official: 'https://indianrailways.gov.in',
-      notification: 'https://rrbapply.gov.in/#/auth/home'
-    }
-  }
-];
+// Full comprehensive catalog (900+ official jobs)
+const defaultInitialJobs = fullCatalogJobs;
 
 const defaultInitialEmployees = [
   {
@@ -400,7 +274,7 @@ let dbState: DatabaseSchema = {
   siteConfig: {
     siteTitle: 'FastArc Govt Jobs',
     maintenanceMode: false,
-    autoWatcherEnabled: false,
+    autoWatcherEnabled: true,
     appName: 'FastARC Result',
     shortName: 'FastArc',
     appVersion: '1.0.0'
@@ -461,8 +335,18 @@ export async function ensureDatabaseLoaded(timeoutMs = 8000): Promise<DatabaseSc
           loadedSources = [...loadedSources, ...newSources];
         }
 
+        const masterJobs = new Map<string, any>();
+        defaultInitialJobs.forEach(j => masterJobs.set(j.id, j));
+        if (Array.isArray(parsed.jobs)) {
+          parsed.jobs.forEach((j: any) => masterJobs.set(j.id, j));
+        }
+        if (Array.isArray(fsJobs)) {
+          fsJobs.forEach((j: any) => masterJobs.set(j.id, j));
+        }
+        const mergedJobsList = Array.from(masterJobs.values());
+
         dbState = {
-          jobs: (fsJobs.length > 0 ? fsJobs : (Array.isArray(parsed.jobs) && parsed.jobs.length > 0 ? parsed.jobs : defaultInitialJobs)).map(serverEnrichJob),
+          jobs: mergedJobsList.map(serverEnrichJob),
           marqueeText: typeof parsed.marqueeText === 'string' ? parsed.marqueeText : dbState.marqueeText,
           employees: Array.isArray(parsed.employees) ? parsed.employees : defaultInitialEmployees,
           subscribers: sanitizeSubscribers(fsSubs.length > 0 ? fsSubs : parsed.subscribers),
@@ -489,15 +373,20 @@ export async function ensureDatabaseLoaded(timeoutMs = 8000): Promise<DatabaseSc
         if (fs.existsSync(p)) {
           const fileContent = fs.readFileSync(p, 'utf-8');
           const parsed = JSON.parse(fileContent);
-          if (parsed && typeof parsed === 'object' && Array.isArray(parsed.jobs) && parsed.jobs.length > 0) {
+          if (parsed && typeof parsed === 'object') {
             let loadedSources = Array.isArray(parsed.scraperSources) ? parsed.scraperSources : [];
             if (loadedSources.length < 500) {
               const existingIds = new Set(loadedSources.map((s: any) => s.id));
               const newSources = defaultScraperSources.filter(s => !existingIds.has(s.id));
               loadedSources = [...loadedSources, ...newSources];
             }
+            const diskJobsMap = new Map<string, any>();
+            defaultInitialJobs.forEach(j => diskJobsMap.set(j.id, j));
+            if (Array.isArray(parsed.jobs)) {
+              parsed.jobs.forEach((j: any) => diskJobsMap.set(j.id, j));
+            }
             dbState = {
-              jobs: parsed.jobs.map(serverEnrichJob),
+              jobs: Array.from(diskJobsMap.values()).map(serverEnrichJob),
               marqueeText: typeof parsed.marqueeText === 'string' ? parsed.marqueeText : dbState.marqueeText,
               employees: Array.isArray(parsed.employees) ? parsed.employees : defaultInitialEmployees,
               subscribers: sanitizeSubscribers(parsed.subscribers),
@@ -1223,8 +1112,19 @@ app.post('/api/v1/marquee', async (req, res) => {
 
 app.post('/api/v1/scraper/toggle-watcher', async (req, res) => {
   const { enabled } = req.body;
-  dbState.siteConfig.autoWatcherEnabled = !!enabled;
+  dbState.siteConfig.autoWatcherEnabled = enabled !== false;
   await saveDatabase(dbState);
+  if (firestoreDb && !isFirestoreQuotaExhausted) {
+    try {
+      const configRef = doc(firestoreDb, 'site_config', 'autoSync');
+      await setDoc(configRef, {
+        isActive: dbState.siteConfig.autoWatcherEnabled,
+        updatedAt: new Date().toISOString()
+      }, { merge: true });
+    } catch (e) {
+      // ignore
+    }
+  }
   return res.json({ success: true, autoWatcherEnabled: dbState.siteConfig.autoWatcherEnabled });
 });
 
@@ -2181,9 +2081,10 @@ async function runAutomatedScraper(sourceId?: string) {
   return scrapedPosts;
 }
 
-app.post(['/api/v1/scraper/run', '/api/scraper/run'], async (req, res) => {
+app.all(['/api/v1/scraper/run', '/api/scraper/run'], async (req, res) => {
+  res.setHeader('Content-Type', 'application/json');
   try {
-    const { sourceId } = req.body || {};
+    const { sourceId } = (req.body || req.query || {}) as any;
     const scrapedPosts = await runAutomatedScraper(sourceId);
     
     // To prevent payload timeouts/errors on massive feed fetch, we return a randomly selected 

@@ -114,7 +114,14 @@ export const AutoFeedContent: React.FC<AutoFeedContentProps> = ({
       })
       .then(data => {
         if (data?.siteConfig) {
-          setIsAutoSyncActive(data.siteConfig.autoWatcherEnabled || false);
+          const localSaved = typeof window !== 'undefined' ? localStorage.getItem('fastarc_auto_sync') : null;
+          if (localSaved !== null) {
+            setIsAutoSyncActive(localSaved !== 'false');
+          } else if (typeof data.siteConfig.autoWatcherEnabled === 'boolean') {
+            setIsAutoSyncActive(data.siteConfig.autoWatcherEnabled);
+          } else {
+            setIsAutoSyncActive(true);
+          }
         }
       })
       .catch(err => console.warn('Failed to load watcher state:', err));
@@ -664,6 +671,9 @@ if __name__ == "__main__":
               onClick={async () => {
                 const newStatus = !isAutoSyncActive;
                 setIsAutoSyncActive(newStatus);
+                if (typeof window !== 'undefined') {
+                  localStorage.setItem('fastarc_auto_sync', String(newStatus));
+                }
                 onToast(newStatus ? "▶️ Automated Background Scraper Watcher Active!" : "⏸️ Auto-Sync Paused");
                 try {
                   const res = await fetch('/api/v1/scraper/toggle-watcher', {
@@ -677,6 +687,9 @@ if __name__ == "__main__":
                       const data = JSON.parse(text);
                       if (data?.success && typeof data.autoWatcherEnabled === 'boolean') {
                         setIsAutoSyncActive(data.autoWatcherEnabled);
+                        if (typeof window !== 'undefined') {
+                          localStorage.setItem('fastarc_auto_sync', String(data.autoWatcherEnabled));
+                        }
                       }
                     } catch {
                       // ignore parse error, state already updated optimistically
@@ -1348,7 +1361,7 @@ if __name__ == "__main__":
                             title="Filter by Type"
                           >
                             <option value="all">ALL</option>
-                            {uniqueSourceTypes.map(t => <option key={t} value={t.toLowerCase()}>{t.toUpperCase()}</option>)}
+                            {uniqueSourceTypes.map(t => <option key={String(t)} value={String(t).toLowerCase()}>{String(t).toUpperCase()}</option>)}
                           </select>
                         </div>
                         {sourceTypeFilter !== 'all' && (
@@ -1397,7 +1410,7 @@ if __name__ == "__main__":
                             title="Filter by State"
                           >
                             <option value="all">ALL</option>
-                            {uniqueSourceStates.map(s => <option key={s} value={s}>{s.toUpperCase()}</option>)}
+                            {uniqueSourceStates.map(s => <option key={String(s)} value={String(s)}>{String(s).toUpperCase()}</option>)}
                           </select>
                         </div>
                         {sourceStateFilter !== 'all' && (

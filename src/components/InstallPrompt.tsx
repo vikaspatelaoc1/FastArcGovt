@@ -51,6 +51,10 @@ export function InstallPrompt() {
       const { outcome } = await deferredPrompt.userChoice;
       if (outcome === 'accepted') {
         setShowPrompt(false);
+        try {
+          localStorage.setItem('fastarc_app_view', 'app');
+          window.dispatchEvent(new CustomEvent('fastarc_toggle_app_mode', { detail: { mode: 'app' } }));
+        } catch (e) {}
       }
       setDeferredPrompt(null);
     }

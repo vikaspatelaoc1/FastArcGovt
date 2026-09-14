@@ -269,6 +269,7 @@ export const Hero: React.FC<HeroProps> = ({ searchQuery, setSearchQuery, jobs, m
               <Search className="w-4 h-4 md:w-5 md:h-5" />
             </div>
             <input 
+              id="hero-search-input"
               type="text" 
               placeholder="Search Jobs, Admit Cards, Results..."
               value={searchQuery}

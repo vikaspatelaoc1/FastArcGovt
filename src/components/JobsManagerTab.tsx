@@ -219,7 +219,7 @@ export const JobsManagerTab: React.FC<JobsManagerTabProps> = ({
                       >
                         <option value="all">ALL</option>
                         {uniqueStates.map(st => (
-                          <option key={st} value={st}>{st.toUpperCase()}</option>
+                          <option key={String(st)} value={String(st)}>{String(st).toUpperCase()}</option>
                         ))}
                       </select>
                     </div>

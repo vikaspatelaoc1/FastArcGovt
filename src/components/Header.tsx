@@ -1,12 +1,12 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { 
   Zap, ChevronDown, Sun, Moon, ShieldCheck, Menu, X, Briefcase, FileText, 
   Award, BookOpen, GraduationCap, CheckSquare, HelpCircle, Phone, 
   Info, Shield, AlertCircle, Send, Sparkles, MoreVertical, BarChart3, Megaphone, 
-  Settings, Database, Users, UserPlus, ChevronRight, Package, LogOut, Monitor, History, Palette, Type, SlidersHorizontal, Download
+  Settings, Database, Users, UserPlus, ChevronRight, Package, LogOut, Monitor, History, Palette, Type, SlidersHorizontal, Download, Search, Bell, Mic, Smartphone
 } from 'lucide-react';
-import { SocialLinkItem, SuperAdminTabType } from '../types';
+import { SocialLinkItem, SuperAdminTabType, JobAlert } from '../types';
 import { SUPER_ADMIN_MODULES } from '../config/superAdminConfig';
 import { OfficialSocialLogo } from './SocialIcons';
 import { LanguageModal, HindiEnglishIcon, SUPPORTED_LANGUAGES, changeSiteLanguage } from './LanguageModal';
@@ -30,6 +30,11 @@ interface HeaderProps {
   onSelectState?: (stateName: string) => void;
   socialLinks?: SocialLinkItem[];
   siteLogo?: string;
+  onSearchClick?: () => void;
+  onOpenNotifications?: () => void;
+  searchQuery?: string;
+  setSearchQuery?: (q: string) => void;
+  jobs?: JobAlert[];
 }
 
 export const Header: React.FC<HeaderProps> = ({ 
@@ -49,7 +54,12 @@ export const Header: React.FC<HeaderProps> = ({
   onTabChange,
   onSelectState,
   socialLinks,
-  siteLogo = "/logo.png"
+  siteLogo = "/logo.png",
+  onSearchClick,
+  onOpenNotifications,
+  searchQuery = "",
+  setSearchQuery,
+  jobs = []
 }) => {
   const [isMoreOpen, setIsMoreOpen] = useState(false);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -72,6 +82,72 @@ export const Header: React.FC<HeaderProps> = ({
   const [isDesktopAdminOpen, setIsDesktopAdminOpen] = useState(false);
   const [isHeader3DotOpen, setIsHeader3DotOpen] = useState(false);
   const [isLanguageModalOpen, setIsLanguageModalOpen] = useState(false);
+  
+  const [isApplication, setIsApplication] = useState<boolean>(() => {
+    if (typeof window === 'undefined') return false;
+    const urlParams = new URLSearchParams(window.location.search);
+    const mode = urlParams.get('mode');
+    if (mode === 'app') return true;
+    if (mode === 'web') return false;
+    return (
+      window.matchMedia('(display-mode: standalone)').matches ||
+      window.matchMedia('(display-mode: fullscreen)').matches ||
+      window.matchMedia('(display-mode: minimal-ui)').matches ||
+      (window.navigator as any).standalone === true ||
+      document.referrer.includes('android-app://') ||
+      urlParams.get('source') === 'pwa' ||
+      urlParams.get('utm_source') === 'pwa' ||
+      localStorage.getItem('fastarc_app_view') === 'app'
+    );
+  });
+
+  useEffect(() => {
+    const checkAppMode = () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const mode = urlParams.get('mode');
+      if (mode === 'app') {
+        setIsApplication(true);
+        return;
+      }
+      if (mode === 'web') {
+        setIsApplication(false);
+        return;
+      }
+      const isStandalone =
+        window.matchMedia('(display-mode: standalone)').matches ||
+        window.matchMedia('(display-mode: fullscreen)').matches ||
+        window.matchMedia('(display-mode: minimal-ui)').matches ||
+        (window.navigator as any).standalone === true ||
+        document.referrer.includes('android-app://') ||
+        urlParams.get('source') === 'pwa' ||
+        urlParams.get('utm_source') === 'pwa' ||
+        localStorage.getItem('fastarc_app_view') === 'app';
+      setIsApplication(!!isStandalone);
+    };
+    checkAppMode();
+
+    const mqStandalone = window.matchMedia('(display-mode: standalone)');
+    const handleMq = () => checkAppMode();
+    if (mqStandalone.addEventListener) {
+      mqStandalone.addEventListener('change', handleMq);
+    }
+
+    const handleAppModeSwitch = (e: any) => {
+      if (e.detail?.mode === 'app') {
+        setIsApplication(true);
+      } else if (e.detail?.mode === 'web') {
+        setIsApplication(false);
+      }
+    };
+    window.addEventListener('fastarc_toggle_app_mode', handleAppModeSwitch);
+
+    return () => {
+      if (mqStandalone.removeEventListener) {
+        mqStandalone.removeEventListener('change', handleMq);
+      }
+      window.removeEventListener('fastarc_toggle_app_mode', handleAppModeSwitch);
+    };
+  }, []);
   const [currentLangCode, setCurrentLangCode] = useState<string>('en');
   const moreRef = useRef<HTMLDivElement>(null);
   const adminRef = useRef<HTMLDivElement>(null);
@@ -121,7 +197,22 @@ export const Header: React.FC<HeaderProps> = ({
       if (outcome === 'accepted') {
         setDeferredPrompt(null);
         setIsInstallable(false);
+        try {
+          localStorage.setItem('fastarc_app_view', 'app');
+          window.dispatchEvent(new CustomEvent('fastarc_toggle_app_mode', { detail: { mode: 'app' } }));
+        } catch (e) {}
       }
+    } else {
+      // If browser has already installed or doesn't support deferredPrompt, toggle app view directly
+      try {
+        localStorage.setItem('fastarc_app_view', 'app');
+        window.dispatchEvent(new CustomEvent('fastarc_toggle_app_mode', { detail: { mode: 'app' } }));
+        if (!window.location.search.includes('mode=app')) {
+          const newUrl = new URL(window.location.href);
+          newUrl.searchParams.set('mode', 'app');
+          window.history.pushState({}, '', newUrl.toString());
+        }
+      } catch (e) {}
     }
   };
 
@@ -261,7 +352,7 @@ export const Header: React.FC<HeaderProps> = ({
             </motion.button>
 
             <a href="#" className="flex items-center space-x-2 sm:space-x-2.5 group" onClick={(e) => handleNavClick(e, 'home')}>
-              <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full p-0.5 bg-black border border-amber-500 shadow-sm flex items-center justify-center overflow-hidden shrink-0 transform group-hover:scale-105 transition-transform duration-200">
+              <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full p-0.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-xs flex items-center justify-center overflow-hidden shrink-0 transform group-hover:scale-105 transition-transform duration-200">
                 <img 
                   src={siteLogo} 
                   alt="FastArc Logo" 
@@ -272,8 +363,9 @@ export const Header: React.FC<HeaderProps> = ({
                 />
               </div>
               <div>
-                <h1 className="text-lg sm:text-xl font-black text-slate-900 dark:text-white tracking-tight leading-none group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors">
-                  Fast<span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-600 via-amber-500 to-yellow-500 dark:from-amber-400 dark:via-yellow-400 dark:to-amber-300">Arc</span>
+                <h1 className="text-base sm:text-xl font-black text-slate-900 dark:text-white tracking-tight leading-none group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors flex items-center gap-0.5">
+                  <span>Fast</span>
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-600 via-amber-500 to-yellow-500 dark:from-amber-400 dark:via-yellow-400 dark:to-amber-300">Arc</span>
                 </h1>
                 <p className="text-[9.5px] sm:text-[10.5px] text-amber-700 dark:text-amber-400/90 font-extrabold tracking-wider uppercase mt-0.5">Govt Jobs Portal</p>
               </div>
@@ -395,7 +487,19 @@ export const Header: React.FC<HeaderProps> = ({
             )}
           </nav>
 
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-1.5 sm:space-x-2">
+            {/* 1. Notifications Button */}
+            <button 
+              onClick={onOpenNotifications}
+              className="relative w-9 h-9 flex items-center justify-center text-slate-700 hover:text-amber-500 dark:text-slate-200 dark:hover:text-amber-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-all focus:outline-none cursor-pointer shrink-0" 
+              title="Job Notifications & Alerts"
+              aria-label="Job Notifications"
+            >
+              <Bell className="w-5 h-5" />
+              <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full ring-2 ring-white dark:ring-slate-900 animate-pulse" />
+            </button>
+
+            {/* 2. Dark Mode Toggle Button */}
             <button 
               onClick={onToggleDarkMode} 
               className="relative w-9 h-9 flex items-center justify-center text-slate-600 hover:text-red-600 dark:text-slate-300 dark:hover:text-red-500 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-all focus:outline-none cursor-pointer shrink-0 overflow-hidden" 
@@ -495,7 +599,7 @@ export const Header: React.FC<HeaderProps> = ({
               {/* Drawer Header */}
               <div className="px-3.5 py-2.5 bg-white dark:bg-slate-950 text-slate-900 dark:text-white flex items-center justify-between shadow-sm dark:shadow-md sticky top-1 z-10 border-b border-slate-200 dark:border-slate-800">
                 <div className="flex items-center space-x-2.5">
-                  <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full p-0.5 bg-black border-2 border-amber-500 shadow-md flex items-center justify-center overflow-hidden shrink-0">
+                  <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full p-0.5 bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 shadow-sm flex items-center justify-center overflow-hidden shrink-0">
                     <img 
                       src={siteLogo} 
                       alt="FastArc Logo" 
@@ -575,6 +679,24 @@ export const Header: React.FC<HeaderProps> = ({
                            <button onClick={() => { setIsHeader3DotOpen(false); setIsDrawerOpen(false); onOpenSuperAdminModal?.('columns'); }} className="w-full flex items-center space-x-3 p-2 hover:bg-slate-800 rounded-lg text-left text-xs font-bold text-slate-200">
                              <Type className="w-4 h-4 text-sky-400" />
                              <span>Column Settings</span>
+                           </button>
+                           <button 
+                             onClick={() => { 
+                               setIsHeader3DotOpen(false); 
+                               setIsDrawerOpen(false); 
+                               const nextMode = isApplication ? 'web' : 'app';
+                               try {
+                                 localStorage.setItem('fastarc_app_view', nextMode);
+                               } catch(e) {}
+                               window.dispatchEvent(new CustomEvent('fastarc_toggle_app_mode', { detail: { mode: nextMode } }));
+                               const newUrl = new URL(window.location.href);
+                               newUrl.searchParams.set('mode', nextMode);
+                               window.history.pushState({}, '', newUrl.toString());
+                             }} 
+                             className="w-full flex items-center space-x-3 p-2 hover:bg-slate-800 rounded-lg text-left text-xs font-bold text-amber-300 border border-amber-500/30 bg-amber-500/10"
+                           >
+                             <Smartphone className="w-4 h-4 text-amber-400" />
+                             <span>{isApplication ? '🌐 Switch to Website View' : '📱 Switch to App View'}</span>
                            </button>
                         </div>
                       </div>

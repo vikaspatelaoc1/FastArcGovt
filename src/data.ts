@@ -1,5 +1,6 @@
 import { JobAlert, SocialLinkItem } from './types';
 import { historicalJobsDatabase } from './data/historicalJobs';
+import { fullCatalogJobs } from './data/fullCatalogJobs';
 
 const baseJobsDatabase: JobAlert[] = [
   {
@@ -1696,19 +1697,26 @@ const baseJobsDatabase: JobAlert[] = [
   }
 ];
 
-// Combine base jobs and historical 2016-2026 archives category-wise
+// Combine full catalog (750+ live government jobs), base jobs, and historical archives category-wise
 const combinedMap = new Map<string, JobAlert>();
 
-// Add historical 2016-2026 dataset first
-historicalJobsDatabase.forEach(job => {
+// Add full comprehensive catalog (900+ official jobs)
+fullCatalogJobs.forEach(job => {
   if (job && job.id) {
+    combinedMap.set(job.id, job);
+  }
+});
+
+// Add historical 2016-2026 dataset
+historicalJobsDatabase.forEach(job => {
+  if (job && job.id && !combinedMap.has(job.id)) {
     combinedMap.set(job.id, job);
   }
 });
 
 // Add and merge base jobs
 baseJobsDatabase.forEach(job => {
-  if (job && job.id) {
+  if (job && job.id && !combinedMap.has(job.id)) {
     combinedMap.set(job.id, job);
   }
 });
