@@ -34,7 +34,27 @@ interface VirtualJobRowProps {
   onMeasureHeight?: (index: number, height: number) => void;
   isPwaMode?: boolean;
   pwaCardConfig?: MobilePwaCardConfig;
+  categoryId?: string;
 }
+
+const getHyperlinkStyle = (catId?: string) => {
+  switch (catId) {
+    case 'results':
+      return 'text-[#00a86b] dark:text-[#34d399] underline decoration-[#00a86b]/40 hover:decoration-[#00a86b] font-bold';
+    case 'latest-jobs':
+      return 'text-[#f42b47] dark:text-[#fb7185] underline decoration-[#f42b47]/40 hover:decoration-[#f42b47] font-bold';
+    case 'admit-cards':
+      return 'text-[#2563eb] dark:text-[#60a5fa] underline decoration-[#2563eb]/40 hover:decoration-[#2563eb] font-bold';
+    case 'answer-key':
+      return 'text-[#d97706] dark:text-[#fbbf24] underline decoration-[#d97706]/40 hover:decoration-[#d97706] font-bold';
+    case 'syllabus':
+      return 'text-[#9333ea] dark:text-[#c084fc] underline decoration-[#9333ea]/40 hover:decoration-[#9333ea] font-bold';
+    case 'admission':
+      return 'text-[#0284c7] dark:text-[#38bdf8] underline decoration-[#0284c7]/40 hover:decoration-[#0284c7] font-bold';
+    default:
+      return 'text-blue-600 dark:text-blue-400 underline decoration-blue-500/40 hover:decoration-blue-600 font-bold';
+  }
+};
 
 const VirtualJobRow: React.FC<VirtualJobRowProps> = ({
   item,
@@ -46,7 +66,8 @@ const VirtualJobRow: React.FC<VirtualJobRowProps> = ({
   onDelete,
   onMeasureHeight,
   isPwaMode = false,
-  pwaCardConfig
+  pwaCardConfig,
+  categoryId
 }) => {
   const rowRef = useRef<HTMLDivElement | null>(null);
 
@@ -99,7 +120,7 @@ const VirtualJobRow: React.FC<VirtualJobRowProps> = ({
   return (
     <div
       ref={rowRef}
-      className={`pwa-job-card-item py-2 sm:py-2.5 px-2.5 sm:px-3 hover:bg-slate-50 dark:hover:bg-slate-850/90 transition-all duration-150 transform hover:scale-[1.004] hover:shadow-xs active:scale-[0.99] flex items-center justify-between group rounded-xl border-b border-slate-100 dark:border-slate-800/80 last:border-b-0 will-change-transform ${
+      className={`pwa-job-card-item py-2 sm:py-2.5 px-1.5 sm:px-2 hover:bg-slate-50/90 dark:hover:bg-slate-850/90 transition-all duration-150 flex items-center justify-between group border-b border-slate-100 dark:border-slate-800/80 last:border-b-0 will-change-transform ${
         isExpiringSoon ? 'bg-rose-50/50 dark:bg-rose-950/20 ring-1 ring-rose-500/40 dark:ring-rose-400/30 shadow-xs' : ''
       }`}
       style={isPwaMode ? {
@@ -129,7 +150,7 @@ const VirtualJobRow: React.FC<VirtualJobRowProps> = ({
         <div className="w-full min-w-0">
           <div className="flex items-start justify-between gap-2">
             <span 
-              className="pwa-job-card-title job-link-title-text text-[13px] sm:text-[13.5px] md:text-[14px] lg:text-[14.5px] font-bold text-slate-900 dark:text-slate-100 group-hover:text-blue-600 dark:group-hover:text-amber-400 group-hover:underline transition-colors leading-snug flex-1 min-w-0 tracking-tight"
+              className={`pwa-job-card-title job-link-title-text text-[13px] sm:text-[13.5px] md:text-[14px] lg:text-[14.5px] ${getHyperlinkStyle(categoryId)} transition-colors leading-snug flex-1 min-w-0 tracking-tight`}
               style={isPwaMode && pwaCardConfig?.cardTitleFontSize ? { fontSize: `${pwaCardConfig.cardTitleFontSize}px` } : undefined}
             >
               <HighlightText text={item.title} query={searchQuery?.trim()} />
@@ -167,7 +188,7 @@ const VirtualJobRow: React.FC<VirtualJobRowProps> = ({
                     </>
                   )}
                   {item.isNew && (
-                    <span className="bg-red-500 text-white text-[8px] sm:text-[8.5px] md:text-[9px] font-black tracking-wider px-1 py-[1.5px] sm:py-[2px] rounded-sm uppercase badge-pulse shadow-xs">
+                    <span className="bg-[#e62040] text-white text-[8.5px] sm:text-[9px] font-black tracking-wider px-1.5 py-0.5 rounded font-sans uppercase shadow-xs leading-none">
                       NEW
                     </span>
                   )}
@@ -175,16 +196,18 @@ const VirtualJobRow: React.FC<VirtualJobRowProps> = ({
               )}
             </div>
             
-            <div className="flex items-center flex-wrap gap-1.5 sm:gap-2 mt-1 sm:mt-1.5">
+            <div className="flex items-center flex-wrap gap-1.5 sm:gap-2 mt-1.5">
               <span 
                 className="pwa-job-card-meta text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 font-medium flex items-center gap-1"
                 style={isPwaMode && pwaCardConfig?.cardMetaFontSize ? { fontSize: `${pwaCardConfig.cardMetaFontSize}px` } : undefined}
               >
-                📅 {item.postDate}
+                🗓️ {item.postDate || item.dates?.start || item.dates?.last || ''}
               </span>
-              <span className="text-[10px] sm:text-[11px] bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 px-1.5 py-0.5 rounded font-bold uppercase tracking-wide border border-slate-200/80 dark:border-slate-700/80">
-                {item.state}
-              </span>
+              {item.state && (
+                <span className="text-[10px] sm:text-[10.5px] bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 px-2 py-0.5 rounded font-extrabold uppercase tracking-wide border border-slate-200/80 dark:border-slate-700/80">
+                  {item.state}
+                </span>
+              )}
               {isExpiringSoon && (
                 <span className="text-[9.5px] sm:text-[10px] bg-rose-500 text-white px-2 py-0.5 rounded font-black uppercase tracking-wider animate-pulse flex items-center gap-1 shadow-xs">
                   <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -212,6 +235,7 @@ export interface VirtualizedJobListProps {
   isExpanded?: boolean;
   isPwaMode?: boolean;
   pwaCardConfig?: MobilePwaCardConfig;
+  categoryId?: string;
 }
 
 export const VirtualizedJobList: React.FC<VirtualizedJobListProps> = ({
@@ -225,7 +249,8 @@ export const VirtualizedJobList: React.FC<VirtualizedJobListProps> = ({
   emptyMessage = 'No items found.',
   isExpanded = false,
   isPwaMode = false,
-  pwaCardConfig
+  pwaCardConfig,
+  categoryId
 }) => {
   const {
     containerRef,
@@ -265,6 +290,7 @@ export const VirtualizedJobList: React.FC<VirtualizedJobListProps> = ({
             onDelete={onDelete}
             isPwaMode={isPwaMode}
             pwaCardConfig={pwaCardConfig}
+            categoryId={categoryId}
           />
         ))}
       </div>
@@ -314,6 +340,7 @@ export const VirtualizedJobList: React.FC<VirtualizedJobListProps> = ({
                   onMeasureHeight={setItemHeight}
                   isPwaMode={isPwaMode}
                   pwaCardConfig={pwaCardConfig}
+                  categoryId={categoryId}
                 />
               </div>
             );

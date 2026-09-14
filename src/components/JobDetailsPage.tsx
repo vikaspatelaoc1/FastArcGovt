@@ -1,4 +1,4 @@
-import { getDomainName, getDomainNameLowercase } from '../utils/domain';
+import { getDomainName, getDomainNameLowercase, DOMAIN_CHANGE_EVENT } from '../utils/domain';
 import React, { useState, useEffect, useMemo } from 'react';
 import { 
   Printer, Bell, Check, Mail, Share2, ExternalLink, FileText, Globe, 
@@ -70,6 +70,19 @@ export const JobDetailsPage: React.FC<JobDetailsPageProps> = ({
   const [emailInput, setEmailInput] = useState('');
   const [subscriptionStatus, setSubscriptionStatus] = useState<string | null>(null);
   const [showScrollTop, setShowScrollTop] = useState(false);
+  const [currentDomain, setCurrentDomain] = useState<string>(getDomainName);
+
+  useEffect(() => {
+    const handleDomainChange = () => {
+      setCurrentDomain(getDomainName());
+    };
+    window.addEventListener(DOMAIN_CHANGE_EVENT, handleDomainChange);
+    window.addEventListener('storage', handleDomainChange);
+    return () => {
+      window.removeEventListener(DOMAIN_CHANGE_EVENT, handleDomainChange);
+      window.removeEventListener('storage', handleDomainChange);
+    };
+  }, []);
 
   // Update SEO Title & Meta tags dynamically
   useEffect(() => {
@@ -334,9 +347,9 @@ export const JobDetailsPage: React.FC<JobDetailsPageProps> = ({
 
             {/* FastArc Official Branding Stamp in Sarkari Red */}
             <div className="inline-block py-1 px-4 rounded-md my-1 font-black text-sm sm:text-base text-[#dc2626] dark:text-[#f87171] uppercase tracking-wider">
-              FastArc Result Official
+              FASTARC RESULT OFFICIAL
               <div className="text-xs sm:text-sm font-extrabold tracking-widest text-[#b91c1c] dark:text-[#ef4444]">
-                {getDomainName()}
+                {currentDomain.toUpperCase()}
               </div>
             </div>
 

@@ -164,53 +164,61 @@ export const JobColumn: React.FC<JobColumnProps> = ({
         borderRadius: pwaCardConfig.columnBorderRadius !== undefined ? `${pwaCardConfig.columnBorderRadius}px` : undefined,
       } : undefined}
     >
-      {/* Column Header */}
+      {/* Column Header matching screenshot */}
       <div 
         className={`${
           bgDark 
             ? 'bg-slate-800 dark:bg-slate-850' 
-            : `bg-gradient-to-r ${gradientFrom} ${gradientTo}`
-        } px-3 py-2.5 sm:px-4 sm:py-3 text-white flex justify-between items-center shrink-0 min-h-[48px] sm:min-h-[52px]`}>
+            : categoryId === 'results'
+            ? 'bg-[#00a86b]'
+            : categoryId === 'latest-jobs'
+            ? 'bg-[#f42b47]'
+            : categoryId === 'admit-cards'
+            ? 'bg-[#2563eb]'
+            : categoryId === 'answer-key'
+            ? 'bg-[#d97706]'
+            : categoryId === 'syllabus'
+            ? 'bg-[#9333ea]'
+            : categoryId === 'admission'
+            ? 'bg-[#0284c7]'
+            : `bg-gradient-to-r ${gradientFrom || 'from-slate-700'} ${gradientTo || 'to-slate-800'}`
+        } px-2 py-2 sm:px-3 sm:py-2.5 text-white flex justify-between items-center shrink-0 min-h-[44px] sm:min-h-[48px]`}>
         <div 
-          className={`flex items-center gap-2 sm:gap-2.5 min-w-0 flex-1 mr-2 ${onSeeMore && !disableFilter ? 'cursor-pointer hover:opacity-90 transition-opacity' : ''}`}
+          className={`flex items-center gap-2 sm:gap-2.5 min-w-0 flex-1 mr-2 ${onSeeMore && !disableFilter ? 'cursor-pointer hover:opacity-95 transition-opacity' : ''}`}
           onClick={onSeeMore && !disableFilter ? handleOpenTab : undefined}
           title={onSeeMore && !disableFilter ? `Open all ${title} in dedicated tab` : undefined}
           role={onSeeMore && !disableFilter ? "button" : undefined}
           tabIndex={onSeeMore && !disableFilter ? 0 : undefined}
         >
           <span 
-            className="pwa-column-header-icon-box rounded-lg bg-white/15 flex items-center justify-center shrink-0 overflow-hidden shadow-xs"
+            className="pwa-column-header-icon-box rounded-full bg-white/20 flex items-center justify-center shrink-0 overflow-hidden shadow-xs w-7 h-7 sm:w-8 sm:h-8"
             style={activePwaMode && pwaCardConfig ? {
-              width: `${pwaCardConfig.columnHeaderIconWidth || 28}px`,
-              height: `${pwaCardConfig.columnHeaderIconHeight || 28}px`,
-              minWidth: `${pwaCardConfig.columnHeaderIconWidth || 28}px`,
-              minHeight: `${pwaCardConfig.columnHeaderIconHeight || 28}px`
-            } : {
-              width: '28px',
-              height: '28px'
-            }}
+              width: `${pwaCardConfig.columnHeaderIconWidth || 30}px`,
+              height: `${pwaCardConfig.columnHeaderIconHeight || 30}px`,
+              minWidth: `${pwaCardConfig.columnHeaderIconWidth || 30}px`,
+              minHeight: `${pwaCardConfig.columnHeaderIconHeight || 30}px`
+            } : undefined}
           >
             <CategoryIcon icon={icon} className="w-4 h-4 sm:w-4.5 sm:h-4.5 object-contain shrink-0" />
           </span>
-          <div className="min-w-0 flex-1 flex items-center justify-center">
-            <div className="flex items-center justify-center gap-1.5 min-w-0">
-              <h3 className="font-bold sm:font-extrabold tracking-tight text-sm sm:text-[15px] md:text-base truncate leading-tight text-center">
-                {title}
-              </h3>
-              {badgeText && (
-                <span className="bg-amber-400 text-slate-950 text-[10px] sm:text-[11px] font-black px-1.5 py-0.5 rounded shadow-xs uppercase shrink-0 leading-none tracking-wide">
-                  {badgeText}
-                </span>
-              )}
-            </div>
+          <div className="min-w-0 flex items-center gap-1.5 flex-wrap">
+            <h3 className="font-black tracking-tight text-sm sm:text-[15px] md:text-base truncate leading-tight uppercase text-white">
+              {title}
+            </h3>
+            {badgeText && (
+              <span className="bg-[#FFCC00] text-black text-[9.5px] sm:text-[10px] font-black px-2 py-0.5 rounded shadow-xs uppercase shrink-0 leading-none tracking-wide">
+                {badgeText}
+              </span>
+            )}
           </div>
-          <span className="inline-flex items-center justify-center min-w-[24px] px-2 py-0.5 rounded-full text-xs font-bold bg-white/20 text-white backdrop-blur-xs shadow-xs shrink-0 ml-1">
-            {sortedCategoryJobs.length}
-          </span>
         </div>
 
-        {/* Right side controls: Quick Edit, Sort Toggle */}
-        <div className="flex items-center gap-1 sm:gap-1.5 shrink-0">
+        {/* Right side controls: Count, Sort Toggle, Quick Edit */}
+        <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+          <span className="inline-flex items-center justify-center min-w-[28px] px-2.5 py-0.5 rounded-full text-xs font-black bg-white/20 text-white backdrop-blur-xs shadow-xs">
+            {sortedCategoryJobs.length}
+          </span>
+
           {/* Sort Toggle Button */}
           <button
             onClick={handleToggleSort}
@@ -219,10 +227,10 @@ export const JobColumn: React.FC<JobColumnProps> = ({
                 ? 'Sorted by: Most Recent. Click to sort by Oldest.'
                 : 'Sorted by: Oldest first. Click to sort by Most Recent.'
             }
-            className={`p-1.5 sm:p-2 rounded-lg transition-all text-xs font-bold flex items-center justify-center cursor-pointer focus:outline-none focus:ring-2 focus:ring-white/40 ${
+            className={`w-7 h-7 sm:w-8 sm:h-8 rounded-lg transition-all text-xs font-bold flex items-center justify-center cursor-pointer focus:outline-none focus:ring-2 focus:ring-white/40 ${
               sortOrder === 'oldest'
-                ? 'bg-amber-400 text-slate-950 shadow-xs ring-1 ring-amber-300'
-                : 'bg-white/15 hover:bg-white/25 text-white'
+                ? 'bg-[#FFCC00] text-slate-950 shadow-xs ring-1 ring-amber-300'
+                : 'bg-white/20 hover:bg-white/30 text-white'
             }`}
             aria-label={`Toggle sort order for ${title}: currently ${
               sortOrder === 'recent' ? 'Most Recent' : 'Oldest'
@@ -238,7 +246,7 @@ export const JobColumn: React.FC<JobColumnProps> = ({
                 onQuickEditTitle();
               }}
               title={`Edit title & text for ${title}`}
-              className="p-1.5 sm:p-2 rounded-lg bg-white/15 hover:bg-amber-400 hover:text-slate-950 text-white transition-all text-xs font-bold flex items-center justify-center cursor-pointer focus:outline-none focus:ring-2 focus:ring-amber-400"
+              className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-white/20 hover:bg-[#FFCC00] hover:text-slate-950 text-white transition-all text-xs font-bold flex items-center justify-center cursor-pointer focus:outline-none focus:ring-2 focus:ring-amber-400"
               aria-label={`Edit ${title} column`}
             >
               <Edit2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
@@ -260,6 +268,7 @@ export const JobColumn: React.FC<JobColumnProps> = ({
         isExpanded={isExpanded}
         isPwaMode={activePwaMode}
         pwaCardConfig={pwaCardConfig}
+        categoryId={categoryId}
       />
 
       {/* Action footer: See More Tab */}

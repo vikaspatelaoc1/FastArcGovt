@@ -1,4 +1,4 @@
-import { getDomainName, getDomainNameLowercase } from '../utils/domain';
+import { getDomainName, getDomainNameLowercase, DOMAIN_CHANGE_EVENT } from '../utils/domain';
 import React, { useState, useMemo, useRef, useEffect, useCallback } from 'react';
 import { Search, Mic, MicOff, History, X } from 'lucide-react';
 import { JobAlert } from '../types';
@@ -37,6 +37,19 @@ export const Hero: React.FC<HeroProps> = ({ searchQuery, setSearchQuery, jobs, m
   });
   const dropdownRef = useRef<HTMLDivElement>(null);
   const recognitionRef = useRef<any>(null);
+  const [currentDomain, setCurrentDomain] = useState<string>(getDomainName);
+
+  useEffect(() => {
+    const handleDomainChange = () => {
+      setCurrentDomain(getDomainName());
+    };
+    window.addEventListener(DOMAIN_CHANGE_EVENT, handleDomainChange);
+    window.addEventListener('storage', handleDomainChange);
+    return () => {
+      window.removeEventListener(DOMAIN_CHANGE_EVENT, handleDomainChange);
+      window.removeEventListener('storage', handleDomainChange);
+    };
+  }, []);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -235,7 +248,7 @@ export const Hero: React.FC<HeroProps> = ({ searchQuery, setSearchQuery, jobs, m
       
       <div className="w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-10 relative z-10 text-center flex flex-col items-center">
         <div className="inline-block bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 text-xs font-black px-3.5 py-1 rounded-full mb-6 tracking-wide shadow-md">
-          {getDomainName()}
+          {currentDomain}
         </div>
         
         <h2 className="text-3xl md:text-5xl font-black text-white mb-4 tracking-tight">

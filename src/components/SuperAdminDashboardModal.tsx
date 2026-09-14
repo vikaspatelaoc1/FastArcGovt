@@ -5,7 +5,7 @@ import {
   Users, Download, Upload, RefreshCw, Trash2, CheckCircle2, 
   Send, AlertTriangle, X, Plus, Activity, UserPlus, KeyRound, 
   Eye, EyeOff, Lock, Unlock, Check, MoreVertical, SlidersHorizontal, Menu, Package,
-  Share2, Zap, ChevronRight, Search, ChevronDown, LayoutGrid, Wifi, WifiOff
+  Share2, Zap, ChevronRight, Search, ChevronDown, LayoutGrid, Wifi, WifiOff, Globe
 } from 'lucide-react';
 import { JobAlert, EmployeeUser, EmployeePermissions, SocialLinkItem, SuperAdminTabType, SyncLogEntry } from '../types';
 import { SUPER_ADMIN_MODULES, SuperAdminModuleConfig } from '../config/superAdminConfig';
@@ -25,7 +25,8 @@ import { JobsManagerTab } from './JobsManagerTab';
 import { MobileAppButtonsManagerTab } from './MobileAppButtonsManagerTab';
 import { PagesManagerTab, ApiAnalyticsTab, ActivityLogsTab, HelpdeskTab, AutoBroadcasterTab, AdsManagerTab, EmailNotificationsTab } from './NewAdminTabs';
 import { AdminStudentDocuments } from './AdminStudentDocuments';
-import { defaultSocialLinks } from '../data';
+import { DomainEditorModal } from './DomainEditorModal';
+import { getDomainName } from '../utils/domain';
 import { DEFAULT_MOBILE_TABS_CONFIG } from '../data/mobileTabsData';
 import { MobileTabsConfig } from '../types';
 import { 
@@ -294,6 +295,7 @@ export const SuperAdminDashboardModal: React.FC<SuperAdminDashboardModalProps> =
 
   // Employee creation state
   const [showCreateEmpModal, setShowCreateEmpModal] = useState(false);
+  const [showDomainModal, setShowDomainModal] = useState(false);
   const [empName, setEmpName] = useState('');
   const [empUsername, setEmpUsername] = useState('');
   const [empPassword, setEmpPassword] = useState('');
@@ -624,6 +626,17 @@ export const SuperAdminDashboardModal: React.FC<SuperAdminDashboardModalProps> =
           </div>
 
           <div className="flex items-center space-x-2">
+            {/* Domain Name Edit Button */}
+            <button
+              onClick={() => setShowDomainModal(true)}
+              className="flex items-center gap-1.5 bg-gradient-to-r from-emerald-600 to-teal-700 hover:from-emerald-500 hover:to-teal-600 text-white font-black px-3 py-1.5 rounded-xl text-xs shadow-md transition-all cursor-pointer border border-emerald-400/40"
+              title="Edit Domain Name Across All Portal Tabs"
+            >
+              <Globe className="w-4 h-4 text-amber-300" />
+              <span className="hidden md:inline">Edit Domain:</span>
+              <span className="font-mono bg-slate-950/60 px-1.5 py-0.5 rounded text-amber-300 text-[11px]">{getDomainName()}</span>
+            </button>
+
             {/* Dropdown Logo Link Button to View Full Panel Box */}
             <button
               onClick={() => {
@@ -2288,6 +2301,13 @@ export const SuperAdminDashboardModal: React.FC<SuperAdminDashboardModalProps> =
             </div>
           </div>
         )}
+
+        {/* Domain Name Editor Modal */}
+        <DomainEditorModal
+          isOpen={showDomainModal}
+          onClose={() => setShowDomainModal(false)}
+          onToast={onToast}
+        />
 
       </div>
   );
