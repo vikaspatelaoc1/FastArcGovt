@@ -657,30 +657,19 @@ export const Header: React.FC<HeaderProps> = ({
             {/* 2. Dark Mode Toggle Button */}
             <button 
               onClick={onToggleDarkMode} 
-              className="relative w-9 h-9 flex items-center justify-center text-slate-600 hover:text-red-600 dark:text-slate-300 dark:hover:text-red-500 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-all focus:outline-none cursor-pointer shrink-0 overflow-hidden" 
+              className="relative w-9 h-9 flex items-center justify-center text-slate-600 hover:text-red-600 dark:text-slate-300 dark:hover:text-red-500 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-all focus:outline-none cursor-pointer shrink-0" 
               title={isDarkMode ? "Switch to Light Mode" : "Switch to Dark Mode"}
               aria-label="Toggle Theme"
             >
-              <AnimatePresence mode="wait" initial={false}>
-                <motion.div
-                  key={isDarkMode ? 'dark' : 'light'}
-                  initial={{ y: -25, opacity: 0, rotate: -90 }}
-                  animate={{ y: 0, opacity: 1, rotate: 0 }}
-                  exit={{ y: 25, opacity: 0, rotate: 90 }}
-                  transition={{ duration: 0.3, type: "spring", stiffness: 250, damping: 15 }}
-                  className="absolute"
-                >
-                  {isDarkMode ? (
-                    <Sun className="w-5 h-5 text-amber-400 fill-amber-400/20 drop-shadow-md" />
-                  ) : (
-                    <Moon className="w-5 h-5 text-slate-600 dark:text-slate-300" />
-                  )}
-                </motion.div>
-              </AnimatePresence>
+              {isDarkMode ? (
+                <Sun className="w-5 h-5 text-amber-400 fill-amber-400/20 drop-shadow-md" />
+              ) : (
+                <Moon className="w-5 h-5 text-slate-600 dark:text-slate-300" />
+              )}
             </button>
             
-            {/* Official Social Media Channels with Original Logos (Telegram & WhatsApp) */}
-            {(() => {
+            {/* Official Social Media Channels with Original Logos (Telegram & WhatsApp) - Hidden in Mobile App mode */}
+            {!isApplication && (() => {
               const activeSocials = (socialLinks?.filter(l => l.enabled && l.platform !== 'youtube')) || [
                 { id: 'tg', platform: 'telegram' as const, title: 'Telegram Channel', url: 'https://t.me/fastarcgovtofficial' },
                 { id: 'wa', platform: 'whatsapp' as const, title: 'WhatsApp Channel', url: 'https://whatsapp.com/channel/fastarcgovtofficial' }

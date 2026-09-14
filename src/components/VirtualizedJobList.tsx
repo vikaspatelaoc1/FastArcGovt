@@ -150,7 +150,11 @@ const VirtualJobRow: React.FC<VirtualJobRowProps> = ({
         <div className="w-full min-w-0">
           <div className="flex items-start justify-between gap-2">
             <span 
-              className={`pwa-job-card-title job-link-title-text text-[13px] sm:text-[13.5px] md:text-[14px] lg:text-[14.5px] ${getHyperlinkStyle(categoryId)} transition-colors leading-snug flex-1 min-w-0 tracking-tight`}
+              className={`pwa-job-card-title job-link-title-text text-[13px] sm:text-[13.5px] md:text-[14px] lg:text-[14.5px] ${
+                isPwaMode 
+                  ? 'font-bold text-slate-900 dark:text-slate-100 group-hover:text-blue-600 dark:group-hover:text-blue-400 group-hover:underline' 
+                  : getHyperlinkStyle(categoryId)
+              } transition-colors leading-snug flex-1 min-w-0 tracking-tight`}
               style={isPwaMode && pwaCardConfig?.cardTitleFontSize ? { fontSize: `${pwaCardConfig.cardTitleFontSize}px` } : undefined}
             >
               <HighlightText text={item.title} query={searchQuery?.trim()} />

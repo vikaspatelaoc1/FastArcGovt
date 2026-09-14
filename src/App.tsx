@@ -1830,8 +1830,9 @@ export default function App() {
       </div>
 
       <main id="main-job-columns" className="w-full mx-auto px-1 sm:px-1.5 lg:px-2 py-2 sm:py-3 flex-grow">
-        {/* Category Stat Buttons - Visible in both Mobile & Desktop */}
-        <div className="flex overflow-x-auto sm:grid sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-9 gap-2 pb-2 sm:pb-0 mb-4 no-scrollbar scroll-smooth">
+        {/* Category Stat Buttons - Visible only on website view, hidden in Mobile App mode */}
+        {!isApplication && (
+          <div className="flex overflow-x-auto sm:grid sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-9 gap-2 pb-2 sm:pb-0 mb-4 no-scrollbar scroll-smooth">
           {/* 1. LATEST JOBS */}
           <div 
             onClick={() => handleTabChange('latest-jobs')} 
@@ -2021,6 +2022,7 @@ export default function App() {
             </div>
           </div>
         </div>
+        )}
 
         {activeTab === 'home' && (
           <>
