@@ -193,7 +193,7 @@ const sanitizeSubscribers = (list: any[]): any[] => {
   if (!Array.isArray(list)) return [];
   return list.filter((s: any) => {
     const em = (s?.email || '').toLowerCase().trim();
-    return em && !em.includes('@example.com') && em !== 'rahul.kumar@gmail.com' && em !== 'priya.singh@yahoo.com' && em !== 'amit.sharma@outlook.com';
+    return !!em;
   });
 };
 
@@ -1251,6 +1251,20 @@ app.post('/api/v1/employees', async (req, res) => {
 // --- SUBSCRIBERS APIS ---
 // ==========================================
 app.get('/api/v1/subscribers', async (req, res) => {
+  if (firestoreDb && !isFirestoreQuotaExhausted) {
+    try {
+      const snap = await getDocs(collection(firestoreDb, 'subscribers'));
+      const fsSubs: any[] = [];
+      snap.forEach((doc) => {
+        fsSubs.push({ id: doc.id, ...doc.data() });
+      });
+      if (fsSubs.length > 0) {
+        dbState.subscribers = fsSubs;
+      }
+    } catch (fsErr) {
+      console.warn('⚠️ Server failed to fetch subscribers from Firestore:', fsErr);
+    }
+  }
   dbState.subscribers = sanitizeSubscribers(dbState.subscribers);
   res.json({ success: true, subscribers: dbState.subscribers });
 });
@@ -1263,18 +1277,19 @@ app.post('/api/v1/subscribers', async (req, res) => {
     return res.json({ success: true, subscribers: dbState.subscribers });
   } else if (email) {
     const cleanEmail = String(email).trim().toLowerCase();
-    // Reject sample placeholder emails
-    if (cleanEmail.includes('@example.com') || cleanEmail === 'rahul.kumar@gmail.com' || cleanEmail === 'priya.singh@yahoo.com' || cleanEmail === 'amit.sharma@outlook.com') {
-      return res.status(400).json({ success: false, error: 'Sample emails cannot be subscribed' });
-    }
-    // Prevent duplicates
+    
+    // Prevent duplicates in current state
     const exists = dbState.subscribers.some(s => (s.email || '').toLowerCase().trim() === cleanEmail);
     if (!exists) {
       const newSub = {
-        id: `sub-${Date.now()}`,
+        id: req.body.id || `sub-${Date.now()}`,
         email: String(email).trim(),
-        category: category || 'All Job Alerts',
-        date: new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })
+        category: category || req.body.category || 'All Job Alerts',
+        date: req.body.date || new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }),
+        name: req.body.name ? String(req.body.name).trim() : undefined,
+        phone: req.body.phone ? String(req.body.phone).trim() : undefined,
+        notes: req.body.notes ? String(req.body.notes).trim() : undefined,
+        message: req.body.message ? String(req.body.message).trim() : undefined,
       };
       dbState.subscribers.unshift(newSub);
       await saveDatabase(dbState);
@@ -1289,7 +1304,32 @@ app.post('/api/v1/subscribers', async (req, res) => {
 
       return res.status(201).json({ success: true, subscriber: newSub, total: dbState.subscribers.length });
     } else {
-      return res.json({ success: true, message: 'Already subscribed', total: dbState.subscribers.length });
+      // Even if already exists in local list, let's make sure it is updated/synced to Firestore just in case
+      const existingSub = dbState.subscribers.find(s => (s.email || '').toLowerCase().trim() === cleanEmail) || {};
+      const updatedSub = {
+        id: existingSub.id || `sub-${Date.now()}`,
+        email: String(email).trim(),
+        category: category || existingSub.category || 'All Job Alerts',
+        date: existingSub.date || new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }),
+        name: req.body.name ? String(req.body.name).trim() : (existingSub.name || undefined),
+        phone: req.body.phone ? String(req.body.phone).trim() : (existingSub.phone || undefined),
+        notes: req.body.notes ? String(req.body.notes).trim() : (existingSub.notes || undefined),
+        message: req.body.message ? String(req.body.message).trim() : (existingSub.message || undefined),
+      };
+      
+      // Update local array
+      dbState.subscribers = dbState.subscribers.map(s => s.id === updatedSub.id ? updatedSub : s);
+      await saveDatabase(dbState);
+
+      if (firestoreDb && !isFirestoreQuotaExhausted) {
+        try {
+          await setDoc(doc(firestoreDb, 'subscribers', updatedSub.id), updatedSub, { merge: true });
+        } catch (fsErr: any) {
+          if (isQuotaError(fsErr)) markFirestoreQuotaExhausted();
+        }
+      }
+
+      return res.json({ success: true, message: 'Already subscribed and updated details', subscriber: updatedSub, total: dbState.subscribers.length });
     }
   }
   res.status(400).json({ success: false, error: 'Email or subscribers array required' });

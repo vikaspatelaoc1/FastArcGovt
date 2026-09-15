@@ -559,6 +559,10 @@ export interface SubscriberRecord {
   email: string;
   category: string;
   date: string;
+  name?: string;
+  phone?: string;
+  notes?: string;
+  [key: string]: any;
 }
 
 export function subscribeToSubscribers(onUpdate: (subs: SubscriberRecord[]) => void) {
@@ -574,10 +578,8 @@ export function subscribeToSubscribers(onUpdate: (subs: SubscriberRecord[]) => v
       const subs: SubscriberRecord[] = [];
       snapshot.forEach((docSnap) => {
         const data = docSnap.data() as SubscriberRecord;
-        // Filter out any legacy dummy sample emails if present
-        const email = (data.email || '').toLowerCase().trim();
-        const isSample = email.includes('@example.com') || email === 'rahul.kumar@gmail.com' || email === 'priya.singh@yahoo.com' || email === 'amit.sharma@outlook.com';
-        if (!isSample && email) {
+        const email = (data.email || '').trim();
+        if (email) {
           subs.push({
             ...data,
             id: docSnap.id

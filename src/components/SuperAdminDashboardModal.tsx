@@ -229,7 +229,7 @@ export const SuperAdminDashboardModal: React.FC<SuperAdminDashboardModalProps> =
       if (Array.isArray(liveSubs)) {
         const clean = liveSubs.filter(s => {
           const em = (s.email || '').toLowerCase().trim();
-          return em && !em.includes('@example.com') && em !== 'rahul.kumar@gmail.com' && em !== 'priya.singh@yahoo.com' && em !== 'amit.sharma@outlook.com';
+          return !!em;
         });
         setSubscribers(clean);
       }
@@ -242,7 +242,7 @@ export const SuperAdminDashboardModal: React.FC<SuperAdminDashboardModalProps> =
         if (data.success && Array.isArray(data.subscribers)) {
           const clean = data.subscribers.filter((s: any) => {
             const em = (s?.email || '').toLowerCase().trim();
-            return em && !em.includes('@example.com') && em !== 'rahul.kumar@gmail.com' && em !== 'priya.singh@yahoo.com' && em !== 'amit.sharma@outlook.com';
+            return !!em;
           });
           setSubscribers(prev => (prev.length === 0 ? clean : prev));
         }
@@ -1577,6 +1577,9 @@ export const SuperAdminDashboardModal: React.FC<SuperAdminDashboardModalProps> =
                     <thead className="bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold uppercase text-[10px]">
                       <tr>
                         <th className="p-3">Subscriber Email</th>
+                        <th className="p-3">Candidate Name</th>
+                        <th className="p-3">WhatsApp / Mobile</th>
+                        <th className="p-3">Information / Query</th>
                         <th className="p-3">Category Interest</th>
                         <th className="p-3">Subscribed Date</th>
                         <th className="p-3 text-right">Action</th>
@@ -1585,12 +1588,12 @@ export const SuperAdminDashboardModal: React.FC<SuperAdminDashboardModalProps> =
                     <tbody className="divide-y divide-slate-200 dark:divide-slate-800 text-slate-800 dark:text-slate-200">
                       {subscribers.length === 0 ? (
                         <tr>
-                          <td colSpan={4} className="p-8 text-center text-slate-500 dark:text-slate-400">
+                          <td colSpan={7} className="p-8 text-center text-slate-500 dark:text-slate-400">
                             <div className="flex flex-col items-center justify-center max-w-sm mx-auto">
                               <Users className="w-8 h-8 text-slate-400 dark:text-slate-500 mb-2 opacity-50" />
                               <div className="font-bold text-xs text-slate-700 dark:text-slate-300">No Registered Subscribers</div>
                               <div className="text-[11px] text-slate-400 dark:text-slate-500 mt-1 leading-relaxed">
-                                All sample dummy emails have been removed. Candidates who subscribe on the portal will appear here in real time, or you can add real subscribers above.
+                                Candidates who subscribe on the portal will appear here in real time, along with their custom information and queries.
                               </div>
                             </div>
                           </td>
@@ -1599,6 +1602,11 @@ export const SuperAdminDashboardModal: React.FC<SuperAdminDashboardModalProps> =
                         subscribers.map((sub) => (
                           <tr key={sub.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/40">
                             <td className="p-3 font-semibold">{sub.email}</td>
+                            <td className="p-3 font-medium text-slate-700 dark:text-slate-300">{sub.name || <span className="text-slate-400 italic">N/A</span>}</td>
+                            <td className="p-3 font-mono text-slate-600 dark:text-slate-400">{sub.phone || <span className="text-slate-400 italic">N/A</span>}</td>
+                            <td className="p-3 text-slate-600 dark:text-slate-400 max-w-xs truncate" title={sub.notes || sub.message || ''}>
+                              {sub.notes || sub.message || <span className="text-slate-400 italic">None</span>}
+                            </td>
                             <td className="p-3 text-slate-500 dark:text-slate-400">{sub.category}</td>
                             <td className="p-3 text-slate-500 dark:text-slate-400">{sub.date}</td>
                             <td className="p-3 text-right">

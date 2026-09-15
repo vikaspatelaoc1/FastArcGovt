@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Bell, Mail, X, CheckCircle2, Sparkles, ShieldCheck } from 'lucide-react';
+import { Bell, Mail, X, CheckCircle2, Sparkles, ShieldCheck, User, Phone, MessageSquare } from 'lucide-react';
 import { saveSubscriberToFirestore, SubscriberRecord } from '../services/firestoreService';
 
 interface SubscribeModalProps {
@@ -16,6 +16,9 @@ export const SubscribeModal: React.FC<SubscribeModalProps> = ({
   siteLogo
 }) => {
   const [email, setEmail] = useState('');
+  const [name, setName] = useState('');
+  const [phone, setPhone] = useState('');
+  const [notes, setNotes] = useState('');
   const [isSuccess, setIsSuccess] = useState(false);
 
   if (!isOpen) return null;
@@ -29,7 +32,10 @@ export const SubscribeModal: React.FC<SubscribeModalProps> = ({
       id: `sub-${Date.now()}`,
       email: trimmedEmail,
       category: 'All Job Updates',
-      date: new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })
+      date: new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }),
+      name: name.trim(),
+      phone: phone.trim(),
+      notes: notes.trim()
     };
 
     // 1. Save directly to Firebase Firestore Cloud Database
@@ -44,7 +50,7 @@ export const SubscribeModal: React.FC<SubscribeModalProps> = ({
       await fetch('/api/v1/subscribers', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: trimmedEmail, category: 'All Job Updates' })
+        body: JSON.stringify(newSub)
       });
     } catch (err) {
       console.warn('Server subscriber save error:', err);
@@ -67,6 +73,9 @@ export const SubscribeModal: React.FC<SubscribeModalProps> = ({
     setTimeout(() => {
       setIsSuccess(false);
       setEmail('');
+      setName('');
+      setPhone('');
+      setNotes('');
       onClose();
     }, 2500);
   };
@@ -134,13 +143,14 @@ export const SubscribeModal: React.FC<SubscribeModalProps> = ({
                   <Sparkles className="w-4 h-4 text-amber-500 dark:text-amber-400" /> Never Miss Any Government Job Alert
                 </h4>
                 <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
-                  Enter your email address below to receive instant notification emails as soon as new job posts, admit cards, or exam results are published.
+                  Enter your details below to receive instant notification emails as soon as new job posts, admit cards, or exam results are published.
                 </p>
               </div>
 
-              <div className="space-y-1.5 pt-1">
+              {/* Email Address */}
+              <div className="space-y-1.5">
                 <label className="text-xs font-extrabold text-slate-700 dark:text-slate-300 uppercase tracking-wider block">
-                  Email Address
+                  Email Address <span className="text-rose-500">*</span>
                 </label>
                 <div className="relative">
                   <Mail className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
@@ -150,14 +160,65 @@ export const SubscribeModal: React.FC<SubscribeModalProps> = ({
                     placeholder="name@example.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full pl-10 pr-4 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white text-xs font-medium placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition-all shadow-inner"
+                    className="w-full pl-10 pr-4 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white text-xs font-medium placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition-all shadow-inner"
+                  />
+                </div>
+              </div>
+
+              {/* Full Name */}
+              <div className="space-y-1.5">
+                <label className="text-xs font-extrabold text-slate-700 dark:text-slate-300 uppercase tracking-wider block">
+                  Full Name <span className="text-slate-400 font-normal">(Optional)</span>
+                </label>
+                <div className="relative">
+                  <User className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                  <input
+                    type="text"
+                    placeholder="Your Name"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    className="w-full pl-10 pr-4 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white text-xs font-medium placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition-all shadow-inner"
+                  />
+                </div>
+              </div>
+
+              {/* Phone / WhatsApp */}
+              <div className="space-y-1.5">
+                <label className="text-xs font-extrabold text-slate-700 dark:text-slate-300 uppercase tracking-wider block">
+                  WhatsApp / Mobile <span className="text-slate-400 font-normal">(Optional)</span>
+                </label>
+                <div className="relative">
+                  <Phone className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                  <input
+                    type="tel"
+                    placeholder="10-digit number"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    className="w-full pl-10 pr-4 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white text-xs font-medium placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition-all shadow-inner"
+                  />
+                </div>
+              </div>
+
+              {/* Message / Query / Information */}
+              <div className="space-y-1.5">
+                <label className="text-xs font-extrabold text-slate-700 dark:text-slate-300 uppercase tracking-wider block">
+                  Questions / Exam Information Interest <span className="text-slate-400 font-normal">(Optional)</span>
+                </label>
+                <div className="relative">
+                  <MessageSquare className="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
+                  <textarea
+                    placeholder="Tell us about exams you are preparing for or questions you have..."
+                    value={notes}
+                    rows={2}
+                    onChange={(e) => setNotes(e.target.value)}
+                    className="w-full pl-10 pr-4 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white text-xs font-medium placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition-all shadow-inner resize-none"
                   />
                 </div>
               </div>
 
               <div className="flex items-center space-x-2 text-[11px] text-slate-500 dark:text-slate-400 pt-1">
                 <ShieldCheck className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
-                <span>Zero spam. Unsubscribe anytime with 1 click.</span>
+                <span>Zero spam. Secure personal information storage.</span>
               </div>
 
               <button
