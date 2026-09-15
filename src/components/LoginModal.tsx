@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { EmployeeUser } from '../types';
 import { Eye, EyeOff, KeyRound, Edit3, ShieldAlert, CheckCircle2, RotateCcw, X, ShieldCheck } from 'lucide-react';
+import { getSuperAdminCredentials, updateSuperAdminCredentials } from '../services/firestoreService';
+
 
 interface LoginModalProps {
   isOpen: boolean;
@@ -31,27 +33,65 @@ export const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, employe
 
   // Load configured Super Admin credentials on mount
   useEffect(() => {
+    // 1. Initial quick load from localStorage for rapid UX
     if (typeof window !== 'undefined') {
       const savedUser = localStorage.getItem('fastarc_superadmin_user');
       const savedPass = localStorage.getItem('fastarc_superadmin_pass');
       if (savedUser) setCurrentSuperUser(savedUser);
       if (savedPass) setCurrentSuperPass(savedPass);
     }
+
+    // 2. Real-time fetch and sync from Firestore to update local cache
+    if (isOpen) {
+      getSuperAdminCredentials().then(creds => {
+        if (creds) {
+          setCurrentSuperUser(creds.username);
+          setCurrentSuperPass(creds.password);
+          if (typeof window !== 'undefined') {
+            localStorage.setItem('fastarc_superadmin_user', creds.username);
+            localStorage.setItem('fastarc_superadmin_pass', creds.password);
+          }
+        }
+      }).catch(err => {
+        console.error("Failed to sync super admin credentials from Firestore on open:", err);
+      });
+    }
   }, [isOpen]);
 
   if (!isOpen) return null;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMsg(null);
     setSuccessMsg(null);
 
-    const activeSuperUser = typeof window !== 'undefined' 
-      ? (localStorage.getItem('fastarc_superadmin_user') || 'Vikaspatelaoc') 
-      : 'Vikaspatelaoc';
-    const activeSuperPass = typeof window !== 'undefined' 
-      ? (localStorage.getItem('fastarc_superadmin_pass') || 'JTY@67YVP') 
-      : 'JTY@67YVP';
+    // Fetch live credentials from Firestore to ensure global verification across devices
+    let activeSuperUser = 'Vikaspatelaoc';
+    let activeSuperPass = 'JTY@67YVP';
+
+    try {
+      const creds = await getSuperAdminCredentials();
+      if (creds) {
+        activeSuperUser = creds.username;
+        activeSuperPass = creds.password;
+        
+        // Sync local storage and state
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('fastarc_superadmin_user', creds.username);
+          localStorage.setItem('fastarc_superadmin_pass', creds.password);
+        }
+        setCurrentSuperUser(creds.username);
+        setCurrentSuperPass(creds.password);
+      }
+    } catch (err) {
+      console.warn("Real-time cloud credential verification failed, using local cache:", err);
+      activeSuperUser = typeof window !== 'undefined' 
+        ? (localStorage.getItem('fastarc_superadmin_user') || 'Vikaspatelaoc') 
+        : 'Vikaspatelaoc';
+      activeSuperPass = typeof window !== 'undefined' 
+        ? (localStorage.getItem('fastarc_superadmin_pass') || 'JTY@67YVP') 
+        : 'JTY@67YVP';
+    }
 
     if (role === 'superadmin') {
       if (username === activeSuperUser && password === activeSuperPass) {
@@ -86,17 +126,27 @@ export const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, employe
     }
   };
 
-  const handleSaveNewCredentials = (e: React.FormEvent) => {
+  const handleSaveNewCredentials = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMsg(null);
     setSuccessMsg(null);
 
-    const activeSuperUser = typeof window !== 'undefined' 
+    let activeSuperUser = typeof window !== 'undefined' 
       ? (localStorage.getItem('fastarc_superadmin_user') || 'Vikaspatelaoc') 
       : 'Vikaspatelaoc';
-    const activeSuperPass = typeof window !== 'undefined' 
+    let activeSuperPass = typeof window !== 'undefined' 
       ? (localStorage.getItem('fastarc_superadmin_pass') || 'JTY@67YVP') 
       : 'JTY@67YVP';
+
+    try {
+      const creds = await getSuperAdminCredentials();
+      if (creds) {
+        activeSuperUser = creds.username;
+        activeSuperPass = creds.password;
+      }
+    } catch (err) {
+      console.warn("Could not fetch latest cloud credentials to verify old credentials:", err);
+    }
 
     // Verify current credentials first
     if (verifyOldUser !== activeSuperUser || verifyOldPass !== activeSuperPass) {
@@ -114,35 +164,48 @@ export const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, employe
       return;
     }
 
-    // Save new credentials
-    localStorage.setItem('fastarc_superadmin_user', newUsername.trim());
-    localStorage.setItem('fastarc_superadmin_pass', newPassword.trim());
-    setCurrentSuperUser(newUsername.trim());
-    setCurrentSuperPass(newPassword.trim());
+    try {
+      // Save new credentials globally to Firestore cloud
+      await updateSuperAdminCredentials(newUsername.trim(), newPassword.trim());
 
-    setSuccessMsg('✅ Super Admin Username & Password updated successfully!');
-    setVerifyOldUser('');
-    setVerifyOldPass('');
-    setNewUsername('');
-    setNewPassword('');
-    
-    setTimeout(() => {
-      setIsEditingCredentials(false);
-      setSuccessMsg(null);
-    }, 1500);
-  };
+      // Save to local storage for quick access
+      localStorage.setItem('fastarc_superadmin_user', newUsername.trim());
+      localStorage.setItem('fastarc_superadmin_pass', newPassword.trim());
+      setCurrentSuperUser(newUsername.trim());
+      setCurrentSuperPass(newPassword.trim());
 
-  const handleResetToDefault = () => {
-    if (window.confirm('Reset Super Admin credentials to default (User: Vikaspatelaoc / Pass: JTY@67YVP)?')) {
-      localStorage.removeItem('fastarc_superadmin_user');
-      localStorage.removeItem('fastarc_superadmin_pass');
-      setCurrentSuperUser('Vikaspatelaoc');
-      setCurrentSuperPass('JTY@67YVP');
-      setSuccessMsg('✅ Reset to Default Super Admin Credentials successfully!');
+      setSuccessMsg('✅ Super Admin Username & Password updated globally across all devices successfully!');
+      setVerifyOldUser('');
+      setVerifyOldPass('');
+      setNewUsername('');
+      setNewPassword('');
+      
       setTimeout(() => {
         setIsEditingCredentials(false);
         setSuccessMsg(null);
-      }, 1200);
+      }, 1500);
+    } catch (err: any) {
+      setErrorMsg('⚠️ Failed to save credentials in Cloud database: ' + (err?.message || err));
+    }
+  };
+
+  const handleResetToDefault = async () => {
+    if (window.confirm('Reset Super Admin credentials globally to default (User: Vikaspatelaoc / Pass: JTY@67YVP)?')) {
+      try {
+        await updateSuperAdminCredentials('Vikaspatelaoc', 'JTY@67YVP');
+
+        localStorage.removeItem('fastarc_superadmin_user');
+        localStorage.removeItem('fastarc_superadmin_pass');
+        setCurrentSuperUser('Vikaspatelaoc');
+        setCurrentSuperPass('JTY@67YVP');
+        setSuccessMsg('✅ Reset to Default Super Admin Credentials globally!');
+        setTimeout(() => {
+          setIsEditingCredentials(false);
+          setSuccessMsg(null);
+        }, 1200);
+      } catch (err: any) {
+        setErrorMsg('⚠️ Failed to reset credentials in Cloud database: ' + (err?.message || err));
+      }
     }
   };
 

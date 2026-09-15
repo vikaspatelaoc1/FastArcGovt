@@ -167,13 +167,20 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose, onSave,
       notification: '',
       official: '',
       admitCard: '',
+      admitCardNotice: '',
       result: '',
       resultServer2: '',
       answerKey: '',
       syllabus: '',
+      applicationForm: '',
+      correctionForm: '',
+      meritList: '',
+      cutoff: '',
+      examDate: '',
       videoHindi: '',
       telegram: 'https://t.me/fastarcgovtresul',
-      whatsapp: 'https://whatsapp.com/channel/fastarc'
+      whatsapp: 'https://whatsapp.com/channel/fastarc',
+      otherLinks: []
     }
   });
 
@@ -215,13 +222,20 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose, onSave,
           official: enriched.links?.official || '',
           notification: enriched.links?.notification || '',
           admitCard: enriched.links?.admitCard || '',
+          admitCardNotice: enriched.links?.admitCardNotice || '',
           result: enriched.links?.result || '',
           resultServer2: enriched.links?.resultServer2 || '',
           answerKey: enriched.links?.answerKey || '',
           syllabus: enriched.links?.syllabus || '',
+          applicationForm: enriched.links?.applicationForm || '',
+          correctionForm: enriched.links?.correctionForm || '',
+          meritList: enriched.links?.meritList || '',
+          cutoff: enriched.links?.cutoff || '',
+          examDate: enriched.links?.examDate || '',
           videoHindi: enriched.links?.videoHindi || '',
           telegram: enriched.links?.telegram || '',
           whatsapp: enriched.links?.whatsapp || '',
+          otherLinks: enriched.links?.otherLinks || [],
         }
       });
       setActiveTab('basic');
@@ -1765,10 +1779,80 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose, onSave,
                 />
               </div>
 
+              {/* Application Form */}
+              <div>
+                <label className="block mb-1 text-slate-900 dark:text-slate-100 font-bold">
+                  10. Download Application Form Link
+                </label>
+                <input
+                  type="text"
+                  placeholder="https://commission.gov.in/application-form.pdf"
+                  value={formData.links?.applicationForm || ''}
+                  onChange={e => handleChange('applicationForm', e.target.value, 'links')}
+                  className="w-full border border-slate-300 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50 rounded-xl p-2.5 text-slate-900 dark:text-white"
+                />
+              </div>
+
+              {/* Correction Form */}
+              <div>
+                <label className="block mb-1 text-slate-900 dark:text-slate-100 font-bold">
+                  11. Correction / Edit Form Link
+                </label>
+                <input
+                  type="text"
+                  placeholder="https://commission.gov.in/correction"
+                  value={formData.links?.correctionForm || ''}
+                  onChange={e => handleChange('correctionForm', e.target.value, 'links')}
+                  className="w-full border border-slate-300 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50 rounded-xl p-2.5 text-slate-900 dark:text-white"
+                />
+              </div>
+
+              {/* Merit List */}
+              <div>
+                <label className="block mb-1 text-slate-900 dark:text-slate-100 font-bold">
+                  12. Download Merit List Link
+                </label>
+                <input
+                  type="text"
+                  placeholder="https://commission.gov.in/merit-list.pdf"
+                  value={formData.links?.meritList || ''}
+                  onChange={e => handleChange('meritList', e.target.value, 'links')}
+                  className="w-full border border-slate-300 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50 rounded-xl p-2.5 text-slate-900 dark:text-white"
+                />
+              </div>
+
+              {/* Cut Off */}
+              <div>
+                <label className="block mb-1 text-slate-900 dark:text-slate-100 font-bold">
+                  13. Download Cut Off Link
+                </label>
+                <input
+                  type="text"
+                  placeholder="https://commission.gov.in/cutoff.pdf"
+                  value={formData.links?.cutoff || ''}
+                  onChange={e => handleChange('cutoff', e.target.value, 'links')}
+                  className="w-full border border-slate-300 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50 rounded-xl p-2.5 text-slate-900 dark:text-white"
+                />
+              </div>
+
+              {/* Exam Date / City Intimation */}
+              <div>
+                <label className="block mb-1 text-slate-900 dark:text-slate-100 font-bold">
+                  14. Exam Date / City Intimation Link
+                </label>
+                <input
+                  type="text"
+                  placeholder="https://commission.gov.in/exam-city"
+                  value={formData.links?.examDate || ''}
+                  onChange={e => handleChange('examDate', e.target.value, 'links')}
+                  className="w-full border border-slate-300 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50 rounded-xl p-2.5 text-slate-900 dark:text-white"
+                />
+              </div>
+
               {/* Video Hindi */}
               <div>
                 <label className="block mb-1 text-slate-900 dark:text-slate-100 font-bold">
-                  10. Video: How to Fill Form in Hindi (YouTube)
+                  15. Video: How to Fill Form in Hindi (YouTube)
                 </label>
                 <input
                   type="text"
@@ -1782,7 +1866,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose, onSave,
               {/* Telegram */}
               <div>
                 <label className="block mb-1 text-slate-900 dark:text-slate-100 font-bold">
-                  11. Official Telegram Channel Link
+                  16. Official Telegram Channel Link
                 </label>
                 <input
                   type="text"
@@ -1796,7 +1880,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose, onSave,
               {/* WhatsApp */}
               <div>
                 <label className="block mb-1 text-slate-900 dark:text-slate-100 font-bold">
-                  12. Official WhatsApp Channel Link
+                  17. Official WhatsApp Channel Link
                 </label>
                 <input
                   type="text"
@@ -1805,6 +1889,67 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose, onSave,
                   onChange={e => handleChange('whatsapp', e.target.value, 'links')}
                   className="w-full border border-slate-300 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50 rounded-xl p-2.5 text-slate-900 dark:text-white"
                 />
+              </div>
+
+              {/* Other Important Links Dynamic Builder */}
+              <div className="col-span-1 md:col-span-2 pt-4 border-t border-slate-200 dark:border-slate-800">
+                <div className="flex items-center justify-between mb-3">
+                  <label className="block text-slate-900 dark:text-slate-100 font-bold text-sm">
+                    18. Other Important Custom Links (Dynamic Array)
+                  </label>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const current = formData.links?.otherLinks || [];
+                      handleChange('otherLinks', [...current, { title: '', url: '' }], 'links');
+                    }}
+                    className="px-3 py-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold cursor-pointer"
+                  >
+                    + Add Other Link
+                  </button>
+                </div>
+                <div className="space-y-3">
+                  {(formData.links?.otherLinks || []).map((linkItem, idx) => (
+                    <div key={idx} className="flex items-center gap-2">
+                      <input
+                        type="text"
+                        placeholder="Link Title (e.g. Age Calculator)"
+                        value={linkItem.title}
+                        onChange={e => {
+                          const updated = [...(formData.links?.otherLinks || [])];
+                          updated[idx] = { ...updated[idx], title: e.target.value };
+                          handleChange('otherLinks', updated, 'links');
+                        }}
+                        className="flex-1 border border-slate-300 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50 rounded-xl p-2.5 text-xs text-slate-900 dark:text-white"
+                      />
+                      <input
+                        type="text"
+                        placeholder="URL (https://...)"
+                        value={linkItem.url}
+                        onChange={e => {
+                          const updated = [...(formData.links?.otherLinks || [])];
+                          updated[idx] = { ...updated[idx], url: e.target.value };
+                          handleChange('otherLinks', updated, 'links');
+                        }}
+                        className="flex-1 border border-slate-300 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50 rounded-xl p-2.5 text-xs text-slate-900 dark:text-white"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const updated = (formData.links?.otherLinks || []).filter((_, i) => i !== idx);
+                          handleChange('otherLinks', updated, 'links');
+                        }}
+                        className="p-2.5 bg-red-100 dark:bg-red-950/60 text-red-600 dark:text-red-400 rounded-xl hover:bg-red-200 text-xs font-bold cursor-pointer"
+                        title="Remove Link"
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  ))}
+                  {(!formData.links?.otherLinks || formData.links.otherLinks.length === 0) && (
+                    <p className="text-xs text-slate-400 italic">No custom other links added yet. Click "+ Add Other Link" above.</p>
+                  )}
+                </div>
               </div>
 
             </div>

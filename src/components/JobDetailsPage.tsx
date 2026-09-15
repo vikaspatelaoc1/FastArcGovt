@@ -742,73 +742,80 @@ export const JobDetailsPage: React.FC<JobDetailsPageProps> = ({
               <div className="divide-y-2 divide-slate-300 dark:divide-slate-700 bg-white dark:bg-slate-900">
                 
                 {/* 1. Apply Online */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x-2 divide-slate-300 dark:divide-slate-700">
-                  <div className="p-3.5 sm:p-4 font-black text-[#d91e63] dark:text-[#f472b6] text-xs sm:text-sm uppercase flex items-center">
-                    Apply Online
+                {job.links?.apply && (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x-2 divide-slate-300 dark:divide-slate-700">
+                    <div className="p-3.5 sm:p-4 font-black text-[#d91e63] dark:text-[#f472b6] text-xs sm:text-sm uppercase flex items-center">
+                      Apply Online
+                    </div>
+                    <div className="p-3.5 sm:p-4 font-extrabold text-[#1d4ed8] dark:text-[#60a5fa] text-xs sm:text-sm flex items-center justify-start gap-3">
+                      <a
+                        href={cleanOfficialUrl(job.links.apply)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="hover:underline flex items-center gap-1 cursor-pointer"
+                      >
+                        <span>Click Here</span>
+                        <ExternalLink className="w-3.5 h-3.5 inline" />
+                      </a>
+                      {job.links?.applyServer2 && (
+                        <>
+                          <span className="text-slate-400 font-normal">|</span>
+                          <a
+                            href={cleanOfficialUrl(job.links.applyServer2)}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="hover:underline flex items-center gap-1 cursor-pointer"
+                          >
+                            <span>Server II</span>
+                            <ExternalLink className="w-3.5 h-3.5 inline" />
+                          </a>
+                        </>
+                      )}
+                    </div>
                   </div>
-                  <div className="p-3.5 sm:p-4 font-extrabold text-[#1d4ed8] dark:text-[#60a5fa] text-xs sm:text-sm flex items-center justify-start sm:justify-start gap-3">
-                    <a
-                      href={cleanOfficialUrl(job.links?.apply || '#')}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="hover:underline flex items-center gap-1 cursor-pointer"
-                    >
-                      <span>Click Here</span>
-                      <ExternalLink className="w-3.5 h-3.5 inline" />
-                    </a>
-                    {job.links?.applyServer2 && (
-                      <>
-                        <span className="text-slate-400 font-normal">|</span>
-                        <a
-                          href={cleanOfficialUrl(job.links.applyServer2)}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="hover:underline flex items-center gap-1 cursor-pointer"
-                        >
-                          <span>Server II</span>
-                        </a>
-                      </>
-                    )}
-                  </div>
-                </div>
+                )}
 
                 {/* 2. Download Notification */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x-2 divide-slate-300 dark:divide-slate-700">
-                  <div className="p-3.5 sm:p-4 font-black text-[#d91e63] dark:text-[#f472b6] text-xs sm:text-sm uppercase flex items-center">
-                    Download Notification
+                {job.links?.notification && (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x-2 divide-slate-300 dark:divide-slate-700">
+                    <div className="p-3.5 sm:p-4 font-black text-[#d91e63] dark:text-[#f472b6] text-xs sm:text-sm uppercase flex items-center">
+                      Download Notification
+                    </div>
+                    <div className="p-3.5 sm:p-4 font-extrabold text-[#1d4ed8] dark:text-[#60a5fa] text-xs sm:text-sm flex items-center gap-2">
+                      <a
+                        href={cleanOfficialUrl(job.links.notification)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="hover:underline flex items-center gap-1 cursor-pointer"
+                      >
+                        <span>Click Here</span>
+                        <ExternalLink className="w-3.5 h-3.5 inline" />
+                      </a>
+                    </div>
                   </div>
-                  <div className="p-3.5 sm:p-4 font-extrabold text-[#1d4ed8] dark:text-[#60a5fa] text-xs sm:text-sm flex items-center gap-2">
-                    <a
-                      href={cleanOfficialUrl(job.links?.notification || job.links?.official || '#')}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="hover:underline flex items-center gap-1 cursor-pointer"
-                    >
-                      <span>Click Here</span>
-                      <ExternalLink className="w-3.5 h-3.5 inline" />
-                    </a>
-                  </div>
-                </div>
+                )}
 
                 {/* 3. Official Website */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x-2 divide-slate-300 dark:divide-slate-700">
-                  <div className="p-3.5 sm:p-4 font-black text-[#d91e63] dark:text-[#f472b6] text-xs sm:text-sm uppercase flex items-center">
-                    Official Website
+                {job.links?.official && (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x-2 divide-slate-300 dark:divide-slate-700">
+                    <div className="p-3.5 sm:p-4 font-black text-[#d91e63] dark:text-[#f472b6] text-xs sm:text-sm uppercase flex items-center">
+                      Official Website
+                    </div>
+                    <div className="p-3.5 sm:p-4 font-extrabold text-[#1d4ed8] dark:text-[#60a5fa] text-xs sm:text-sm flex items-center gap-2">
+                      <a
+                        href={cleanOfficialUrl(job.links.official)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="hover:underline flex items-center gap-1 cursor-pointer truncate max-w-xs sm:max-w-md"
+                      >
+                        <span>{job.orgName || 'Official'} Website</span>
+                        <ExternalLink className="w-3.5 h-3.5 inline shrink-0" />
+                      </a>
+                    </div>
                   </div>
-                  <div className="p-3.5 sm:p-4 font-extrabold text-[#1d4ed8] dark:text-[#60a5fa] text-xs sm:text-sm flex items-center gap-2">
-                    <a
-                      href={cleanOfficialUrl(job.links?.official || '#')}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="hover:underline flex items-center gap-1 cursor-pointer truncate max-w-xs sm:max-w-md"
-                    >
-                      <span>{job.orgName} Official Website</span>
-                      <ExternalLink className="w-3.5 h-3.5 inline shrink-0" />
-                    </a>
-                  </div>
-                </div>
+                )}
 
-                {/* 4. Download Admit Card (If Applicable) */}
+                {/* 4. Download Admit Card */}
                 {job.links?.admitCard && (
                   <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x-2 divide-slate-300 dark:divide-slate-700">
                     <div className="p-3.5 sm:p-4 font-black text-[#d91e63] dark:text-[#f472b6] text-xs sm:text-sm uppercase flex items-center">
@@ -824,11 +831,25 @@ export const JobDetailsPage: React.FC<JobDetailsPageProps> = ({
                         <span>Click Here</span>
                         <ExternalLink className="w-3.5 h-3.5 inline" />
                       </a>
+                      {job.links?.admitCardNotice && (
+                        <>
+                          <span className="text-slate-400 font-normal">|</span>
+                          <a
+                            href={cleanOfficialUrl(job.links.admitCardNotice)}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="hover:underline flex items-center gap-1 cursor-pointer"
+                          >
+                            <span>Notice</span>
+                            <ExternalLink className="w-3.5 h-3.5 inline" />
+                          </a>
+                        </>
+                      )}
                     </div>
                   </div>
                 )}
 
-                {/* 5. Download Result (If Applicable) */}
+                {/* 5. Download Result */}
                 {job.links?.result && (
                   <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x-2 divide-slate-300 dark:divide-slate-700">
                     <div className="p-3.5 sm:p-4 font-black text-[#d91e63] dark:text-[#f472b6] text-xs sm:text-sm uppercase flex items-center">
@@ -842,21 +863,27 @@ export const JobDetailsPage: React.FC<JobDetailsPageProps> = ({
                         className="hover:underline flex items-center gap-1 cursor-pointer"
                       >
                         <span>Server I</span>
+                        <ExternalLink className="w-3.5 h-3.5 inline" />
                       </a>
-                      <span className="text-slate-400 font-normal">|</span>
-                      <a
-                        href={cleanOfficialUrl(job.links.resultServer2 || job.links.result)}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="hover:underline flex items-center gap-1 cursor-pointer"
-                      >
-                        <span>Server II</span>
-                      </a>
+                      {job.links?.resultServer2 && (
+                        <>
+                          <span className="text-slate-400 font-normal">|</span>
+                          <a
+                            href={cleanOfficialUrl(job.links.resultServer2)}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="hover:underline flex items-center gap-1 cursor-pointer"
+                          >
+                            <span>Server II</span>
+                            <ExternalLink className="w-3.5 h-3.5 inline" />
+                          </a>
+                        </>
+                      )}
                     </div>
                   </div>
                 )}
 
-                {/* 6. Download Answer Key (If Applicable) */}
+                {/* 6. Download Answer Key */}
                 {job.links?.answerKey && (
                   <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x-2 divide-slate-300 dark:divide-slate-700">
                     <div className="p-3.5 sm:p-4 font-black text-[#d91e63] dark:text-[#f472b6] text-xs sm:text-sm uppercase flex items-center">
@@ -876,25 +903,167 @@ export const JobDetailsPage: React.FC<JobDetailsPageProps> = ({
                   </div>
                 )}
 
-                {/* 7. How To Fill Form (Video Hindi) */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x-2 divide-slate-300 dark:divide-slate-700">
-                  <div className="p-3.5 sm:p-4 font-black text-[#d91e63] dark:text-[#f472b6] text-xs sm:text-sm uppercase flex items-center">
-                    How to Fill Form (Video Hindi)
+                {/* 7. Download Syllabus */}
+                {job.links?.syllabus && (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x-2 divide-slate-300 dark:divide-slate-700">
+                    <div className="p-3.5 sm:p-4 font-black text-[#d91e63] dark:text-[#f472b6] text-xs sm:text-sm uppercase flex items-center">
+                      Download Syllabus
+                    </div>
+                    <div className="p-3.5 sm:p-4 font-extrabold text-[#1d4ed8] dark:text-[#60a5fa] text-xs sm:text-sm flex items-center gap-3">
+                      <a
+                        href={cleanOfficialUrl(job.links.syllabus)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="hover:underline flex items-center gap-1 cursor-pointer"
+                      >
+                        <span>Click Here</span>
+                        <ExternalLink className="w-3.5 h-3.5 inline" />
+                      </a>
+                    </div>
                   </div>
-                  <div className="p-3.5 sm:p-4 font-extrabold text-[#1d4ed8] dark:text-[#60a5fa] text-xs sm:text-sm flex items-center gap-2">
-                    <a
-                      href={job.links?.videoHindi || `https://www.youtube.com/results?search_query=${encodeURIComponent(job.title + ' form fill up')}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="hover:underline flex items-center gap-1 cursor-pointer text-red-600 dark:text-red-400"
-                    >
-                      <span>Watch Video</span>
-                      <ExternalLink className="w-3.5 h-3.5 inline" />
-                    </a>
-                  </div>
-                </div>
+                )}
 
-                {/* 8. Join FastArc Social Channel */}
+                {/* 8. Application Form */}
+                {job.links?.applicationForm && (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x-2 divide-slate-300 dark:divide-slate-700">
+                    <div className="p-3.5 sm:p-4 font-black text-[#d91e63] dark:text-[#f472b6] text-xs sm:text-sm uppercase flex items-center">
+                      Download Application Form
+                    </div>
+                    <div className="p-3.5 sm:p-4 font-extrabold text-[#1d4ed8] dark:text-[#60a5fa] text-xs sm:text-sm flex items-center gap-3">
+                      <a
+                        href={cleanOfficialUrl(job.links.applicationForm)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="hover:underline flex items-center gap-1 cursor-pointer"
+                      >
+                        <span>Click Here</span>
+                        <ExternalLink className="w-3.5 h-3.5 inline" />
+                      </a>
+                    </div>
+                  </div>
+                )}
+
+                {/* 9. Correction Form */}
+                {job.links?.correctionForm && (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x-2 divide-slate-300 dark:divide-slate-700">
+                    <div className="p-3.5 sm:p-4 font-black text-[#d91e63] dark:text-[#f472b6] text-xs sm:text-sm uppercase flex items-center">
+                      Correction / Edit Form
+                    </div>
+                    <div className="p-3.5 sm:p-4 font-extrabold text-[#1d4ed8] dark:text-[#60a5fa] text-xs sm:text-sm flex items-center gap-3">
+                      <a
+                        href={cleanOfficialUrl(job.links.correctionForm)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="hover:underline flex items-center gap-1 cursor-pointer"
+                      >
+                        <span>Click Here</span>
+                        <ExternalLink className="w-3.5 h-3.5 inline" />
+                      </a>
+                    </div>
+                  </div>
+                )}
+
+                {/* 10. Merit List */}
+                {job.links?.meritList && (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x-2 divide-slate-300 dark:divide-slate-700">
+                    <div className="p-3.5 sm:p-4 font-black text-[#d91e63] dark:text-[#f472b6] text-xs sm:text-sm uppercase flex items-center">
+                      Download Merit List
+                    </div>
+                    <div className="p-3.5 sm:p-4 font-extrabold text-[#1d4ed8] dark:text-[#60a5fa] text-xs sm:text-sm flex items-center gap-3">
+                      <a
+                        href={cleanOfficialUrl(job.links.meritList)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="hover:underline flex items-center gap-1 cursor-pointer"
+                      >
+                        <span>Click Here</span>
+                        <ExternalLink className="w-3.5 h-3.5 inline" />
+                      </a>
+                    </div>
+                  </div>
+                )}
+
+                {/* 11. Cut Off */}
+                {job.links?.cutoff && (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x-2 divide-slate-300 dark:divide-slate-700">
+                    <div className="p-3.5 sm:p-4 font-black text-[#d91e63] dark:text-[#f472b6] text-xs sm:text-sm uppercase flex items-center">
+                      Download Cut Off
+                    </div>
+                    <div className="p-3.5 sm:p-4 font-extrabold text-[#1d4ed8] dark:text-[#60a5fa] text-xs sm:text-sm flex items-center gap-3">
+                      <a
+                        href={cleanOfficialUrl(job.links.cutoff)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="hover:underline flex items-center gap-1 cursor-pointer"
+                      >
+                        <span>Click Here</span>
+                        <ExternalLink className="w-3.5 h-3.5 inline" />
+                      </a>
+                    </div>
+                  </div>
+                )}
+
+                {/* 12. Exam Date / City Intimation */}
+                {job.links?.examDate && (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x-2 divide-slate-300 dark:divide-slate-700">
+                    <div className="p-3.5 sm:p-4 font-black text-[#d91e63] dark:text-[#f472b6] text-xs sm:text-sm uppercase flex items-center">
+                      Exam Date / City Intimation
+                    </div>
+                    <div className="p-3.5 sm:p-4 font-extrabold text-[#1d4ed8] dark:text-[#60a5fa] text-xs sm:text-sm flex items-center gap-3">
+                      <a
+                        href={cleanOfficialUrl(job.links.examDate)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="hover:underline flex items-center gap-1 cursor-pointer"
+                      >
+                        <span>Click Here</span>
+                        <ExternalLink className="w-3.5 h-3.5 inline" />
+                      </a>
+                    </div>
+                  </div>
+                )}
+
+                {/* 13. Other Important Links */}
+                {job.links?.otherLinks && job.links.otherLinks.map((linkItem, idx) => linkItem.title && linkItem.url ? (
+                  <div key={idx} className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x-2 divide-slate-300 dark:divide-slate-700">
+                    <div className="p-3.5 sm:p-4 font-black text-[#d91e63] dark:text-[#f472b6] text-xs sm:text-sm uppercase flex items-center">
+                      {linkItem.title}
+                    </div>
+                    <div className="p-3.5 sm:p-4 font-extrabold text-[#1d4ed8] dark:text-[#60a5fa] text-xs sm:text-sm flex items-center gap-3">
+                      <a
+                        href={cleanOfficialUrl(linkItem.url)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="hover:underline flex items-center gap-1 cursor-pointer"
+                      >
+                        <span>Click Here</span>
+                        <ExternalLink className="w-3.5 h-3.5 inline" />
+                      </a>
+                    </div>
+                  </div>
+                ) : null)}
+
+                {/* 14. How To Fill Form (Video Hindi) */}
+                {job.links?.videoHindi && (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x-2 divide-slate-300 dark:divide-slate-700">
+                    <div className="p-3.5 sm:p-4 font-black text-[#d91e63] dark:text-[#f472b6] text-xs sm:text-sm uppercase flex items-center">
+                      How to Fill Form (Video Hindi)
+                    </div>
+                    <div className="p-3.5 sm:p-4 font-extrabold text-[#1d4ed8] dark:text-[#60a5fa] text-xs sm:text-sm flex items-center gap-2">
+                      <a
+                        href={cleanOfficialUrl(job.links.videoHindi)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="hover:underline flex items-center gap-1 cursor-pointer text-red-600 dark:text-red-400"
+                      >
+                        <span>Watch Video</span>
+                        <ExternalLink className="w-3.5 h-3.5 inline" />
+                      </a>
+                    </div>
+                  </div>
+                )}
+
+                {/* 15. Join FastArc Social Channel */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x-2 divide-slate-300 dark:divide-slate-700">
                   <div className="p-3.5 sm:p-4 font-black text-[#059669] dark:text-[#34d399] text-xs sm:text-sm uppercase flex items-center">
                     Join FastArc Govt Alerts Channel
@@ -920,7 +1089,7 @@ export const JobDetailsPage: React.FC<JobDetailsPageProps> = ({
                   </div>
                 </div>
 
-                {/* 9. FastArc Govt Tools */}
+                {/* 16. FastArc Govt Tools */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x-2 divide-slate-300 dark:divide-slate-700">
                   <div className="p-3.5 sm:p-4 font-black text-[#059669] dark:text-[#34d399] text-xs sm:text-sm uppercase flex items-center">
                     FastArc Tools (Photo Resizer, PDF Compress)

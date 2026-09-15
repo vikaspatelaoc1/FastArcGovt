@@ -122,11 +122,16 @@ export interface JobAlert {
     answerKeyNotice?: string;
     examCity?: string;
     syllabus?: string;
+    applicationForm?: string;
+    correctionForm?: string;
+    meritList?: string;
+    examDate?: string;
     videoHindi?: string;
     extendedNotice?: string;
     telegram?: string;
     whatsapp?: string;
     tools?: string;
+    otherLinks?: Array<{ title: string; url: string }>;
   };
 }
 

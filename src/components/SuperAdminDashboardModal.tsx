@@ -36,7 +36,9 @@ import {
   saveSubscriberToFirestore, 
   deleteSubscriberFromFirestore, 
   bulkSaveJobsToFirestore,
-  SubscriberRecord
+  SubscriberRecord,
+  getSuperAdminCredentials,
+  updateSuperAdminCredentials
 } from '../services/firestoreService';
 
 interface SuperAdminDashboardModalProps {
@@ -119,6 +121,11 @@ export const SuperAdminDashboardModal: React.FC<SuperAdminDashboardModalProps> =
     tools: false
   });
   const threeDotRef = useRef<HTMLDivElement>(null);
+  const defaultSocialLinks: SocialLinkItem[] = [
+    { id: '1', platform: 'telegram', title: 'Telegram Channel', url: 'https://t.me/fastarcgov', icon: 'send', enabled: true },
+    { id: '2', platform: 'whatsapp', title: 'WhatsApp Channel', url: 'https://whatsapp.com/channel/...', icon: 'message-circle', enabled: true },
+    { id: '3', platform: 'youtube', title: 'YouTube Channel', url: 'https://youtube.com/...', icon: 'video', enabled: true }
+  ];
   const [localSocialLinks, setLocalSocialLinks] = useState<SocialLinkItem[]>(socialLinks && socialLinks.length > 0 ? socialLinks : defaultSocialLinks);
 
   // Auto-expand category containing active tab
@@ -269,7 +276,25 @@ export const SuperAdminDashboardModal: React.FC<SuperAdminDashboardModalProps> =
   );
   const [showSuperPassInDash, setShowSuperPassInDash] = useState(false);
 
-  const handleSaveSuperCredentials = () => {
+  // Synchronize dashboard credentials display with actual Firestore values on open
+  useEffect(() => {
+    if (isOpen) {
+      getSuperAdminCredentials().then(creds => {
+        if (creds) {
+          setSuperAdminUser(creds.username);
+          setSuperAdminPass(creds.password);
+          if (typeof window !== 'undefined') {
+            localStorage.setItem('fastarc_superadmin_user', creds.username);
+            localStorage.setItem('fastarc_superadmin_pass', creds.password);
+          }
+        }
+      }).catch(err => {
+        console.error("Error fetching super admin credentials in dashboard:", err);
+      });
+    }
+  }, [isOpen]);
+
+  const handleSaveSuperCredentials = async () => {
     if (!superAdminUser.trim() || !superAdminPass.trim()) {
       onToast('⚠️ Username and Password cannot be empty.');
       return;
@@ -278,18 +303,28 @@ export const SuperAdminDashboardModal: React.FC<SuperAdminDashboardModalProps> =
       onToast('⚠️ Password must be at least 6 characters.');
       return;
     }
-    localStorage.setItem('fastarc_superadmin_user', superAdminUser.trim());
-    localStorage.setItem('fastarc_superadmin_pass', superAdminPass.trim());
-    onToast('👑 Super Admin ID and Password updated successfully!');
+    try {
+      await updateSuperAdminCredentials(superAdminUser.trim(), superAdminPass.trim());
+      localStorage.setItem('fastarc_superadmin_user', superAdminUser.trim());
+      localStorage.setItem('fastarc_superadmin_pass', superAdminPass.trim());
+      onToast('👑 Super Admin ID and Password updated globally across all devices!');
+    } catch (err: any) {
+      onToast('❌ Failed to update credentials globally: ' + (err.message || err));
+    }
   };
 
-  const handleResetSuperCredentials = () => {
-    if (window.confirm('Reset Super Admin credentials to default (Vikaspatelaoc / JTY@67YVP)?')) {
-      localStorage.removeItem('fastarc_superadmin_user');
-      localStorage.removeItem('fastarc_superadmin_pass');
-      setSuperAdminUser('Vikaspatelaoc');
-      setSuperAdminPass('JTY@67YVP');
-      onToast('✅ Super Admin credentials reset to default.');
+  const handleResetSuperCredentials = async () => {
+    if (window.confirm('Reset Super Admin credentials globally to default (Vikaspatelaoc / JTY@67YVP)?')) {
+      try {
+        await updateSuperAdminCredentials('Vikaspatelaoc', 'JTY@67YVP');
+        localStorage.removeItem('fastarc_superadmin_user');
+        localStorage.removeItem('fastarc_superadmin_pass');
+        setSuperAdminUser('Vikaspatelaoc');
+        setSuperAdminPass('JTY@67YVP');
+        onToast('✅ Super Admin credentials reset globally.');
+      } catch (err: any) {
+        onToast('❌ Failed to reset credentials globally: ' + (err.message || err));
+      }
     }
   };
 

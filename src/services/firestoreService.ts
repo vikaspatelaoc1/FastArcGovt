@@ -1157,3 +1157,37 @@ export async function deleteStudentDocument(id: string): Promise<void> {
     throw err;
   }
 }
+
+export async function getSuperAdminCredentials(): Promise<{ username: string; password: string }> {
+  if (!db) return { username: 'Vikaspatelaoc', password: 'JTY@67YVP' };
+  try {
+    const docRef = doc(db, 'site_config', 'super_admin_credentials');
+    const snap = await getDoc(docRef);
+    if (snap.exists()) {
+      const data = snap.data();
+      return {
+        username: data.username || 'Vikaspatelaoc',
+        password: data.password || 'JTY@67YVP'
+      };
+    } else {
+      const defaultCreds = { username: 'Vikaspatelaoc', password: 'JTY@67YVP' };
+      await setDoc(docRef, defaultCreds);
+      return defaultCreds;
+    }
+  } catch (err) {
+    handleFirestoreQuotaError(err, 'getSuperAdminCredentials');
+    return { username: 'Vikaspatelaoc', password: 'JTY@67YVP' };
+  }
+}
+
+export async function updateSuperAdminCredentials(username: string, password: string): Promise<void> {
+  if (!db) return;
+  try {
+    const docRef = doc(db, 'site_config', 'super_admin_credentials');
+    await setDoc(docRef, { username, password });
+  } catch (err) {
+    handleFirestoreQuotaError(err, 'updateSuperAdminCredentials');
+    throw err;
+  }
+}
+

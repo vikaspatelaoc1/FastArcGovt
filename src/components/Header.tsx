@@ -10,6 +10,7 @@ import { SocialLinkItem, SuperAdminTabType, JobAlert } from '../types';
 import { SUPER_ADMIN_MODULES } from '../config/superAdminConfig';
 import { OfficialSocialLogo } from './SocialIcons';
 import { LanguageModal, HindiEnglishIcon, SUPPORTED_LANGUAGES, changeSiteLanguage } from './LanguageModal';
+import { openJobInNewTab } from '../utils/jobUrl';
 
 
 interface HeaderProps {
@@ -396,7 +397,15 @@ export const Header: React.FC<HeaderProps> = ({
 
   return (
     <>
-      <header className="bg-white border-b border-slate-200 dark:bg-slate-900 dark:border-slate-800 w-full transition-colors duration-300 relative">
+      {/* Blank & Blur Backdrop Overlay when search is open in mobile app */}
+      {isApplication && isAppSearchOpen && (
+        <div 
+          className="fixed inset-0 bg-white/85 dark:bg-slate-950/85 backdrop-blur-md z-40 transition-all duration-300 pointer-events-auto"
+          onClick={() => setIsAppSearchOpen(false)}
+        />
+      )}
+
+      <header className="bg-white border-b border-slate-200 dark:bg-slate-900 dark:border-slate-800 w-full transition-colors duration-300 relative z-50">
       <div className="w-full mx-auto px-3 sm:px-5 lg:px-6">
         {isApplication && isAppSearchOpen ? (
           /* Mobile App View: Full Header Search Column (matching image.png) */
@@ -723,10 +732,8 @@ export const Header: React.FC<HeaderProps> = ({
                 key={job.id}
                 type="button"
                 onClick={() => {
-                  if (setSearchQuery) setSearchQuery(job.title);
                   setIsAppSearchOpen(false);
-                  const el = document.getElementById('main-job-columns') || document.getElementById('section-latest-jobs');
-                  if (el) el.scrollIntoView({ behavior: 'smooth' });
+                  openJobInNewTab(job);
                 }}
                 className="w-full text-left px-3.5 py-2.5 hover:bg-slate-50 dark:hover:bg-white/5 transition-colors flex items-center justify-between group cursor-pointer"
               >

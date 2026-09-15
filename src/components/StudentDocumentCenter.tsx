@@ -1,8 +1,10 @@
 import { StudentDocumentDetail } from './StudentDocumentDetail';
 import React, { useState, useEffect } from 'react';
 import { Search, ChevronRight, FileText, CheckCircle, ExternalLink, Download, ArrowRight, BookOpen, GraduationCap, Building2, CreditCard } from 'lucide-react';
-import { StudentDocument, DOCUMENT_CATEGORIES } from '../types';
+import { StudentDocument, DOCUMENT_CATEGORIES, AppToolItem } from '../types';
 import { getStudentDocuments } from '../services/firestoreService';
+import { ToolDetailModal } from './ToolDetailModal';
+import { DEFAULT_MOBILE_TABS_CONFIG } from '../data/mobileTabsData';
 
 export const StudentDocumentCenter: React.FC = () => {
   const [documents, setDocuments] = useState<StudentDocument[]>([]);
@@ -10,6 +12,54 @@ export const StudentDocumentCenter: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [loading, setLoading] = useState(true);
   const [selectedDoc, setSelectedDoc] = useState<StudentDocument | null>(null);
+
+  // States for Tool Interactive Modals
+  const [selectedTool, setSelectedTool] = useState<AppToolItem | null>(null);
+  const [isToolModalOpen, setIsToolModalOpen] = useState(false);
+
+  const handleOpenTool = (toolName: string) => {
+    const tools = DEFAULT_MOBILE_TABS_CONFIG.tools;
+    let targetToolId = '';
+    
+    switch (toolName) {
+      case 'Resize Photo to 50KB':
+      case 'Compress Signature':
+      case 'Convert JPG/PNG':
+        targetToolId = 'image-resizer';
+        break;
+      case 'Passport Size Photo Maker':
+        targetToolId = 'remove-bg';
+        break;
+      case 'Merge PDF Files':
+      case 'Split PDF Pages':
+      case 'Compress PDF Size':
+      case 'Image to PDF Converter':
+        targetToolId = 'pdf-portal';
+        break;
+      case 'Resume / CV Builder':
+        targetToolId = 'marital-biodata';
+        break;
+      case 'Document Checklist':
+        targetToolId = 'pdf-portal'; // Re-use PDF portal as guidance or custom document specs
+        break;
+      case 'Typing Speed Test':
+        targetToolId = 'typing-speed-test';
+        break;
+      case 'DigiLocker Access':
+        window.open('https://www.digilocker.gov.in/', '_blank');
+        return;
+      default:
+        break;
+    }
+    
+    if (targetToolId) {
+      const found = tools.find(t => t.id === targetToolId);
+      if (found) {
+        setSelectedTool(found);
+        setIsToolModalOpen(true);
+      }
+    }
+  };
 
   useEffect(() => {
     const loadDocs = async () => {
@@ -178,7 +228,10 @@ export const StudentDocumentCenter: React.FC = () => {
             <ul className="space-y-3">
               {['Resize Photo to 50KB', 'Compress Signature', 'Passport Size Photo Maker', 'Convert JPG/PNG'].map((tool, i) => (
                 <li key={i}>
-                  <button className="w-full text-left px-4 py-2.5 bg-white dark:bg-slate-900 hover:bg-fuchsia-500 hover:text-white dark:hover:bg-fuchsia-600 rounded-xl text-sm font-semibold text-slate-700 dark:text-slate-300 transition-colors shadow-sm flex justify-between items-center group">
+                  <button 
+                    onClick={() => handleOpenTool(tool)}
+                    className="w-full text-left px-4 py-2.5 bg-white dark:bg-slate-900 hover:bg-fuchsia-500 hover:text-white dark:hover:bg-fuchsia-600 rounded-xl text-sm font-semibold text-slate-700 dark:text-slate-300 transition-colors shadow-sm flex justify-between items-center group cursor-pointer"
+                  >
                     {tool} <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-fuchsia-200" />
                   </button>
                 </li>
@@ -194,7 +247,10 @@ export const StudentDocumentCenter: React.FC = () => {
             <ul className="space-y-3">
               {['Merge PDF Files', 'Split PDF Pages', 'Compress PDF Size', 'Image to PDF Converter'].map((tool, i) => (
                 <li key={i}>
-                  <button className="w-full text-left px-4 py-2.5 bg-white dark:bg-slate-900 hover:bg-rose-500 hover:text-white dark:hover:bg-rose-600 rounded-xl text-sm font-semibold text-slate-700 dark:text-slate-300 transition-colors shadow-sm flex justify-between items-center group">
+                  <button 
+                    onClick={() => handleOpenTool(tool)}
+                    className="w-full text-left px-4 py-2.5 bg-white dark:bg-slate-900 hover:bg-rose-500 hover:text-white dark:hover:bg-rose-600 rounded-xl text-sm font-semibold text-slate-700 dark:text-slate-300 transition-colors shadow-sm flex justify-between items-center group cursor-pointer"
+                  >
                     {tool} <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-rose-200" />
                   </button>
                 </li>
@@ -210,7 +266,10 @@ export const StudentDocumentCenter: React.FC = () => {
             <ul className="space-y-3">
               {['Resume / CV Builder', 'Document Checklist', 'DigiLocker Access', 'Typing Speed Test'].map((tool, i) => (
                 <li key={i}>
-                  <button className="w-full text-left px-4 py-2.5 bg-white dark:bg-slate-900 hover:bg-blue-500 hover:text-white dark:hover:bg-blue-600 rounded-xl text-sm font-semibold text-slate-700 dark:text-slate-300 transition-colors shadow-sm flex justify-between items-center group">
+                  <button 
+                    onClick={() => handleOpenTool(tool)}
+                    className="w-full text-left px-4 py-2.5 bg-white dark:bg-slate-900 hover:bg-blue-500 hover:text-white dark:hover:bg-blue-600 rounded-xl text-sm font-semibold text-slate-700 dark:text-slate-300 transition-colors shadow-sm flex justify-between items-center group cursor-pointer"
+                  >
                     {tool} <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-blue-200" />
                   </button>
                 </li>
@@ -229,6 +288,13 @@ export const StudentDocumentCenter: React.FC = () => {
           FastArc is an information platform and not an official government portal. We provide verified official links for your convenience. For any official application, download, or verification, always refer to the respective government, board, or university website.
         </p>
       </div>
+
+      {/* Interactive Tool Details Modal */}
+      <ToolDetailModal 
+        tool={selectedTool}
+        isOpen={isToolModalOpen}
+        onClose={() => setIsToolModalOpen(false)}
+      />
 
     </div>
   );
