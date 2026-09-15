@@ -91,27 +91,32 @@ export function subscribeToJobs(
         });
       });
 
-      // Master catalog starting with default 2016-2026 database
+      // Master catalog starting with either Firestore documents or default database as fallback
       const masterJobsMap = new Map<string, JobAlert>();
       const titleLookup = new Map<string, string>();
 
-      defaultJobsDatabase.forEach((job) => {
-        if (!job || !job.title) return;
-        masterJobsMap.set(job.id, job);
-        titleLookup.set(job.title.trim().toLowerCase(), job.id);
-      });
+      // Use Firestore fetchedJobs as the sole authoritative source of truth if not empty.
+      // If Firestore is completely empty (e.g. initial setup), fall back to the default database catalog.
+      const baseJobs = fetchedJobs.length > 0 ? fetchedJobs : defaultJobsDatabase;
 
-      // Override / augment with Firestore documents
-      fetchedJobs.forEach((job) => {
+      baseJobs.forEach((job) => {
         if (!job || !job.title) return;
         const normTitle = job.title.trim().toLowerCase();
-        const existingIdByTitle = titleLookup.get(normTitle);
-
-        if (existingIdByTitle && existingIdByTitle !== job.id) {
-          masterJobsMap.delete(existingIdByTitle);
+        
+        // Deduplicate
+        const existingId = titleLookup.get(normTitle);
+        if (existingId) {
+          const existingJob = masterJobsMap.get(existingId);
+          // If duplicate found, keep the more complete/recently updated one
+          if (existingJob && (!existingJob.postDate || (job.postDate && job.postDate > existingJob.postDate))) {
+            masterJobsMap.delete(existingId);
+            masterJobsMap.set(job.id, job);
+            titleLookup.set(normTitle, job.id);
+          }
+        } else {
+          masterJobsMap.set(job.id, job);
+          titleLookup.set(normTitle, job.id);
         }
-        masterJobsMap.set(job.id, job);
-        titleLookup.set(normTitle, job.id);
       });
 
       // Process dates for auto-flagging and expiration

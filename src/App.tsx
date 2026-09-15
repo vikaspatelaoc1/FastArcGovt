@@ -437,6 +437,22 @@ export default function App() {
             };
           });
           setJobs(prev => {
+            // If the live real-time Firestore subscription is active and has loaded,
+            // we must prioritize it to prevent stale REST API responses from resurrecting deleted jobs or overriding updates.
+            if (prev.length > 0 && !isFirestoreQuotaExceeded()) {
+              const prevIds = new Set(prev.map(j => j.id));
+              // Merge details for jobs that actually exist in the live state, but do not add deleted or missing jobs.
+              const m = new Map<string, JobAlert>();
+              prev.forEach(j => m.set(j.id, j));
+              serverJobs.forEach(j => {
+                if (prevIds.has(j.id)) {
+                  m.set(j.id, { ...j, ...m.get(j.id)! }); // Keep live state details as authority
+                }
+              });
+              return Array.from(m.values());
+            }
+
+            // Fallback for when Firestore snapshot hasn't fired yet or has quota issues
             const m = new Map<string, JobAlert>();
             serverJobs.forEach(j => m.set(j.id, j));
             prev.forEach(j => m.set(j.id, { ...(m.get(j.id) || {}), ...j }));

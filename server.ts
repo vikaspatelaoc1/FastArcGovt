@@ -922,6 +922,20 @@ app.get('/api/v1/sarkari-posts', async (req, res) => {
       }
       return res.json({ success: true, jobs: parsedJobs });
     } else {
+      if (firestoreDb && !isFirestoreQuotaExhausted) {
+        try {
+          const jobsSnap = await getDocs(collection(firestoreDb, 'jobs'));
+          const fsJobs: any[] = [];
+          jobsSnap.forEach((d: any) => {
+            fsJobs.push({ id: d.id, ...d.data() });
+          });
+          if (fsJobs.length > 0) {
+            dbState.jobs = fsJobs;
+          }
+        } catch (fsErr) {
+          console.warn('⚠️ Server failed to fetch fresh jobs from Firestore for GET API:', fsErr);
+        }
+      }
       let enrichedJobs = dbState.jobs.map(serverEnrichJob);
       if (!isAdmin) {
          enrichedJobs = enrichedJobs.filter(j => j.status !== 'Pending Approval');
@@ -2148,15 +2162,49 @@ async function autoIngestPosts(posts: any[]) {
   let ingestedCount = 0;
   const newJobsList: any[] = [];
 
+  // 1. Prior to deduplication, fetch the absolute latest jobs from Firestore
+  if (firestoreDb && !isFirestoreQuotaExhausted) {
+    try {
+      const jobsSnap = await getDocs(collection(firestoreDb, 'jobs'));
+      const fsJobs: any[] = [];
+      jobsSnap.forEach((d: any) => {
+        fsJobs.push({ id: d.id, ...d.data() });
+      });
+      if (fsJobs.length > 0) {
+        dbState.jobs = fsJobs;
+      }
+    } catch (fsErr) {
+      console.warn('⚠️ Server failed to sync jobs from Firestore during ingest:', fsErr);
+    }
+  }
+
+  // 2. Perform multi-layered duplicate checking against live Firestore records
   posts.forEach((p: any) => {
-    const existing = dbState.jobs.find(j => j.title && j.title.toLowerCase().trim() === (p.title || '').toLowerCase().trim());
+    const normTitle = (p.title || '').toLowerCase().trim();
+    const pApply = (p.links?.apply || '').toLowerCase().trim();
+    const pNotif = (p.links?.notification || '').toLowerCase().trim();
+
+    const existing = dbState.jobs.find(j => {
+      if (!j) return false;
+      const jTitle = (j.title || '').toLowerCase().trim();
+      if (jTitle === normTitle) return true;
+
+      // Cross-reference links to prevent duplicate postings of slightly modified titles
+      const jApply = (j.links?.apply || '').toLowerCase().trim();
+      const jNotif = (j.links?.notification || '').toLowerCase().trim();
+      if (pApply && jApply && pApply === jApply) return true;
+      if (pNotif && jNotif && pNotif === jNotif) return true;
+
+      return false;
+    });
+
     if (!existing) {
       const newJob = serverEnrichJob({
         ...p,
         id: p.id?.startsWith('job-') ? p.id : `job-scraped-${Date.now()}-${Math.floor(Math.random()*1000)}`,
         category: p.category || categorizeScrapedTitle(p.title),
         isNew: true,
-        status: 'Pending Approval'
+        status: p.status || 'Pending Approval' // Support custom status if supplied, else fallback to Pending Approval
       });
       dbState.jobs.unshift(newJob);
       newJobsList.push(newJob);
