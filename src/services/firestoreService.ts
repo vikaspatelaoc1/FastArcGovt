@@ -598,14 +598,28 @@ export function subscribeToSubscribers(onUpdate: (subs: SubscriberRecord[]) => v
 }
 
 export async function saveSubscriberToFirestore(sub: SubscriberRecord): Promise<void> {
-  if (isClientFirestoreQuotaExceeded) return;
+  if (isClientFirestoreQuotaExceeded) {
+    console.warn('⚠️ [Firestore Client] Write aborted: Client Firestore quota has been exceeded.');
+    return;
+  }
+  const writePayload = {
+    ...sub,
+    date: sub.date || new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }),
+    createdAt: sub.createdAt || new Date().toISOString()
+  };
+
+  console.log(`📡 [Firestore Write] Initiating write to "/subscribers/${sub.id}"...`, {
+    id: sub.id,
+    email: sub.email,
+    payload: writePayload
+  });
+
   try {
     const subRef = doc(db, 'subscribers', sub.id);
-    await setDoc(subRef, {
-      ...sub,
-      createdAt: new Date().toISOString()
-    }, { merge: true });
+    await setDoc(subRef, writePayload, { merge: true });
+    console.log(`✅ [Firestore Write] Success! Subscriber "${sub.email}" successfully written and indexed under doc ID: ${sub.id}`);
   } catch (err) {
+    console.error(`❌ [Firestore Write] Failed to write subscriber "${sub.email}" (ID: ${sub.id}):`, err);
     handleFirestoreQuotaError(err, 'saveSubscriberToFirestore');
   }
 }
@@ -618,6 +632,73 @@ export async function deleteSubscriberFromFirestore(subId: string): Promise<void
   } catch (err) {
     handleFirestoreQuotaError(err, 'deleteSubscriberFromFirestore');
   }
+}
+
+export async function saveDeletedSubscriberToFirestore(sub: SubscriberRecord): Promise<void> {
+  if (isClientFirestoreQuotaExceeded) {
+    console.warn('⚠️ [Firestore Client] Write deleted aborted: Client Firestore quota has been exceeded.');
+    return;
+  }
+  const deletePayload = {
+    ...sub,
+    deletedAt: (sub as any).deletedAt || new Date().toISOString()
+  };
+
+  console.log(`📡 [Firestore Write (Trash)] Moving subscriber "${sub.email}" to "/deleted_subscribers/${sub.id}"...`, {
+    id: sub.id,
+    email: sub.email,
+    payload: deletePayload
+  });
+
+  try {
+    const subRef = doc(db, 'deleted_subscribers', sub.id);
+    await setDoc(subRef, deletePayload, { merge: true });
+    console.log(`✅ [Firestore Write (Trash)] Success! Subscriber "${sub.email}" moved to Recycle Bin in Firestore.`);
+  } catch (err) {
+    console.error(`❌ [Firestore Write (Trash)] Failed to write subscriber "${sub.email}" to trash:`, err);
+    handleFirestoreQuotaError(err, 'saveDeletedSubscriberToFirestore');
+  }
+}
+
+export async function deleteDeletedSubscriberFromFirestore(subId: string): Promise<void> {
+  if (isClientFirestoreQuotaExceeded) return;
+  try {
+    const subRef = doc(db, 'deleted_subscribers', subId);
+    await deleteDoc(subRef);
+  } catch (err) {
+    handleFirestoreQuotaError(err, 'deleteDeletedSubscriberFromFirestore');
+  }
+}
+
+export function subscribeToDeletedSubscribers(onUpdate: (subs: SubscriberRecord[]) => void) {
+  const subCol = collection(db, 'deleted_subscribers');
+
+  return onSnapshot(subCol, (snapshot) => {
+    try {
+      if (snapshot.empty) {
+        onUpdate([]);
+        return;
+      }
+      const subs: SubscriberRecord[] = [];
+      snapshot.forEach((docSnap) => {
+        const data = docSnap.data() as SubscriberRecord;
+        const email = (data.email || '').trim();
+        if (email) {
+          subs.push({
+            ...data,
+            id: docSnap.id
+          });
+        }
+      });
+      onUpdate(subs);
+    } catch (err) {
+      handleFirestoreQuotaError(err, 'subscribeToDeletedSubscribers snapshot');
+      onUpdate([]);
+    }
+  }, (err) => {
+    handleFirestoreQuotaError(err, 'subscribeToDeletedSubscribers listener');
+    onUpdate([]);
+  });
 }
 
 // 9. Social Media Links Realtime Sync

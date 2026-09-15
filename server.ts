@@ -211,6 +211,7 @@ interface DatabaseSchema {
   marqueeText: string;
   employees: any[];
   subscribers: any[];
+  deletedSubscribers?: any[];
   scraperSources?: any[];
   notificationConfig?: {
     autoSendOnPublish: boolean;
@@ -246,6 +247,7 @@ interface DatabaseSchema {
     appVersion: string;
   };
   users: Array<{ id: string; username: string; email: string; passwordHash: string; name: string; role: string }>;
+  isInitialized?: boolean;
 }
 
 const defaultNotificationConfig = {
@@ -277,6 +279,7 @@ let dbState: DatabaseSchema = {
   marqueeText: "🔥 UP Police Constable Result 2026 Declared Now! | 🚀 SSC CGL 2026 Notification & Online Form Active | 🎓 CBSE Board Class 10th & 12th Board Result Released | 💼 Railway RRB NTPC Admit Card Download Started!",
   employees: defaultInitialEmployees,
   subscribers: [],
+  deletedSubscribers: [],
   scraperSources: defaultScraperSources,
   notificationConfig: defaultNotificationConfig,
   notificationHistory: [],
@@ -309,13 +312,14 @@ export async function ensureDatabaseLoaded(timeoutMs = 8000): Promise<DatabaseSc
           getDoc(doc(firestoreDb, 'config', 'app_state')),
           getDocs(collection(firestoreDb, 'jobs')),
           getDocs(collection(firestoreDb, 'subscribers')),
-          getDocs(collection(firestoreDb, 'notification_history'))
+          getDocs(collection(firestoreDb, 'notification_history')),
+          getDocs(collection(firestoreDb, 'deleted_subscribers'))
         ]).catch(e => {
           console.warn('⚠️ Firestore parallel fetch partial failure:', e?.message || e);
-          return [null, null, null, null];
+          return [null, null, null, null, null];
         });
 
-        const [docSnap, jobsSnap, subsSnap, logsSnap]: any = await Promise.race([dataPromises, fsTimeout]);
+        const [docSnap, jobsSnap, subsSnap, logsSnap, deletedSnap]: any = await Promise.race([dataPromises, fsTimeout]);
 
         let parsed: any = {};
         if (docSnap && docSnap?.exists && docSnap.exists()) {
@@ -332,6 +336,11 @@ export async function ensureDatabaseLoaded(timeoutMs = 8000): Promise<DatabaseSc
           subsSnap.forEach((d: any) => fsSubs.push({ id: d.id, ...d.data() }));
         }
 
+        let fsDeleted: any[] = [];
+        if (deletedSnap && typeof deletedSnap.forEach === 'function') {
+          deletedSnap.forEach((d: any) => fsDeleted.push({ id: d.id, ...d.data() }));
+        }
+
         let fsLogs: any[] = [];
         if (logsSnap && typeof logsSnap.forEach === 'function') {
           logsSnap.forEach((d: any) => fsLogs.push({ id: d.id, ...d.data() }));
@@ -344,8 +353,12 @@ export async function ensureDatabaseLoaded(timeoutMs = 8000): Promise<DatabaseSc
           loadedSources = [...loadedSources, ...newSources];
         }
 
+        const isDbInitialized = parsed.isInitialized === true || (Array.isArray(parsed.jobs) && parsed.jobs.length > 0) || fsJobs.length > 0;
+
         const masterJobs = new Map<string, any>();
-        defaultInitialJobs.forEach(j => masterJobs.set(j.id, j));
+        if (!isDbInitialized) {
+          defaultInitialJobs.forEach(j => masterJobs.set(j.id, j));
+        }
         if (Array.isArray(parsed.jobs)) {
           parsed.jobs.forEach((j: any) => masterJobs.set(j.id, j));
         }
@@ -357,13 +370,15 @@ export async function ensureDatabaseLoaded(timeoutMs = 8000): Promise<DatabaseSc
         dbState = {
           jobs: mergedJobsList.map(serverEnrichJob),
           marqueeText: typeof parsed.marqueeText === 'string' ? parsed.marqueeText : dbState.marqueeText,
-          employees: Array.isArray(parsed.employees) ? parsed.employees : defaultInitialEmployees,
+          employees: Array.isArray(parsed.employees) ? parsed.employees : (isDbInitialized ? [] : defaultInitialEmployees),
           subscribers: sanitizeSubscribers(fsSubs.length > 0 ? fsSubs : parsed.subscribers),
+          deletedSubscribers: fsDeleted.length > 0 ? fsDeleted : (parsed.deletedSubscribers || []),
           scraperSources: loadedSources,
           notificationConfig: parsed.notificationConfig ? { ...defaultNotificationConfig, ...parsed.notificationConfig } : defaultNotificationConfig,
           notificationHistory: (fsLogs.length > 0 ? fsLogs : (Array.isArray(parsed.notificationHistory) ? parsed.notificationHistory : [])).filter((l: any) => l?.id !== 'log-seed-1'),
           siteConfig: parsed.siteConfig || dbState.siteConfig,
-          users: Array.isArray(parsed.users) ? parsed.users : dbState.users
+          users: Array.isArray(parsed.users) ? parsed.users : dbState.users,
+          isInitialized: true
         };
         console.log(`🔥 Database loaded from Firebase Firestore: ${dbState.jobs.length} jobs available.`);
         return dbState;
@@ -389,21 +404,26 @@ export async function ensureDatabaseLoaded(timeoutMs = 8000): Promise<DatabaseSc
               const newSources = defaultScraperSources.filter(s => !existingIds.has(s.id));
               loadedSources = [...loadedSources, ...newSources];
             }
+            const isDiskInitialized = parsed.isInitialized === true || (Array.isArray(parsed.jobs) && parsed.jobs.length > 0);
             const diskJobsMap = new Map<string, any>();
-            defaultInitialJobs.forEach(j => diskJobsMap.set(j.id, j));
+            if (!isDiskInitialized) {
+              defaultInitialJobs.forEach(j => diskJobsMap.set(j.id, j));
+            }
             if (Array.isArray(parsed.jobs)) {
               parsed.jobs.forEach((j: any) => diskJobsMap.set(j.id, j));
             }
             dbState = {
               jobs: Array.from(diskJobsMap.values()).map(serverEnrichJob),
               marqueeText: typeof parsed.marqueeText === 'string' ? parsed.marqueeText : dbState.marqueeText,
-              employees: Array.isArray(parsed.employees) ? parsed.employees : defaultInitialEmployees,
+              employees: Array.isArray(parsed.employees) ? parsed.employees : (isDiskInitialized ? [] : defaultInitialEmployees),
               subscribers: sanitizeSubscribers(parsed.subscribers),
+              deletedSubscribers: parsed.deletedSubscribers || [],
               scraperSources: loadedSources,
               notificationConfig: parsed.notificationConfig ? { ...defaultNotificationConfig, ...parsed.notificationConfig } : defaultNotificationConfig,
               notificationHistory: Array.isArray(parsed.notificationHistory) ? parsed.notificationHistory.filter((l: any) => l?.id !== 'log-seed-1') : [],
               siteConfig: parsed.siteConfig || dbState.siteConfig,
-              users: Array.isArray(parsed.users) ? parsed.users : dbState.users
+              users: Array.isArray(parsed.users) ? parsed.users : dbState.users,
+              isInitialized: true
             };
             console.log(`📂 Loaded database from disk (${dbState.jobs.length} jobs ready).`);
             break;
@@ -486,6 +506,7 @@ async function saveDatabase(data: DatabaseSchema) {
       try {
         const stateRef = doc(firestoreDb, 'config', 'app_state');
         await setDoc(stateRef, {
+          isInitialized: true,
           marqueeText: data.marqueeText,
           siteConfig: data.siteConfig,
           notificationConfig: data.notificationConfig,
@@ -1344,36 +1365,166 @@ app.post('/api/v1/subscribers', async (req, res) => {
   res.status(400).json({ success: false, error: 'Email or subscribers array required' });
 });
 
+app.put('/api/v1/subscribers/:id', async (req, res) => {
+  const { id } = req.params;
+  const existingIdx = (dbState.subscribers || []).findIndex(s => s.id === id);
+  if (existingIdx !== -1) {
+    const updatedSub = { ...dbState.subscribers[existingIdx], ...req.body };
+    dbState.subscribers[existingIdx] = updatedSub;
+    await saveDatabase(dbState);
+
+    if (firestoreDb && !isFirestoreQuotaExhausted) {
+      try {
+        await setDoc(doc(firestoreDb, 'subscribers', id), updatedSub, { merge: true });
+      } catch (fsErr: any) {
+        if (isQuotaError(fsErr)) markFirestoreQuotaExhausted();
+      }
+    }
+    return res.json({ success: true, subscriber: updatedSub });
+  }
+  res.status(404).json({ success: false, error: 'Subscriber not found' });
+});
+
 app.delete('/api/v1/subscribers/:id', async (req, res) => {
   const { id } = req.params;
   const { email } = req.body || {};
+  
+  const targetSub = (dbState.subscribers || []).find(s => {
+    if (s.id === id) return true;
+    if (email && s.email && s.email.toLowerCase().trim() === String(email).toLowerCase().trim()) return true;
+    return false;
+  });
+
   dbState.subscribers = (dbState.subscribers || []).filter(s => {
     if (s.id === id) return false;
     if (email && s.email && s.email.toLowerCase().trim() === String(email).toLowerCase().trim()) return false;
     return true;
   });
+
+  if (targetSub) {
+    if (!Array.isArray(dbState.deletedSubscribers)) {
+      dbState.deletedSubscribers = [];
+    }
+    // Prevent duplicates in recycle bin
+    if (!dbState.deletedSubscribers.some(s => s.id === targetSub.id)) {
+      dbState.deletedSubscribers.unshift(targetSub);
+    }
+    await saveDatabase(dbState);
+
+    // Save to Firestore deleted_subscribers and delete from subscribers
+    if (firestoreDb && !isFirestoreQuotaExhausted) {
+      try {
+        await setDoc(doc(firestoreDb, 'deleted_subscribers', targetSub.id), {
+          ...targetSub,
+          deletedAt: new Date().toISOString()
+        }, { merge: true });
+        await deleteDoc(doc(firestoreDb, 'subscribers', targetSub.id));
+      } catch (fsErr: any) {
+        if (isQuotaError(fsErr)) markFirestoreQuotaExhausted();
+      }
+    }
+  } else {
+    await saveDatabase(dbState);
+  }
+
+  res.json({ success: true, subscribers: dbState.subscribers, deletedSubscribers: dbState.deletedSubscribers });
+});
+
+app.get('/api/v1/subscribers/deleted', async (req, res) => {
+  if (firestoreDb && !isFirestoreQuotaExhausted) {
+    try {
+      const snap = await getDocs(collection(firestoreDb, 'deleted_subscribers'));
+      const fsDeleted: any[] = [];
+      snap.forEach((doc) => {
+        fsDeleted.push({ id: doc.id, ...doc.data() });
+      });
+      if (fsDeleted.length > 0) {
+        dbState.deletedSubscribers = fsDeleted;
+      }
+    } catch (fsErr) {
+      console.warn('⚠️ Server failed to fetch deleted subscribers from Firestore:', fsErr);
+    }
+  }
+  if (!Array.isArray(dbState.deletedSubscribers)) {
+    dbState.deletedSubscribers = [];
+  }
+  res.json({ success: true, deletedSubscribers: dbState.deletedSubscribers });
+});
+
+app.post('/api/v1/subscribers/deleted/restore', async (req, res) => {
+  const { id } = req.body;
+  if (!id) return res.status(400).json({ success: false, error: 'Subscriber ID is required' });
+
+  if (!Array.isArray(dbState.deletedSubscribers)) {
+    dbState.deletedSubscribers = [];
+  }
+
+  const targetSub = dbState.deletedSubscribers.find(s => s.id === id);
+  if (targetSub) {
+    // Remove from deleted list
+    dbState.deletedSubscribers = dbState.deletedSubscribers.filter(s => s.id !== id);
+
+    // Add back to active list
+    if (!dbState.subscribers.some(s => s.id === id)) {
+      dbState.subscribers.unshift(targetSub);
+    }
+    await saveDatabase(dbState);
+
+    // Update in Firestore
+    if (firestoreDb && !isFirestoreQuotaExhausted) {
+      try {
+        await deleteDoc(doc(firestoreDb, 'deleted_subscribers', id));
+        await setDoc(doc(firestoreDb, 'subscribers', id), targetSub, { merge: true });
+      } catch (fsErr: any) {
+        if (isQuotaError(fsErr)) markFirestoreQuotaExhausted();
+      }
+    }
+    return res.json({ success: true, subscribers: dbState.subscribers, deletedSubscribers: dbState.deletedSubscribers });
+  }
+
+  res.status(404).json({ success: false, error: 'Subscriber not found in recycle bin' });
+});
+
+app.post('/api/v1/subscribers/deleted/permanent-delete', async (req, res) => {
+  const { id } = req.body;
+  if (!id) return res.status(400).json({ success: false, error: 'Subscriber ID is required' });
+
+  if (!Array.isArray(dbState.deletedSubscribers)) {
+    dbState.deletedSubscribers = [];
+  }
+
+  dbState.deletedSubscribers = dbState.deletedSubscribers.filter(s => s.id !== id);
   await saveDatabase(dbState);
 
-  if (firestoreDb && !isFirestoreQuotaExhausted && id) {
+  if (firestoreDb && !isFirestoreQuotaExhausted) {
     try {
-      await deleteDoc(doc(firestoreDb, 'subscribers', id));
+      await deleteDoc(doc(firestoreDb, 'deleted_subscribers', id));
     } catch (fsErr: any) {
       if (isQuotaError(fsErr)) markFirestoreQuotaExhausted();
     }
   }
 
-  res.json({ success: true, subscribers: dbState.subscribers });
+  res.json({ success: true, deletedSubscribers: dbState.deletedSubscribers });
 });
 
-app.delete('/api/v1/subscribers', async (req, res) => {
-  const { id, email } = req.body || {};
-  dbState.subscribers = (dbState.subscribers || []).filter(s => {
-    if (id && s.id === id) return false;
-    if (email && s.email && s.email.toLowerCase().trim() === String(email).toLowerCase().trim()) return false;
-    return true;
-  });
+app.post('/api/v1/subscribers/deleted/clear', async (req, res) => {
+  const previousDeleted = [...(dbState.deletedSubscribers || [])];
+  dbState.deletedSubscribers = [];
   await saveDatabase(dbState);
-  res.json({ success: true, subscribers: dbState.subscribers });
+
+  if (firestoreDb && !isFirestoreQuotaExhausted) {
+    try {
+      const batch = writeBatch(firestoreDb);
+      previousDeleted.forEach(sub => {
+        batch.delete(doc(firestoreDb, 'deleted_subscribers', sub.id));
+      });
+      await batch.commit();
+    } catch (fsErr: any) {
+      if (isQuotaError(fsErr)) markFirestoreQuotaExhausted();
+    }
+  }
+
+  res.json({ success: true, deletedSubscribers: [] });
 });
 
 // --- SOCIAL MEDIA LINKS API ---
@@ -1598,6 +1749,7 @@ async function dispatchJobAlertEmail(job: any, options: {
     const jobCat = (job.category || '').toLowerCase();
     recipientList = allSubs.filter(sub => {
       if (!sub.email || !sub.email.includes('@')) return false;
+      if (sub.muted === true) return false; // Pause updates for muted users
       const subCat = (sub.category || '').toLowerCase();
       if (subCat === 'all' || subCat.includes('all') || subCat === '') return true;
       if (jobCat && subCat.includes(jobCat.replace(/-/g, ' '))) return true;

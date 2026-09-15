@@ -5,7 +5,8 @@ import {
   Users, Download, Upload, RefreshCw, Trash2, CheckCircle2, 
   Send, AlertTriangle, X, Plus, Activity, UserPlus, KeyRound, 
   Eye, EyeOff, Lock, Unlock, Check, MoreVertical, SlidersHorizontal, Menu, Package,
-  Share2, Zap, ChevronRight, Search, ChevronDown, LayoutGrid, Wifi, WifiOff, Globe
+  Share2, Zap, ChevronRight, Search, ChevronDown, LayoutGrid, Wifi, WifiOff, Globe,
+  Bell, BellOff
 } from 'lucide-react';
 import { JobAlert, EmployeeUser, EmployeePermissions, SocialLinkItem, SuperAdminTabType, SyncLogEntry } from '../types';
 import { SUPER_ADMIN_MODULES, SuperAdminModuleConfig } from '../config/superAdminConfig';
@@ -38,7 +39,10 @@ import {
   bulkSaveJobsToFirestore,
   SubscriberRecord,
   getSuperAdminCredentials,
-  updateSuperAdminCredentials
+  updateSuperAdminCredentials,
+  subscribeToDeletedSubscribers,
+  saveDeletedSubscriberToFirestore,
+  deleteDeletedSubscriberFromFirestore
 } from '../services/firestoreService';
 
 interface SuperAdminDashboardModalProps {
@@ -222,34 +226,71 @@ export const SuperAdminDashboardModal: React.FC<SuperAdminDashboardModalProps> =
   };
 
   const [subscribers, setSubscribers] = useState<SubscriberRecord[]>([]);
+  const [subscriberSearchQuery, setSubscriberSearchQuery] = useState('');
+  const [selectedSubIds, setSelectedSubIds] = useState<string[]>([]);
+
+  const filteredSubscribers = subscribers.filter(sub => {
+    const q = subscriberSearchQuery.toLowerCase().trim();
+    if (!q) return true;
+    const email = (sub.email || '').toLowerCase();
+    const name = (sub.name || '').toLowerCase();
+    const phone = (sub.phone || '').toLowerCase();
+    const category = (sub.category || '').toLowerCase();
+    const notes = (sub.notes || sub.message || '').toLowerCase();
+    return email.includes(q) || name.includes(q) || phone.includes(q) || category.includes(q) || notes.includes(q);
+  });
 
   useEffect(() => {
-    // 1. Listen to Firestore real-time updates
+    let liveList: SubscriberRecord[] = [];
+    let serverList: SubscriberRecord[] = [];
+
+    const mergeSubscribers = (listA: SubscriberRecord[], listB: SubscriberRecord[]) => {
+      const map = new Map<string, SubscriberRecord>();
+      listA.forEach(s => {
+        const email = (s.email || '').toLowerCase().trim();
+        if (email) map.set(email, s);
+      });
+      listB.forEach(s => {
+        const email = (s.email || '').toLowerCase().trim();
+        if (email) {
+          const existing = map.get(email);
+          if (existing) {
+            map.set(email, {
+              ...existing,
+              ...s,
+              name: s.name || existing.name,
+              phone: s.phone || existing.phone,
+              notes: s.notes || existing.notes || s.message || existing.message,
+            });
+          } else {
+            map.set(email, s);
+          }
+        }
+      });
+      return Array.from(map.values()).sort((a, b) => {
+        const dateA = a.date || '';
+        const dateB = b.date || '';
+        return dateB.localeCompare(dateA);
+      });
+    };
+
+    const updateCombined = () => {
+      const merged = mergeSubscribers(liveList, serverList);
+      if (merged.length > 0) {
+        setSubscribers(merged);
+      }
+    };
+
+    // 1. Listen to Firestore real-time updates directly
     const unsub = subscribeToSubscribers((liveSubs) => {
       if (Array.isArray(liveSubs)) {
-        const clean = liveSubs.filter(s => {
-          const em = (s.email || '').toLowerCase().trim();
-          return !!em;
-        });
-        setSubscribers(clean);
+        // Sort by subscription date descending
+        const sorted = [...liveSubs].sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+        setSubscribers(sorted);
       }
     });
 
-    // 2. Fetch from backend server API
-    fetch('/api/v1/subscribers')
-      .then(res => res.json())
-      .then(data => {
-        if (data.success && Array.isArray(data.subscribers)) {
-          const clean = data.subscribers.filter((s: any) => {
-            const em = (s?.email || '').toLowerCase().trim();
-            return !!em;
-          });
-          setSubscribers(prev => (prev.length === 0 ? clean : prev));
-        }
-      })
-      .catch(() => {});
-
-    // 3. Clean up localStorage sample emails if present
+    // 2. Clean up localStorage sample emails if present
     try {
       const stored = JSON.parse(localStorage.getItem('fastarc_subscribers') || '[]');
       if (Array.isArray(stored)) {
@@ -262,6 +303,79 @@ export const SuperAdminDashboardModal: React.FC<SuperAdminDashboardModalProps> =
       unsub();
     };
   }, []);
+
+  const [deletedSubscribers, setDeletedSubscribers] = useState<SubscriberRecord[]>([]);
+  const [showRecycleBin, setShowRecycleBin] = useState(false);
+  const [isRefreshingSubscribers, setIsRefreshingSubscribers] = useState(false);
+
+  useEffect(() => {
+    const unsubDel = subscribeToDeletedSubscribers((liveSubs) => {
+      if (Array.isArray(liveSubs)) {
+        const sorted = [...liveSubs].sort((a, b) => {
+          const delA = (a as any).deletedAt || '';
+          const delB = (b as any).deletedAt || '';
+          return delB.localeCompare(delA);
+        });
+        setDeletedSubscribers(sorted);
+      }
+    });
+
+    return () => {
+      unsubDel();
+    };
+  }, []);
+
+  const handleRefreshSubscribers = async () => {
+    setIsRefreshingSubscribers(true);
+    setTimeout(() => {
+      setIsRefreshingSubscribers(false);
+      onToast('Real-time Subscriber feed refreshed successfully!');
+    }, 500);
+  };
+
+  const handleRestoreSubscriber = async (sub: SubscriberRecord) => {
+    setDeletedSubscribers(prev => prev.filter(s => s.id !== sub.id));
+    setSubscribers(prev => [sub, ...prev]);
+
+    try {
+      await deleteDeletedSubscriberFromFirestore(sub.id);
+      await saveSubscriberToFirestore(sub);
+    } catch (err) {}
+
+    onToast(`Subscriber "${sub.email}" restored successfully!`);
+  };
+
+  const handlePermanentDeleteSubscriber = async (sub: SubscriberRecord) => {
+    if (!window.confirm(`Are you sure you want to permanently delete "${sub.email}"? This action cannot be undone.`)) return;
+
+    setDeletedSubscribers(prev => prev.filter(s => s.id !== sub.id));
+
+    try {
+      await deleteDeletedSubscriberFromFirestore(sub.id);
+    } catch (err) {}
+
+    onToast(`Subscriber permanently deleted!`);
+  };
+
+  const handleClearRecycleBin = async () => {
+    if (deletedSubscribers.length === 0) {
+      onToast('Recycle Bin is already empty!');
+      return;
+    }
+    if (!window.confirm('Are you sure you want to permanently delete ALL subscribers in the Recycle Bin? This action is irreversible.')) return;
+
+    const previousDeleted = [...deletedSubscribers];
+    setDeletedSubscribers([]);
+
+    try {
+      for (const sub of previousDeleted) {
+        await deleteDeletedSubscriberFromFirestore(sub.id);
+      }
+    } catch (err) {}
+
+    onToast('Recycle Bin cleared successfully!');
+  };
+
   const [newSubEmail, setNewSubEmail] = useState('');
   const [broadcastSubject, setBroadcastSubject] = useState('');
   const [broadcastMessage, setBroadcastMessage] = useState('');
@@ -434,30 +548,23 @@ export const SuperAdminDashboardModal: React.FC<SuperAdminDashboardModalProps> =
       try {
         await saveSubscriberToFirestore(newSub);
       } catch (err) {}
-      try {
-        await fetch('/api/v1/subscribers', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(newSub)
-        });
-      } catch (err) {}
-      onToast('New subscriber added to alert list & saved to database!');
+      onToast('New subscriber added to alert list & saved to Firestore Database!');
     }
   };
 
   const handleDeleteSubscriber = async (subId: string) => {
     const targetSub = subscribers.find(s => s.id === subId);
+    if (!targetSub) return;
+    
+    // Optimistic UI update
     setSubscribers(prev => prev.filter(s => s.id !== subId));
+    setDeletedSubscribers(prev => [targetSub, ...prev.filter(s => s.id !== subId)]);
+
     try {
       await deleteSubscriberFromFirestore(subId);
+      await saveDeletedSubscriberToFirestore(targetSub);
     } catch (err) {}
-    try {
-      await fetch(`/api/v1/subscribers/${subId}`, {
-        method: 'DELETE',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: targetSub?.email })
-      });
-    } catch (err) {}
+
     try {
       if (targetSub?.email) {
         const stored = JSON.parse(localStorage.getItem('fastarc_subscribers') || '[]');
@@ -467,7 +574,57 @@ export const SuperAdminDashboardModal: React.FC<SuperAdminDashboardModalProps> =
         }
       }
     } catch (e) {}
-    onToast('Subscriber removed from database!');
+
+    onToast('Subscriber moved to Recycle Bin!');
+  };
+
+  const handleBulkDeleteSubscribers = async () => {
+    if (selectedSubIds.length === 0) return;
+    const confirmMessage = `Are you sure you want to move the ${selectedSubIds.length} selected subscriber(s) to the Recycle Bin?`;
+    if (!window.confirm(confirmMessage)) return;
+
+    const targets = subscribers.filter(s => selectedSubIds.includes(s.id));
+    if (targets.length === 0) return;
+
+    // Optimistic UI updates
+    setSubscribers(prev => prev.filter(s => !selectedSubIds.includes(s.id)));
+    setDeletedSubscribers(prev => [...targets, ...prev.filter(s => !selectedSubIds.includes(s.id))]);
+    setSelectedSubIds([]);
+
+    for (const targetSub of targets) {
+      try {
+        await deleteSubscriberFromFirestore(targetSub.id);
+        await saveDeletedSubscriberToFirestore(targetSub);
+      } catch (err) {}
+
+      try {
+        if (targetSub.email) {
+          const stored = JSON.parse(localStorage.getItem('fastarc_subscribers') || '[]');
+          if (Array.isArray(stored)) {
+            const updated = stored.filter((s: any) => s !== targetSub.email);
+            localStorage.setItem('fastarc_subscribers', JSON.stringify(updated));
+          }
+        }
+      } catch (e) {}
+    }
+
+    onToast(`${targets.length} subscriber(s) moved to Recycle Bin!`);
+  };
+
+  const handleToggleMuteSubscriber = async (sub: SubscriberRecord) => {
+    const isCurrentlyMuted = Boolean(sub.muted);
+    const updatedSub = { ...sub, muted: !isCurrentlyMuted };
+    
+    // Optimistic UI update
+    setSubscribers(prev => prev.map(s => s.id === sub.id ? updatedSub : s));
+
+    try {
+      await saveSubscriberToFirestore(updatedSub);
+      onToast(`Notifications ${updatedSub.muted ? 'muted 🔇' : 'unmuted 🔔'} for ${sub.email}!`);
+    } catch (err) {
+      setSubscribers(prev => prev.map(s => s.id === sub.id ? sub : s));
+      onToast('Failed to change mute status!');
+    }
   };
 
   const handleSendBroadcast = (e: React.FormEvent) => {
@@ -1542,61 +1699,256 @@ export const SuperAdminDashboardModal: React.FC<SuperAdminDashboardModalProps> =
             {/* TAB 5: SUBSCRIBERS */}
             {activeTab === 'subscribers' && (
               <div className="space-y-5 animate-in fade-in duration-200">
-                <div>
-                  <h3 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                    <Users className="w-5 h-5 text-red-600" /> Registered Email Alert Subscribers
-                  </h3>
-                  <p className="text-xs text-slate-500 dark:text-slate-400">Manage email subscribers and send broadcast email notifications.</p>
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-slate-100 dark:border-slate-800 pb-4">
+                  <div>
+                    <h3 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                      <Users className="w-5 h-5 text-red-600" /> Registered Email Alert Subscribers
+                    </h3>
+                    <p className="text-xs text-slate-500 dark:text-slate-400">Manage email subscribers and send broadcast email notifications.</p>
+                  </div>
+                  
+                  <div className="flex items-center gap-2 shrink-0">
+                    <button
+                      type="button"
+                      onClick={handleRefreshSubscribers}
+                      disabled={isRefreshingSubscribers}
+                      className="inline-flex items-center gap-1.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold px-3 py-1.5 rounded-lg text-xs transition cursor-pointer shadow-sm border border-slate-200/50 dark:border-slate-700"
+                      title="Refresh Subscribers List"
+                    >
+                      <RefreshCw className={`w-3.5 h-3.5 ${isRefreshingSubscribers ? 'animate-spin' : ''}`} />
+                      {isRefreshingSubscribers ? 'Refreshing...' : 'Refresh'}
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => setShowRecycleBin(!showRecycleBin)}
+                      className={`inline-flex items-center gap-1.5 font-bold px-3 py-1.5 rounded-lg text-xs transition cursor-pointer shadow-sm border ${
+                        showRecycleBin 
+                          ? 'bg-amber-100 dark:bg-amber-950/40 text-amber-800 dark:text-amber-300 border-amber-300 dark:border-amber-800' 
+                          : 'bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border-slate-200/50 dark:border-slate-700'
+                      }`}
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                      Recycle Bin ({deletedSubscribers.length})
+                    </button>
+                  </div>
                 </div>
 
-                {/* Add subscriber inline */}
-                <form onSubmit={handleAddSubscriber} className="flex gap-2">
-                  <input
-                    type="email"
-                    required
-                    placeholder="Add subscriber email manually..."
-                    value={newSubEmail}
-                    onChange={(e) => setNewSubEmail(e.target.value)}
-                    className="flex-1 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 rounded-lg px-3 py-2 text-xs text-slate-800 dark:text-slate-100 focus:outline-none focus:border-red-500"
-                  />
-                  <button
-                    type="submit"
-                    className="bg-red-600 hover:bg-red-700 text-white font-bold px-3.5 py-2 rounded-lg text-xs shrink-0 cursor-pointer shadow-sm"
-                  >
-                    + Add Email
-                  </button>
-                </form>
+                {/* RECYCLE BIN DRAWER/SECTION */}
+                {showRecycleBin && (
+                  <div className="bg-amber-50/50 dark:bg-amber-950/10 border-2 border-dashed border-amber-300 dark:border-amber-800 rounded-2xl p-4 space-y-4 animate-in slide-in-from-top duration-200">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <Trash2 className="w-5 h-5 text-amber-600 dark:text-amber-500" />
+                        <div>
+                          <h4 className="text-sm font-bold text-slate-800 dark:text-slate-200">Recycle Bin (Deleted Subscribers)</h4>
+                          <p className="text-[10px] text-slate-500 dark:text-slate-400">Items here can be restored back to active list or deleted permanently.</p>
+                        </div>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={handleClearRecycleBin}
+                        disabled={deletedSubscribers.length === 0}
+                        className="text-[11px] font-bold text-red-600 dark:text-red-400 hover:underline disabled:opacity-50 cursor-pointer"
+                      >
+                        Empty Bin
+                      </button>
+                    </div>
+
+                    {deletedSubscribers.length === 0 ? (
+                      <div className="py-8 text-center text-xs text-slate-400 dark:text-slate-500 border border-dashed border-slate-200 dark:border-slate-800 rounded-xl bg-white/50 dark:bg-slate-900/40">
+                        Recycle Bin is empty. No deleted subscribers found.
+                      </div>
+                    ) : (
+                      <div className="border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden bg-white dark:bg-slate-900">
+                        <div className="overflow-x-auto max-h-80">
+                          <table className="w-full text-left text-xs border-collapse">
+                            <thead>
+                              <tr className="bg-slate-50 dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 font-bold uppercase text-[10px]">
+                                <th className="p-3">Subscriber Email</th>
+                                <th className="p-3">Candidate Name</th>
+                                <th className="p-3">WhatsApp / Mobile</th>
+                                <th className="p-3">Information / Query</th>
+                                <th className="p-3">Category Interest</th>
+                                <th className="p-3 text-right">Actions</th>
+                              </tr>
+                            </thead>
+                            <tbody className="divide-y divide-slate-100 dark:divide-slate-800 text-slate-700 dark:text-slate-300">
+                              {deletedSubscribers.map((sub) => (
+                                <tr key={sub.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/40">
+                                  <td className="p-3 font-semibold text-slate-800 dark:text-slate-100">{sub.email}</td>
+                                  <td className="p-3">{sub.name || <span className="text-slate-400 italic">N/A</span>}</td>
+                                  <td className="p-3 font-mono">{sub.phone || <span className="text-slate-400 italic">N/A</span>}</td>
+                                  <td className="p-3 max-w-xs truncate" title={sub.notes || sub.message}>{sub.notes || sub.message || <span className="text-slate-400 italic">None</span>}</td>
+                                  <td className="p-3">
+                                    <span className="bg-amber-100 dark:bg-amber-900/40 text-amber-800 dark:text-amber-300 px-2 py-0.5 rounded-full text-[10px] font-bold">
+                                      {sub.category || 'All Updates'}
+                                    </span>
+                                  </td>
+                                  <td className="p-3 text-right space-x-3 whitespace-nowrap">
+                                    <button
+                                      type="button"
+                                      onClick={() => handleRestoreSubscriber(sub)}
+                                      className="text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-300 font-bold hover:underline cursor-pointer"
+                                    >
+                                      Restore
+                                    </button>
+                                    <button
+                                      type="button"
+                                      onClick={() => handlePermanentDeleteSubscriber(sub)}
+                                      className="text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 font-bold hover:underline cursor-pointer"
+                                    >
+                                      Delete
+                                    </button>
+                                  </td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* Search & Add row */}
+                <div className="flex flex-col md:flex-row gap-3 items-stretch md:items-center justify-between">
+                  {/* Search Input */}
+                  <div className="relative flex-1 max-w-md">
+                    <span className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                      <Search className="w-3.5 h-3.5 text-slate-400 dark:text-slate-500" />
+                    </span>
+                    <input
+                      type="text"
+                      placeholder="Search subscribers by name, email, phone or notes..."
+                      value={subscriberSearchQuery}
+                      onChange={(e) => setSubscriberSearchQuery(e.target.value)}
+                      className="w-full pl-9 pr-3 py-2 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 rounded-lg text-xs text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-red-500"
+                    />
+                    {subscriberSearchQuery && (
+                      <button
+                        type="button"
+                        onClick={() => setSubscriberSearchQuery('')}
+                        className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-[11px] font-bold cursor-pointer"
+                      >
+                        Clear
+                      </button>
+                    )}
+                  </div>
+
+                  {/* Add subscriber inline */}
+                  <form onSubmit={handleAddSubscriber} className="flex gap-2 shrink-0">
+                    <input
+                      type="email"
+                      required
+                      placeholder="Add subscriber email manually..."
+                      value={newSubEmail}
+                      onChange={(e) => setNewSubEmail(e.target.value)}
+                      className="w-56 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 rounded-lg px-3 py-2 text-xs text-slate-800 dark:text-slate-100 focus:outline-none focus:border-red-500"
+                    />
+                    <button
+                      type="submit"
+                      className="bg-red-600 hover:bg-red-700 text-white font-bold px-3.5 py-2 rounded-lg text-xs shrink-0 cursor-pointer shadow-sm"
+                    >
+                      + Add Email
+                    </button>
+                  </form>
+                </div>
+
+                {/* Bulk Actions Panel */}
+                {selectedSubIds.length > 0 && (
+                  <div className="flex items-center justify-between bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900/60 rounded-xl p-3 animate-in fade-in slide-in-from-top duration-200">
+                    <div className="flex items-center gap-2">
+                      <span className="h-2 w-2 rounded-full bg-red-600 animate-pulse"></span>
+                      <p className="text-xs font-bold text-red-950 dark:text-red-300">
+                        {selectedSubIds.length} subscriber(s) selected
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <button
+                        type="button"
+                        onClick={() => setSelectedSubIds([])}
+                        className="text-xs font-semibold text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 cursor-pointer"
+                      >
+                        Deselect All
+                      </button>
+                      <button
+                        type="button"
+                        onClick={handleBulkDeleteSubscribers}
+                        className="inline-flex items-center gap-1.5 bg-red-600 hover:bg-red-700 text-white font-bold px-3 py-1.5 rounded-lg text-xs transition cursor-pointer shadow-sm"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                        Move Selected to Recycle Bin
+                      </button>
+                    </div>
+                  </div>
+                )}
 
                 {/* Subscriber List Table */}
                 <div className="border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden">
                   <table className="w-full text-left text-xs">
                     <thead className="bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold uppercase text-[10px]">
                       <tr>
+                        <th className="p-3 w-10 text-center">
+                          <input
+                            type="checkbox"
+                            checked={filteredSubscribers.length > 0 && filteredSubscribers.every(s => selectedSubIds.includes(s.id))}
+                            onChange={(e) => {
+                              if (e.target.checked) {
+                                const newIds = Array.from(new Set([...selectedSubIds, ...filteredSubscribers.map(s => s.id)]));
+                                setSelectedSubIds(newIds);
+                              } else {
+                                const filteredIds = filteredSubscribers.map(s => s.id);
+                                setSelectedSubIds(selectedSubIds.filter(id => !filteredIds.includes(id)));
+                              }
+                            }}
+                            className="rounded border-slate-300 text-red-600 focus:ring-red-500 cursor-pointer h-3.5 w-3.5"
+                          />
+                        </th>
                         <th className="p-3">Subscriber Email</th>
                         <th className="p-3">Candidate Name</th>
                         <th className="p-3">WhatsApp / Mobile</th>
                         <th className="p-3">Information / Query</th>
                         <th className="p-3">Category Interest</th>
                         <th className="p-3">Subscribed Date</th>
+                        <th className="p-3 text-center">Notifications</th>
                         <th className="p-3 text-right">Action</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-200 dark:divide-slate-800 text-slate-800 dark:text-slate-200">
-                      {subscribers.length === 0 ? (
+                      {filteredSubscribers.length === 0 ? (
                         <tr>
-                          <td colSpan={7} className="p-8 text-center text-slate-500 dark:text-slate-400">
+                          <td colSpan={9} className="p-8 text-center text-slate-500 dark:text-slate-400">
                             <div className="flex flex-col items-center justify-center max-w-sm mx-auto">
                               <Users className="w-8 h-8 text-slate-400 dark:text-slate-500 mb-2 opacity-50" />
-                              <div className="font-bold text-xs text-slate-700 dark:text-slate-300">No Registered Subscribers</div>
+                              <div className="font-bold text-xs text-slate-700 dark:text-slate-300">
+                                {subscriberSearchQuery ? 'No Matching Subscribers Found' : 'No Registered Subscribers'}
+                              </div>
                               <div className="text-[11px] text-slate-400 dark:text-slate-500 mt-1 leading-relaxed">
-                                Candidates who subscribe on the portal will appear here in real time, along with their custom information and queries.
+                                {subscriberSearchQuery 
+                                  ? 'No registered subscribers match your search filter criteria. Try adjusting your keywords.' 
+                                  : 'Candidates who subscribe on the portal will appear here in real time, along with their custom information and queries.'}
                               </div>
                             </div>
                           </td>
                         </tr>
                       ) : (
-                        subscribers.map((sub) => (
-                          <tr key={sub.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/40">
+                        filteredSubscribers.map((sub) => (
+                          <tr key={sub.id} className={`hover:bg-slate-50 dark:hover:bg-slate-800/40 ${selectedSubIds.includes(sub.id) ? 'bg-red-50/30 dark:bg-red-950/5' : ''}`}>
+                            <td className="p-3 w-10 text-center">
+                              <input
+                                type="checkbox"
+                                checked={selectedSubIds.includes(sub.id)}
+                                onChange={(e) => {
+                                  if (e.target.checked) {
+                                    setSelectedSubIds([...selectedSubIds, sub.id]);
+                                  } else {
+                                    setSelectedSubIds(selectedSubIds.filter(id => id !== sub.id));
+                                  }
+                                }}
+                                className="rounded border-slate-300 text-red-600 focus:ring-red-500 cursor-pointer h-3.5 w-3.5"
+                              />
+                            </td>
                             <td className="p-3 font-semibold">{sub.email}</td>
                             <td className="p-3 font-medium text-slate-700 dark:text-slate-300">{sub.name || <span className="text-slate-400 italic">N/A</span>}</td>
                             <td className="p-3 font-mono text-slate-600 dark:text-slate-400">{sub.phone || <span className="text-slate-400 italic">N/A</span>}</td>
@@ -1605,6 +1957,30 @@ export const SuperAdminDashboardModal: React.FC<SuperAdminDashboardModalProps> =
                             </td>
                             <td className="p-3 text-slate-500 dark:text-slate-400">{sub.category}</td>
                             <td className="p-3 text-slate-500 dark:text-slate-400">{sub.date}</td>
+                            <td className="p-3 text-center">
+                              <button
+                                type="button"
+                                onClick={() => handleToggleMuteSubscriber(sub)}
+                                className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold transition-all cursor-pointer ${
+                                  sub.muted
+                                    ? 'bg-amber-100 dark:bg-amber-950/40 text-amber-800 dark:text-amber-400 border border-amber-200 dark:border-amber-900/40 hover:bg-amber-200'
+                                    : 'bg-emerald-100 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-900/40 hover:bg-emerald-200'
+                                }`}
+                                title={sub.muted ? 'Unmute notifications' : 'Mute notifications'}
+                              >
+                                {sub.muted ? (
+                                  <>
+                                    <BellOff className="w-3 h-3" />
+                                    Muted
+                                  </>
+                                ) : (
+                                  <>
+                                    <Bell className="w-3 h-3" />
+                                    Active
+                                  </>
+                                )}
+                              </button>
+                            </td>
                             <td className="p-3 text-right">
                               <button
                                 onClick={() => handleDeleteSubscriber(sub.id)}
