@@ -1,6 +1,7 @@
 import { JobAlert, SocialLinkItem } from './types';
 import { historicalJobsDatabase } from './data/historicalJobs';
 import { fullCatalogJobs } from './data/fullCatalogJobs';
+import { liveDatabaseJobs } from './data/liveDatabaseJobs';
 
 const baseJobsDatabase: JobAlert[] = [
   {
@@ -1718,6 +1719,13 @@ historicalJobsDatabase.forEach(job => {
 baseJobsDatabase.forEach(job => {
   if (job && job.id && !combinedMap.has(job.id)) {
     combinedMap.set(job.id, job);
+  }
+});
+
+// Add live database and custom ingested jobs
+liveDatabaseJobs.forEach(job => {
+  if (job && job.id) {
+    combinedMap.set(job.id, { ...(combinedMap.get(job.id) || {}), ...job });
   }
 });
 

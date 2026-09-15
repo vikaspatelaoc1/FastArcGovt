@@ -437,26 +437,21 @@ export default function App() {
             };
           });
           setJobs(prev => {
-            // If the live real-time Firestore subscription is active and has loaded,
-            // we must prioritize it to prevent stale REST API responses from resurrecting deleted jobs or overriding updates.
-            if (prev.length > 0 && !isFirestoreQuotaExceeded()) {
-              const prevIds = new Set(prev.map(j => j.id));
-              // Merge details for jobs that actually exist in the live state, but do not add deleted or missing jobs.
-              const m = new Map<string, JobAlert>();
-              prev.forEach(j => m.set(j.id, j));
-              serverJobs.forEach(j => {
-                if (prevIds.has(j.id)) {
-                  m.set(j.id, { ...j, ...m.get(j.id)! }); // Keep live state details as authority
-                }
-              });
-              return Array.from(m.values());
-            }
-
-            // Fallback for when Firestore snapshot hasn't fired yet or has quota issues
             const m = new Map<string, JobAlert>();
+            // 1. Add all server database jobs (full catalog + server additions)
             serverJobs.forEach(j => m.set(j.id, j));
-            prev.forEach(j => m.set(j.id, { ...(m.get(j.id) || {}), ...j }));
-            return Array.from(m.values());
+            // 2. Overlay live state / local modifications (preserving local/Firestore updates)
+            prev.forEach(j => {
+              const existing = m.get(j.id);
+              if (existing) {
+                m.set(j.id, { ...existing, ...j });
+              } else {
+                m.set(j.id, j);
+              }
+            });
+            const merged = Array.from(m.values());
+            localStorage.setItem('fastarc_jobs', JSON.stringify(merged));
+            return merged;
           });
         }
       })
@@ -1167,23 +1162,27 @@ export default function App() {
       });
     }
 
+    // Immediately update local state and localStorage so user sees their post right away
+    setJobs(prev => {
+      const idx = prev.findIndex(j => j.id === finalJob.id || (j.title && j.title.trim().toLowerCase() === normTitle));
+      let updated: JobAlert[];
+      if (idx !== -1) {
+        updated = [...prev];
+        updated[idx] = { ...updated[idx], ...finalJob };
+      } else {
+        updated = [finalJob, ...prev];
+      }
+      localStorage.setItem('fastarc_jobs', JSON.stringify(updated));
+      return updated;
+    });
+
     try {
       if (!isFirestoreQuotaExceeded()) {
         await saveJobToFirestore(finalJob);
       }
       triggerToast(isExistingOrEditing ? 'Live database updated!' : 'Post added successfully!');
     } catch (err) {
-      console.warn('Firestore save error, saving locally & backend:', err);
-      setJobs(prev => {
-        const idx = prev.findIndex(j => j.id === finalJob.id || (j.title && j.title.trim().toLowerCase() === normTitle));
-        if (idx !== -1) {
-          const clone = [...prev];
-          clone[idx] = finalJob;
-          return clone;
-        }
-        return [finalJob, ...prev];
-      });
-      triggerToast('Post saved!');
+      console.warn('Firestore save warning (post saved locally & syncing):', err);
     }
 
     try {
@@ -1213,13 +1212,17 @@ export default function App() {
 
   const handleBulkSaveJobs = async (jobsToSave: JobAlert[]) => {
     const enrichedJobs = jobsToSave.map(j => enrichJobDetails(j));
+    setJobs(prev => {
+      const merged = [...enrichedJobs, ...prev.filter(p => !enrichedJobs.some(j => j.id === p.id))];
+      localStorage.setItem('fastarc_jobs', JSON.stringify(merged));
+      return merged;
+    });
     try {
       await appendJobsToFirestore(enrichedJobs);
       triggerToast(`Published ${enrichedJobs.length} jobs to database across all devices!`);
     } catch (err) {
       console.warn('Firestore bulk save error:', err);
-      setJobs(prev => [...enrichedJobs, ...prev.filter(p => !enrichedJobs.some(j => j.id === p.id))]);
-      triggerToast(`Published ${enrichedJobs.length} jobs locally!`);
+      triggerToast(`Published ${enrichedJobs.length} jobs locally & syncing!`);
     }
 
     try {

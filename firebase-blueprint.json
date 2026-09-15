@@ -1,53 +1,80 @@
 {
-  "schema": {
-    "jobs": {
-      "type": "collection",
-      "schema": {
-        "id": "string",
-        "title": "string",
-        "state": "string",
-        "category": "string",
-        "postDate": "string"
-      }
+  "entities": {
+    "Job": {
+      "title": "Job",
+      "description": "Government job alerts and notifications",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "category": { "type": "string" },
+        "state": { "type": "string" },
+        "postDate": { "type": "string" }
+      },
+      "required": ["id", "title", "category"]
     },
-    "employees": {
-      "type": "collection",
-      "schema": {
-        "id": "string",
-        "name": "string",
-        "role": "string",
-        "email": "string"
-      }
+    "Subscriber": {
+      "title": "Subscriber",
+      "description": "User who subscribed for job alert notifications",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "email": { "type": "string" },
+        "name": { "type": "string" },
+        "phone": { "type": "string" },
+        "category": { "type": "string" },
+        "notes": { "type": "string" },
+        "date": { "type": "string" },
+        "createdAt": { "type": "string" },
+        "source": { "type": "string" }
+      },
+      "required": ["id", "email"]
     },
-    "subscribers": {
-      "type": "collection",
-      "schema": {
-        "email": "string",
-        "subscribedAt": "string"
-      }
+    "Employee": {
+      "title": "Employee",
+      "description": "Portal staff member account",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "username": { "type": "string" },
+        "role": { "type": "string" }
+      },
+      "required": ["id", "username"]
     },
-    "scraperSources": {
-      "type": "collection",
-      "schema": {
-        "id": "string",
-        "name": "string",
-        "url": "string",
-        "enabled": "boolean"
-      }
+    "StagingJob": {
+      "title": "StagingJob",
+      "description": "Staging queue job for backend validation before live publication",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "category": { "type": "string" },
+        "status": { "type": "string" }
+      },
+      "required": ["id", "title"]
+    }
+  },
+  "firestore": {
+    "/jobs/{jobId}": {
+      "schema": "Job",
+      "description": "Active published govt jobs"
     },
-    "users": {
-      "type": "collection",
-      "schema": {
-        "id": "string",
-        "username": "string",
-        "role": "string"
-      }
+    "/subscribers/{subscriberId}": {
+      "schema": "Subscriber",
+      "description": "Active public newsletter and job alert subscribers"
     },
-    "config": {
-      "type": "collection",
-      "schema": {
-        "value": "string"
-      }
+    "/deleted_subscribers/{subscriberId}": {
+      "schema": "Subscriber",
+      "description": "Recycle bin of deleted subscribers"
+    },
+    "/employees/{employeeId}": {
+      "schema": "Employee",
+      "description": "Registered employee and staff records"
+    },
+    "/staging_jobs/{jobId}": {
+      "schema": "StagingJob",
+      "description": "Staged jobs pending review or sync"
     }
   }
 }

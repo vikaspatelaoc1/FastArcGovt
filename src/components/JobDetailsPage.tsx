@@ -157,10 +157,13 @@ export const JobDetailsPage: React.FC<JobDetailsPageProps> = ({
     if (trimmedEmail && trimmedEmail.includes('@')) {
       const categoryLabel = job.category.replace('-', ' ');
       const newSub: SubscriberRecord = {
-        id: `sub-${Date.now()}`,
-        email: trimmedEmail,
+        id: `sub-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
+        email: trimmedEmail.toLowerCase(),
         category: categoryLabel.toUpperCase(),
-        date: new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })
+        date: new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }),
+        createdAt: new Date().toISOString(),
+        source: typeof window !== 'undefined' ? window.location.hostname : 'job_details_page',
+        muted: false
       };
 
       try {

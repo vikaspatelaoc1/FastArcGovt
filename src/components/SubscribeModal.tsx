@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Bell, Mail, X, CheckCircle2, Sparkles, ShieldCheck, User, Phone, MessageSquare } from 'lucide-react';
+import { Bell, Mail, X, CheckCircle2, Sparkles, ShieldCheck, User, Phone, MessageSquare, Loader2, AlertCircle } from 'lucide-react';
 import { saveSubscriberToFirestore, SubscriberRecord } from '../services/firestoreService';
 
 interface SubscribeModalProps {
@@ -20,39 +20,77 @@ export const SubscribeModal: React.FC<SubscribeModalProps> = ({
   const [phone, setPhone] = useState('');
   const [notes, setNotes] = useState('');
   const [isSuccess, setIsSuccess] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [toast, setToast] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
 
   if (!isOpen) return null;
 
+  const handleModalClose = () => {
+    if (isLoading) return;
+    setToast(null);
+    setIsLoading(false);
+    onClose();
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email || !email.includes('@')) return;
+    setToast(null);
 
-    const trimmedEmail = email.trim();
+    const trimmedEmail = email.trim().toLowerCase();
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!trimmedEmail || !emailRegex.test(trimmedEmail)) {
+      setToast({
+        type: 'error',
+        message: 'Please enter a valid email address (e.g. yourname@gmail.com).'
+      });
+      return;
+    }
+
+    if (phone.trim() && !/^[0-9+\-\s()]{7,15}$/.test(phone.trim())) {
+      setToast({
+        type: 'error',
+        message: 'Please enter a valid 10-digit mobile or WhatsApp number.'
+      });
+      return;
+    }
+
+    setIsLoading(true);
+
     const newSub: SubscriberRecord = {
-      id: `sub-${Date.now()}`,
+      id: `sub-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
       email: trimmedEmail,
       category: 'All Job Updates',
       date: new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }),
+      createdAt: new Date().toISOString(),
       name: name.trim(),
       phone: phone.trim(),
-      notes: notes.trim()
+      notes: notes.trim(),
+      source: typeof window !== 'undefined' ? window.location.hostname : 'website',
+      muted: false
     };
+
+    let savedCloud = false;
+    let savedServer = false;
 
     // 1. Save directly to Firebase Firestore Cloud Database
     try {
       await saveSubscriberToFirestore(newSub);
-    } catch (err) {
+      savedCloud = true;
+    } catch (err: any) {
       console.warn('Firebase subscriber save error:', err);
     }
 
-    // 2. Save to Express server API
+    // 2. Fallback secondary direct call to Express server API
     try {
-      await fetch('/api/v1/subscribers', {
+      const res = await fetch('/api/v1/subscribers', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newSub)
       });
-    } catch (err) {
+      if (res.ok) {
+        savedServer = true;
+      }
+    } catch (err: any) {
       console.warn('Server subscriber save error:', err);
     }
 
@@ -67,11 +105,27 @@ export const SubscribeModal: React.FC<SubscribeModalProps> = ({
       console.error(err);
     }
 
+    // Check if network failed completely
+    if (!savedCloud && !savedServer && typeof navigator !== 'undefined' && !navigator.onLine) {
+      setIsLoading(false);
+      setToast({
+        type: 'error',
+        message: 'You appear to be offline. Please check your internet connection and try again.'
+      });
+      return;
+    }
+
+    setIsLoading(false);
     setIsSuccess(true);
+    setToast({
+      type: 'success',
+      message: `Success! ${trimmedEmail} subscribed to government job alerts.`
+    });
     onSubscribeSuccess(trimmedEmail);
 
     setTimeout(() => {
       setIsSuccess(false);
+      setToast(null);
       setEmail('');
       setName('');
       setPhone('');
@@ -84,7 +138,7 @@ export const SubscribeModal: React.FC<SubscribeModalProps> = ({
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       {/* Backdrop */}
       <div 
-        onClick={onClose} 
+        onClick={handleModalClose} 
         className="fixed inset-0 bg-black/60 dark:bg-slate-950/80 backdrop-blur-sm animate-in fade-in duration-200" 
       />
 
@@ -116,8 +170,9 @@ export const SubscribeModal: React.FC<SubscribeModalProps> = ({
           </div>
 
           <button
-            onClick={onClose}
-            className="p-1.5 rounded-lg bg-slate-200/80 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-colors cursor-pointer border border-slate-300 dark:border-slate-700"
+            onClick={handleModalClose}
+            disabled={isLoading}
+            className="p-1.5 rounded-lg bg-slate-200/80 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 disabled:opacity-50 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-colors cursor-pointer border border-slate-300 dark:border-slate-700"
             title="Close"
           >
             <X className="w-5 h-5" />
@@ -126,6 +181,38 @@ export const SubscribeModal: React.FC<SubscribeModalProps> = ({
 
         {/* Content Body */}
         <div className="p-6">
+          {/* Feedback Toast Notification Banner */}
+          {toast && (
+            <div 
+              role="alert"
+              className={`mb-4 p-3 rounded-xl border flex items-start gap-2.5 text-xs font-medium animate-in fade-in slide-in-from-top-2 duration-200 transition-all ${
+                toast.type === 'success'
+                  ? 'bg-emerald-50 dark:bg-emerald-950/40 border-emerald-300 dark:border-emerald-700/50 text-emerald-800 dark:text-emerald-200 shadow-sm'
+                  : 'bg-rose-50 dark:bg-rose-950/40 border-rose-300 dark:border-rose-700/50 text-rose-800 dark:text-rose-200 shadow-sm'
+              }`}
+            >
+              {toast.type === 'success' ? (
+                <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
+              ) : (
+                <AlertCircle className="w-4 h-4 text-rose-600 dark:text-rose-400 shrink-0 mt-0.5" />
+              )}
+              <div className="flex-1 leading-snug">
+                <span className="font-bold block mb-0.5">
+                  {toast.type === 'success' ? 'Subscription Confirmed' : 'Action Required'}
+                </span>
+                <span>{toast.message}</span>
+              </div>
+              <button
+                type="button"
+                onClick={() => setToast(null)}
+                className="p-1 -mr-1 -mt-1 rounded-md text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors"
+                title="Dismiss"
+              >
+                <X className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          )}
+
           {isSuccess ? (
             <div className="text-center py-6 space-y-3 animate-in fade-in">
               <div className="w-14 h-14 bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 rounded-full flex items-center justify-center mx-auto border border-emerald-500/40">
@@ -157,10 +244,11 @@ export const SubscribeModal: React.FC<SubscribeModalProps> = ({
                   <input
                     type="email"
                     required
+                    disabled={isLoading}
                     placeholder="name@example.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full pl-10 pr-4 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white text-xs font-medium placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition-all shadow-inner"
+                    className="w-full pl-10 pr-4 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white text-xs font-medium placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition-all shadow-inner disabled:opacity-60 disabled:cursor-not-allowed"
                   />
                 </div>
               </div>
@@ -174,10 +262,11 @@ export const SubscribeModal: React.FC<SubscribeModalProps> = ({
                   <User className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
                   <input
                     type="text"
+                    disabled={isLoading}
                     placeholder="Your Name"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    className="w-full pl-10 pr-4 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white text-xs font-medium placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition-all shadow-inner"
+                    className="w-full pl-10 pr-4 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white text-xs font-medium placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition-all shadow-inner disabled:opacity-60 disabled:cursor-not-allowed"
                   />
                 </div>
               </div>
@@ -191,10 +280,11 @@ export const SubscribeModal: React.FC<SubscribeModalProps> = ({
                   <Phone className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
                   <input
                     type="tel"
+                    disabled={isLoading}
                     placeholder="10-digit number"
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
-                    className="w-full pl-10 pr-4 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white text-xs font-medium placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition-all shadow-inner"
+                    className="w-full pl-10 pr-4 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white text-xs font-medium placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition-all shadow-inner disabled:opacity-60 disabled:cursor-not-allowed"
                   />
                 </div>
               </div>
@@ -207,11 +297,12 @@ export const SubscribeModal: React.FC<SubscribeModalProps> = ({
                 <div className="relative">
                   <MessageSquare className="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
                   <textarea
+                    disabled={isLoading}
                     placeholder="Tell us about exams you are preparing for or questions you have..."
                     value={notes}
                     rows={2}
                     onChange={(e) => setNotes(e.target.value)}
-                    className="w-full pl-10 pr-4 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white text-xs font-medium placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition-all shadow-inner resize-none"
+                    className="w-full pl-10 pr-4 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white text-xs font-medium placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition-all shadow-inner resize-none disabled:opacity-60 disabled:cursor-not-allowed"
                   />
                 </div>
               </div>
@@ -223,11 +314,20 @@ export const SubscribeModal: React.FC<SubscribeModalProps> = ({
 
               <button
                 type="submit"
-                disabled={!email}
-                className="w-full bg-gradient-to-r from-blue-900 via-indigo-900 to-slate-900 hover:from-blue-800 hover:to-indigo-800 border border-amber-500/40 active:scale-98 disabled:opacity-50 text-amber-300 font-extrabold py-3 rounded-xl text-xs shadow-lg shadow-blue-950/60 transition-all cursor-pointer flex items-center justify-center space-x-2 mt-2"
+                disabled={!email || isLoading}
+                className="w-full bg-gradient-to-r from-blue-900 via-indigo-900 to-slate-900 hover:from-blue-800 hover:to-indigo-800 border border-amber-500/40 active:scale-98 disabled:opacity-50 disabled:cursor-not-allowed text-amber-300 font-extrabold py-3 rounded-xl text-xs shadow-lg shadow-blue-950/60 transition-all cursor-pointer flex items-center justify-center space-x-2 mt-2"
               >
-                <Bell className="w-4 h-4 fill-current text-amber-400" />
-                <span>Subscribe</span>
+                {isLoading ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin text-amber-300" />
+                    <span>Subscribing & Activating Alerts...</span>
+                  </>
+                ) : (
+                  <>
+                    <Bell className="w-4 h-4 fill-current text-amber-400" />
+                    <span>Subscribe</span>
+                  </>
+                )}
               </button>
             </form>
           )}

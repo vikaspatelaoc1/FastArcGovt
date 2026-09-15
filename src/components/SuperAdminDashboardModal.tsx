@@ -34,6 +34,7 @@ import {
   saveEmployeeToFirestore, 
   deleteEmployeeFromFirestore, 
   subscribeToSubscribers, 
+  getSubscribersFromFirestore,
   saveSubscriberToFirestore, 
   deleteSubscriberFromFirestore, 
   bulkSaveJobsToFirestore,
@@ -260,7 +261,10 @@ export const SuperAdminDashboardModal: React.FC<SuperAdminDashboardModalProps> =
               ...s,
               name: s.name || existing.name,
               phone: s.phone || existing.phone,
-              notes: s.notes || existing.notes || s.message || existing.message,
+              notes: s.notes || existing.notes || (s as any).message || (existing as any).message,
+              createdAt: existing.createdAt || s.createdAt,
+              date: existing.date || s.date,
+              source: existing.source || s.source
             });
           } else {
             map.set(email, s);
@@ -268,9 +272,9 @@ export const SuperAdminDashboardModal: React.FC<SuperAdminDashboardModalProps> =
         }
       });
       return Array.from(map.values()).sort((a, b) => {
-        const dateA = a.date || '';
-        const dateB = b.date || '';
-        return dateB.localeCompare(dateA);
+        const timeA = a.createdAt ? new Date(a.createdAt).getTime() : (a.date ? new Date(a.date).getTime() : 0);
+        const timeB = b.createdAt ? new Date(b.createdAt).getTime() : (b.date ? new Date(b.date).getTime() : 0);
+        return timeB - timeA;
       });
     };
 
@@ -284,13 +288,34 @@ export const SuperAdminDashboardModal: React.FC<SuperAdminDashboardModalProps> =
     // 1. Listen to Firestore real-time updates directly
     const unsub = subscribeToSubscribers((liveSubs) => {
       if (Array.isArray(liveSubs)) {
-        // Sort by subscription date descending
-        const sorted = [...liveSubs].sort((a, b) => (b.date || '').localeCompare(a.date || ''));
-        setSubscribers(sorted);
+        liveList = liveSubs;
+        updateCombined();
+        if (serverList.length === 0 && liveSubs.length > 0) {
+          setSubscribers(liveSubs);
+        }
       }
     });
 
-    // 2. Clean up localStorage sample emails if present
+    // 2. Also fetch from Server API to guarantee website subscribers are merged
+    fetch('/api/v1/subscribers')
+      .then(res => res.json())
+      .then(data => {
+        if (data.success && Array.isArray(data.subscribers)) {
+          serverList = data.subscribers;
+          updateCombined();
+        }
+      })
+      .catch(err => console.warn('Fetch server subscribers error:', err));
+
+    // 3. Fallback direct Firestore snapshot fetch on mount
+    getSubscribersFromFirestore().then(fsSubs => {
+      if (Array.isArray(fsSubs) && fsSubs.length > 0) {
+        liveList = fsSubs;
+        updateCombined();
+      }
+    }).catch(() => {});
+
+    // 4. Clean up localStorage sample emails if present
     try {
       const stored = JSON.parse(localStorage.getItem('fastarc_subscribers') || '[]');
       if (Array.isArray(stored)) {
@@ -327,10 +352,45 @@ export const SuperAdminDashboardModal: React.FC<SuperAdminDashboardModalProps> =
 
   const handleRefreshSubscribers = async () => {
     setIsRefreshingSubscribers(true);
-    setTimeout(() => {
+    try {
+      const [fsSubs, serverRes] = await Promise.allSettled([
+        getSubscribersFromFirestore(),
+        fetch('/api/v1/subscribers').then(r => r.json())
+      ]);
+
+      const listA: SubscriberRecord[] = fsSubs.status === 'fulfilled' && Array.isArray(fsSubs.value) ? fsSubs.value : [];
+      const listB: SubscriberRecord[] = serverRes.status === 'fulfilled' && serverRes.value?.success && Array.isArray(serverRes.value.subscribers) ? serverRes.value.subscribers : [];
+
+      const map = new Map<string, SubscriberRecord>();
+      listA.forEach(s => {
+        const email = (s.email || '').toLowerCase().trim();
+        if (email) map.set(email, s);
+      });
+      listB.forEach(s => {
+        const email = (s.email || '').toLowerCase().trim();
+        if (email) {
+          const existing = map.get(email);
+          if (existing) {
+            map.set(email, { ...existing, ...s });
+          } else {
+            map.set(email, s);
+          }
+        }
+      });
+
+      const merged = Array.from(map.values()).sort((a, b) => {
+        const timeA = a.createdAt ? new Date(a.createdAt).getTime() : (a.date ? new Date(a.date).getTime() : 0);
+        const timeB = b.createdAt ? new Date(b.createdAt).getTime() : (b.date ? new Date(b.date).getTime() : 0);
+        return timeB - timeA;
+      });
+
+      setSubscribers(merged);
+      onToast(`Refreshed! Found ${merged.length} active subscriber${merged.length === 1 ? '' : 's'}.`);
+    } catch (err) {
+      onToast('Subscribers feed updated.');
+    } finally {
       setIsRefreshingSubscribers(false);
-      onToast('Real-time Subscriber feed refreshed successfully!');
-    }, 500);
+    }
   };
 
   const handleRestoreSubscriber = async (sub: SubscriberRecord) => {
@@ -535,20 +595,23 @@ export const SuperAdminDashboardModal: React.FC<SuperAdminDashboardModalProps> =
 
   const handleAddSubscriber = async (e: React.FormEvent) => {
     e.preventDefault();
-    const cleanEmail = newSubEmail.trim();
-    if (cleanEmail) {
+    const cleanEmail = newSubEmail.trim().toLowerCase();
+    if (cleanEmail && cleanEmail.includes('@')) {
       const newSub: SubscriberRecord = {
-        id: `sub-${Date.now()}`,
+        id: `sub-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
         email: cleanEmail,
         category: 'All Updates',
-        date: new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })
+        date: new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }),
+        createdAt: new Date().toISOString(),
+        source: 'superadmin',
+        muted: false
       };
-      setSubscribers(prev => [newSub, ...prev.filter(s => s.email.toLowerCase() !== cleanEmail.toLowerCase())]);
+      setSubscribers(prev => [newSub, ...prev.filter(s => s.email.toLowerCase() !== cleanEmail)]);
       setNewSubEmail('');
       try {
         await saveSubscriberToFirestore(newSub);
       } catch (err) {}
-      onToast('New subscriber added to alert list & saved to Firestore Database!');
+      onToast('New subscriber added to alert list & synced across cloud & server!');
     }
   };
 

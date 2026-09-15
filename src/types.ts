@@ -133,6 +133,10 @@ export interface JobAlert {
     tools?: string;
     otherLinks?: Array<{ title: string; url: string }>;
   };
+  sourceId?: string;
+  sourceName?: string;
+  scrapedAt?: string;
+  confidenceScore?: number;
 }
 
 export interface ScraperSource {

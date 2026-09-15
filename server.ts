@@ -46,7 +46,7 @@ import { generateSitemapXml } from './src/utils/sitemapGenerator';
 import { initializeApp } from 'firebase/app';
 import { getFirestore, collection, getDocs, doc, setDoc, getDoc, deleteDoc, writeBatch, setLogLevel } from 'firebase/firestore/lite';
 import { defaultScraperSources } from './src/data/defaultScraperSources';
-import { fullCatalogJobs } from './src/data/fullCatalogJobs';
+import { defaultJobsDatabase } from './src/data';
 import { scrapeHtml, parsePdfFromUrl } from './src/server/scraperUtils';
 
 dotenv.config();
@@ -173,7 +173,7 @@ const sanitizeUrl = (url?: string, defaultFallback: string = 'https://india.gov.
 };
 
 // Full comprehensive catalog (900+ official jobs)
-const defaultInitialJobs = fullCatalogJobs;
+const defaultInitialJobs = defaultJobsDatabase;
 
 const defaultInitialEmployees = [
   {
@@ -305,7 +305,7 @@ let dbState: DatabaseSchema = {
   ],
   stagingJobs: [],
   backendPipelineConfig: {
-    autoPromoteEnabled: false,
+    autoPromoteEnabled: true,
     webhookSecret: 'FASTARC_BACKEND_SECRET_KEY_12345',
     totalIngestedCount: 0
   }
@@ -377,14 +377,16 @@ export async function ensureDatabaseLoaded(timeoutMs = 8000): Promise<DatabaseSc
         const isDbInitialized = parsed.isInitialized === true || (Array.isArray(parsed.jobs) && parsed.jobs.length > 0) || fsJobs.length > 0;
 
         const masterJobs = new Map<string, any>();
-        if (!isDbInitialized) {
-          defaultInitialJobs.forEach(j => masterJobs.set(j.id, j));
-        }
+        defaultInitialJobs.forEach(j => masterJobs.set(j.id, j));
         if (Array.isArray(parsed.jobs)) {
-          parsed.jobs.forEach((j: any) => masterJobs.set(j.id, j));
+          parsed.jobs.forEach((j: any) => {
+            if (j && j.id) masterJobs.set(j.id, { ...(masterJobs.get(j.id) || {}), ...j });
+          });
         }
         if (Array.isArray(fsJobs)) {
-          fsJobs.forEach((j: any) => masterJobs.set(j.id, j));
+          fsJobs.forEach((j: any) => {
+            if (j && j.id) masterJobs.set(j.id, { ...(masterJobs.get(j.id) || {}), ...j });
+          });
         }
         const mergedJobsList = Array.from(masterJobs.values());
 
@@ -431,11 +433,11 @@ export async function ensureDatabaseLoaded(timeoutMs = 8000): Promise<DatabaseSc
             }
             const isDiskInitialized = parsed.isInitialized === true || (Array.isArray(parsed.jobs) && parsed.jobs.length > 0);
             const diskJobsMap = new Map<string, any>();
-            if (!isDiskInitialized) {
-              defaultInitialJobs.forEach(j => diskJobsMap.set(j.id, j));
-            }
+            defaultInitialJobs.forEach(j => diskJobsMap.set(j.id, j));
             if (Array.isArray(parsed.jobs)) {
-              parsed.jobs.forEach((j: any) => diskJobsMap.set(j.id, j));
+              parsed.jobs.forEach((j: any) => {
+                if (j && j.id) diskJobsMap.set(j.id, { ...(diskJobsMap.get(j.id) || {}), ...j });
+              });
             }
             dbState = {
               jobs: Array.from(diskJobsMap.values()).map(serverEnrichJob),
@@ -495,10 +497,11 @@ let isFirestoreQuotaExhausted = (() => {
 
 function markFirestoreQuotaExhausted() {
   isFirestoreQuotaExhausted = true;
-  try {
-    if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
-    fs.writeFileSync(quotaMarkerFile, 'true', 'utf-8');
-  } catch {}
+  console.warn('⚠️ Firestore quota exhausted. Temporarily pausing sync for 15 minutes.');
+  setTimeout(() => {
+    isFirestoreQuotaExhausted = false;
+    console.log('🔄 Retrying Firestore connection after pause...');
+  }, 15 * 60 * 1000);
 }
 
 function isQuotaError(err: any): boolean {
@@ -1310,18 +1313,54 @@ app.get('/api/v1/subscribers', async (req, res) => {
     try {
       const snap = await getDocs(collection(firestoreDb, 'subscribers'));
       const fsSubs: any[] = [];
-      snap.forEach((doc) => {
-        fsSubs.push({ id: doc.id, ...doc.data() });
+      snap.forEach((docSnap) => {
+        const data = docSnap.data() as any;
+        const email = (data.email || data.emailAddress || data.userEmail || '').trim();
+        if (email) {
+          fsSubs.push({
+            id: docSnap.id,
+            email,
+            name: data.name || '',
+            phone: data.phone || '',
+            category: data.category || 'All Job Updates',
+            notes: data.notes || data.message || '',
+            date: data.date || '',
+            createdAt: data.createdAt || data.date || '',
+            source: data.source || 'portal',
+            muted: Boolean(data.muted)
+          });
+        }
       });
+
       if (fsSubs.length > 0) {
-        dbState.subscribers = fsSubs;
+        // Merge seamlessly with dbState.subscribers
+        const map = new Map<string, any>();
+        (dbState.subscribers || []).forEach(s => {
+          const em = (s?.email || '').toLowerCase().trim();
+          if (em) map.set(em, s);
+        });
+        fsSubs.forEach(s => {
+          const em = (s?.email || '').toLowerCase().trim();
+          if (em) {
+            const existing = map.get(em);
+            map.set(em, { ...existing, ...s });
+          }
+        });
+        dbState.subscribers = Array.from(map.values());
       }
     } catch (fsErr) {
       console.warn('⚠️ Server failed to fetch subscribers from Firestore:', fsErr);
     }
   }
-  dbState.subscribers = sanitizeSubscribers(dbState.subscribers);
-  res.json({ success: true, subscribers: dbState.subscribers });
+
+  // Sort newest subscribers first
+  dbState.subscribers = sanitizeSubscribers(dbState.subscribers).sort((a: any, b: any) => {
+    const timeA = a.createdAt ? new Date(a.createdAt).getTime() : (a.date ? new Date(a.date).getTime() : 0);
+    const timeB = b.createdAt ? new Date(b.createdAt).getTime() : (b.date ? new Date(b.date).getTime() : 0);
+    return timeB - timeA;
+  });
+
+  res.json({ success: true, subscribers: dbState.subscribers, total: dbState.subscribers.length });
 });
 
 app.post('/api/v1/subscribers', async (req, res) => {
@@ -1332,60 +1371,46 @@ app.post('/api/v1/subscribers', async (req, res) => {
     return res.json({ success: true, subscribers: dbState.subscribers });
   } else if (email) {
     const cleanEmail = String(email).trim().toLowerCase();
-    
-    // Prevent duplicates in current state
-    const exists = dbState.subscribers.some(s => (s.email || '').toLowerCase().trim() === cleanEmail);
-    if (!exists) {
-      const newSub = {
-        id: req.body.id || `sub-${Date.now()}`,
-        email: String(email).trim(),
-        category: category || req.body.category || 'All Job Alerts',
-        date: req.body.date || new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }),
-        name: req.body.name ? String(req.body.name).trim() : undefined,
-        phone: req.body.phone ? String(req.body.phone).trim() : undefined,
-        notes: req.body.notes ? String(req.body.notes).trim() : undefined,
-        message: req.body.message ? String(req.body.message).trim() : undefined,
-      };
-      dbState.subscribers.unshift(newSub);
-      await saveDatabase(dbState);
-
-      if (firestoreDb && !isFirestoreQuotaExhausted) {
-        try {
-          await setDoc(doc(firestoreDb, 'subscribers', newSub.id), newSub, { merge: true });
-        } catch (fsErr: any) {
-          if (isQuotaError(fsErr)) markFirestoreQuotaExhausted();
-        }
-      }
-
-      return res.status(201).json({ success: true, subscriber: newSub, total: dbState.subscribers.length });
-    } else {
-      // Even if already exists in local list, let's make sure it is updated/synced to Firestore just in case
-      const existingSub = dbState.subscribers.find(s => (s.email || '').toLowerCase().trim() === cleanEmail) || {};
-      const updatedSub = {
-        id: existingSub.id || `sub-${Date.now()}`,
-        email: String(email).trim(),
-        category: category || existingSub.category || 'All Job Alerts',
-        date: existingSub.date || new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }),
-        name: req.body.name ? String(req.body.name).trim() : (existingSub.name || undefined),
-        phone: req.body.phone ? String(req.body.phone).trim() : (existingSub.phone || undefined),
-        notes: req.body.notes ? String(req.body.notes).trim() : (existingSub.notes || undefined),
-        message: req.body.message ? String(req.body.message).trim() : (existingSub.message || undefined),
-      };
-      
-      // Update local array
-      dbState.subscribers = dbState.subscribers.map(s => s.id === updatedSub.id ? updatedSub : s);
-      await saveDatabase(dbState);
-
-      if (firestoreDb && !isFirestoreQuotaExhausted) {
-        try {
-          await setDoc(doc(firestoreDb, 'subscribers', updatedSub.id), updatedSub, { merge: true });
-        } catch (fsErr: any) {
-          if (isQuotaError(fsErr)) markFirestoreQuotaExhausted();
-        }
-      }
-
-      return res.json({ success: true, message: 'Already subscribed and updated details', subscriber: updatedSub, total: dbState.subscribers.length });
+    if (!cleanEmail.includes('@')) {
+      return res.status(400).json({ success: false, error: 'Valid email required' });
     }
+
+    const targetId = req.body.id || `sub-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
+    const subRecord = {
+      id: targetId,
+      email: cleanEmail,
+      category: category || req.body.category || 'All Job Updates',
+      date: req.body.date || new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }),
+      createdAt: req.body.createdAt || new Date().toISOString(),
+      name: req.body.name ? String(req.body.name).trim() : '',
+      phone: req.body.phone ? String(req.body.phone).trim() : '',
+      notes: req.body.notes ? String(req.body.notes).trim() : (req.body.message ? String(req.body.message).trim() : ''),
+      source: req.body.source ? String(req.body.source).trim() : 'domain',
+      muted: Boolean(req.body.muted)
+    };
+
+    // Update local memory and JSON database
+    const existingIndex = dbState.subscribers.findIndex(s => (s.email || '').toLowerCase().trim() === cleanEmail);
+    if (existingIndex !== -1) {
+      subRecord.id = dbState.subscribers[existingIndex].id || targetId;
+      dbState.subscribers[existingIndex] = { ...dbState.subscribers[existingIndex], ...subRecord };
+    } else {
+      dbState.subscribers.unshift(subRecord);
+    }
+    await saveDatabase(dbState);
+
+    // Save directly to Firestore Cloud Database
+    if (firestoreDb && !isFirestoreQuotaExhausted) {
+      try {
+        await setDoc(doc(firestoreDb, 'subscribers', subRecord.id), subRecord, { merge: true });
+        console.log(`✅ [Server Firestore] Saved subscriber "${cleanEmail}" (ID: ${subRecord.id}) to Firestore`);
+      } catch (fsErr: any) {
+        if (isQuotaError(fsErr)) markFirestoreQuotaExhausted();
+        console.warn('⚠️ [Server Firestore] Failed to save subscriber to Firestore:', fsErr?.message || fsErr);
+      }
+    }
+
+    return res.status(201).json({ success: true, subscriber: subRecord, total: dbState.subscribers.length });
   }
   res.status(400).json({ success: false, error: 'Email or subscribers array required' });
 });
@@ -2389,7 +2414,7 @@ async function autoIngestPosts(posts: any[], options?: { autoPromote?: boolean; 
   const newStagingJobsList: any[] = [];
   const newLiveJobsList: any[] = [];
 
-  const shouldAutoPromote = options?.autoPromote ?? dbState.backendPipelineConfig?.autoPromoteEnabled ?? false;
+  const shouldAutoPromote = options?.autoPromote ?? dbState.backendPipelineConfig?.autoPromoteEnabled ?? true;
   const sourceType = options?.sourceType || 'auto_scraper';
   const sourceName = options?.sourceName || 'Government Feed / Auto-Watcher';
 
@@ -2487,27 +2512,29 @@ async function autoIngestPosts(posts: any[], options?: { autoPromote?: boolean; 
   if (firestoreDb && !isFirestoreQuotaExhausted) {
     try {
       if (newStagingJobsList.length > 0) {
-        const stageBatch = writeBatch(firestoreDb);
-        let count = 0;
-        for (const sJob of newStagingJobsList) {
-          if (count >= 400) break;
-          const stageRef = doc(firestoreDb, 'staging_jobs', sJob.stagingId);
-          stageBatch.set(stageRef, sJob, { merge: true });
-          count++;
+        const chunkSize = 400;
+        for (let i = 0; i < newStagingJobsList.length; i += chunkSize) {
+          const chunk = newStagingJobsList.slice(i, i + chunkSize);
+          const stageBatch = writeBatch(firestoreDb);
+          for (const sJob of chunk) {
+            const stageRef = doc(firestoreDb, 'staging_jobs', sJob.stagingId);
+            stageBatch.set(stageRef, sJob, { merge: true });
+          }
+          await stageBatch.commit();
         }
-        if (count > 0) await stageBatch.commit();
       }
 
       if (newLiveJobsList.length > 0) {
-        const liveBatch = writeBatch(firestoreDb);
-        let count = 0;
-        for (const lJob of newLiveJobsList) {
-          if (count >= 400) break;
-          const liveRef = doc(firestoreDb, 'jobs', lJob.id);
-          liveBatch.set(liveRef, lJob, { merge: true });
-          count++;
+        const chunkSize = 400;
+        for (let i = 0; i < newLiveJobsList.length; i += chunkSize) {
+          const chunk = newLiveJobsList.slice(i, i + chunkSize);
+          const liveBatch = writeBatch(firestoreDb);
+          for (const lJob of chunk) {
+            const liveRef = doc(firestoreDb, 'jobs', lJob.id);
+            liveBatch.set(liveRef, lJob, { merge: true });
+          }
+          await liveBatch.commit();
         }
-        if (count > 0) await liveBatch.commit();
       }
 
       // Sync pipeline stats
@@ -2599,7 +2626,7 @@ app.post('/api/v1/jobs/staging', async (req, res) => {
       return res.status(400).json({ success: false, error: 'Valid job object or posts array required' });
     }
 
-    const autoPromote = body.autoPromote ?? dbState.backendPipelineConfig?.autoPromoteEnabled ?? false;
+    const autoPromote = body.autoPromote ?? dbState.backendPipelineConfig?.autoPromoteEnabled ?? true;
     const sourceType = body.sourceType || 'github_backend';
     const sourceName = body.sourceName || 'GitHub Action Scraper';
 
@@ -2765,7 +2792,7 @@ app.get('/api/v1/backend-pipeline/config', async (req, res) => {
     const baseUrl = `${proto}://${host}`;
 
     const config = dbState.backendPipelineConfig || {
-      autoPromoteEnabled: false,
+      autoPromoteEnabled: true,
       webhookSecret: 'FASTARC_BACKEND_SECRET_KEY_12345',
       totalIngestedCount: 0
     };
@@ -2795,7 +2822,7 @@ app.post('/api/v1/backend-pipeline/config', async (req, res) => {
     const { autoPromoteEnabled, webhookSecret, githubRepoUrl } = req.body;
     if (!dbState.backendPipelineConfig) {
       dbState.backendPipelineConfig = {
-        autoPromoteEnabled: false,
+        autoPromoteEnabled: true,
         webhookSecret: 'FASTARC_BACKEND_SECRET_KEY_12345',
         totalIngestedCount: 0
       };

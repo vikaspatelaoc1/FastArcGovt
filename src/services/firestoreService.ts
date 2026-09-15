@@ -91,32 +91,31 @@ export function subscribeToJobs(
         });
       });
 
-      // Master catalog starting with either Firestore documents or default database as fallback
+      // Master catalog starting with defaultJobsDatabase, with Firestore documents overlaid as real-time source of updates
       const masterJobsMap = new Map<string, JobAlert>();
       const titleLookup = new Map<string, string>();
 
-      // Use Firestore fetchedJobs as the sole authoritative source of truth if not empty.
-      // If Firestore is completely empty (e.g. initial setup), fall back to the default database catalog.
-      const baseJobs = fetchedJobs.length > 0 ? fetchedJobs : defaultJobsDatabase;
-
-      baseJobs.forEach((job) => {
+      // 1. Initialize with all standard official database catalog jobs
+      defaultJobsDatabase.forEach((job) => {
         if (!job || !job.title) return;
-        const normTitle = job.title.trim().toLowerCase();
-        
-        // Deduplicate
-        const existingId = titleLookup.get(normTitle);
-        if (existingId) {
-          const existingJob = masterJobsMap.get(existingId);
-          // If duplicate found, keep the more complete/recently updated one
-          if (existingJob && (!existingJob.postDate || (job.postDate && job.postDate > existingJob.postDate))) {
-            masterJobsMap.delete(existingId);
-            masterJobsMap.set(job.id, job);
-            titleLookup.set(normTitle, job.id);
-          }
-        } else {
-          masterJobsMap.set(job.id, job);
-          titleLookup.set(normTitle, job.id);
+        masterJobsMap.set(job.id, job);
+        titleLookup.set(job.title.trim().toLowerCase(), job.id);
+      });
+
+      // 2. Overlay all real-time Firestore jobs (user additions, edits, scraper posts)
+      fetchedJobs.forEach((job) => {
+        if (!job || !job.title) return;
+        if ((job as any).isDeleted || (job as any).deleted) {
+          masterJobsMap.delete(job.id);
+          return;
         }
+        const normTitle = job.title.trim().toLowerCase();
+        const existingId = titleLookup.get(normTitle);
+        if (existingId && existingId !== job.id) {
+          masterJobsMap.delete(existingId);
+        }
+        masterJobsMap.set(job.id, { ...(masterJobsMap.get(job.id) || {}), ...job });
+        titleLookup.set(normTitle, job.id);
       });
 
       // Process dates for auto-flagging and expiration
@@ -777,6 +776,10 @@ export interface SubscriberRecord {
   name?: string;
   phone?: string;
   notes?: string;
+  createdAt?: string;
+  source?: string;
+  muted?: boolean;
+  status?: string;
   [key: string]: any;
 }
 
@@ -792,15 +795,31 @@ export function subscribeToSubscribers(onUpdate: (subs: SubscriberRecord[]) => v
 
       const subs: SubscriberRecord[] = [];
       snapshot.forEach((docSnap) => {
-        const data = docSnap.data() as SubscriberRecord;
-        const email = (data.email || '').trim();
+        const data = docSnap.data() as any;
+        const email = (data.email || data.emailAddress || data.userEmail || '').trim();
         if (email) {
           subs.push({
             ...data,
-            id: docSnap.id
+            id: docSnap.id,
+            email,
+            name: data.name || '',
+            phone: data.phone || '',
+            category: data.category || 'All Job Updates',
+            notes: data.notes || data.message || '',
+            date: data.date || '',
+            createdAt: data.createdAt || data.date || '',
+            muted: Boolean(data.muted)
           });
         }
       });
+
+      // Sort newest subscribers first
+      subs.sort((a, b) => {
+        const timeA = a.createdAt ? new Date(a.createdAt).getTime() : (a.date ? new Date(a.date).getTime() : 0);
+        const timeB = b.createdAt ? new Date(b.createdAt).getTime() : (b.date ? new Date(b.date).getTime() : 0);
+        return timeB - timeA;
+      });
+
       onUpdate(subs);
     } catch (err) {
       handleFirestoreQuotaError(err, 'subscribeToSubscribers snapshot');
@@ -812,71 +831,119 @@ export function subscribeToSubscribers(onUpdate: (subs: SubscriberRecord[]) => v
   });
 }
 
+// Direct fetch from Firestore for manual refresh
+export async function getSubscribersFromFirestore(): Promise<SubscriberRecord[]> {
+  try {
+    const subCol = collection(db, 'subscribers');
+    const snapshot = await getDocs(subCol);
+    const subs: SubscriberRecord[] = [];
+    snapshot.forEach((docSnap) => {
+      const data = docSnap.data() as any;
+      const email = (data.email || data.emailAddress || '').trim();
+      if (email) {
+        subs.push({
+          ...data,
+          id: docSnap.id,
+          email,
+          name: data.name || '',
+          phone: data.phone || '',
+          category: data.category || 'All Job Updates',
+          notes: data.notes || data.message || '',
+          date: data.date || '',
+          createdAt: data.createdAt || data.date || '',
+          muted: Boolean(data.muted)
+        });
+      }
+    });
+
+    subs.sort((a, b) => {
+      const timeA = a.createdAt ? new Date(a.createdAt).getTime() : (a.date ? new Date(a.date).getTime() : 0);
+      const timeB = b.createdAt ? new Date(b.createdAt).getTime() : (b.date ? new Date(b.date).getTime() : 0);
+      return timeB - timeA;
+    });
+
+    return subs;
+  } catch (err) {
+    console.warn('getSubscribersFromFirestore error:', err);
+    return [];
+  }
+}
+
 export async function saveSubscriberToFirestore(sub: SubscriberRecord): Promise<void> {
-  if (isClientFirestoreQuotaExceeded) {
-    console.warn('⚠️ [Firestore Client] Write aborted: Client Firestore quota has been exceeded.');
+  const cleanEmail = (sub.email || '').trim().toLowerCase();
+  if (!cleanEmail || !cleanEmail.includes('@')) {
+    console.warn('⚠️ Invalid subscriber email:', sub.email);
     return;
   }
-  const writePayload = {
-    ...sub,
-    date: sub.date || new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }),
-    createdAt: sub.createdAt || new Date().toISOString()
-  };
 
-  console.log(`📡 [Firestore Write] Initiating write to "/subscribers/${sub.id}"...`, {
-    id: sub.id,
-    email: sub.email,
-    payload: writePayload
+  const targetId = sub.id || `sub-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
+  const writePayload = cleanForFirestore({
+    id: targetId,
+    email: cleanEmail,
+    name: (sub.name || '').trim(),
+    phone: (sub.phone || '').trim(),
+    category: sub.category || 'All Job Updates',
+    notes: (sub.notes || (sub as any).message || '').trim(),
+    date: sub.date || new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }),
+    createdAt: sub.createdAt || new Date().toISOString(),
+    source: sub.source || (typeof window !== 'undefined' ? window.location.hostname : 'portal'),
+    muted: Boolean(sub.muted)
   });
 
+  console.log(`📡 [Firestore Write] Saving subscriber "${cleanEmail}" to "/subscribers/${targetId}"...`);
+
+  // 1. Direct Firestore write
   try {
-    const subRef = doc(db, 'subscribers', sub.id);
+    const subRef = doc(db, 'subscribers', targetId);
     await setDoc(subRef, writePayload, { merge: true });
-    console.log(`✅ [Firestore Write] Success! Subscriber "${sub.email}" successfully written and indexed under doc ID: ${sub.id}`);
-  } catch (err) {
-    console.error(`❌ [Firestore Write] Failed to write subscriber "${sub.email}" (ID: ${sub.id}):`, err);
+    console.log(`✅ [Firestore Write] Success! Subscriber "${cleanEmail}" saved in Firestore (ID: ${targetId}).`);
+  } catch (err: any) {
+    console.error(`❌ [Firestore Write] Error saving subscriber to Firestore:`, err);
     handleFirestoreQuotaError(err, 'saveSubscriberToFirestore');
+  }
+
+  // 2. Dual-write to Server API backup
+  try {
+    await fetch('/api/v1/subscribers', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(writePayload)
+    });
+  } catch (apiErr) {
+    // Expected on static client preview
   }
 }
 
 export async function deleteSubscriberFromFirestore(subId: string): Promise<void> {
-  if (isClientFirestoreQuotaExceeded) return;
   try {
     const subRef = doc(db, 'subscribers', subId);
     await deleteDoc(subRef);
   } catch (err) {
     handleFirestoreQuotaError(err, 'deleteSubscriberFromFirestore');
   }
+
+  try {
+    await fetch(`/api/v1/subscribers/${encodeURIComponent(subId)}`, {
+      method: 'DELETE'
+    });
+  } catch (e) {}
 }
 
 export async function saveDeletedSubscriberToFirestore(sub: SubscriberRecord): Promise<void> {
-  if (isClientFirestoreQuotaExceeded) {
-    console.warn('⚠️ [Firestore Client] Write deleted aborted: Client Firestore quota has been exceeded.');
-    return;
-  }
-  const deletePayload = {
+  const deletePayload = cleanForFirestore({
     ...sub,
     deletedAt: (sub as any).deletedAt || new Date().toISOString()
-  };
-
-  console.log(`📡 [Firestore Write (Trash)] Moving subscriber "${sub.email}" to "/deleted_subscribers/${sub.id}"...`, {
-    id: sub.id,
-    email: sub.email,
-    payload: deletePayload
   });
 
   try {
     const subRef = doc(db, 'deleted_subscribers', sub.id);
     await setDoc(subRef, deletePayload, { merge: true });
-    console.log(`✅ [Firestore Write (Trash)] Success! Subscriber "${sub.email}" moved to Recycle Bin in Firestore.`);
   } catch (err) {
-    console.error(`❌ [Firestore Write (Trash)] Failed to write subscriber "${sub.email}" to trash:`, err);
     handleFirestoreQuotaError(err, 'saveDeletedSubscriberToFirestore');
   }
 }
 
 export async function deleteDeletedSubscriberFromFirestore(subId: string): Promise<void> {
-  if (isClientFirestoreQuotaExceeded) return;
   try {
     const subRef = doc(db, 'deleted_subscribers', subId);
     await deleteDoc(subRef);
