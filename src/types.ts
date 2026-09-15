@@ -420,3 +420,21 @@ export const DOCUMENT_CATEGORIES = [
   { id: 'photo-tools', label: '🪪 Photo & Signature Tools' },
   { id: 'verification', label: '🔐 Verification Services' }
 ];
+
+export interface StagingJob extends JobAlert {
+  stagingId?: string;
+  sourceType?: 'auto_scraper' | 'github_backend' | 'rss_feed' | 'manual_ingest' | string;
+  sourceName?: string;
+  sourceUrl?: string;
+  ingestedAt?: string;
+  reviewStatus?: 'pending' | 'approved' | 'rejected';
+  autoPromoted?: boolean;
+}
+
+export interface BackendPipelineConfig {
+  autoPromoteEnabled: boolean;
+  webhookSecret: string;
+  githubRepoUrl?: string;
+  lastIngestAt?: string;
+  totalIngestedCount?: number;
+}

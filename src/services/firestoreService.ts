@@ -14,7 +14,7 @@ import {
   updateDoc
 } from 'firebase/firestore';
 import { db } from '../firebase';
-import { JobAlert, EmployeeUser, SocialLinkItem, EmailNotificationConfig, NotificationDispatchLog } from '../types';
+import { JobAlert, StagingJob, BackendPipelineConfig, EmployeeUser, SocialLinkItem, EmailNotificationConfig, NotificationDispatchLog } from '../types';
 import { defaultJobsDatabase, defaultSocialLinks } from '../data';
 import { ThemeColorConfig } from '../utils/themeColors';
 
@@ -337,6 +337,221 @@ export async function appendJobsToFirestore(jobs: JobAlert[]): Promise<void> {
     if (!handleFirestoreQuotaError(err, 'appendJobsToFirestore')) {
       console.warn('appendJobsToFirestore warning:', err?.message || err);
     }
+  }
+}
+
+// 5c. Fetch Live Jobs directly from Firestore (manual refresh / sync)
+export async function getJobsFromFirestore(): Promise<JobAlert[]> {
+  try {
+    const jobsCol = collection(db, 'jobs');
+    const snapshot = await getDocs(jobsCol);
+    const jobs: JobAlert[] = [];
+    snapshot.forEach((docSnap) => {
+      jobs.push({ id: docSnap.id, ...(docSnap.data() as JobAlert) });
+    });
+    return jobs.length > 0 ? jobs : defaultJobsDatabase;
+  } catch (err: any) {
+    console.warn('getJobsFromFirestore error:', err);
+    return defaultJobsDatabase;
+  }
+}
+
+// 5d. STAGING JOBS & BACKEND INGESTION PIPELINE (FIREBASE)
+// Real-time listener for Staging / Ingestion Queue
+export function subscribeToStagingJobs(
+  onUpdate: (stagingJobs: StagingJob[]) => void,
+  onError?: (err: any) => void
+) {
+  const stagingCol = collection(db, 'staging_jobs');
+  return onSnapshot(stagingCol, (snapshot) => {
+    try {
+      const stagingJobs: StagingJob[] = [];
+      snapshot.forEach((docSnap) => {
+        stagingJobs.push({
+          ...(docSnap.data() as StagingJob),
+          id: docSnap.id,
+          stagingId: docSnap.id
+        });
+      });
+      // Sort newest ingested first
+      stagingJobs.sort((a, b) => {
+        const timeA = a.ingestedAt ? new Date(a.ingestedAt).getTime() : 0;
+        const timeB = b.ingestedAt ? new Date(b.ingestedAt).getTime() : 0;
+        return timeB - timeA;
+      });
+      onUpdate(stagingJobs);
+    } catch (e) {
+      console.warn('subscribeToStagingJobs parse error:', e);
+    }
+  }, (err) => {
+    handleFirestoreQuotaError(err, 'subscribeToStagingJobs');
+    if (onError) onError(err);
+  });
+}
+
+// Save single job to Staging collection
+export async function saveStagingJobToFirestore(job: StagingJob): Promise<void> {
+  if (isClientFirestoreQuotaExceeded) return;
+  try {
+    const stagingId = job.stagingId || job.id || `stage-${Date.now()}-${Math.floor(Math.random()*1000)}`;
+    const stagingDoc = doc(db, 'staging_jobs', stagingId);
+    const cleaned = cleanForFirestore({
+      ...job,
+      id: stagingId,
+      stagingId,
+      ingestedAt: job.ingestedAt || new Date().toISOString(),
+      reviewStatus: job.reviewStatus || 'pending'
+    });
+    await setDoc(stagingDoc, cleaned, { merge: true });
+  } catch (err: any) {
+    handleFirestoreQuotaError(err, 'saveStagingJobToFirestore');
+  }
+}
+
+// Bulk save multiple incoming jobs to Staging
+export async function bulkSaveStagingJobsToFirestore(jobs: StagingJob[]): Promise<void> {
+  if (!jobs || jobs.length === 0 || isClientFirestoreQuotaExceeded) return;
+  try {
+    const CHUNK_SIZE = 400;
+    for (let i = 0; i < jobs.length; i += CHUNK_SIZE) {
+      const chunk = jobs.slice(i, i + CHUNK_SIZE);
+      const batch = writeBatch(db);
+      chunk.forEach((job, idx) => {
+        const stagingId = job.stagingId || job.id || `stage-${Date.now()}-${i + idx}-${Math.floor(Math.random()*1000)}`;
+        const stagingDoc = doc(db, 'staging_jobs', stagingId);
+        const cleaned = cleanForFirestore({
+          ...job,
+          id: stagingId,
+          stagingId,
+          ingestedAt: job.ingestedAt || new Date().toISOString(),
+          reviewStatus: job.reviewStatus || 'pending'
+        });
+        batch.set(stagingDoc, cleaned, { merge: true });
+      });
+      await batch.commit();
+    }
+  } catch (err: any) {
+    handleFirestoreQuotaError(err, 'bulkSaveStagingJobsToFirestore');
+  }
+}
+
+// Promote a Staging Job to Main Live Jobs Collection (Deletes from staging & publishes live)
+export async function promoteStagingJobToLive(stagingJob: StagingJob): Promise<void> {
+  if (isClientFirestoreQuotaExceeded) return;
+  try {
+    const liveJobId = stagingJob.id.startsWith('stage-') ? `job-${stagingJob.id.replace('stage-', '')}` : stagingJob.id;
+    const liveDocRef = doc(db, 'jobs', liveJobId);
+    const stagingDocRef = doc(db, 'staging_jobs', stagingJob.stagingId || stagingJob.id);
+
+    const liveJobData = cleanForFirestore({
+      ...stagingJob,
+      id: liveJobId,
+      isNew: true,
+      lastUpdated: new Date().toISOString()
+    });
+    delete (liveJobData as any).stagingId;
+    delete (liveJobData as any).reviewStatus;
+
+    const batch = writeBatch(db);
+    batch.set(liveDocRef, liveJobData, { merge: true });
+    batch.delete(stagingDocRef);
+    await batch.commit();
+  } catch (err: any) {
+    handleFirestoreQuotaError(err, 'promoteStagingJobToLive');
+  }
+}
+
+// Promote all Staging Jobs to Live
+export async function promoteAllStagingJobsToLive(stagingJobs: StagingJob[]): Promise<number> {
+  if (!stagingJobs || stagingJobs.length === 0 || isClientFirestoreQuotaExceeded) return 0;
+  let count = 0;
+  try {
+    const CHUNK_SIZE = 200; // Batch limit 500, we do 2 ops per job (set + delete)
+    for (let i = 0; i < stagingJobs.length; i += CHUNK_SIZE) {
+      const chunk = stagingJobs.slice(i, i + CHUNK_SIZE);
+      const batch = writeBatch(db);
+      chunk.forEach((stagingJob) => {
+        const liveJobId = stagingJob.id.startsWith('stage-') ? `job-${stagingJob.id.replace('stage-', '')}` : stagingJob.id;
+        const liveDocRef = doc(db, 'jobs', liveJobId);
+        const stagingDocRef = doc(db, 'staging_jobs', stagingJob.stagingId || stagingJob.id);
+
+        const liveJobData = cleanForFirestore({
+          ...stagingJob,
+          id: liveJobId,
+          isNew: true,
+          lastUpdated: new Date().toISOString()
+        });
+        delete (liveJobData as any).stagingId;
+        delete (liveJobData as any).reviewStatus;
+
+        batch.set(liveDocRef, liveJobData, { merge: true });
+        batch.delete(stagingDocRef);
+        count++;
+      });
+      await batch.commit();
+    }
+    return count;
+  } catch (err: any) {
+    handleFirestoreQuotaError(err, 'promoteAllStagingJobsToLive');
+    return count;
+  }
+}
+
+// Delete / Discard a Staging Job
+export async function deleteStagingJobFromFirestore(stagingJobId: string): Promise<void> {
+  if (isClientFirestoreQuotaExceeded) return;
+  try {
+    const stagingDocRef = doc(db, 'staging_jobs', stagingJobId);
+    await deleteDoc(stagingDocRef);
+  } catch (err: any) {
+    handleFirestoreQuotaError(err, 'deleteStagingJobFromFirestore');
+  }
+}
+
+// Clear all Staging Jobs
+export async function clearAllStagingJobsFromFirestore(): Promise<void> {
+  if (isClientFirestoreQuotaExceeded) return;
+  try {
+    const stagingCol = collection(db, 'staging_jobs');
+    const snap = await getDocs(stagingCol);
+    const batch = writeBatch(db);
+    snap.forEach(d => {
+      batch.delete(d.ref);
+    });
+    await batch.commit();
+  } catch (err: any) {
+    handleFirestoreQuotaError(err, 'clearAllStagingJobsFromFirestore');
+  }
+}
+
+// Backend Pipeline Config (Auto-Promote & Webhook settings)
+export function subscribeToBackendPipelineConfig(onUpdate: (config: BackendPipelineConfig) => void) {
+  const configRef = doc(db, 'site_config', 'backendPipeline');
+  return onSnapshot(configRef, (docSnap) => {
+    if (docSnap.exists()) {
+      onUpdate(docSnap.data() as BackendPipelineConfig);
+    } else {
+      onUpdate({
+        autoPromoteEnabled: false,
+        webhookSecret: 'FASTARC_BACKEND_SECRET_KEY_12345',
+        totalIngestedCount: 0
+      });
+    }
+  }, (err) => {
+    handleFirestoreQuotaError(err, 'subscribeToBackendPipelineConfig');
+  });
+}
+
+export async function saveBackendPipelineConfig(config: Partial<BackendPipelineConfig>): Promise<void> {
+  if (isClientFirestoreQuotaExceeded) return;
+  try {
+    const configRef = doc(db, 'site_config', 'backendPipeline');
+    await setDoc(configRef, {
+      ...config,
+      updatedAt: new Date().toISOString()
+    }, { merge: true });
+  } catch (err: any) {
+    handleFirestoreQuotaError(err, 'saveBackendPipelineConfig');
   }
 }
 

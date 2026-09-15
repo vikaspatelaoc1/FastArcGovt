@@ -7,9 +7,12 @@ import {
   SlidersHorizontal, CheckSquare, Eye, Radio, Server, Clock, Search,
   Activity, XCircle, Filter
 } from 'lucide-react';
-import { JobAlert, ScraperSource, ScrapedPost, JobCategory, SyncLogEntry } from '../types';
+import { JobAlert, ScraperSource, ScrapedPost, JobCategory, SyncLogEntry, StagingJob } from '../types';
 import { defaultScraperSources } from '../data/defaultScraperSources';
 import { enrichJobDetails, cleanOfficialUrl } from '../utils/jobEnricher';
+import { BackendStagingQueue } from './BackendStagingQueue';
+import { GitHubBackendPipeline } from './GitHubBackendPipeline';
+import { subscribeToStagingJobs, bulkSaveStagingJobsToFirestore, saveStagingJobToFirestore } from '../services/firestoreService';
 
 interface AutoFeedContentProps {
   onPushJob: (job: JobAlert) => Promise<void> | void;
@@ -32,7 +35,8 @@ export const AutoFeedContent: React.FC<AutoFeedContentProps> = ({
   onAddSyncLog,
   onClearSyncLogs
 }) => {
-  const [activeSubTab, setActiveSubTab] = useState<'scrapers' | 'rss_feeds' | 'sources' | 'webhook' | 'logs'>('scrapers');
+  const [activeSubTab, setActiveSubTab] = useState<'scrapers' | 'staging' | 'github_backend' | 'rss_feeds' | 'sources' | 'webhook' | 'logs'>('scrapers');
+  const [stagingCount, setStagingCount] = useState<number>(0);
   
   // Sources state (initialized with 500+ official Indian govt portal feeds)
   const [sources, setSources] = useState<ScraperSource[]>(defaultScraperSources);
@@ -126,6 +130,15 @@ export const AutoFeedContent: React.FC<AutoFeedContentProps> = ({
         }
       })
       .catch(err => console.warn('Failed to load watcher state:', err));
+
+    // Subscribe to Staging Jobs counter in Firestore
+    const unsubStaging = subscribeToStagingJobs((jobs) => {
+      setStagingCount(jobs.length);
+    }, () => {});
+
+    return () => {
+      if (typeof unsubStaging === 'function') unsubStaging();
+    };
   }, []);
 
   // Fetch RSS Preview
@@ -435,6 +448,71 @@ export const AutoFeedContent: React.FC<AutoFeedContentProps> = ({
     onToast(`🎉 Bulk Ingested & Published ${toIngest.length} job notices to Portal!`);
   };
 
+  // Save single to Firestore Staging Pipeline
+  const handleSaveSingleToStaging = async (post: ScrapedPost) => {
+    const stagingItem: StagingJob = {
+      ...post,
+      id: `stage-${post.id}`,
+      stagingId: `stage-${post.id}`,
+      isNew: true,
+      sourceType: 'auto_scraper',
+      sourceName: post.sourceName || 'Auto Scraper Queue',
+      ingestedAt: new Date().toISOString(),
+      reviewStatus: 'pending'
+    };
+
+    try {
+      await saveStagingJobToFirestore(stagingItem);
+      fetch('/api/v1/jobs/staging', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ posts: [stagingItem] })
+      }).catch(() => {});
+
+      setScrapedQueue(prev => prev.filter(p => p.id !== post.id));
+      setSelectedQueueIds(prev => {
+        const next = new Set(prev);
+        next.delete(post.id);
+        return next;
+      });
+      onToast(`📥 Moved to Staging Queue: "${post.title.substring(0, 30)}..."`);
+    } catch (err: any) {
+      onToast(`❌ Failed to save to Staging: ${err.message || 'Error'}`);
+    }
+  };
+
+  // Bulk save selected to Firestore Staging Pipeline
+  const handleSaveSelectedToStaging = async () => {
+    const toStage = scrapedQueue.filter(p => selectedQueueIds.has(p.id));
+    if (toStage.length === 0) return;
+
+    const stagingItems: StagingJob[] = toStage.map(post => ({
+      ...post,
+      id: `stage-${post.id}`,
+      stagingId: `stage-${post.id}`,
+      isNew: true,
+      sourceType: 'auto_scraper',
+      sourceName: post.sourceName || 'Auto Scraper Queue',
+      ingestedAt: new Date().toISOString(),
+      reviewStatus: 'pending'
+    }));
+
+    try {
+      await bulkSaveStagingJobsToFirestore(stagingItems);
+      fetch('/api/v1/jobs/staging', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ posts: stagingItems })
+      }).catch(() => {});
+
+      setScrapedQueue(prev => prev.filter(p => !selectedQueueIds.has(p.id)));
+      setSelectedQueueIds(new Set());
+      onToast(`📥 Moved ${toStage.length} alerts to Backend Staging Queue!`);
+    } catch (err: any) {
+      onToast(`❌ Failed to move to Staging: ${err.message}`);
+    }
+  };
+
   // Discard Post
   const handleDiscardPost = (id: string) => {
     setScrapedQueue(prev => prev.filter(p => p.id !== id));
@@ -736,6 +814,35 @@ if __name__ == "__main__":
           </button>
 
           <button
+            onClick={() => setActiveSubTab('staging')}
+            className={`px-3.5 py-2 rounded-xl flex items-center space-x-2 transition-all cursor-pointer ${
+              activeSubTab === 'staging'
+                ? 'bg-amber-500 text-slate-950 font-extrabold shadow-sm'
+                : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
+            }`}
+          >
+            <ShieldCheck className="w-4 h-4" />
+            <span>Backend Staging (Firebase)</span>
+            {stagingCount > 0 && (
+              <span className="bg-indigo-600 text-white text-[10px] px-1.5 py-0.2 rounded-full font-black">
+                {stagingCount}
+              </span>
+            )}
+          </button>
+
+          <button
+            onClick={() => setActiveSubTab('github_backend')}
+            className={`px-3.5 py-2 rounded-xl flex items-center space-x-2 transition-all cursor-pointer ${
+              activeSubTab === 'github_backend'
+                ? 'bg-amber-500 text-slate-950 font-extrabold shadow-sm'
+                : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
+            }`}
+          >
+            <Sparkles className="w-4 h-4" />
+            <span>GitHub Backend Setup</span>
+          </button>
+
+          <button
             onClick={() => setActiveSubTab('rss_feeds')}
             className={`px-3.5 py-2 rounded-xl flex items-center space-x-2 transition-all cursor-pointer ${
               activeSubTab === 'rss_feeds'
@@ -956,12 +1063,21 @@ if __name__ == "__main__":
                     </button>
 
                     <button
+                      onClick={handleSaveSelectedToStaging}
+                      disabled={selectedQueueIds.size === 0}
+                      className="px-3.5 py-1.5 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white rounded-lg text-xs font-extrabold transition-all cursor-pointer flex items-center gap-1.5 shadow-sm"
+                    >
+                      <ShieldCheck className="w-3.5 h-3.5" />
+                      <span>Save to Staging ({selectedQueueIds.size})</span>
+                    </button>
+
+                    <button
                       onClick={handleBulkApproveSelected}
                       disabled={selectedQueueIds.size === 0}
                       className="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white rounded-lg text-xs font-extrabold transition-all cursor-pointer flex items-center gap-1.5 shadow-sm"
                     >
                       <CheckCircle2 className="w-3.5 h-3.5" />
-                      <span>Approve Selected ({selectedQueueIds.size})</span>
+                      <span>Approve Live ({selectedQueueIds.size})</span>
                     </button>
                   </>
                 )}
@@ -1055,11 +1171,19 @@ if __name__ == "__main__":
                         {/* Action Buttons */}
                         <div className="flex items-center space-x-2 shrink-0">
                           <button
+                            onClick={() => handleSaveSingleToStaging(post)}
+                            className="px-2.5 py-1.5 bg-indigo-600/10 hover:bg-indigo-600 text-indigo-600 hover:text-white dark:text-indigo-400 dark:hover:text-white border border-indigo-200 dark:border-indigo-800 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1"
+                            title="Move safely to Firestore Staging Pipeline"
+                          >
+                            <ShieldCheck className="w-3.5 h-3.5" />
+                            <span>Staging</span>
+                          </button>
+                          <button
                             onClick={() => handleApproveSingle(post)}
                             className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-lg transition-all cursor-pointer flex items-center gap-1 shadow-xs"
                           >
                             <Check className="w-3.5 h-3.5" />
-                            <span>Approve &amp; Post</span>
+                            <span>Approve Live</span>
                           </button>
                           <button
                             onClick={() => handleDiscardPost(post.id)}
@@ -1077,6 +1201,26 @@ if __name__ == "__main__":
             )}
           </div>
         </div>
+      )}
+
+      {/* ========================================================================= */}
+      {/* SUB-TAB: BACKEND STAGING QUEUE (FIREBASE ISOLATED PIPELINE) */}
+      {/* ========================================================================= */}
+      {activeSubTab === 'staging' && (
+        <BackendStagingQueue
+          onToast={onToast}
+          onPromoteLiveSuccess={onPushJob}
+          onBulkPromoteSuccess={onBulkPushJobs}
+        />
+      )}
+
+      {/* ========================================================================= */}
+      {/* SUB-TAB: GITHUB BACKEND REPO & CRON SCRAPER PIPELINE */}
+      {/* ========================================================================= */}
+      {activeSubTab === 'github_backend' && (
+        <GitHubBackendPipeline
+          onToast={onToast}
+        />
       )}
 
       {/* ========================================================================= */}

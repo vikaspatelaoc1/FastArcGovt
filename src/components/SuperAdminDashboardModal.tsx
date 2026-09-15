@@ -2479,6 +2479,9 @@ export const SuperAdminDashboardModal: React.FC<SuperAdminDashboardModalProps> =
                      if (onDeleteJob) await onDeleteJob(id);
                      else setJobs(prev => prev.filter(j => j.id !== id));
                   }}
+                  onToast={onToast}
+                  onPushJob={onSaveJob}
+                  onBulkPushJobs={onBulkSaveJobs}
                 />
               </div>
             )}

@@ -1840,7 +1840,7 @@ export default function App() {
             </div>
           </div>
           <button onClick={() => triggerToast('Database synced successfully!')} className="text-xs font-semibold text-slate-500 hover:text-indigo-500 dark:text-slate-400 whitespace-nowrap ml-4">
-             Refresh Data
+             icon Refresh Data
           </button>
         </div>
       </div>

@@ -247,6 +247,14 @@ interface DatabaseSchema {
     appVersion: string;
   };
   users: Array<{ id: string; username: string; email: string; passwordHash: string; name: string; role: string }>;
+  stagingJobs?: any[];
+  backendPipelineConfig?: {
+    autoPromoteEnabled: boolean;
+    webhookSecret: string;
+    totalIngestedCount?: number;
+    lastIngestAt?: string;
+    githubRepoUrl?: string;
+  };
   isInitialized?: boolean;
 }
 
@@ -294,7 +302,13 @@ let dbState: DatabaseSchema = {
   users: [
     { id: 'usr-1', username: 'admin', email: 'admin@fastarc.in', passwordHash: 'admin123', name: 'Super Admin', role: 'superadmin' },
     { id: 'usr-2', username: 'ramesh', email: 'ramesh@fastarc.in', passwordHash: 'Pass123#', name: 'Ramesh Operator', role: 'employee' },
-  ]
+  ],
+  stagingJobs: [],
+  backendPipelineConfig: {
+    autoPromoteEnabled: false,
+    webhookSecret: 'FASTARC_BACKEND_SECRET_KEY_12345',
+    totalIngestedCount: 0
+  }
 };
 
 // Helper to load DB from disk / Firestore with maximum 8-sec guarantee
@@ -313,13 +327,15 @@ export async function ensureDatabaseLoaded(timeoutMs = 8000): Promise<DatabaseSc
           getDocs(collection(firestoreDb, 'jobs')),
           getDocs(collection(firestoreDb, 'subscribers')),
           getDocs(collection(firestoreDb, 'notification_history')),
-          getDocs(collection(firestoreDb, 'deleted_subscribers'))
+          getDocs(collection(firestoreDb, 'deleted_subscribers')),
+          getDocs(collection(firestoreDb, 'staging_jobs')).catch(() => null),
+          getDoc(doc(firestoreDb, 'site_config', 'backendPipeline')).catch(() => null)
         ]).catch(e => {
           console.warn('⚠️ Firestore parallel fetch partial failure:', e?.message || e);
-          return [null, null, null, null, null];
+          return [null, null, null, null, null, null, null];
         });
 
-        const [docSnap, jobsSnap, subsSnap, logsSnap, deletedSnap]: any = await Promise.race([dataPromises, fsTimeout]);
+        const [docSnap, jobsSnap, subsSnap, logsSnap, deletedSnap, stagingSnap, pipelineSnap]: any = await Promise.race([dataPromises, fsTimeout]);
 
         let parsed: any = {};
         if (docSnap && docSnap?.exists && docSnap.exists()) {
@@ -346,6 +362,11 @@ export async function ensureDatabaseLoaded(timeoutMs = 8000): Promise<DatabaseSc
           logsSnap.forEach((d: any) => fsLogs.push({ id: d.id, ...d.data() }));
         }
 
+        let fsStaging: any[] = [];
+        if (stagingSnap && typeof stagingSnap.forEach === 'function') {
+          stagingSnap.forEach((d: any) => fsStaging.push({ id: d.id, stagingId: d.id, ...d.data() }));
+        }
+
         let loadedSources = Array.isArray(parsed.scraperSources) ? parsed.scraperSources : [];
         if (loadedSources.length < 500) {
           const existingIds = new Set(loadedSources.map((s: any) => s.id));
@@ -367,8 +388,12 @@ export async function ensureDatabaseLoaded(timeoutMs = 8000): Promise<DatabaseSc
         }
         const mergedJobsList = Array.from(masterJobs.values());
 
+        const pipelineData = pipelineSnap && pipelineSnap.exists && pipelineSnap.exists() ? pipelineSnap.data() : (parsed.backendPipelineConfig || dbState.backendPipelineConfig);
+
         dbState = {
           jobs: mergedJobsList.map(serverEnrichJob),
+          stagingJobs: fsStaging.length > 0 ? fsStaging : (Array.isArray(parsed.stagingJobs) ? parsed.stagingJobs : []),
+          backendPipelineConfig: pipelineData || dbState.backendPipelineConfig,
           marqueeText: typeof parsed.marqueeText === 'string' ? parsed.marqueeText : dbState.marqueeText,
           employees: Array.isArray(parsed.employees) ? parsed.employees : (isDbInitialized ? [] : defaultInitialEmployees),
           subscribers: sanitizeSubscribers(fsSubs.length > 0 ? fsSubs : parsed.subscribers),
@@ -380,7 +405,7 @@ export async function ensureDatabaseLoaded(timeoutMs = 8000): Promise<DatabaseSc
           users: Array.isArray(parsed.users) ? parsed.users : dbState.users,
           isInitialized: true
         };
-        console.log(`🔥 Database loaded from Firebase Firestore: ${dbState.jobs.length} jobs available.`);
+        console.log(`🔥 Database loaded from Firebase Firestore: ${dbState.jobs.length} live jobs, ${dbState.stagingJobs?.length || 0} staging jobs available.`);
         return dbState;
       }
     } catch (err: any) {
@@ -2358,82 +2383,146 @@ app.all(['/api/v1/scraper/run', '/api/scraper/run'], async (req, res) => {
   }
 });
 
-// 5. AUTO-INGEST SCRAPED POSTS DIRECTLY INTO FAST-ARC DATABASE
-async function autoIngestPosts(posts: any[]) {
+// 5. AUTO-INGEST SCRAPED POSTS DIRECTLY INTO FAST-ARC DATABASE & FIREBASE STAGING
+async function autoIngestPosts(posts: any[], options?: { autoPromote?: boolean; sourceType?: string; sourceName?: string }) {
   let ingestedCount = 0;
-  const newJobsList: any[] = [];
+  const newStagingJobsList: any[] = [];
+  const newLiveJobsList: any[] = [];
+
+  const shouldAutoPromote = options?.autoPromote ?? dbState.backendPipelineConfig?.autoPromoteEnabled ?? false;
+  const sourceType = options?.sourceType || 'auto_scraper';
+  const sourceName = options?.sourceName || 'Government Feed / Auto-Watcher';
 
   // 1. Prior to deduplication, fetch the absolute latest jobs from Firestore
   if (firestoreDb && !isFirestoreQuotaExhausted) {
     try {
-      const jobsSnap = await getDocs(collection(firestoreDb, 'jobs'));
-      const fsJobs: any[] = [];
-      jobsSnap.forEach((d: any) => {
-        fsJobs.push({ id: d.id, ...d.data() });
-      });
-      if (fsJobs.length > 0) {
-        dbState.jobs = fsJobs;
+      const [jobsSnap, stagingSnap] = await Promise.all([
+        getDocs(collection(firestoreDb, 'jobs')).catch(() => null),
+        getDocs(collection(firestoreDb, 'staging_jobs')).catch(() => null)
+      ]);
+      if (jobsSnap && typeof jobsSnap.forEach === 'function') {
+        const fsJobs: any[] = [];
+        jobsSnap.forEach((d: any) => fsJobs.push({ id: d.id, ...d.data() }));
+        if (fsJobs.length > 0) dbState.jobs = fsJobs;
+      }
+      if (stagingSnap && typeof stagingSnap.forEach === 'function') {
+        const fsStaging: any[] = [];
+        stagingSnap.forEach((d: any) => fsStaging.push({ id: d.id, stagingId: d.id, ...d.data() }));
+        dbState.stagingJobs = fsStaging;
       }
     } catch (fsErr) {
       console.warn('⚠️ Server failed to sync jobs from Firestore during ingest:', fsErr);
     }
   }
 
-  // 2. Perform multi-layered duplicate checking against live Firestore records
+  // 2. Perform multi-layered duplicate checking against live and staging records
+  const nowIso = new Date().toISOString();
   posts.forEach((p: any) => {
     const normTitle = (p.title || '').toLowerCase().trim();
     const pApply = (p.links?.apply || '').toLowerCase().trim();
     const pNotif = (p.links?.notification || '').toLowerCase().trim();
 
-    const existing = dbState.jobs.find(j => {
+    // Check live jobs
+    const existingInLive = (dbState.jobs || []).find(j => {
       if (!j) return false;
       const jTitle = (j.title || '').toLowerCase().trim();
-      if (jTitle === normTitle) return true;
-
-      // Cross-reference links to prevent duplicate postings of slightly modified titles
+      if (jTitle && jTitle === normTitle) return true;
       const jApply = (j.links?.apply || '').toLowerCase().trim();
       const jNotif = (j.links?.notification || '').toLowerCase().trim();
       if (pApply && jApply && pApply === jApply) return true;
       if (pNotif && jNotif && pNotif === jNotif) return true;
-
       return false;
     });
 
-    if (!existing) {
-      const newJob = serverEnrichJob({
+    // Check staging jobs
+    const existingInStaging = (dbState.stagingJobs || []).find(j => {
+      if (!j) return false;
+      const jTitle = (j.title || '').toLowerCase().trim();
+      return jTitle && jTitle === normTitle;
+    });
+
+    if (!existingInLive && !existingInStaging) {
+      const rawId = p.id?.startsWith('job-') || p.id?.startsWith('stage-') ? p.id : `stage-${Date.now()}-${Math.floor(Math.random()*1000)}`;
+      const enriched = serverEnrichJob({
         ...p,
-        id: p.id?.startsWith('job-') ? p.id : `job-scraped-${Date.now()}-${Math.floor(Math.random()*1000)}`,
+        id: rawId,
         category: p.category || categorizeScrapedTitle(p.title),
         isNew: true,
-        status: p.status || 'Pending Approval' // Support custom status if supplied, else fallback to Pending Approval
+        status: p.status || 'Pending Review'
       });
-      dbState.jobs.unshift(newJob);
-      newJobsList.push(newJob);
+
+      const stagingItem = {
+        ...enriched,
+        stagingId: rawId,
+        sourceType,
+        sourceName: p.sourceName || sourceName,
+        ingestedAt: nowIso,
+        reviewStatus: shouldAutoPromote ? 'approved' : 'pending',
+        autoPromoted: shouldAutoPromote
+      };
+
+      if (!dbState.stagingJobs) dbState.stagingJobs = [];
+      dbState.stagingJobs.unshift(stagingItem);
+      newStagingJobsList.push(stagingItem);
+
+      if (shouldAutoPromote) {
+        const liveId = rawId.startsWith('stage-') ? `job-${rawId.replace('stage-', '')}` : rawId;
+        const liveJob = { ...enriched, id: liveId };
+        dbState.jobs.unshift(liveJob);
+        newLiveJobsList.push(liveJob);
+      }
+
       ingestedCount++;
     }
   });
 
+  if (dbState.backendPipelineConfig) {
+    dbState.backendPipelineConfig.lastIngestAt = nowIso;
+    dbState.backendPipelineConfig.totalIngestedCount = (dbState.backendPipelineConfig.totalIngestedCount || 0) + ingestedCount;
+  }
+
   await saveDatabase(dbState);
-  
-  // Sync new jobs to Firestore using a batch to save quota
-  if (firestoreDb && !isFirestoreQuotaExhausted && newJobsList.length > 0) {
+
+  // Sync new jobs to Firestore using batch writes
+  if (firestoreDb && !isFirestoreQuotaExhausted) {
     try {
-      const batch = writeBatch(firestoreDb);
-      let batchCount = 0;
-      for (const newJob of newJobsList) {
-        if (batchCount >= 400) break; // Firestore batch limit is 500
-        const jobRef = doc(firestoreDb, 'jobs', newJob.id);
-        batch.set(jobRef, newJob, { merge: true });
-        batchCount++;
+      if (newStagingJobsList.length > 0) {
+        const stageBatch = writeBatch(firestoreDb);
+        let count = 0;
+        for (const sJob of newStagingJobsList) {
+          if (count >= 400) break;
+          const stageRef = doc(firestoreDb, 'staging_jobs', sJob.stagingId);
+          stageBatch.set(stageRef, sJob, { merge: true });
+          count++;
+        }
+        if (count > 0) await stageBatch.commit();
       }
-      if (batchCount > 0) {
-        await batch.commit();
+
+      if (newLiveJobsList.length > 0) {
+        const liveBatch = writeBatch(firestoreDb);
+        let count = 0;
+        for (const lJob of newLiveJobsList) {
+          if (count >= 400) break;
+          const liveRef = doc(firestoreDb, 'jobs', lJob.id);
+          liveBatch.set(liveRef, lJob, { merge: true });
+          count++;
+        }
+        if (count > 0) await liveBatch.commit();
       }
+
+      // Sync pipeline stats
+      const pipeRef = doc(firestoreDb, 'site_config', 'backendPipeline');
+      await setDoc(pipeRef, {
+        lastIngestAt: nowIso,
+        totalIngestedCount: dbState.backendPipelineConfig?.totalIngestedCount || 0,
+        autoPromoteEnabled: dbState.backendPipelineConfig?.autoPromoteEnabled || false
+      }, { merge: true });
+
     } catch (fsErr: any) {
       if (isQuotaError(fsErr)) {
         markFirestoreQuotaExhausted();
       } else {
-        console.warn('⚠️ Firestore auto-ingest batch sync warning:', fsErr?.message || fsErr);
+        console.warn('⚠️ Firestore auto-ingest staging batch sync warning:', fsErr?.message || fsErr);
       }
     }
   }
@@ -2443,18 +2532,300 @@ async function autoIngestPosts(posts: any[]) {
 
 app.post(['/api/v1/scraper/auto-ingest', '/api/scraper/auto-ingest'], async (req, res) => {
   try {
-    const { posts } = req.body;
+    const { posts, autoPromote, sourceType } = req.body;
     if (!Array.isArray(posts) || posts.length === 0) {
       return res.status(400).json({ success: false, error: 'Posts array required' });
     }
 
-    const ingestedCount = await autoIngestPosts(posts);
+    const ingestedCount = await autoIngestPosts(posts, { autoPromote, sourceType });
 
     return res.json({
       success: true,
-      message: `Successfully ingested and published ${ingestedCount} jobs to portal!`,
+      message: `Successfully ingested ${ingestedCount} jobs into Backend Staging & Firebase!`,
       ingestedCount,
-      totalJobs: dbState.jobs.length
+      totalLiveJobs: dbState.jobs.length,
+      totalStagingJobs: (dbState.stagingJobs || []).length
+    });
+  } catch (err: any) {
+    return res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// ==========================================
+// --- BACKEND STAGING PIPELINE & GITHUB API ---
+// ==========================================
+
+// 1. GET ALL STAGING JOBS
+app.get('/api/v1/jobs/staging', async (req, res) => {
+  try {
+    if (firestoreDb && !isFirestoreQuotaExhausted) {
+      try {
+        const snap = await getDocs(collection(firestoreDb, 'staging_jobs'));
+        const fsStaging: any[] = [];
+        snap.forEach((d: any) => fsStaging.push({ id: d.id, stagingId: d.id, ...d.data() }));
+        dbState.stagingJobs = fsStaging;
+      } catch (e) {}
+    }
+    const stagingJobs = (dbState.stagingJobs || []).sort((a: any, b: any) => {
+      const tA = a.ingestedAt ? new Date(a.ingestedAt).getTime() : 0;
+      const tB = b.ingestedAt ? new Date(b.ingestedAt).getTime() : 0;
+      return tB - tA;
+    });
+    return res.json({
+      success: true,
+      count: stagingJobs.length,
+      stagingJobs,
+      autoPromoteEnabled: dbState.backendPipelineConfig?.autoPromoteEnabled || false
+    });
+  } catch (err: any) {
+    return res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// 2. INGEST FROM EXTERNAL BACKEND / GITHUB REPOSITORY / ACTIONS
+app.post('/api/v1/jobs/staging', async (req, res) => {
+  try {
+    const authHeader = req.headers.authorization || req.headers['x-backend-token'] || '';
+    const configuredSecret = dbState.backendPipelineConfig?.webhookSecret || 'FASTARC_BACKEND_SECRET_KEY_12345';
+    
+    // Validate secret token if provided, fallback to open ingestion for local crawler
+    if (authHeader && !authHeader.includes(configuredSecret) && !authHeader.includes('FASTARC_SECRET_KEY_12345')) {
+      return res.status(401).json({ success: false, error: 'Unauthorized: Invalid backend secret token' });
+    }
+
+    const body = req.body || {};
+    const rawPosts = Array.isArray(body) ? body : (Array.isArray(body.posts) ? body.posts : (body.title ? [body] : []));
+    if (rawPosts.length === 0) {
+      return res.status(400).json({ success: false, error: 'Valid job object or posts array required' });
+    }
+
+    const autoPromote = body.autoPromote ?? dbState.backendPipelineConfig?.autoPromoteEnabled ?? false;
+    const sourceType = body.sourceType || 'github_backend';
+    const sourceName = body.sourceName || 'GitHub Action Scraper';
+
+    const ingestedCount = await autoIngestPosts(rawPosts, { autoPromote, sourceType, sourceName });
+
+    return res.json({
+      success: true,
+      message: `Ingested ${ingestedCount} posts into Firebase Staging Pipeline.`,
+      ingestedCount,
+      stagingCount: (dbState.stagingJobs || []).length,
+      liveCount: dbState.jobs.length
+    });
+  } catch (err: any) {
+    return res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// 3. PROMOTE A STAGING JOB TO LIVE PORTAL
+app.post('/api/v1/jobs/staging/:id/promote', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const stagingList = dbState.stagingJobs || [];
+    const itemIdx = stagingList.findIndex(j => (j.stagingId || j.id) === id);
+    if (itemIdx === -1) {
+      return res.status(404).json({ success: false, error: 'Staging job not found' });
+    }
+
+    const item = stagingList[itemIdx];
+    const liveJobId = item.id.startsWith('stage-') ? `job-${item.id.replace('stage-', '')}` : item.id;
+    const liveJob = serverEnrichJob({
+      ...item,
+      id: liveJobId,
+      isNew: true,
+      lastUpdated: new Date().toISOString()
+    });
+    delete (liveJob as any).stagingId;
+    delete (liveJob as any).reviewStatus;
+
+    // Remove from staging & prepend to live
+    dbState.stagingJobs = stagingList.filter(j => (j.stagingId || j.id) !== id);
+    dbState.jobs = [liveJob, ...dbState.jobs.filter(j => j.id !== liveJobId)];
+    await saveDatabase(dbState);
+
+    // Sync to Firestore
+    if (firestoreDb && !isFirestoreQuotaExhausted) {
+      try {
+        const batch = writeBatch(firestoreDb);
+        batch.set(doc(firestoreDb, 'jobs', liveJobId), liveJob, { merge: true });
+        batch.delete(doc(firestoreDb, 'staging_jobs', item.stagingId || id));
+        await batch.commit();
+      } catch (e) {
+        console.warn('Firestore promote error:', e);
+      }
+    }
+
+    return res.json({ success: true, message: `Promoted "${liveJob.title}" to Live!`, job: liveJob });
+  } catch (err: any) {
+    return res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// 4. BULK PROMOTE ALL STAGING JOBS TO LIVE
+app.post('/api/v1/jobs/staging/promote-all', async (req, res) => {
+  try {
+    const stagingList = dbState.stagingJobs || [];
+    if (stagingList.length === 0) {
+      return res.json({ success: true, message: 'No staging jobs to promote', count: 0 });
+    }
+
+    const newLiveJobs: any[] = [];
+    stagingList.forEach(item => {
+      const liveJobId = item.id.startsWith('stage-') ? `job-${item.id.replace('stage-', '')}` : item.id;
+      const liveJob = serverEnrichJob({
+        ...item,
+        id: liveJobId,
+        isNew: true,
+        lastUpdated: new Date().toISOString()
+      });
+      delete (liveJob as any).stagingId;
+      delete (liveJob as any).reviewStatus;
+      newLiveJobs.push(liveJob);
+    });
+
+    dbState.jobs = [...newLiveJobs, ...dbState.jobs.filter(j => !newLiveJobs.some(nl => nl.id === j.id))];
+    dbState.stagingJobs = [];
+    await saveDatabase(dbState);
+
+    if (firestoreDb && !isFirestoreQuotaExhausted) {
+      try {
+        const batch = writeBatch(firestoreDb);
+        let count = 0;
+        newLiveJobs.slice(0, 200).forEach(j => {
+          batch.set(doc(firestoreDb, 'jobs', j.id), j, { merge: true });
+          count++;
+        });
+        stagingList.slice(0, 200).forEach(j => {
+          batch.delete(doc(firestoreDb, 'staging_jobs', j.stagingId || j.id));
+          count++;
+        });
+        if (count > 0) await batch.commit();
+      } catch (e) {
+        console.warn('Firestore bulk promote error:', e);
+      }
+    }
+
+    return res.json({
+      success: true,
+      message: `Successfully published ${newLiveJobs.length} staging notices to live portal!`,
+      promotedCount: newLiveJobs.length,
+      totalLiveJobs: dbState.jobs.length
+    });
+  } catch (err: any) {
+    return res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// 5. DELETE A STAGING JOB
+app.delete('/api/v1/jobs/staging/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    dbState.stagingJobs = (dbState.stagingJobs || []).filter(j => (j.stagingId || j.id) !== id);
+    await saveDatabase(dbState);
+
+    if (firestoreDb && !isFirestoreQuotaExhausted) {
+      try {
+        await deleteDoc(doc(firestoreDb, 'staging_jobs', id));
+      } catch (e) {}
+    }
+
+    return res.json({ success: true, message: 'Staging job discarded' });
+  } catch (err: any) {
+    return res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// 6. CLEAR ALL STAGING JOBS
+app.delete('/api/v1/jobs/staging', async (req, res) => {
+  try {
+    const previousCount = (dbState.stagingJobs || []).length;
+    dbState.stagingJobs = [];
+    await saveDatabase(dbState);
+
+    if (firestoreDb && !isFirestoreQuotaExhausted) {
+      try {
+        const snap = await getDocs(collection(firestoreDb, 'staging_jobs'));
+        const batch = writeBatch(firestoreDb);
+        snap.forEach(d => batch.delete(d.ref));
+        await batch.commit();
+      } catch (e) {}
+    }
+
+    return res.json({ success: true, message: `Cleared ${previousCount} staging records` });
+  } catch (err: any) {
+    return res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// 7. GET BACKEND PIPELINE CONFIGURATION & GITHUB INFO
+app.get('/api/v1/backend-pipeline/config', async (req, res) => {
+  try {
+    const host = req.get('host') || 'www.fastarcgovt.info';
+    const proto = req.secure || req.headers['x-forwarded-proto'] === 'https' ? 'https' : 'http';
+    const baseUrl = `${proto}://${host}`;
+
+    const config = dbState.backendPipelineConfig || {
+      autoPromoteEnabled: false,
+      webhookSecret: 'FASTARC_BACKEND_SECRET_KEY_12345',
+      totalIngestedCount: 0
+    };
+
+    return res.json({
+      success: true,
+      config,
+      stats: {
+        liveJobsCount: dbState.jobs.length,
+        stagingJobsCount: (dbState.stagingJobs || []).length,
+        lastIngestAt: config.lastIngestAt || 'Never'
+      },
+      endpoints: {
+        ingestWebhook: `${baseUrl}/api/v1/jobs/staging`,
+        scraperAutoIngest: `${baseUrl}/api/v1/scraper/auto-ingest`,
+        rssFeed: `${baseUrl}/api/v1/rss/feed.xml`
+      }
+    });
+  } catch (err: any) {
+    return res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// 8. UPDATE BACKEND PIPELINE CONFIGURATION
+app.post('/api/v1/backend-pipeline/config', async (req, res) => {
+  try {
+    const { autoPromoteEnabled, webhookSecret, githubRepoUrl } = req.body;
+    if (!dbState.backendPipelineConfig) {
+      dbState.backendPipelineConfig = {
+        autoPromoteEnabled: false,
+        webhookSecret: 'FASTARC_BACKEND_SECRET_KEY_12345',
+        totalIngestedCount: 0
+      };
+    }
+    if (typeof autoPromoteEnabled === 'boolean') {
+      dbState.backendPipelineConfig.autoPromoteEnabled = autoPromoteEnabled;
+    }
+    if (typeof webhookSecret === 'string' && webhookSecret.trim()) {
+      dbState.backendPipelineConfig.webhookSecret = webhookSecret.trim();
+    }
+    if (typeof githubRepoUrl === 'string') {
+      dbState.backendPipelineConfig.githubRepoUrl = githubRepoUrl.trim();
+    }
+
+    await saveDatabase(dbState);
+
+    if (firestoreDb && !isFirestoreQuotaExhausted) {
+      try {
+        const pipeRef = doc(firestoreDb, 'site_config', 'backendPipeline');
+        await setDoc(pipeRef, {
+          ...dbState.backendPipelineConfig,
+          updatedAt: new Date().toISOString()
+        }, { merge: true });
+      } catch (e) {}
+    }
+
+    return res.json({
+      success: true,
+      message: 'Backend pipeline configuration updated',
+      config: dbState.backendPipelineConfig
     });
   } catch (err: any) {
     return res.status(500).json({ success: false, error: err.message });
