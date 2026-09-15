@@ -6,7 +6,21 @@ setLogLevel('silent');
 import firebaseConfig from './firebaseConfig';
 
 const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
-export const db = getFirestore(app, firebaseConfig.firestoreDatabaseId);
+
+// Resilient Firestore initialization
+let dbInstance;
+try {
+  if (firebaseConfig.firestoreDatabaseId && firebaseConfig.firestoreDatabaseId !== '(default)') {
+    dbInstance = getFirestore(app, firebaseConfig.firestoreDatabaseId);
+  } else {
+    dbInstance = getFirestore(app);
+  }
+} catch (e) {
+  console.warn('Failed to initialize Firestore with custom database ID, falling back to default database:', e);
+  dbInstance = getFirestore(app);
+}
+
+export const db = dbInstance;
 
 // Lazy auth getter if ever needed, preventing eager IndexedDB initialization on page load
 let _authInstance: any = null;

@@ -78,7 +78,16 @@ try {
     recaptchaSiteKey: ""
   };
   const firebaseApp = initializeApp(firebaseConfig);
-  firestoreDb = getFirestore(firebaseApp, firebaseConfig.firestoreDatabaseId);
+  try {
+    if (firebaseConfig.firestoreDatabaseId && firebaseConfig.firestoreDatabaseId !== '(default)') {
+      firestoreDb = getFirestore(firebaseApp, firebaseConfig.firestoreDatabaseId);
+    } else {
+      firestoreDb = getFirestore(firebaseApp);
+    }
+  } catch (fsIdErr) {
+    console.warn('Server failed to initialize custom firestoreDatabaseId, falling back to default:', fsIdErr);
+    firestoreDb = getFirestore(firebaseApp);
+  }
 } catch (e) {
   console.warn('Error initializing Firebase in server:', e);
 }

@@ -423,10 +423,6 @@ export const SuperAdminDashboardModal: React.FC<SuperAdminDashboardModalProps> =
     e.preventDefault();
     const cleanEmail = newSubEmail.trim();
     if (cleanEmail) {
-      if (cleanEmail.includes('@example.com') || cleanEmail === 'rahul.kumar@gmail.com' || cleanEmail === 'priya.singh@yahoo.com' || cleanEmail === 'amit.sharma@outlook.com') {
-        onToast('⚠️ Sample emails cannot be added.');
-        return;
-      }
       const newSub: SubscriberRecord = {
         id: `sub-${Date.now()}`,
         email: cleanEmail,
@@ -442,7 +438,7 @@ export const SuperAdminDashboardModal: React.FC<SuperAdminDashboardModalProps> =
         await fetch('/api/v1/subscribers', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email: cleanEmail, category: 'All Updates' })
+          body: JSON.stringify(newSub)
         });
       } catch (err) {}
       onToast('New subscriber added to alert list & saved to database!');

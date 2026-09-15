@@ -173,7 +173,7 @@ export const JobDetailsPage: React.FC<JobDetailsPageProps> = ({
         await fetch('/api/v1/subscribers', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email: trimmedEmail, category: categoryLabel.toUpperCase() })
+          body: JSON.stringify(newSub)
         });
       } catch (err) {
         console.warn('Server subscriber save error:', err);
