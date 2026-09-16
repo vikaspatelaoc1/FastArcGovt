@@ -26,6 +26,7 @@ import { JobsManagerTab } from './JobsManagerTab';
 import { MobileAppButtonsManagerTab } from './MobileAppButtonsManagerTab';
 import { PagesManagerTab, ApiAnalyticsTab, ActivityLogsTab, HelpdeskTab, AutoBroadcasterTab, AdsManagerTab, EmailNotificationsTab } from './NewAdminTabs';
 import { AdminStudentDocuments } from './AdminStudentDocuments';
+import { LinkHealthCheckerTab } from './LinkHealthCheckerTab';
 import { DomainEditorModal } from './DomainEditorModal';
 import { getDomainName } from '../utils/domain';
 import { DEFAULT_MOBILE_TABS_CONFIG } from '../data/mobileTabsData';

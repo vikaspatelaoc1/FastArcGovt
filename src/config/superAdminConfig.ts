@@ -1,5 +1,5 @@
 import React from 'react';
-import { 
+import { Activity, 
   BarChart3, 
   Megaphone, 
   Share2, 
@@ -376,6 +376,19 @@ export const SUPER_ADMIN_MODULES: SuperAdminModuleConfig[] = [
     categoryLabel: 'Content & Updates',
     color: 'text-indigo-500',
     hoverBg: 'hover:bg-indigo-950/40',
+    tag: 'NEW'
+  }
+,
+  {
+    id: 'linkHealth',
+    label: 'Link Health Checker',
+    shortLabel: 'Link Health',
+    description: 'Check all job links for broken URLs, validate formats, and manually fix them.',
+    icon: Activity,
+    category: 'tools',
+    categoryLabel: 'Automation Tools',
+    color: 'text-orange-400',
+    hoverBg: 'hover:bg-orange-950/40',
     tag: 'NEW'
   }
 ];

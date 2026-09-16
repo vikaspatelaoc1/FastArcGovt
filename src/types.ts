@@ -132,7 +132,12 @@ export interface JobAlert {
     whatsapp?: string;
     tools?: string;
     otherLinks?: Array<{ title: string; url: string }>;
+    [key: string]: any;
   };
+  needsReview?: boolean;
+  linkHealthStatus?: 'Healthy' | 'Needs Review' | 'Repaired';
+  linkReviewStatus?: Record<string, string>;
+  unrepairableLinks?: string[];
   sourceId?: string;
   sourceName?: string;
   scrapedAt?: string;
@@ -202,7 +207,8 @@ export type SuperAdminTabType =
   | 'mobileTabs'
   | 'mobileCardSizing'
   | 'approvals'
-  | 'documentCenter';
+  | 'documentCenter'
+  | 'linkHealth';
 
 export interface EmailNotificationConfig {
   autoSendOnPublish: boolean;

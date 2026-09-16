@@ -1,5 +1,6 @@
 import { getDomainName, getDomainNameLowercase } from '../utils/domain';
 import React, { useState, useEffect } from 'react';
+import { normalizeExternalUrl } from '../utils/urlUtils';
 import { 
   Sparkles, Wand2, Check, ArrowLeft, ArrowRight, Save, Eye, X, 
   Plus, Trash2, Calendar, DollarSign, GraduationCap, Building2, 

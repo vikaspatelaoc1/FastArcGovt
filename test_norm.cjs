@@ -1,0 +1,10 @@
+const { readFileSync } = require('fs');
+const ts = require('typescript');
+const code = readFileSync('src/utils/urlUtils.ts', 'utf8');
+const jsCode = ts.transpileModule(code, { compilerOptions: { module: ts.ModuleKind.CommonJS } }).outputText;
+eval(jsCode);
+console.log(normalizeExternalUrl('ssc.gov.in'));
+console.log(normalizeExternalUrl('upsc.gov.in'));
+console.log(normalizeExternalUrl('apply.ssc.nic.in'));
+console.log(normalizeExternalUrl('https://assam.metro.gov.in//admit-card'));
+console.log(normalizeExternalUrl('//www.google.com/test'));

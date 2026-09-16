@@ -25,44 +25,35 @@ export function generateJobSlug(title: string, id?: string): string {
  *       'https://domain.gov.in/atom.xml' -> 'https://domain.gov.in'
  *       'https://telangana.urbandevelopment.gov.in/rss.xml/admit-card' -> 'https://telangana.urbandevelopment.gov.in/admit-card'
  */
+import { normalizeExternalUrl } from './urlUtils';
+
 export function cleanOfficialUrl(url?: string, defaultFallback: string = 'https://india.gov.in'): string {
-  if (!url || typeof url !== 'string' || !url.trim() || url.trim() === '#') return defaultFallback;
-  let clean = url.trim();
-  if (!/^https?:\/\//i.test(clean)) clean = `https://${clean}`;
+  const norm = normalizeExternalUrl(url);
+  if (!norm) return defaultFallback;
+  
   try {
-    const u = new URL(clean);
+    const u = new URL(norm);
     
-    // Strip common feed query parameters (e.g. ?feed=rss2, ?format=xml, ?type=rss)
-    if (u.search && (u.search.includes('rss') || u.search.includes('feed') || u.search.includes('xml') || u.search.includes('atom'))) {
-      u.search = '';
+    // Only strip feed-related search parameters explicitly, preserve others
+    if (u.search) {
+      const params = new URLSearchParams(u.search);
+      if (params.has('feed')) params.delete('feed');
+      if (params.has('format') && params.get('format') === 'xml') params.delete('format');
+      u.search = params.toString();
     }
 
+    // Strip feed artifacts from pathname safely, preserving normal paths
     let path = u.pathname
-      // Strip directory + filename feed artifacts like /notices/rss.xml, /rss.xml, /feed.xml, /atom.xml
-      .replace(/\/(notices\/|updates\/|news\/|rss\/|feed\/)?(rss|feed|recruitment|updates|notices|notifications|latest-updates|atom|index)?\.(xml|rss|atom)(\/.*)?$/i, '')
-      // Strip standalone feed path segments like /rss, /feed, /rss-feed, /feeds
-      .replace(/\/(rss|feed|rss-feed|feeds)(\/.*)?$/i, '')
-      // Strip intermediate /rss.xml/ from paths
-      .replace(/\/(notices\/)?rss\.xml(\/.*)?$/i, '')
-      .replace(/\/(notices\/)?feed\.xml(\/.*)?$/i, '')
-      .replace(/\.(xml|rss|atom)(\/.*)?$/i, '')
-      .replace(/\/+$/, '');
+      .replace(/\/(rss|feed|atom)\.xml$/i, '')
+      .replace(/\/(rss|feed|rss-feed|feeds)$/i, '')
+      .replace(/\.xml$/i, '')
+      .replace(/\/$/, '');
+      
+    u.pathname = path || '/';
 
-    u.pathname = path || '';
-    u.hash = '';
-
-    // If path is root or generic feed container, point directly to official home domain
-    if (!u.pathname || u.pathname === '/' || u.pathname === '/notices' || u.pathname === '/notifications' || u.pathname === '/rss') {
-      return u.origin;
-    }
-    return `${u.origin}${u.pathname}`.replace(/\/+$/, '');
+    return u.toString();
   } catch {
-    return clean
-      .replace(/\/(notices\/)?rss\.xml(\/.*)?$/i, '')
-      .replace(/\/(notices\/)?feed\.xml(\/.*)?$/i, '')
-      .replace(/\/(rss|feed|rss-feed|feeds)(\/.*)?$/i, '')
-      .replace(/\.(xml|rss|atom).*$/i, '')
-      .replace(/\/+$/, '');
+    return norm;
   }
 }
 

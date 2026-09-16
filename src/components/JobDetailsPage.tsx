@@ -9,6 +9,7 @@ import {
 import { JobAlert, SocialLinkItem, SuperAdminTabType } from '../types';
 import { Header } from './Header';
 import { enrichJobDetails, formatLongDate, cleanOfficialUrl } from '../utils/jobEnricher';
+import { SafeExternalLink } from './SafeExternalLink';
 import { openJobInNewTab, getJobDetailUrl } from '../utils/jobUrl';
 import { updateJobDetailSeo } from '../utils/seo';
 import { saveSubscriberToFirestore, SubscriberRecord } from '../services/firestoreService';
@@ -387,25 +388,19 @@ export const JobDetailsPage: React.FC<JobDetailsPageProps> = ({
 
             {/* Quick Hero Buttons */}
             <div className="flex flex-wrap items-center justify-center gap-3 mt-4 print:hidden">
-              <a
-                href={job.links?.apply || '#important-links'}
-                target="_blank"
-                rel="noopener noreferrer"
+              <SafeExternalLink url={job.links?.apply || '#important-links'}
                 className="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-extrabold px-6 py-2.5 rounded-xl text-xs sm:text-sm shadow-md hover:shadow-lg transition-all active:scale-95 flex items-center gap-2 cursor-pointer"
-              >
+               showIcon={true}>
                 <CheckCircle2 className="w-4 h-4" />
                 <span>Apply Online Direct</span>
-              </a>
+              </SafeExternalLink>
 
-              <a
-                href={job.links?.notification || '#important-links'}
-                target="_blank"
-                rel="noopener noreferrer"
+              <SafeExternalLink url={job.links?.notification || '#important-links'}
                 className="bg-slate-800 hover:bg-slate-900 dark:bg-slate-700 dark:hover:bg-slate-600 text-white font-bold px-5 py-2.5 rounded-xl text-xs sm:text-sm shadow-md transition-all active:scale-95 flex items-center gap-2 cursor-pointer"
-              >
+               showIcon={true}>
                 <Download className="w-4 h-4" />
                 <span>Download Official Notification</span>
-              </a>
+              </SafeExternalLink>
             </div>
           </div>
 
@@ -751,27 +746,21 @@ export const JobDetailsPage: React.FC<JobDetailsPageProps> = ({
                       Apply Online
                     </div>
                     <div className="p-3.5 sm:p-4 font-extrabold text-[#1d4ed8] dark:text-[#60a5fa] text-xs sm:text-sm flex items-center justify-start gap-3">
-                      <a
-                        href={cleanOfficialUrl(job.links.apply)}
-                        target="_blank"
-                        rel="noopener noreferrer"
+                      <SafeExternalLink url={job.links.apply}
                         className="hover:underline flex items-center gap-1 cursor-pointer"
-                      >
+                       showIcon={false}>
                         <span>Click Here</span>
-                        <ExternalLink className="w-3.5 h-3.5 inline" />
-                      </a>
+                        
+                      </SafeExternalLink>
                       {job.links?.applyServer2 && (
                         <>
                           <span className="text-slate-400 font-normal">|</span>
-                          <a
-                            href={cleanOfficialUrl(job.links.applyServer2)}
-                            target="_blank"
-                            rel="noopener noreferrer"
+                          <SafeExternalLink url={job.links.applyServer2}
                             className="hover:underline flex items-center gap-1 cursor-pointer"
-                          >
+                           showIcon={false}>
                             <span>Server II</span>
-                            <ExternalLink className="w-3.5 h-3.5 inline" />
-                          </a>
+                            
+                          </SafeExternalLink>
                         </>
                       )}
                     </div>
@@ -785,15 +774,12 @@ export const JobDetailsPage: React.FC<JobDetailsPageProps> = ({
                       Download Notification
                     </div>
                     <div className="p-3.5 sm:p-4 font-extrabold text-[#1d4ed8] dark:text-[#60a5fa] text-xs sm:text-sm flex items-center gap-2">
-                      <a
-                        href={cleanOfficialUrl(job.links.notification)}
-                        target="_blank"
-                        rel="noopener noreferrer"
+                      <SafeExternalLink url={job.links.notification}
                         className="hover:underline flex items-center gap-1 cursor-pointer"
-                      >
+                       showIcon={false}>
                         <span>Click Here</span>
-                        <ExternalLink className="w-3.5 h-3.5 inline" />
-                      </a>
+                        
+                      </SafeExternalLink>
                     </div>
                   </div>
                 )}
@@ -805,15 +791,12 @@ export const JobDetailsPage: React.FC<JobDetailsPageProps> = ({
                       Official Website
                     </div>
                     <div className="p-3.5 sm:p-4 font-extrabold text-[#1d4ed8] dark:text-[#60a5fa] text-xs sm:text-sm flex items-center gap-2">
-                      <a
-                        href={cleanOfficialUrl(job.links.official)}
-                        target="_blank"
-                        rel="noopener noreferrer"
+                      <SafeExternalLink url={job.links.official}
                         className="hover:underline flex items-center gap-1 cursor-pointer truncate max-w-xs sm:max-w-md"
-                      >
+                       showIcon={false}>
                         <span>{job.orgName || 'Official'} Website</span>
-                        <ExternalLink className="w-3.5 h-3.5 inline shrink-0" />
-                      </a>
+                        
+                      </SafeExternalLink>
                     </div>
                   </div>
                 )}
@@ -825,27 +808,21 @@ export const JobDetailsPage: React.FC<JobDetailsPageProps> = ({
                       Download Admit Card
                     </div>
                     <div className="p-3.5 sm:p-4 font-extrabold text-[#1d4ed8] dark:text-[#60a5fa] text-xs sm:text-sm flex items-center gap-3">
-                      <a
-                        href={cleanOfficialUrl(job.links.admitCard)}
-                        target="_blank"
-                        rel="noopener noreferrer"
+                      <SafeExternalLink url={job.links.admitCard}
                         className="hover:underline flex items-center gap-1 cursor-pointer"
-                      >
+                       showIcon={false}>
                         <span>Click Here</span>
-                        <ExternalLink className="w-3.5 h-3.5 inline" />
-                      </a>
+                        
+                      </SafeExternalLink>
                       {job.links?.admitCardNotice && (
                         <>
                           <span className="text-slate-400 font-normal">|</span>
-                          <a
-                            href={cleanOfficialUrl(job.links.admitCardNotice)}
-                            target="_blank"
-                            rel="noopener noreferrer"
+                          <SafeExternalLink url={job.links.admitCardNotice}
                             className="hover:underline flex items-center gap-1 cursor-pointer"
-                          >
+                           showIcon={false}>
                             <span>Notice</span>
-                            <ExternalLink className="w-3.5 h-3.5 inline" />
-                          </a>
+                            
+                          </SafeExternalLink>
                         </>
                       )}
                     </div>
@@ -859,27 +836,21 @@ export const JobDetailsPage: React.FC<JobDetailsPageProps> = ({
                       Download Result
                     </div>
                     <div className="p-3.5 sm:p-4 font-extrabold text-[#1d4ed8] dark:text-[#60a5fa] text-xs sm:text-sm flex items-center gap-3">
-                      <a
-                        href={cleanOfficialUrl(job.links.result)}
-                        target="_blank"
-                        rel="noopener noreferrer"
+                      <SafeExternalLink url={job.links.result}
                         className="hover:underline flex items-center gap-1 cursor-pointer"
-                      >
+                       showIcon={false}>
                         <span>Server I</span>
-                        <ExternalLink className="w-3.5 h-3.5 inline" />
-                      </a>
+                        
+                      </SafeExternalLink>
                       {job.links?.resultServer2 && (
                         <>
                           <span className="text-slate-400 font-normal">|</span>
-                          <a
-                            href={cleanOfficialUrl(job.links.resultServer2)}
-                            target="_blank"
-                            rel="noopener noreferrer"
+                          <SafeExternalLink url={job.links.resultServer2}
                             className="hover:underline flex items-center gap-1 cursor-pointer"
-                          >
+                           showIcon={false}>
                             <span>Server II</span>
-                            <ExternalLink className="w-3.5 h-3.5 inline" />
-                          </a>
+                            
+                          </SafeExternalLink>
                         </>
                       )}
                     </div>
@@ -893,15 +864,12 @@ export const JobDetailsPage: React.FC<JobDetailsPageProps> = ({
                       Download Answer Key
                     </div>
                     <div className="p-3.5 sm:p-4 font-extrabold text-[#1d4ed8] dark:text-[#60a5fa] text-xs sm:text-sm flex items-center gap-3">
-                      <a
-                        href={cleanOfficialUrl(job.links.answerKey)}
-                        target="_blank"
-                        rel="noopener noreferrer"
+                      <SafeExternalLink url={job.links.answerKey}
                         className="hover:underline flex items-center gap-1 cursor-pointer"
-                      >
+                       showIcon={false}>
                         <span>Click Here</span>
-                        <ExternalLink className="w-3.5 h-3.5 inline" />
-                      </a>
+                        
+                      </SafeExternalLink>
                     </div>
                   </div>
                 )}
@@ -913,15 +881,12 @@ export const JobDetailsPage: React.FC<JobDetailsPageProps> = ({
                       Download Syllabus
                     </div>
                     <div className="p-3.5 sm:p-4 font-extrabold text-[#1d4ed8] dark:text-[#60a5fa] text-xs sm:text-sm flex items-center gap-3">
-                      <a
-                        href={cleanOfficialUrl(job.links.syllabus)}
-                        target="_blank"
-                        rel="noopener noreferrer"
+                      <SafeExternalLink url={job.links.syllabus}
                         className="hover:underline flex items-center gap-1 cursor-pointer"
-                      >
+                       showIcon={false}>
                         <span>Click Here</span>
-                        <ExternalLink className="w-3.5 h-3.5 inline" />
-                      </a>
+                        
+                      </SafeExternalLink>
                     </div>
                   </div>
                 )}
@@ -933,15 +898,12 @@ export const JobDetailsPage: React.FC<JobDetailsPageProps> = ({
                       Download Application Form
                     </div>
                     <div className="p-3.5 sm:p-4 font-extrabold text-[#1d4ed8] dark:text-[#60a5fa] text-xs sm:text-sm flex items-center gap-3">
-                      <a
-                        href={cleanOfficialUrl(job.links.applicationForm)}
-                        target="_blank"
-                        rel="noopener noreferrer"
+                      <SafeExternalLink url={job.links.applicationForm}
                         className="hover:underline flex items-center gap-1 cursor-pointer"
-                      >
+                       showIcon={false}>
                         <span>Click Here</span>
-                        <ExternalLink className="w-3.5 h-3.5 inline" />
-                      </a>
+                        
+                      </SafeExternalLink>
                     </div>
                   </div>
                 )}
@@ -953,15 +915,12 @@ export const JobDetailsPage: React.FC<JobDetailsPageProps> = ({
                       Correction / Edit Form
                     </div>
                     <div className="p-3.5 sm:p-4 font-extrabold text-[#1d4ed8] dark:text-[#60a5fa] text-xs sm:text-sm flex items-center gap-3">
-                      <a
-                        href={cleanOfficialUrl(job.links.correctionForm)}
-                        target="_blank"
-                        rel="noopener noreferrer"
+                      <SafeExternalLink url={job.links.correctionForm}
                         className="hover:underline flex items-center gap-1 cursor-pointer"
-                      >
+                       showIcon={false}>
                         <span>Click Here</span>
-                        <ExternalLink className="w-3.5 h-3.5 inline" />
-                      </a>
+                        
+                      </SafeExternalLink>
                     </div>
                   </div>
                 )}
@@ -973,15 +932,12 @@ export const JobDetailsPage: React.FC<JobDetailsPageProps> = ({
                       Download Merit List
                     </div>
                     <div className="p-3.5 sm:p-4 font-extrabold text-[#1d4ed8] dark:text-[#60a5fa] text-xs sm:text-sm flex items-center gap-3">
-                      <a
-                        href={cleanOfficialUrl(job.links.meritList)}
-                        target="_blank"
-                        rel="noopener noreferrer"
+                      <SafeExternalLink url={job.links.meritList}
                         className="hover:underline flex items-center gap-1 cursor-pointer"
-                      >
+                       showIcon={false}>
                         <span>Click Here</span>
-                        <ExternalLink className="w-3.5 h-3.5 inline" />
-                      </a>
+                        
+                      </SafeExternalLink>
                     </div>
                   </div>
                 )}
@@ -993,15 +949,12 @@ export const JobDetailsPage: React.FC<JobDetailsPageProps> = ({
                       Download Cut Off
                     </div>
                     <div className="p-3.5 sm:p-4 font-extrabold text-[#1d4ed8] dark:text-[#60a5fa] text-xs sm:text-sm flex items-center gap-3">
-                      <a
-                        href={cleanOfficialUrl(job.links.cutoff)}
-                        target="_blank"
-                        rel="noopener noreferrer"
+                      <SafeExternalLink url={job.links.cutoff}
                         className="hover:underline flex items-center gap-1 cursor-pointer"
-                      >
+                       showIcon={false}>
                         <span>Click Here</span>
-                        <ExternalLink className="w-3.5 h-3.5 inline" />
-                      </a>
+                        
+                      </SafeExternalLink>
                     </div>
                   </div>
                 )}
@@ -1013,15 +966,12 @@ export const JobDetailsPage: React.FC<JobDetailsPageProps> = ({
                       Exam Date / City Intimation
                     </div>
                     <div className="p-3.5 sm:p-4 font-extrabold text-[#1d4ed8] dark:text-[#60a5fa] text-xs sm:text-sm flex items-center gap-3">
-                      <a
-                        href={cleanOfficialUrl(job.links.examDate)}
-                        target="_blank"
-                        rel="noopener noreferrer"
+                      <SafeExternalLink url={job.links.examDate}
                         className="hover:underline flex items-center gap-1 cursor-pointer"
-                      >
+                       showIcon={false}>
                         <span>Click Here</span>
-                        <ExternalLink className="w-3.5 h-3.5 inline" />
-                      </a>
+                        
+                      </SafeExternalLink>
                     </div>
                   </div>
                 )}
@@ -1033,15 +983,12 @@ export const JobDetailsPage: React.FC<JobDetailsPageProps> = ({
                       {linkItem.title}
                     </div>
                     <div className="p-3.5 sm:p-4 font-extrabold text-[#1d4ed8] dark:text-[#60a5fa] text-xs sm:text-sm flex items-center gap-3">
-                      <a
-                        href={cleanOfficialUrl(linkItem.url)}
-                        target="_blank"
-                        rel="noopener noreferrer"
+                      <SafeExternalLink url={linkItem.url}
                         className="hover:underline flex items-center gap-1 cursor-pointer"
-                      >
+                       showIcon={false}>
                         <span>Click Here</span>
-                        <ExternalLink className="w-3.5 h-3.5 inline" />
-                      </a>
+                        
+                      </SafeExternalLink>
                     </div>
                   </div>
                 ) : null)}
@@ -1053,15 +1000,12 @@ export const JobDetailsPage: React.FC<JobDetailsPageProps> = ({
                       How to Fill Form (Video Hindi)
                     </div>
                     <div className="p-3.5 sm:p-4 font-extrabold text-[#1d4ed8] dark:text-[#60a5fa] text-xs sm:text-sm flex items-center gap-2">
-                      <a
-                        href={cleanOfficialUrl(job.links.videoHindi)}
-                        target="_blank"
-                        rel="noopener noreferrer"
+                      <SafeExternalLink url={job.links.videoHindi}
                         className="hover:underline flex items-center gap-1 cursor-pointer text-red-600 dark:text-red-400"
-                      >
+                       showIcon={false}>
                         <span>Watch Video</span>
-                        <ExternalLink className="w-3.5 h-3.5 inline" />
-                      </a>
+                        
+                      </SafeExternalLink>
                     </div>
                   </div>
                 )}
@@ -1072,23 +1016,17 @@ export const JobDetailsPage: React.FC<JobDetailsPageProps> = ({
                     Join FastArc Govt Alerts Channel
                   </div>
                   <div className="p-3.5 sm:p-4 font-extrabold text-[#1d4ed8] dark:text-[#60a5fa] text-xs sm:text-sm flex items-center gap-3">
-                    <a
-                      href={job.links?.telegram || "https://t.me/fastarcgov"}
-                      target="_blank"
-                      rel="noopener noreferrer"
+                    <SafeExternalLink url={job.links?.telegram || "https://t.me/fastarcgov"}
                       className="hover:underline text-[#0088cc] flex items-center gap-1 cursor-pointer"
-                    >
+                     showIcon={true}>
                       <span>Telegram</span>
-                    </a>
+                    </SafeExternalLink>
                     <span className="text-slate-400 font-normal">|</span>
-                    <a
-                      href={job.links?.whatsapp || "https://whatsapp.com/channel/0029VaFastArcGov"}
-                      target="_blank"
-                      rel="noopener noreferrer"
+                    <SafeExternalLink url={job.links?.whatsapp || "https://whatsapp.com/channel/0029VaFastArcGov"}
                       className="hover:underline text-[#25D366] flex items-center gap-1 cursor-pointer"
-                    >
+                     showIcon={true}>
                       <span>WhatsApp</span>
-                    </a>
+                    </SafeExternalLink>
                   </div>
                 </div>
 

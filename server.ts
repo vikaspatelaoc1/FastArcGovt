@@ -38,11 +38,17 @@ process.on('unhandledRejection', (reason: any) => {
 import express from 'express';
 import path from 'path';
 import fs from 'fs';
+import http from 'http';
+import https from 'https';
+import { createRequire } from 'module';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import nodemailer from 'nodemailer';
 import mysql from 'mysql2/promise';
 import { generateSitemapXml } from './src/utils/sitemapGenerator';
+import { normalizeExternalUrl } from './src/utils/urlUtils';
+
+const requireModule = createRequire(import.meta.url);
 import { initializeApp } from 'firebase/app';
 import { getFirestore, collection, getDocs, doc, setDoc, getDoc, deleteDoc, writeBatch, setLogLevel } from 'firebase/firestore/lite';
 import { defaultScraperSources } from './src/data/defaultScraperSources';
@@ -3342,6 +3348,45 @@ app.post('/api/nps/calculate', async (req, res) => {
   });
 });
 
+// Link Health Check endpoint
+app.post('/api/check-url', async (req, res) => {
+  const { url } = req.body;
+  if (!url) return res.status(400).json({ status: 'error', error: 'Missing URL' });
+  try {
+    const normalized = normalizeExternalUrl(url);
+    const targetUrl = normalized || url;
+    const u = new URL(targetUrl);
+    const client = u.protocol === 'http:' ? http : https;
+    
+    await new Promise((resolve, reject) => {
+      const request = client.request(targetUrl, { method: 'HEAD', timeout: 3000 }, (response) => {
+        resolve(response.statusCode);
+      });
+      request.on('error', (err) => reject(err));
+      request.on('timeout', () => { request.destroy(); reject(new Error('timeout')); });
+      request.end();
+    }).then(statusCode => {
+      res.json({ status: 'ok', statusCode });
+    }).catch(err => {
+      res.json({ status: 'error', error: err?.message || 'fetch failed' });
+    });
+  } catch (err: any) {
+    res.json({ status: 'error', error: err?.message || 'invalid url' });
+  }
+});
+
+// Admin endpoint to trigger one-time or on-demand link normalization & health audit migration
+app.post('/api/admin/run-link-migration', async (req, res) => {
+  try {
+    const { runMigration } = requireModule('./scripts/migrate_firestore_job_links.cjs');
+    const stats = await runMigration();
+    res.json({ status: 'success', stats });
+  } catch (err: any) {
+    console.error('Error running link migration API:', err);
+    res.status(500).json({ status: 'error', message: err?.message || 'Migration failed' });
+  }
+});
+
 // --- API CATCH-ALL & GLOBAL ERROR HANDLERS ---
 app.all('/api/*', (req, res) => {
   res.status(404).json({
@@ -3359,6 +3404,7 @@ async function startServer() {
     });
 
     // 2. Vite middleware setup in development, static files in production
+
     if (process.env.NODE_ENV !== 'production') {
       try {
         const { createServer: createViteServer } = await import('vite');
