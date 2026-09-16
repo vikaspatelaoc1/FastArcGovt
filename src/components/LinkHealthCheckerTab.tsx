@@ -32,7 +32,7 @@ export const LinkHealthCheckerTab: React.FC<LinkHealthCheckerTabProps> = ({ jobs
   const needsReviewCount = jobs.filter(j => 
     j.needsReview || 
     j.linkHealthStatus === 'Needs Review' || 
-    (j.links && Object.values(j.links).some(v => typeof v === 'string' && (v.includes('Needs Review') || (j.linkReviewStatus && Object.values(j.linkReviewStatus).some(s => s.includes('Needs Review'))))))
+    (j.links && Object.values(j.links).some(v => typeof v === 'string' && (v.includes('Needs Review') || (j.linkReviewStatus && Object.values(j.linkReviewStatus).some(s => typeof s === 'string' && s.includes('Needs Review'))))))
   ).length;
 
   const filteredJobs = jobs.filter(job => {
@@ -42,7 +42,7 @@ export const LinkHealthCheckerTab: React.FC<LinkHealthCheckerTabProps> = ({ jobs
     if (filterType === 'needs_review') {
       const hasNeedsReview = job.needsReview || 
         job.linkHealthStatus === 'Needs Review' || 
-        (job.links && Object.values(job.links).some(v => typeof v === 'string' && (v.includes('Needs Review') || (job.linkReviewStatus && Object.values(job.linkReviewStatus).some(s => s.includes('Needs Review'))))));
+        (job.links && Object.values(job.links).some(v => typeof v === 'string' && (v.includes('Needs Review') || (job.linkReviewStatus && Object.values(job.linkReviewStatus).some(s => typeof s === 'string' && s.includes('Needs Review'))))));
       return hasNeedsReview;
     }
 

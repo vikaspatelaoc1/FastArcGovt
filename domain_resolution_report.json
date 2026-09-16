@@ -1,0 +1,2637 @@
+{
+  "working": [
+    "bpsc.bih.nic.in",
+    "ctet.nic.in",
+    "sbi.co.in",
+    "whatsapp.com",
+    "t.me",
+    "www.youtube.com",
+    "ibps.in",
+    "upsc.gov.in",
+    "upsconline.nic.in",
+    "ssc.gov.in",
+    "www.nta.ac.in",
+    "ugcnet.nta.ac.in",
+    "indianrailways.gov.in",
+    "onlinebpsc.bihar.gov.in",
+    "uppbpb.gov.in",
+    "recruitment.itbpolice.nic.in",
+    "itbpolice.nic.in",
+    "pib.gov.in",
+    "barc.gov.in",
+    "rrb.gov.in",
+    "cisf.gov.in",
+    "nhai.gov.in",
+    "kvs.gov.in",
+    "nta.ac.in",
+    "employmentnews.gov.in",
+    "bssc.bihar.gov.in",
+    "india.gov.in",
+    "cbse.gov.in",
+    "www.upsc.gov.in",
+    "www.upsconline.nic.in",
+    "www.india.gov.in",
+    "www.ssb.gov.in",
+    "bsf.gov.in",
+    "dsssb.delhi.gov.in",
+    "dsssbonline.nic.in",
+    "drdo.gov.in"
+  ],
+  "failing": [
+    {
+      "domain": "jharkhand.psc.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "up.ruraldevelopment.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "maharashtra.electricityboard.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "mp.pwd.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "nvs.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "jammukashmir.tourismdept.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "gujarat.housingboard.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "jharkhand.metro.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "rajasthan.police.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "telangana.university.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "up.highcourt.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "bihar.housingboard.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "jharkhand.university.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "bpcl.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "haryana.panchayat.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "up.psc.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "odisha.forestdept.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "gujarat.statecooperativebank.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "karnataka.socialwelfare.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "telangana.forestdept.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "up.tourismdept.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "haryana.psc.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "assam.socialwelfare.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "assam.ruraldevelopment.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "rbi.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "telangana.waterboard.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "bihar.pwd.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "maharashtra.police.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "punjab.panchayat.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "andhrapradesh.educationboard.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "bihar.waterboard.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "assam.police.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "haryana.forestdept.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "chhattisgarh.housingboard.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "jammukashmir.socialwelfare.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "jammukashmir.university.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "jharkhand.forestdept.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "mp.housingboard.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "delhi.socialwelfare.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "tamilnadu.municipalcorp.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "punjab.waterboard.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "telangana.educationboard.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "rajasthan.socialwelfare.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "himachalpradesh.ssc.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "chhattisgarh.highcourt.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "himachalpradesh.police.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "westbengal.ruraldevelopment.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "chhattisgarh.urbandevelopment.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "himachalpradesh.tourismdept.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "assam.psc.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "westbengal.electricityboard.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "gujarat.socialwelfare.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "himachalpradesh.urbandevelopment.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "bihar.revenuedept.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "uttarakhand.educationboard.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "assam.statecooperativebank.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "westbengal.transport.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "delhi.tourismdept.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "jharkhand.educationboard.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "himachalpradesh.panchayat.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "punjab.metro.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "haryana.housingboard.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "delhi.educationboard.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "bihar.ruraldevelopment.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "assam.ssc.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "karnataka.statecooperativebank.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "ongc.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "up.pwd.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "punjab.university.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "telangana.panchayat.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "bihar.electricityboard.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "mp.highcourt.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "haryana.highcourt.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "kerala.revenuedept.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "telangana.electricityboard.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "odisha.university.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "karnataka.highcourt.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "rajasthan.psc.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "punjab.municipalcorp.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "up.statecooperativebank.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "up.panchayat.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "himachalpradesh.educationboard.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "karnataka.waterboard.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "mp.university.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "delhi.psc.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "westbengal.metro.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "tamilnadu.educationboard.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "westbengal.housingboard.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "karnataka.university.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "rrbapply.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "gujarat.transport.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "jharkhand.ssc.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "punjab.forestdept.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "haryana.revenuedept.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "karnataka.agriculturedept.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "maharashtra.housingboard.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "kerala.police.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "haryana.pwd.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "tamilnadu.tourismdept.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "gujarat.tourismdept.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "bihar.agriculturedept.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "kerala.forestdept.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "rajasthan.tourismdept.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "rajasthan.statecooperativebank.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "punjab.ssc.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "maharashtra.revenuedept.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "kerala.statecooperativebank.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "karnataka.psc.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "maharashtra.forestdept.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "uttarakhand.statecooperativebank.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "punjab.electricityboard.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "karnataka.revenuedept.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "maharashtra.statecooperativebank.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "maharashtra.urbandevelopment.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "up.ssc.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "up.forestdept.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "up.university.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "punjab.revenuedept.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "haryana.municipalcorp.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "bihar.metro.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "chhattisgarh.police.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "jharkhand.taxdept.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "haryana.electricityboard.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "uttarakhand.taxdept.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "uttarakhand.university.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "gail.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "up.taxdept.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "uttarakhand.forestdept.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "chhattisgarh.transport.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "uttarakhand.highcourt.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "punjab.urbandevelopment.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "bihar.panchayat.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "chhattisgarh.ruraldevelopment.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "chhattisgarh.healthdept.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "mp.educationboard.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "himachalpradesh.healthdept.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "uttarakhand.socialwelfare.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "mp.transport.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "uttarakhand.police.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "rajasthan.university.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "maharashtra.pwd.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "punjab.psc.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "maharashtra.agriculturedept.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "bihar.police.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "gujarat.forestdept.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "up.metro.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "tamilnadu.urbandevelopment.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "chhattisgarh.socialwelfare.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "himachalpradesh.waterboard.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "gujarat.highcourt.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "rajasthan.revenuedept.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "kerala.urbandevelopment.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "telangana.healthdept.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "telangana.highcourt.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "andhrapradesh.ruraldevelopment.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "tamilnadu.waterboard.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "telangana.psc.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "chhattisgarh.panchayat.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "andhrapradesh.panchayat.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "chhattisgarh.municipalcorp.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "andhrapradesh.highcourt.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "jharkhand.urbandevelopment.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "kerala.waterboard.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "punjab.agriculturedept.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "haryana.police.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "himachalpradesh.ruraldevelopment.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "maharashtra.ruraldevelopment.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "himachalpradesh.socialwelfare.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "telangana.ruraldevelopment.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "himachalpradesh.taxdept.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "haryana.educationboard.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "maharashtra.socialwelfare.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "delhi.revenuedept.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "kerala.pwd.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "bihar.ssc.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "himachalpradesh.statecooperativebank.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "telangana.socialwelfare.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "maharashtra.taxdept.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "punjab.healthdept.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "maharashtra.tourismdept.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "gujarat.waterboard.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "haryana.healthdept.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "gujarat.ruraldevelopment.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "haryana.ssc.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "kerala.educationboard.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "himachalpradesh.metro.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "chhattisgarh.agriculturedept.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "odisha.housingboard.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "kerala.panchayat.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "gujarat.agriculturedept.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "jharkhand.revenuedept.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "jammukashmir.ruraldevelopment.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "kerala.municipalcorp.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "tamilnadu.electricityboard.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "jammukashmir.healthdept.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "odisha.waterboard.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "telangana.housingboard.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "westbengal.statecooperativebank.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "punjab.educationboard.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "gujarat.revenuedept.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "gujarat.metro.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "tamilnadu.transport.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "odisha.metro.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "gujarat.police.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "rajasthan.agriculturedept.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "jammukashmir.psc.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "ibps.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "delhi.statecooperativebank.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "bhel.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "rajasthan.housingboard.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "karnataka.transport.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "rajasthan.ruraldevelopment.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "kerala.highcourt.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "tamilnadu.agriculturedept.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "gujarat.ssc.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "karnataka.electricityboard.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "uttarakhand.psc.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "chhattisgarh.revenuedept.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "maharashtra.waterboard.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "rajasthan.forestdept.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "bihar.urbandevelopment.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "andhrapradesh.housingboard.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "ntpc.gov.in",
+      "ok": false,
+      "error": "EAI_AGAIN"
+    },
+    {
+      "domain": "rajasthan.healthdept.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "mp.metro.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "delhi.urbandevelopment.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "andhrapradesh.psc.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "jharkhand.housingboard.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "tamilnadu.revenuedept.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "jammukashmir.urbandevelopment.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "tamilnadu.socialwelfare.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "up.police.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "up.revenuedept.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "chhattisgarh.electricityboard.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "mp.panchayat.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "up.transport.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "mp.agriculturedept.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "punjab.ruraldevelopment.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "karnataka.metro.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "tamilnadu.healthdept.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "westbengal.taxdept.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "jammukashmir.electricityboard.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "westbengal.waterboard.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "tamilnadu.pwd.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "mp.taxdept.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "karnataka.panchayat.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "haryana.urbandevelopment.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "haryana.metro.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "kerala.agriculturedept.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "mp.socialwelfare.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "assam.municipalcorp.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "odisha.urbandevelopment.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "assam.healthdept.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "up.agriculturedept.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "mp.tourismdept.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "westbengal.socialwelfare.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "mp.statecooperativebank.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "karnataka.educationboard.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "odisha.socialwelfare.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "jharkhand.panchayat.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "up.educationboard.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "up.healthdept.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "up.electricityboard.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "up.municipalcorp.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "up.waterboard.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "up.housingboard.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "bihar.taxdept.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "karnataka.tourismdept.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "up.socialwelfare.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "karnataka.municipalcorp.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "odisha.agriculturedept.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "maharashtra.healthdept.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "jammukashmir.agriculturedept.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "westbengal.highcourt.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "assam.tourismdept.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "assam.university.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "telangana.revenuedept.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "telangana.metro.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "delhi.metro.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "andhrapradesh.statecooperativebank.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "westbengal.police.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "assam.revenuedept.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "up.urbandevelopment.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "kerala.taxdept.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "kerala.ssc.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "haryana.socialwelfare.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "kerala.university.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "kerala.psc.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "mp.forestdept.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "mp.electricityboard.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "gujarat.municipalcorp.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "odisha.tourismdept.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "bihar.university.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "kerala.tourismdept.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "bihar.socialwelfare.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "mp.ruraldevelopment.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "odisha.psc.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "maharashtra.municipalcorp.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "maharashtra.panchayat.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "mp.waterboard.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "karnataka.ssc.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "haryana.waterboard.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "delhi.ruraldevelopment.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "telangana.agriculturedept.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "delhi.waterboard.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "andhrapradesh.municipalcorp.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "delhi.ssc.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "tamilnadu.panchayat.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "punjab.housingboard.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "telangana.police.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "jharkhand.electricityboard.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "tamilnadu.highcourt.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "odisha.transport.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "telangana.ssc.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "rajasthan.highcourt.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "punjab.highcourt.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "punjab.pwd.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "westbengal.pwd.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "rajasthan.educationboard.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "kerala.healthdept.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "karnataka.healthdept.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "odisha.statecooperativebank.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "chhattisgarh.pwd.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "assam.metro.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "assam.transport.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "chhattisgarh.ssc.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "andhrapradesh.socialwelfare.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "delhi.electricityboard.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "delhi.pwd.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "delhi.transport.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "andhrapradesh.taxdept.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "haryana.statecooperativebank.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "jammukashmir.forestdept.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "gujarat.healthdept.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "uttarakhand.metro.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "jammukashmir.panchayat.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "maharashtra.highcourt.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "jammukashmir.statecooperativebank.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "haryana.taxdept.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "andhrapradesh.agriculturedept.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "rajasthan.transport.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "jammukashmir.municipalcorp.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "kerala.transport.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "karnataka.police.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "punjab.police.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "tamilnadu.housingboard.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "jharkhand.pwd.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "jammukashmir.highcourt.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "gujarat.urbandevelopment.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "uttarakhand.electricityboard.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "tamilnadu.forestdept.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "rajasthan.taxdept.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "odisha.pwd.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "rajasthan.ssc.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "punjab.tourismdept.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "haryana.agriculturedept.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "karnataka.taxdept.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "punjab.statecooperativebank.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "rajasthan.panchayat.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "odisha.educationboard.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "odisha.panchayat.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "odisha.ruraldevelopment.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "bihar.educationboard.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "jammukashmir.ssc.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "punjab.transport.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "bihar.transport.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "delhi.panchayat.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "bihar.forestdept.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "mp.psc.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "gujarat.taxdept.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "odisha.healthdept.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "mp.healthdept.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "assam.highcourt.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "jharkhand.highcourt.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "iocl.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "mp.municipalcorp.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "andhrapradesh.revenuedept.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "haryana.university.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "gujarat.educationboard.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "gujarat.pwd.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "maharashtra.university.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "maharashtra.metro.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "bihar.psc.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "punjab.taxdept.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "tamilnadu.university.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "tamilnadu.metro.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "rajasthan.electricityboard.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "tamilnadu.psc.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "rajasthan.metro.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "himachalpradesh.forestdept.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "chhattisgarh.forestdept.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "delhi.highcourt.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "assam.housingboard.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "jharkhand.municipalcorp.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "jharkhand.transport.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "mp.urbandevelopment.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "chhattisgarh.tourismdept.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "maharashtra.transport.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "kerala.housingboard.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "chhattisgarh.educationboard.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "sbi.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "westbengal.municipalcorp.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "andhrapradesh.waterboard.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "punjab.socialwelfare.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "haryana.transport.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "jharkhand.waterboard.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "delhi.agriculturedept.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "delhi.municipalcorp.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "telangana.pwd.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "delhi.forestdept.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "maharashtra.educationboard.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "gujarat.university.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "gujarat.electricityboard.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "gujarat.panchayat.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "maharashtra.ssc.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "haryana.tourismdept.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "haryana.ruraldevelopment.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "tamilnadu.police.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "tamilnadu.ruraldevelopment.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "tamilnadu.taxdept.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "tamilnadu.statecooperativebank.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "kerala.electricityboard.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "kerala.metro.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "kerala.socialwelfare.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "kerala.ruraldevelopment.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "mp.police.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "karnataka.forestdept.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "karnataka.housingboard.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "karnataka.pwd.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "karnataka.ruraldevelopment.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "karnataka.urbandevelopment.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "odisha.police.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "odisha.ssc.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "odisha.highcourt.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "mp.ssc.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "odisha.electricityboard.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "odisha.taxdept.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "westbengal.psc.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "westbengal.ssc.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "westbengal.educationboard.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "westbengal.healthdept.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "westbengal.university.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "westbengal.panchayat.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "westbengal.forestdept.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "westbengal.tourismdept.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "westbengal.urbandevelopment.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "westbengal.agriculturedept.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "westbengal.revenuedept.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "assam.educationboard.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "assam.electricityboard.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "assam.panchayat.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "assam.forestdept.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "assam.waterboard.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "assam.pwd.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "assam.agriculturedept.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "assam.taxdept.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "jharkhand.police.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "jharkhand.healthdept.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "jharkhand.tourismdept.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "jharkhand.socialwelfare.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "jharkhand.ruraldevelopment.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "jharkhand.statecooperativebank.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "chhattisgarh.metro.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "chhattisgarh.university.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "chhattisgarh.waterboard.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "chhattisgarh.taxdept.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "uttarakhand.ssc.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "uttarakhand.healthdept.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "uttarakhand.transport.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "uttarakhand.municipalcorp.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "uttarakhand.panchayat.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "uttarakhand.waterboard.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "uttarakhand.pwd.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "uttarakhand.ruraldevelopment.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "uttarakhand.urbandevelopment.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "uttarakhand.agriculturedept.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "uttarakhand.revenuedept.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "himachalpradesh.psc.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "himachalpradesh.highcourt.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "himachalpradesh.transport.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "himachalpradesh.electricityboard.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "himachalpradesh.university.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "himachalpradesh.municipalcorp.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "himachalpradesh.pwd.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "himachalpradesh.agriculturedept.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "himachalpradesh.revenuedept.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "telangana.transport.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "telangana.municipalcorp.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "telangana.tourismdept.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "telangana.urbandevelopment.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "telangana.taxdept.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "telangana.statecooperativebank.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "andhrapradesh.ssc.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "mp.revenuedept.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "andhrapradesh.healthdept.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "andhrapradesh.forestdept.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "andhrapradesh.pwd.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "andhrapradesh.tourismdept.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "andhrapradesh.urbandevelopment.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "delhi.police.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "delhi.healthdept.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "delhi.housingboard.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "delhi.taxdept.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "jammukashmir.educationboard.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "jammukashmir.waterboard.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "bihar.highcourt.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "jammukashmir.pwd.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "jammukashmir.taxdept.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "bihar.healthdept.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "sail.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "hpcl.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "aai.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "bihar.municipalcorp.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "bihar.tourismdept.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "bihar.statecooperativebank.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "rajasthan.waterboard.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "rajasthan.pwd.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "rajasthan.urbandevelopment.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    },
+    {
+      "domain": "gujarat.psc.gov.in",
+      "ok": false,
+      "error": "ENOTFOUND"
+    }
+  ]
+}

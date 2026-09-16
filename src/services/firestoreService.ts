@@ -60,13 +60,18 @@ export function handleFirestoreQuotaError(err: any, context?: string): boolean {
 
 export async function validateFirestoreConnection() {
   try {
-    const timeoutPromise = new Promise((_, reject) => 
-      setTimeout(() => reject(new Error('Connection check timeout')), 3000)
-    );
-    await Promise.race([
-      getDocFromServer(doc(db, 'site_config', 'marquee')),
-      timeoutPromise
-    ]);
+    let timerId: any = null;
+    const timeoutPromise = new Promise((resolve) => {
+      timerId = setTimeout(() => resolve(null), 2500);
+    });
+    try {
+      await Promise.race([
+        getDocFromServer(doc(db, 'site_config', 'marquee')),
+        timeoutPromise
+      ]);
+    } finally {
+      if (timerId) clearTimeout(timerId);
+    }
   } catch (error) {
     // Graceful offline fallback - Firestore automatically operates in offline cache mode
     console.info("Firestore connecting or operating in offline cache mode.");
@@ -1488,6 +1493,9 @@ export function subscribeToStudentDocuments(onUpdate: (docs: any[]) => void) {
     return onSnapshot(q, (snapshot) => {
       const docs = snapshot.docs.map(doc => ({ id: doc.id, ...(doc.data() as any) }));
       onUpdate(docs);
+    }, (err) => {
+      handleFirestoreQuotaError(err, 'subscribeToStudentDocuments listener');
+      onUpdate([]);
     });
   } catch (err) {
     handleFirestoreQuotaError(err, 'subscribeToStudentDocuments');

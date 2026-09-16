@@ -1443,7 +1443,7 @@ export default function App() {
     const postDateMatch = job.postDate && job.postDate.toLowerCase().includes(query);
     const startDateMatch = job.dates?.start && job.dates.start.toLowerCase().includes(query);
     const lastDateMatch = job.dates?.last && job.dates.last.toLowerCase().includes(query);
-    const qualMatch = job.qualification && job.qualification.toLowerCase().includes(query);
+    const qualMatch = job.qualification && (Array.isArray(job.qualification) ? job.qualification.some(q => String(q).toLowerCase().includes(query)) : String(job.qualification).toLowerCase().includes(query));
     const vacMatch = job.totalVacancies && String(job.totalVacancies).toLowerCase().includes(query);
 
     return (
@@ -1843,7 +1843,7 @@ export default function App() {
             </div>
           </div>
           <button onClick={() => triggerToast('Database synced successfully!')} className="text-xs font-semibold text-slate-500 hover:text-indigo-500 dark:text-slate-400 whitespace-nowrap ml-4">
-             icon Refresh Data
+             Refresh Data
           </button>
         </div>
       </div>
@@ -2511,7 +2511,7 @@ export default function App() {
           setSearchQuery={setSearchQuery}
           siteLogo={siteLogo}
           onTabChange={handleTabChange}
-          onSelectJob={handleJobClick}
+          onSelectJob={(job) => handleJobClick(job.id)}
           jobs={jobs}
         />
       )}

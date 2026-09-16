@@ -26,6 +26,7 @@ export function generateJobSlug(title: string, id?: string): string {
  *       'https://telangana.urbandevelopment.gov.in/rss.xml/admit-card' -> 'https://telangana.urbandevelopment.gov.in/admit-card'
  */
 import { normalizeExternalUrl } from './urlUtils';
+import { resolveOfficialPortals } from './govtPortals';
 
 export function cleanOfficialUrl(url?: string, defaultFallback: string = 'https://india.gov.in'): string {
   const norm = normalizeExternalUrl(url);
@@ -211,19 +212,12 @@ export function detectOrganization(title: string = '', state: string = ''): { or
     };
   }
 
-  // Fallback based on State
-  if (state && state !== 'Central' && state !== 'All') {
-    return {
-      orgName: `${state} Govt Recruitment Board / Department`,
-      officialUrl: `https://${state.toLowerCase().replace(/\s+/g, '')}.gov.in`,
-      applyUrl: `https://${state.toLowerCase().replace(/\s+/g, '')}.gov.in`
-    };
-  }
-
+  // Fallback based on State and Title
+  const resolved = resolveOfficialPortals({ title, state });
   return {
-    orgName: 'Government of India / National Recruitment Agency',
-    officialUrl: 'https://india.gov.in',
-    applyUrl: 'https://india.gov.in'
+    orgName: resolved.orgName,
+    officialUrl: resolved.official,
+    applyUrl: resolved.apply
   };
 }
 

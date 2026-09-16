@@ -28,6 +28,21 @@ export const JobDetailModal: React.FC<JobDetailModalProps> = ({ job, onClose }) 
 
   if (!job) return null;
 
+  const formatAgeLimit = (age: any): string => {
+    if (!age) return '-';
+    if (typeof age === 'string') return age;
+    if (typeof age === 'object') {
+      const parts: string[] = [];
+      if (age.min) parts.push(`Min: ${age.min} Yrs`);
+      if (age.max) parts.push(`Max: ${age.max} Yrs`);
+      if (age.asOn) parts.push(`(as on ${age.asOn})`);
+      if (age.relaxation) parts.push(`Relaxation: ${age.relaxation}`);
+      if (age.details) parts.push(age.details);
+      return parts.length > 0 ? parts.join(' | ') : '-';
+    }
+    return String(age);
+  };
+
   const normalizeJobLink = (rawUrl?: string, fallbackQuery?: string): string => {
     if (!rawUrl || !rawUrl.trim() || rawUrl.trim() === '#') {
       if (fallbackQuery) {
@@ -335,7 +350,7 @@ export const JobDetailModal: React.FC<JobDetailModalProps> = ({ job, onClose }) 
               <tr>
                 <td style="background-color: #f0fdf4;">
                   <div class="dates-header" style="color: #166534;">⏳ Age Limit Info</div>
-                  <div style="font-size: 12px; font-weight: 600;">${job.ageLimit || 'N/A'}</div>
+                  <div style="font-size: 12px; font-weight: 600;">${formatAgeLimit(job.ageLimit)}</div>
                 </td>
                 <td style="background-color: #fefce8;">
                   <div class="fees-header" style="color: #854d0e;">🎓 Eligibility Criteria</div>
@@ -494,7 +509,7 @@ export const JobDetailModal: React.FC<JobDetailModalProps> = ({ job, onClose }) 
                       <h4 className="font-black text-amber-700 dark:text-amber-400 mb-1.5 uppercase tracking-wider text-xs flex items-center gap-1.5">
                         ⏳ Age Limit Info
                       </h4>
-                      <p className="text-xs text-slate-700 dark:text-slate-200 font-semibold">{job.ageLimit || '-'}</p>
+                      <p className="text-xs text-slate-700 dark:text-slate-200 font-semibold">{formatAgeLimit(job.ageLimit)}</p>
                     </td>
                     <td className="w-full sm:w-1/2 p-4 bg-yellow-50/50 dark:bg-slate-900/60 align-top border-t sm:border-t-0 border-slate-200 dark:border-amber-500/30">
                       <h4 className="font-black text-amber-700 dark:text-amber-300 mb-1.5 uppercase tracking-wider text-xs flex items-center gap-1.5">

@@ -638,7 +638,7 @@ export const EarningsTab: React.FC<EarningsTabProps> = ({ onToast }) => {
 
           {/* Export CSV Report */}
           <button
-            onClick={handleExportCSV}
+            onClick={() => handleExportCSV()}
             className="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition-all shadow-md shadow-emerald-900/30 cursor-pointer"
           >
             <FileSpreadsheet className="w-3.5 h-3.5" />

@@ -72,7 +72,7 @@ interface SuperAdminDashboardModalProps {
   isAutoSyncActive?: boolean;
   consecutiveSyncErrors?: number;
   setIsAutoSyncActive?: (active: boolean) => void;
-  syncLogs?: Array<{ id: number; time: string; message: string; type: string }>;
+  syncLogs?: SyncLogEntry[];
   siteLogo?: string;
   setSiteLogo?: (logo: string) => void;
   onEditJob?: (id: string, e: React.MouseEvent) => void;
@@ -2540,12 +2540,16 @@ export const SuperAdminDashboardModal: React.FC<SuperAdminDashboardModalProps> =
                      else setJobs(prev => prev.map(old => old.id === j.id ? j : old));
                   }}
                   onDeleteJob={async (id) => {
-                     if (onDeleteJob) await onDeleteJob(id);
+                     if (onDeleteJob) await onDeleteJob(id, {} as any);
                      else setJobs(prev => prev.filter(j => j.id !== id));
                   }}
                   onToast={onToast}
-                  onPushJob={onSaveJob}
-                  onBulkPushJobs={onBulkSaveJobs}
+                  onPushJob={async (job) => {
+                    if (onSaveJob) await onSaveJob(job);
+                  }}
+                  onBulkPushJobs={async (bulkJobs) => {
+                    if (onBulkSaveJobs) await onBulkSaveJobs(bulkJobs);
+                  }}
                 />
               </div>
             )}
@@ -2632,6 +2636,11 @@ export const SuperAdminDashboardModal: React.FC<SuperAdminDashboardModalProps> =
             {activeTab === 'documentCenter' && (
               <div className="animate-in fade-in duration-200">
                 <AdminStudentDocuments />
+              </div>
+            )}
+            {activeTab === 'linkHealth' && (
+              <div className="animate-in fade-in duration-200">
+                <LinkHealthCheckerTab jobs={jobs} setJobs={setJobs} onToast={onToast} onSaveJob={onSaveJob} />
               </div>
             )}
 

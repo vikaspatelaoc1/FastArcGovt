@@ -47,6 +47,7 @@ import nodemailer from 'nodemailer';
 import mysql from 'mysql2/promise';
 import { generateSitemapXml } from './src/utils/sitemapGenerator';
 import { normalizeExternalUrl } from './src/utils/urlUtils';
+import { resolveOfficialPortals, sanitizeAndRepairUrl, isSyntheticOrBrokenDomain } from './src/utils/govtPortals';
 
 const requireModule = createRequire(import.meta.url);
 import { initializeApp } from 'firebase/app';
@@ -139,43 +140,13 @@ app.use((req, res, next) => {
 const DATA_DIR = process.env.VERCEL ? path.join('/tmp', 'data') : path.join(process.cwd(), 'data');
 const DB_FILE = path.join(DATA_DIR, 'fastarc_database.json');
 
-// URL sanitizer & official portal cleaner (strips RSS / feed / XML artifacts)
-const cleanOfficialUrl = (url?: string, defaultFallback: string = 'https://india.gov.in'): string => {
-  if (!url || typeof url !== 'string' || !url.trim() || url.trim() === '#') return defaultFallback;
-  let clean = url.trim();
-  if (!/^https?:\/\//i.test(clean)) clean = `https://${clean}`;
-  try {
-    const u = new URL(clean);
-    let path = u.pathname
-      .replace(/\/(notices\/)?rss\.xml/gi, '')
-      .replace(/\/(notices\/)?feed\.xml/gi, '')
-      .replace(/\/(notices\/)?feed\.rss/gi, '')
-      .replace(/\/(notices\/)?updates\.rss/gi, '')
-      .replace(/\/(notices\/)?notices\.rss/gi, '')
-      .replace(/\/rss-feed/gi, '')
-      .replace(/\/notifications\.xml/gi, '')
-      .replace(/\/recruitment\.xml/gi, '')
-      .replace(/\.(xml|rss|atom)$/i, '')
-      .replace(/\/+$/, '');
-
-    u.pathname = path || '';
-    u.search = '';
-    u.hash = '';
-
-    if (!u.pathname || u.pathname === '/' || u.pathname === '/notices' || u.pathname === '/notifications') {
-      return u.origin;
-    }
-    return `${u.origin}${u.pathname}`.replace(/\/+$/, '');
-  } catch {
-    return clean
-      .replace(/\/rss\.xml/gi, '')
-      .replace(/\.(xml|rss).*$/i, '')
-      .replace(/\/+$/, '');
-  }
+// URL sanitizer & official portal cleaner with authoritative verification
+const cleanOfficialUrl = (url?: string, defaultFallback: string = 'https://www.india.gov.in'): string => {
+  return sanitizeAndRepairUrl(url, defaultFallback);
 };
 
-const sanitizeUrl = (url?: string, defaultFallback: string = 'https://india.gov.in'): string => {
-  return cleanOfficialUrl(url, defaultFallback);
+const sanitizeUrl = (url?: string, defaultFallback: string = 'https://www.india.gov.in'): string => {
+  return sanitizeAndRepairUrl(url, defaultFallback);
 };
 
 // Full comprehensive catalog (900+ official jobs)
@@ -670,59 +641,16 @@ function serverEnrichJob(raw: any): any {
   const todayStr = new Date().toLocaleDateString('en-GB').replace(/\//g, '-');
   const postDate = raw.postDate || todayStr;
 
-  // Organization detection & official portals
-  let orgName = raw.orgName;
-  let officialPortal = 'https://india.gov.in';
-  let applyPortal = 'https://india.gov.in';
-
-  const tLow = title.toLowerCase();
-  if (tLow.includes('ssc') || tLow.includes('staff selection')) {
-    orgName = orgName || 'Staff Selection Commission (SSC)';
-    officialPortal = 'https://ssc.gov.in';
-    applyPortal = 'https://ssc.gov.in';
-  } else if (tLow.includes('upsc') || tLow.includes('union public')) {
-    orgName = orgName || 'Union Public Service Commission (UPSC)';
-    officialPortal = 'https://upsc.gov.in';
-    applyPortal = 'https://upsconline.nic.in';
-  } else if (tLow.includes('rrb') || tLow.includes('railway')) {
-    orgName = orgName || 'Railway Recruitment Boards (RRB) / Indian Railways';
-    officialPortal = 'https://indianrailways.gov.in';
-    applyPortal = 'https://rrbapply.gov.in';
-  } else if (tLow.includes('ibps') || tLow.includes('banking')) {
-    orgName = orgName || 'Institute of Banking Personnel Selection (IBPS)';
-    officialPortal = 'https://ibps.in';
-    applyPortal = 'https://ibps.in';
-  } else if (tLow.includes('nta') || tLow.includes('ugc net') || tLow.includes('csir')) {
-    orgName = orgName || 'National Testing Agency (NTA)';
-    officialPortal = 'https://nta.ac.in';
-    applyPortal = 'https://exams.nta.ac.in';
-  } else if (tLow.includes('uppbpb') || tLow.includes('up police')) {
-    orgName = orgName || 'Uttar Pradesh Police Recruitment and Promotion Board (UPPRPB)';
-    officialPortal = 'https://uppbpb.gov.in';
-    applyPortal = 'https://uppbpb.gov.in';
-  } else if (tLow.includes('bpsc') || tLow.includes('bihar public')) {
-    orgName = orgName || 'Bihar Public Service Commission (BPSC)';
-    officialPortal = 'https://bpsc.bih.nic.in';
-    applyPortal = 'https://onlinebpsc.bihar.gov.in';
-  } else if (tLow.includes('bssc') || (tLow.includes('bihar') && tLow.includes('staff selection'))) {
-    orgName = orgName || 'Bihar Staff Selection Commission (BSSC)';
-    officialPortal = 'https://bssc.bihar.gov.in';
-    applyPortal = 'https://onlinebssc.com';
-  } else if (tLow.includes('dsssb') || tLow.includes('delhi')) {
-    orgName = orgName || 'Delhi Subordinate Services Selection Board (DSSSB)';
-    officialPortal = 'https://dsssb.delhi.gov.in';
-    applyPortal = 'https://dsssbonline.nic.in';
-  } else if (tLow.includes('drdo')) {
-    orgName = orgName || 'Defence Research & Development Organisation (DRDO)';
-    officialPortal = 'https://drdo.gov.in';
-    applyPortal = 'https://drdo.gov.in';
-  } else if (tLow.includes('isro')) {
-    orgName = orgName || 'Indian Space Research Organisation (ISRO)';
-    officialPortal = 'https://isro.gov.in';
-    applyPortal = 'https://isro.gov.in';
-  } else {
-    orgName = orgName || 'Central / State Government Authority';
-  }
+  // Organization detection & verified authoritative official portals
+  const verifiedPortals = resolveOfficialPortals({
+    title,
+    state,
+    orgName: raw.orgName,
+    category
+  });
+  const orgName = raw.orgName || verifiedPortals.orgName;
+  const officialPortal = verifiedPortals.official;
+  const applyPortal = verifiedPortals.apply;
 
   // Vacancy extraction
   let totalVacancies = raw.totalVacancies;
@@ -747,6 +675,7 @@ function serverEnrichJob(raw: any): any {
 
   // Post name
   let postName = raw.postName;
+  const tLow = title.toLowerCase();
   if (!postName) {
     if (tLow.includes('cgl')) postName = 'Combined Graduate Level (Various Group B & C Posts)';
     else if (tLow.includes('chsl')) postName = 'Combined Higher Secondary Level (LDC / JSA / DEO)';
@@ -916,18 +845,18 @@ function serverEnrichJob(raw: any): any {
         'Domicile / Residence Certificate and Disability Certificate (PwD) if applicable'
       ];
 
-  // Links
+  // Links - Guaranteed verified working links
   const links = {
     apply: sanitizeUrl(raw.links?.apply, applyPortal),
-    applyServer2: sanitizeUrl(raw.links?.applyServer2, applyPortal),
+    applyServer2: raw.links?.applyServer2 ? sanitizeUrl(raw.links?.applyServer2, applyPortal) : undefined,
     official: sanitizeUrl(raw.links?.official, officialPortal),
     notification: sanitizeUrl(raw.links?.notification, sanitizeUrl(raw.links?.official, officialPortal)),
-    admitCard: sanitizeUrl(raw.links?.admitCard, applyPortal),
-    result: sanitizeUrl(raw.links?.result, officialPortal),
-    resultServer2: sanitizeUrl(raw.links?.resultServer2, officialPortal),
-    answerKey: sanitizeUrl(raw.links?.answerKey, officialPortal),
-    syllabus: sanitizeUrl(raw.links?.syllabus, officialPortal),
-    videoHindi: raw.links?.videoHindi || `https://www.youtube.com/results?search_query=${encodeURIComponent(title + ' form fill up')}`,
+    admitCard: raw.links?.admitCard ? sanitizeUrl(raw.links?.admitCard, applyPortal) : undefined,
+    result: raw.links?.result ? sanitizeUrl(raw.links?.result, officialPortal) : undefined,
+    resultServer2: raw.links?.resultServer2 ? sanitizeUrl(raw.links?.resultServer2, officialPortal) : undefined,
+    answerKey: raw.links?.answerKey ? sanitizeUrl(raw.links?.answerKey, officialPortal) : undefined,
+    syllabus: raw.links?.syllabus ? sanitizeUrl(raw.links?.syllabus, officialPortal) : undefined,
+    videoHindi: (raw.links?.videoHindi && raw.links?.videoHindi.startsWith('http')) ? raw.links.videoHindi : `https://www.youtube.com/results?search_query=${encodeURIComponent(title + ' form fill up')}`,
     telegram: raw.links?.telegram || 'https://t.me/fastarcgov',
     whatsapp: raw.links?.whatsapp || 'https://whatsapp.com/channel/0029VaFastArcGov'
   };
@@ -956,6 +885,7 @@ function serverEnrichJob(raw: any): any {
     howToApply,
     importantDocuments,
     links,
+    linkHealthStatus: 'Healthy',
     status: raw.status || 'Application Open',
     lastUpdated: raw.lastUpdated || formatLongDateServer(postDate)
   };

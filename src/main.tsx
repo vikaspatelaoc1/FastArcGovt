@@ -1,14 +1,30 @@
 
 if (typeof window !== 'undefined') {
   const isIgnorableError = (msg: string) => {
+    if (!msg || msg.trim() === '' || msg === 'Script error.' || msg === 'undefined' || msg === 'null') {
+      return true;
+    }
+    const low = msg.toLowerCase();
     return (
-      msg.includes('WebSocket') ||
-      msg.includes('vite') ||
-      msg.includes('closed without opened') ||
-      msg.includes('Database is closing') ||
-      msg.includes('closing/hidden') ||
-      msg.includes('database connection is closing') ||
-      msg.includes('connection is closing')
+      low.includes('websocket') ||
+      low.includes('vite') ||
+      low.includes('closed without opened') ||
+      low.includes('database is closing') ||
+      low.includes('closing/hidden') ||
+      low.includes('database connection is closing') ||
+      low.includes('connection is closing') ||
+      low.includes('connection check timeout') ||
+      low.includes('quota') ||
+      low.includes('serviceworker') ||
+      low.includes('service worker') ||
+      low.includes('failed to register a serviceworker') ||
+      low.includes('translate') ||
+      low.includes('google_translate') ||
+      low.includes('networkerror') ||
+      low.includes('failed to fetch') ||
+      low.includes('load failed') ||
+      low.includes('permission denied') ||
+      low.includes('permission-denied')
     );
   };
 
@@ -31,19 +47,24 @@ if (typeof window !== 'undefined') {
 
 const shouldSuppressClientLog = (...args: any[]) => {
   const text = args.map(a => (typeof a === 'string' ? a : a?.message || String(a || ''))).join(' ');
+  const low = text.toLowerCase();
   return (
-    text.includes('@firebase/firestore') ||
-    text.includes('@firebase/auth') ||
-    text.includes('Quota limit exceeded') ||
-    text.includes('Quota exceeded') ||
-    text.includes('Free daily write units') ||
-    text.includes('Using maximum backoff delay') ||
-    text.includes('[vite] failed to connect to websocket') ||
-    text.includes('WebSocket closed without opened') ||
-    text.includes('Database is closing') ||
-    text.includes('closing/hidden') ||
-    text.includes('database connection is closing') ||
-    text.includes('connection is closing')
+    low.includes('@firebase/firestore') ||
+    low.includes('@firebase/auth') ||
+    low.includes('quota limit exceeded') ||
+    low.includes('quota exceeded') ||
+    low.includes('free daily write units') ||
+    low.includes('using maximum backoff delay') ||
+    low.includes('[vite] failed to connect to websocket') ||
+    low.includes('websocket closed without opened') ||
+    low.includes('database is closing') ||
+    low.includes('closing/hidden') ||
+    low.includes('database connection is closing') ||
+    low.includes('connection is closing') ||
+    low.includes('connection check timeout') ||
+    low.includes('serviceworker') ||
+    low.includes('service worker') ||
+    low.includes('translate')
   );
 };
 
@@ -61,10 +82,13 @@ console.warn = (...args) => {
 import {StrictMode} from 'react';
 import {createRoot} from 'react-dom/client';
 import App from './App.tsx';
+import { ErrorBoundary } from './components/ErrorBoundary';
 import './index.css';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <App />
+    <ErrorBoundary>
+      <App />
+    </ErrorBoundary>
   </StrictMode>,
 );

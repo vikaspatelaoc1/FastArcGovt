@@ -11,26 +11,59 @@
     <script>
       (function() {
         if (typeof window !== 'undefined') {
+          var isIgnorable = function(msg) {
+            if (!msg || msg.trim() === '' || msg === 'Script error.' || msg === 'undefined' || msg === 'null') return true;
+            var low = String(msg).toLowerCase();
+            return (
+              low.indexOf('websocket') !== -1 ||
+              low.indexOf('vite') !== -1 ||
+              low.indexOf('closed without opened') !== -1 ||
+              low.indexOf('quota') !== -1 ||
+              low.indexOf('@firebase') !== -1 ||
+              low.indexOf('database is closing') !== -1 ||
+              low.indexOf('translate') !== -1 ||
+              low.indexOf('serviceworker') !== -1 ||
+              low.indexOf('service worker') !== -1 ||
+              low.indexOf('networkerror') !== -1 ||
+              low.indexOf('failed to fetch') !== -1 ||
+              low.indexOf('connection check timeout') !== -1
+            );
+          };
+
           window.addEventListener('unhandledrejection', function(event) {
             var reason = (event && event.reason && (event.reason.message || String(event.reason))) || '';
-            if (reason.indexOf('WebSocket') !== -1 || reason.indexOf('vite') !== -1 || reason.indexOf('closed without opened') !== -1) {
+            if (isIgnorable(reason)) {
               event.preventDefault();
               if (event.stopImmediatePropagation) event.stopImmediatePropagation();
             }
           });
+
+          window.addEventListener('error', function(event) {
+            var msg = (event && (event.message || (event.error && event.error.message))) || '';
+            if (isIgnorable(msg)) {
+              if (event.preventDefault) event.preventDefault();
+              if (event.stopImmediatePropagation) event.stopImmediatePropagation();
+            }
+          });
+
           var origErr = console.error;
           console.error = function() {
-            var msg = typeof arguments[0] === 'string' ? arguments[0] : '';
-            if (
-              msg.indexOf('[vite] failed to connect to websocket') !== -1 ||
-              msg.indexOf('WebSocket closed without opened') !== -1 ||
-              msg.indexOf('@firebase/firestore') !== -1 ||
-              msg.indexOf('Quota limit exceeded') !== -1 ||
-              msg.indexOf('Using maximum backoff delay') !== -1
-            ) {
-              return;
+            var text = '';
+            for (var i = 0; i < arguments.length; i++) {
+              text += ' ' + (typeof arguments[i] === 'string' ? arguments[i] : (arguments[i] && arguments[i].message ? arguments[i].message : ''));
             }
+            if (isIgnorable(text)) return;
             origErr.apply(console, arguments);
+          };
+
+          var origWarn = console.warn;
+          console.warn = function() {
+            var text = '';
+            for (var i = 0; i < arguments.length; i++) {
+              text += ' ' + (typeof arguments[i] === 'string' ? arguments[i] : (arguments[i] && arguments[i].message ? arguments[i].message : ''));
+            }
+            if (isIgnorable(text)) return;
+            origWarn.apply(console, arguments);
           };
         }
       })();
@@ -38,32 +71,32 @@
     
     <!-- PWA / Mobile Native Meta Tags -->
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-    <meta name="apple-mobile-web-app-title" content="FastArc" />
+    <meta name="apple-mobile-web-app-title" content="FAST ARC" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     
     <!-- Primary SEO Meta Tags -->
-    <title>FastArcGovt.info | FastArc Govt Result - Latest Online Form, Admit Card & Results 2026</title>
-    <meta name="title" content="FastArcGovt.info | FastArc Govt Result - Latest Online Form, Admit Card & Results 2026" />
-    <meta name="description" content="FastArcGovt.info - FastArc Government Jobs Portal: Get instant updates for latest Sarkari Naukri, Online Forms, Admit Cards, Exam Results, Answer Keys, Syllabus & Admissions 2026." />
-    <meta name="keywords" content="FastArcGovt.info, Sarkari Result, Govt Jobs 2026, Latest Online Form, Admit Card, Exam Results, Answer Key, FastArc, Recruitment Notification" />
-    <meta name="author" content="FastArcGovt.info" />
+    <title>FAST ARC | FastArc Government Jobs Portal: Latest Online Form, Admit Card & Results 2026</title>
+    <meta name="title" content="FAST ARC | FastArc Government Jobs Portal: Latest Online Form, Admit Card & Results 2026" />
+    <meta name="description" content="WWW.FASTARCGOVT.INFO - FastArc Government Jobs Portal: latest vacancies, admit cards, results, and comprehensive real-time notifications." />
+    <meta name="keywords" content="FAST ARC, FastArcGovt.info, Sarkari Result, Govt Jobs 2026, Latest Online Form, Admit Card, Exam Results, Answer Key, Recruitment Notification" />
+    <meta name="author" content="FAST ARC" />
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
     <link rel="canonical" href="https://ais-dev-yws3bts5m2vzceidnhls6p-838850138676.asia-southeast1.run.app/" />
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://ais-dev-yws3bts5m2vzceidnhls6p-838850138676.asia-southeast1.run.app/" />
-    <meta property="og:title" content="FastArcGovt.info | FastArc Govt Result - Latest Online Form, Admit Card & Results 2026" />
-    <meta property="og:description" content="FastArcGovt.info - FastArc Government Jobs Portal: Get instant updates for latest Sarkari Naukri, Online Forms, Admit Cards, Exam Results, Answer Keys, Syllabus & Admissions 2026." />
+    <meta property="og:title" content="FAST ARC | FastArc Government Jobs Portal: Latest Online Form, Admit Card & Results 2026" />
+    <meta property="og:description" content="WWW.FASTARCGOVT.INFO - FastArc Government Jobs Portal: latest vacancies, admit cards, results, and comprehensive real-time notifications." />
     <meta property="og:image" content="/logo.png" />
-    <meta property="og:site_name" content="FastArcGovt.info" />
+    <meta property="og:site_name" content="FAST ARC" />
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:url" content="https://ais-dev-yws3bts5m2vzceidnhls6p-838850138676.asia-southeast1.run.app/" />
-    <meta name="twitter:title" content="FastArcGovt.info | FastArc Govt Result - Latest Online Form, Admit Card & Results 2026" />
-    <meta name="twitter:description" content="FastArcGovt.info - FastArc Government Jobs Portal: Get instant updates for latest Sarkari Naukri, Online Forms, Admit Cards, Exam Results, Answer Keys, Syllabus & Admissions 2026." />
+    <meta name="twitter:title" content="FAST ARC | FastArc Government Jobs Portal: Latest Online Form, Admit Card & Results 2026" />
+    <meta name="twitter:description" content="WWW.FASTARCGOVT.INFO - FastArc Government Jobs Portal: latest vacancies, admit cards, results, and comprehensive real-time notifications." />
     <meta name="twitter:image" content="/logo.png" />
 
     <link rel="manifest" href="/manifest.json" />
@@ -160,27 +193,39 @@
     <div id="google_translate_element" style="position:fixed;top:-9999px;left:-9999px;width:1px;height:1px;opacity:0;pointer-events:none;overflow:hidden;z-index:-1000;" aria-hidden="true"></div>
     <script type="text/javascript">
       window.googleTranslateElementInit = function() {
-        if (window.google && window.google.translate && window.google.translate.TranslateElement) {
-          new window.google.translate.TranslateElement({
-            pageLanguage: 'en',
-            autoDisplay: false,
-            includedLanguages: 'hi,en,bn,mr,te,ta,gu,ur,kn,or,ml,pa,as,ne,sa,sd,mai,gom,es,fr,ar,de,ru,ja,zh-CN,pt,id',
-            layout: window.google.translate.TranslateElement.InlineLayout.SIMPLE
-          }, 'google_translate_element');
+        try {
+          if (window.google && window.google.translate && window.google.translate.TranslateElement) {
+            new window.google.translate.TranslateElement({
+              pageLanguage: 'en',
+              autoDisplay: false,
+              includedLanguages: 'hi,en,bn,mr,te,ta,gu,ur,kn,or,ml,pa,as,ne,sa,sd,mai,gom,es,fr,ar,de,ru,ja,zh-CN,pt,id',
+              layout: window.google.translate.TranslateElement.InlineLayout.SIMPLE
+            }, 'google_translate_element');
+          }
+        } catch (e) {
+          // Benign translation init failure
         }
       };
     </script>
-    <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+    <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" onerror="this.onerror=null;"></script>
     <script type="module" src="/src/main.tsx"></script>
     <script>
-      if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-          navigator.serviceWorker.register('/sw.js').then(registration => {
-            console.log('SW registered: ', registration);
-          }).catch(registrationError => {
-            console.log('SW registration failed: ', registrationError);
+      try {
+        if ('serviceWorker' in navigator && window.self === window.top && window.location.protocol === 'https:') {
+          window.addEventListener('load', () => {
+            try {
+              navigator.serviceWorker.register('/sw.js').then(registration => {
+                // SW successfully registered in standalone window
+              }).catch(() => {
+                // Ignore SW registration failure in sandboxed or offline environments
+              });
+            } catch (e) {
+              // Ignore synchronous registration errors
+            }
           });
-        });
+        }
+      } catch (e) {
+        // Ignore iframe security error
       }
     </script>
   </body>

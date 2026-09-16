@@ -76,7 +76,7 @@ export const WebsiteControlTab: React.FC<WebsiteControlTabProps> = ({
   const [config, setConfig] = useState<WebsiteControlConfig>(loadWebsiteControlConfig());
   const [savedConfig, setSavedConfig] = useState<WebsiteControlConfig>(loadWebsiteControlConfig());
   const [activeSubTab, setActiveSubTab] = useState<
-    'theme' | 'typography' | 'header' | 'footer' | 'sections' | 'layout' | 'media' | 'content' | 'preview' | 'versions'
+    'theme' | 'typography' | 'header' | 'footer' | 'sections' | 'layout' | 'media' | 'content' | 'seo' | 'preview' | 'versions'
   >('theme');
   
   const [previewDevice, setPreviewDevice] = useState<'desktop' | 'tablet' | 'mobile'>('desktop');

@@ -7891,9 +7891,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://central.police.gov.in",
-      "official": "https://central.police.gov.in",
-      "notification": "https://central.police.gov.in"
+      "apply": "https://gov.in",
+      "official": "https://gov.in",
+      "notification": "https://gov.in"
     }
   },
   {
@@ -7915,10 +7915,10 @@ export const fullCatalogJobs: JobAlert[] = [
       "last": "31-10-2026"
     },
     "links": {
-      "apply": "https://central.police.gov.in",
-      "official": "https://central.police.gov.in",
-      "notification": "https://central.police.gov.in",
-      "admitCard": "https://central.police.gov.in"
+      "apply": "https://gov.in",
+      "official": "https://gov.in",
+      "notification": "https://gov.in",
+      "admitCard": "https://gov.in"
     }
   },
   {
@@ -7942,9 +7942,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://central.psc.gov.in",
-      "official": "https://central.psc.gov.in",
-      "notification": "https://central.psc.gov.in"
+      "apply": "https://gov.in",
+      "official": "https://gov.in",
+      "notification": "https://gov.in"
     }
   },
   {
@@ -7966,9 +7966,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "last": "31-10-2026"
     },
     "links": {
-      "apply": "https://central.psc.gov.in",
-      "official": "https://central.psc.gov.in",
-      "notification": "https://central.psc.gov.in"
+      "apply": "https://gov.in",
+      "official": "https://gov.in",
+      "notification": "https://gov.in"
     }
   },
   {
@@ -7992,9 +7992,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://central.ssb.gov.in",
-      "official": "https://central.ssb.gov.in",
-      "notification": "https://central.ssb.gov.in"
+      "apply": "https://gov.in",
+      "official": "https://gov.in",
+      "notification": "https://gov.in"
     }
   },
   {
@@ -8016,9 +8016,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "last": "31-10-2026"
     },
     "links": {
-      "apply": "https://central.ssb.gov.in",
-      "official": "https://central.ssb.gov.in",
-      "notification": "https://central.ssb.gov.in"
+      "apply": "https://gov.in",
+      "official": "https://gov.in",
+      "notification": "https://gov.in"
     }
   },
   {
@@ -8042,9 +8042,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://central.highcourt.gov.in",
-      "official": "https://central.highcourt.gov.in",
-      "notification": "https://central.highcourt.gov.in"
+      "apply": "https://gov.in",
+      "official": "https://gov.in",
+      "notification": "https://gov.in"
     }
   },
   {
@@ -8066,10 +8066,10 @@ export const fullCatalogJobs: JobAlert[] = [
       "last": "31-10-2026"
     },
     "links": {
-      "apply": "https://central.highcourt.gov.in",
-      "official": "https://central.highcourt.gov.in",
-      "notification": "https://central.highcourt.gov.in",
-      "admitCard": "https://central.highcourt.gov.in"
+      "apply": "https://gov.in",
+      "official": "https://gov.in",
+      "notification": "https://gov.in",
+      "admitCard": "https://gov.in"
     }
   },
   {
@@ -8092,10 +8092,10 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://central.educationboard.gov.in",
-      "official": "https://central.educationboard.gov.in",
-      "notification": "https://central.educationboard.gov.in",
-      "result": "https://central.educationboard.gov.in"
+      "apply": "https://gov.in",
+      "official": "https://gov.in",
+      "notification": "https://gov.in",
+      "result": "https://gov.in"
     }
   },
   {
@@ -8117,9 +8117,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "last": "31-10-2026"
     },
     "links": {
-      "apply": "https://central.educationboard.gov.in",
-      "official": "https://central.educationboard.gov.in",
-      "notification": "https://central.educationboard.gov.in"
+      "apply": "https://gov.in",
+      "official": "https://gov.in",
+      "notification": "https://gov.in"
     }
   },
   {
@@ -8143,9 +8143,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://central.healthdept.gov.in",
-      "official": "https://central.healthdept.gov.in",
-      "notification": "https://central.healthdept.gov.in"
+      "apply": "https://gov.in",
+      "official": "https://gov.in",
+      "notification": "https://gov.in"
     }
   },
   {
@@ -8167,9 +8167,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "last": "31-10-2026"
     },
     "links": {
-      "apply": "https://central.healthdept.gov.in",
-      "official": "https://central.healthdept.gov.in",
-      "notification": "https://central.healthdept.gov.in"
+      "apply": "https://gov.in",
+      "official": "https://gov.in",
+      "notification": "https://gov.in"
     }
   },
   {
@@ -8193,9 +8193,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://central.transportdept.gov.in",
-      "official": "https://central.transportdept.gov.in",
-      "notification": "https://central.transportdept.gov.in"
+      "apply": "https://gov.in",
+      "official": "https://gov.in",
+      "notification": "https://gov.in"
     }
   },
   {
@@ -8217,10 +8217,10 @@ export const fullCatalogJobs: JobAlert[] = [
       "last": "31-10-2026"
     },
     "links": {
-      "apply": "https://central.transportdept.gov.in",
-      "official": "https://central.transportdept.gov.in",
-      "notification": "https://central.transportdept.gov.in",
-      "admitCard": "https://central.transportdept.gov.in"
+      "apply": "https://gov.in",
+      "official": "https://gov.in",
+      "notification": "https://gov.in",
+      "admitCard": "https://gov.in"
     }
   },
   {
@@ -8244,9 +8244,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://central.electricityboard.gov.in",
-      "official": "https://central.electricityboard.gov.in",
-      "notification": "https://central.electricityboard.gov.in"
+      "apply": "https://gov.in",
+      "official": "https://gov.in",
+      "notification": "https://gov.in"
     }
   },
   {
@@ -8268,9 +8268,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "last": "31-10-2026"
     },
     "links": {
-      "apply": "https://central.electricityboard.gov.in",
-      "official": "https://central.electricityboard.gov.in",
-      "notification": "https://central.electricityboard.gov.in"
+      "apply": "https://gov.in",
+      "official": "https://gov.in",
+      "notification": "https://gov.in"
     }
   },
   {
@@ -8294,9 +8294,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://central.metrorail.gov.in",
-      "official": "https://central.metrorail.gov.in",
-      "notification": "https://central.metrorail.gov.in"
+      "apply": "https://gov.in",
+      "official": "https://gov.in",
+      "notification": "https://gov.in"
     }
   },
   {
@@ -8318,9 +8318,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "last": "31-10-2026"
     },
     "links": {
-      "apply": "https://central.metrorail.gov.in",
-      "official": "https://central.metrorail.gov.in",
-      "notification": "https://central.metrorail.gov.in"
+      "apply": "https://gov.in",
+      "official": "https://gov.in",
+      "notification": "https://gov.in"
     }
   },
   {
@@ -8343,9 +8343,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://central.university.gov.in",
-      "official": "https://central.university.gov.in",
-      "notification": "https://central.university.gov.in"
+      "apply": "https://gov.in",
+      "official": "https://gov.in",
+      "notification": "https://gov.in"
     }
   },
   {
@@ -8367,10 +8367,10 @@ export const fullCatalogJobs: JobAlert[] = [
       "last": "31-10-2026"
     },
     "links": {
-      "apply": "https://central.university.gov.in",
-      "official": "https://central.university.gov.in",
-      "notification": "https://central.university.gov.in",
-      "admitCard": "https://central.university.gov.in"
+      "apply": "https://gov.in",
+      "official": "https://gov.in",
+      "notification": "https://gov.in",
+      "admitCard": "https://gov.in"
     }
   },
   {
@@ -8394,9 +8394,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://central.nagarnigam.gov.in",
-      "official": "https://central.nagarnigam.gov.in",
-      "notification": "https://central.nagarnigam.gov.in"
+      "apply": "https://gov.in",
+      "official": "https://gov.in",
+      "notification": "https://gov.in"
     }
   },
   {
@@ -8418,9 +8418,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "last": "31-10-2026"
     },
     "links": {
-      "apply": "https://central.nagarnigam.gov.in",
-      "official": "https://central.nagarnigam.gov.in",
-      "notification": "https://central.nagarnigam.gov.in"
+      "apply": "https://gov.in",
+      "official": "https://gov.in",
+      "notification": "https://gov.in"
     }
   },
   {
@@ -8444,9 +8444,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://central.panchayat.gov.in",
-      "official": "https://central.panchayat.gov.in",
-      "notification": "https://central.panchayat.gov.in"
+      "apply": "https://gov.in",
+      "official": "https://gov.in",
+      "notification": "https://gov.in"
     }
   },
   {
@@ -8468,9 +8468,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "last": "31-10-2026"
     },
     "links": {
-      "apply": "https://central.panchayat.gov.in",
-      "official": "https://central.panchayat.gov.in",
-      "notification": "https://central.panchayat.gov.in"
+      "apply": "https://gov.in",
+      "official": "https://gov.in",
+      "notification": "https://gov.in"
     }
   },
   {
@@ -8494,9 +8494,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://central.forestdept.gov.in",
-      "official": "https://central.forestdept.gov.in",
-      "notification": "https://central.forestdept.gov.in"
+      "apply": "https://gov.in",
+      "official": "https://gov.in",
+      "notification": "https://gov.in"
     }
   },
   {
@@ -8520,9 +8520,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://central.pwd.gov.in",
-      "official": "https://central.pwd.gov.in",
-      "notification": "https://central.pwd.gov.in"
+      "apply": "https://gov.in",
+      "official": "https://gov.in",
+      "notification": "https://gov.in"
     }
   },
   {
@@ -8545,9 +8545,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://central.socialwelfare.gov.in",
-      "official": "https://central.socialwelfare.gov.in",
-      "notification": "https://central.socialwelfare.gov.in"
+      "apply": "https://gov.in",
+      "official": "https://gov.in",
+      "notification": "https://gov.in"
     }
   },
   {
@@ -8571,9 +8571,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://central.apexbank.gov.in",
-      "official": "https://central.apexbank.gov.in",
-      "notification": "https://central.apexbank.gov.in"
+      "apply": "https://gov.in",
+      "official": "https://gov.in",
+      "notification": "https://gov.in"
     }
   },
   {
@@ -8596,9 +8596,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://central.technicalboard.gov.in",
-      "official": "https://central.technicalboard.gov.in",
-      "notification": "https://central.technicalboard.gov.in"
+      "apply": "https://gov.in",
+      "official": "https://gov.in",
+      "notification": "https://gov.in"
     }
   },
   {
@@ -8621,10 +8621,10 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Active / Ongoing"
     },
     "links": {
-      "apply": "https://central.tetexam.gov.in",
-      "official": "https://central.tetexam.gov.in",
-      "notification": "https://central.tetexam.gov.in",
-      "admitCard": "https://central.tetexam.gov.in"
+      "apply": "https://gov.in",
+      "official": "https://gov.in",
+      "notification": "https://gov.in",
+      "admitCard": "https://gov.in"
     }
   },
   {
@@ -8647,10 +8647,10 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://central.entranceexam.gov.in",
-      "official": "https://central.entranceexam.gov.in",
-      "notification": "https://central.entranceexam.gov.in",
-      "answerKey": "https://central.entranceexam.gov.in"
+      "apply": "https://gov.in",
+      "official": "https://gov.in",
+      "notification": "https://gov.in",
+      "answerKey": "https://gov.in"
     }
   },
   {
@@ -8673,9 +8673,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://central.revenuecouncil.gov.in",
-      "official": "https://central.revenuecouncil.gov.in",
-      "notification": "https://central.revenuecouncil.gov.in"
+      "apply": "https://gov.in",
+      "official": "https://gov.in",
+      "notification": "https://gov.in"
     }
   },
   {
@@ -8699,9 +8699,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://up.police.up.gov.in",
-      "official": "https://up.police.up.gov.in",
-      "notification": "https://up.police.up.gov.in"
+      "apply": "https://uppbpb.gov.in",
+      "official": "https://uppbpb.gov.in",
+      "notification": "https://uppbpb.gov.in"
     }
   },
   {
@@ -8723,9 +8723,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "last": "31-10-2026"
     },
     "links": {
-      "apply": "https://up.police.up.gov.in",
-      "official": "https://up.police.up.gov.in",
-      "notification": "https://up.police.up.gov.in"
+      "apply": "https://uppbpb.gov.in",
+      "official": "https://uppbpb.gov.in",
+      "notification": "https://uppbpb.gov.in"
     }
   },
   {
@@ -8749,9 +8749,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://up.psc.up.gov.in",
-      "official": "https://up.psc.up.gov.in",
-      "notification": "https://up.psc.up.gov.in"
+      "apply": "https://uppsc.up.nic.in",
+      "official": "https://uppsc.up.nic.in",
+      "notification": "https://uppsc.up.nic.in"
     }
   },
   {
@@ -8773,9 +8773,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "last": "31-10-2026"
     },
     "links": {
-      "apply": "https://up.psc.up.gov.in",
-      "official": "https://up.psc.up.gov.in",
-      "notification": "https://up.psc.up.gov.in"
+      "apply": "https://uppsc.up.nic.in",
+      "official": "https://uppsc.up.nic.in",
+      "notification": "https://uppsc.up.nic.in"
     }
   },
   {
@@ -8799,9 +8799,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://up.ssb.up.gov.in",
-      "official": "https://up.ssb.up.gov.in",
-      "notification": "https://up.ssb.up.gov.in"
+      "apply": "https://up.gov.in",
+      "official": "https://up.gov.in",
+      "notification": "https://up.gov.in"
     }
   },
   {
@@ -8823,10 +8823,10 @@ export const fullCatalogJobs: JobAlert[] = [
       "last": "31-10-2026"
     },
     "links": {
-      "apply": "https://up.ssb.up.gov.in",
-      "official": "https://up.ssb.up.gov.in",
-      "notification": "https://up.ssb.up.gov.in",
-      "admitCard": "https://up.ssb.up.gov.in"
+      "apply": "https://up.gov.in",
+      "official": "https://up.gov.in",
+      "notification": "https://up.gov.in",
+      "admitCard": "https://up.gov.in"
     }
   },
   {
@@ -8850,9 +8850,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://up.highcourt.up.gov.in",
-      "official": "https://up.highcourt.up.gov.in",
-      "notification": "https://up.highcourt.up.gov.in"
+      "apply": "https://allahabadhighcourt.in",
+      "official": "https://allahabadhighcourt.in",
+      "notification": "https://allahabadhighcourt.in"
     }
   },
   {
@@ -8874,9 +8874,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "last": "31-10-2026"
     },
     "links": {
-      "apply": "https://up.highcourt.up.gov.in",
-      "official": "https://up.highcourt.up.gov.in",
-      "notification": "https://up.highcourt.up.gov.in"
+      "apply": "https://allahabadhighcourt.in",
+      "official": "https://allahabadhighcourt.in",
+      "notification": "https://allahabadhighcourt.in"
     }
   },
   {
@@ -8899,10 +8899,10 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://up.educationboard.up.gov.in",
-      "official": "https://up.educationboard.up.gov.in",
-      "notification": "https://up.educationboard.up.gov.in",
-      "result": "https://up.educationboard.up.gov.in"
+      "apply": "https://up.gov.in",
+      "official": "https://up.gov.in",
+      "notification": "https://up.gov.in",
+      "result": "https://up.gov.in"
     }
   },
   {
@@ -8924,9 +8924,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "last": "31-10-2026"
     },
     "links": {
-      "apply": "https://up.educationboard.up.gov.in",
-      "official": "https://up.educationboard.up.gov.in",
-      "notification": "https://up.educationboard.up.gov.in"
+      "apply": "https://up.gov.in",
+      "official": "https://up.gov.in",
+      "notification": "https://up.gov.in"
     }
   },
   {
@@ -8950,9 +8950,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://up.healthdept.up.gov.in",
-      "official": "https://up.healthdept.up.gov.in",
-      "notification": "https://up.healthdept.up.gov.in"
+      "apply": "https://up.gov.in",
+      "official": "https://up.gov.in",
+      "notification": "https://up.gov.in"
     }
   },
   {
@@ -8974,10 +8974,10 @@ export const fullCatalogJobs: JobAlert[] = [
       "last": "31-10-2026"
     },
     "links": {
-      "apply": "https://up.healthdept.up.gov.in",
-      "official": "https://up.healthdept.up.gov.in",
-      "notification": "https://up.healthdept.up.gov.in",
-      "admitCard": "https://up.healthdept.up.gov.in"
+      "apply": "https://up.gov.in",
+      "official": "https://up.gov.in",
+      "notification": "https://up.gov.in",
+      "admitCard": "https://up.gov.in"
     }
   },
   {
@@ -9001,9 +9001,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://up.transportdept.up.gov.in",
-      "official": "https://up.transportdept.up.gov.in",
-      "notification": "https://up.transportdept.up.gov.in"
+      "apply": "https://up.gov.in",
+      "official": "https://up.gov.in",
+      "notification": "https://up.gov.in"
     }
   },
   {
@@ -9025,9 +9025,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "last": "31-10-2026"
     },
     "links": {
-      "apply": "https://up.transportdept.up.gov.in",
-      "official": "https://up.transportdept.up.gov.in",
-      "notification": "https://up.transportdept.up.gov.in"
+      "apply": "https://up.gov.in",
+      "official": "https://up.gov.in",
+      "notification": "https://up.gov.in"
     }
   },
   {
@@ -9051,9 +9051,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://up.electricityboard.up.gov.in",
-      "official": "https://up.electricityboard.up.gov.in",
-      "notification": "https://up.electricityboard.up.gov.in"
+      "apply": "https://up.gov.in",
+      "official": "https://up.gov.in",
+      "notification": "https://up.gov.in"
     }
   },
   {
@@ -9075,9 +9075,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "last": "31-10-2026"
     },
     "links": {
-      "apply": "https://up.electricityboard.up.gov.in",
-      "official": "https://up.electricityboard.up.gov.in",
-      "notification": "https://up.electricityboard.up.gov.in"
+      "apply": "https://up.gov.in",
+      "official": "https://up.gov.in",
+      "notification": "https://up.gov.in"
     }
   },
   {
@@ -9101,9 +9101,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://up.metrorail.up.gov.in",
-      "official": "https://up.metrorail.up.gov.in",
-      "notification": "https://up.metrorail.up.gov.in"
+      "apply": "https://up.gov.in",
+      "official": "https://up.gov.in",
+      "notification": "https://up.gov.in"
     }
   },
   {
@@ -9125,10 +9125,10 @@ export const fullCatalogJobs: JobAlert[] = [
       "last": "31-10-2026"
     },
     "links": {
-      "apply": "https://up.metrorail.up.gov.in",
-      "official": "https://up.metrorail.up.gov.in",
-      "notification": "https://up.metrorail.up.gov.in",
-      "admitCard": "https://up.metrorail.up.gov.in"
+      "apply": "https://up.gov.in",
+      "official": "https://up.gov.in",
+      "notification": "https://up.gov.in",
+      "admitCard": "https://up.gov.in"
     }
   },
   {
@@ -9151,9 +9151,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://up.university.up.gov.in",
-      "official": "https://up.university.up.gov.in",
-      "notification": "https://up.university.up.gov.in"
+      "apply": "https://up.gov.in",
+      "official": "https://up.gov.in",
+      "notification": "https://up.gov.in"
     }
   },
   {
@@ -9175,9 +9175,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "last": "31-10-2026"
     },
     "links": {
-      "apply": "https://up.university.up.gov.in",
-      "official": "https://up.university.up.gov.in",
-      "notification": "https://up.university.up.gov.in"
+      "apply": "https://up.gov.in",
+      "official": "https://up.gov.in",
+      "notification": "https://up.gov.in"
     }
   },
   {
@@ -9201,9 +9201,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://up.nagarnigam.up.gov.in",
-      "official": "https://up.nagarnigam.up.gov.in",
-      "notification": "https://up.nagarnigam.up.gov.in"
+      "apply": "https://up.gov.in",
+      "official": "https://up.gov.in",
+      "notification": "https://up.gov.in"
     }
   },
   {
@@ -9225,9 +9225,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "last": "31-10-2026"
     },
     "links": {
-      "apply": "https://up.nagarnigam.up.gov.in",
-      "official": "https://up.nagarnigam.up.gov.in",
-      "notification": "https://up.nagarnigam.up.gov.in"
+      "apply": "https://up.gov.in",
+      "official": "https://up.gov.in",
+      "notification": "https://up.gov.in"
     }
   },
   {
@@ -9251,9 +9251,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://up.panchayat.up.gov.in",
-      "official": "https://up.panchayat.up.gov.in",
-      "notification": "https://up.panchayat.up.gov.in"
+      "apply": "https://up.gov.in",
+      "official": "https://up.gov.in",
+      "notification": "https://up.gov.in"
     }
   },
   {
@@ -9275,10 +9275,10 @@ export const fullCatalogJobs: JobAlert[] = [
       "last": "31-10-2026"
     },
     "links": {
-      "apply": "https://up.panchayat.up.gov.in",
-      "official": "https://up.panchayat.up.gov.in",
-      "notification": "https://up.panchayat.up.gov.in",
-      "admitCard": "https://up.panchayat.up.gov.in"
+      "apply": "https://up.gov.in",
+      "official": "https://up.gov.in",
+      "notification": "https://up.gov.in",
+      "admitCard": "https://up.gov.in"
     }
   },
   {
@@ -9302,9 +9302,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://up.forestdept.up.gov.in",
-      "official": "https://up.forestdept.up.gov.in",
-      "notification": "https://up.forestdept.up.gov.in"
+      "apply": "https://up.gov.in",
+      "official": "https://up.gov.in",
+      "notification": "https://up.gov.in"
     }
   },
   {
@@ -9328,9 +9328,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://up.pwd.up.gov.in",
-      "official": "https://up.pwd.up.gov.in",
-      "notification": "https://up.pwd.up.gov.in"
+      "apply": "https://up.gov.in",
+      "official": "https://up.gov.in",
+      "notification": "https://up.gov.in"
     }
   },
   {
@@ -9353,9 +9353,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://up.socialwelfare.up.gov.in",
-      "official": "https://up.socialwelfare.up.gov.in",
-      "notification": "https://up.socialwelfare.up.gov.in"
+      "apply": "https://up.gov.in",
+      "official": "https://up.gov.in",
+      "notification": "https://up.gov.in"
     }
   },
   {
@@ -9379,9 +9379,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://up.apexbank.up.gov.in",
-      "official": "https://up.apexbank.up.gov.in",
-      "notification": "https://up.apexbank.up.gov.in"
+      "apply": "https://up.gov.in",
+      "official": "https://up.gov.in",
+      "notification": "https://up.gov.in"
     }
   },
   {
@@ -9404,9 +9404,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://up.technicalboard.up.gov.in",
-      "official": "https://up.technicalboard.up.gov.in",
-      "notification": "https://up.technicalboard.up.gov.in"
+      "apply": "https://up.gov.in",
+      "official": "https://up.gov.in",
+      "notification": "https://up.gov.in"
     }
   },
   {
@@ -9429,10 +9429,10 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Active / Ongoing"
     },
     "links": {
-      "apply": "https://up.tetexam.up.gov.in",
-      "official": "https://up.tetexam.up.gov.in",
-      "notification": "https://up.tetexam.up.gov.in",
-      "admitCard": "https://up.tetexam.up.gov.in"
+      "apply": "https://up.gov.in",
+      "official": "https://up.gov.in",
+      "notification": "https://up.gov.in",
+      "admitCard": "https://up.gov.in"
     }
   },
   {
@@ -9455,10 +9455,10 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://up.entranceexam.up.gov.in",
-      "official": "https://up.entranceexam.up.gov.in",
-      "notification": "https://up.entranceexam.up.gov.in",
-      "answerKey": "https://up.entranceexam.up.gov.in"
+      "apply": "https://up.gov.in",
+      "official": "https://up.gov.in",
+      "notification": "https://up.gov.in",
+      "answerKey": "https://up.gov.in"
     }
   },
   {
@@ -9481,9 +9481,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://up.revenuecouncil.up.gov.in",
-      "official": "https://up.revenuecouncil.up.gov.in",
-      "notification": "https://up.revenuecouncil.up.gov.in"
+      "apply": "https://up.gov.in",
+      "official": "https://up.gov.in",
+      "notification": "https://up.gov.in"
     }
   },
   {
@@ -9507,9 +9507,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://bihar.police.bihar.gov.in",
-      "official": "https://bihar.police.bihar.gov.in",
-      "notification": "https://bihar.police.bihar.gov.in"
+      "apply": "https://csbc.bih.nic.in",
+      "official": "https://csbc.bih.nic.in",
+      "notification": "https://csbc.bih.nic.in"
     }
   },
   {
@@ -9531,9 +9531,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "last": "31-10-2026"
     },
     "links": {
-      "apply": "https://bihar.police.bihar.gov.in",
-      "official": "https://bihar.police.bihar.gov.in",
-      "notification": "https://bihar.police.bihar.gov.in"
+      "apply": "https://csbc.bih.nic.in",
+      "official": "https://csbc.bih.nic.in",
+      "notification": "https://csbc.bih.nic.in"
     }
   },
   {
@@ -9557,9 +9557,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://bihar.psc.bihar.gov.in",
-      "official": "https://bihar.psc.bihar.gov.in",
-      "notification": "https://bihar.psc.bihar.gov.in"
+      "apply": "https://onlinebpsc.bihar.gov.in",
+      "official": "https://bpsc.bih.nic.in",
+      "notification": "https://bpsc.bih.nic.in"
     }
   },
   {
@@ -9581,10 +9581,10 @@ export const fullCatalogJobs: JobAlert[] = [
       "last": "31-10-2026"
     },
     "links": {
-      "apply": "https://bihar.psc.bihar.gov.in",
-      "official": "https://bihar.psc.bihar.gov.in",
-      "notification": "https://bihar.psc.bihar.gov.in",
-      "admitCard": "https://bihar.psc.bihar.gov.in"
+      "apply": "https://onlinebpsc.bihar.gov.in",
+      "official": "https://bpsc.bih.nic.in",
+      "notification": "https://bpsc.bih.nic.in",
+      "admitCard": "https://onlinebpsc.bihar.gov.in"
     }
   },
   {
@@ -9608,9 +9608,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://bihar.ssb.bihar.gov.in",
-      "official": "https://bihar.ssb.bihar.gov.in",
-      "notification": "https://bihar.ssb.bihar.gov.in"
+      "apply": "https://bihar.gov.in",
+      "official": "https://bihar.gov.in",
+      "notification": "https://bihar.gov.in"
     }
   },
   {
@@ -9632,9 +9632,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "last": "31-10-2026"
     },
     "links": {
-      "apply": "https://bihar.ssb.bihar.gov.in",
-      "official": "https://bihar.ssb.bihar.gov.in",
-      "notification": "https://bihar.ssb.bihar.gov.in"
+      "apply": "https://bihar.gov.in",
+      "official": "https://bihar.gov.in",
+      "notification": "https://bihar.gov.in"
     }
   },
   {
@@ -9658,9 +9658,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://bihar.highcourt.bihar.gov.in",
-      "official": "https://bihar.highcourt.bihar.gov.in",
-      "notification": "https://bihar.highcourt.bihar.gov.in"
+      "apply": "https://patnahighcourt.gov.in",
+      "official": "https://patnahighcourt.gov.in",
+      "notification": "https://patnahighcourt.gov.in"
     }
   },
   {
@@ -9682,9 +9682,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "last": "31-10-2026"
     },
     "links": {
-      "apply": "https://bihar.highcourt.bihar.gov.in",
-      "official": "https://bihar.highcourt.bihar.gov.in",
-      "notification": "https://bihar.highcourt.bihar.gov.in"
+      "apply": "https://patnahighcourt.gov.in",
+      "official": "https://patnahighcourt.gov.in",
+      "notification": "https://patnahighcourt.gov.in"
     }
   },
   {
@@ -9707,10 +9707,10 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://bihar.educationboard.bihar.gov.in",
-      "official": "https://bihar.educationboard.bihar.gov.in",
-      "notification": "https://bihar.educationboard.bihar.gov.in",
-      "result": "https://bihar.educationboard.bihar.gov.in"
+      "apply": "https://bihar.gov.in",
+      "official": "https://bihar.gov.in",
+      "notification": "https://bihar.gov.in",
+      "result": "https://bihar.gov.in"
     }
   },
   {
@@ -9732,10 +9732,10 @@ export const fullCatalogJobs: JobAlert[] = [
       "last": "31-10-2026"
     },
     "links": {
-      "apply": "https://bihar.educationboard.bihar.gov.in",
-      "official": "https://bihar.educationboard.bihar.gov.in",
-      "notification": "https://bihar.educationboard.bihar.gov.in",
-      "admitCard": "https://bihar.educationboard.bihar.gov.in"
+      "apply": "https://bihar.gov.in",
+      "official": "https://bihar.gov.in",
+      "notification": "https://bihar.gov.in",
+      "admitCard": "https://bihar.gov.in"
     }
   },
   {
@@ -9759,9 +9759,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://bihar.healthdept.bihar.gov.in",
-      "official": "https://bihar.healthdept.bihar.gov.in",
-      "notification": "https://bihar.healthdept.bihar.gov.in"
+      "apply": "https://bihar.gov.in",
+      "official": "https://bihar.gov.in",
+      "notification": "https://bihar.gov.in"
     }
   },
   {
@@ -9783,9 +9783,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "last": "31-10-2026"
     },
     "links": {
-      "apply": "https://bihar.healthdept.bihar.gov.in",
-      "official": "https://bihar.healthdept.bihar.gov.in",
-      "notification": "https://bihar.healthdept.bihar.gov.in"
+      "apply": "https://bihar.gov.in",
+      "official": "https://bihar.gov.in",
+      "notification": "https://bihar.gov.in"
     }
   },
   {
@@ -9809,9 +9809,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://bihar.transportdept.bihar.gov.in",
-      "official": "https://bihar.transportdept.bihar.gov.in",
-      "notification": "https://bihar.transportdept.bihar.gov.in"
+      "apply": "https://bihar.gov.in",
+      "official": "https://bihar.gov.in",
+      "notification": "https://bihar.gov.in"
     }
   },
   {
@@ -9833,9 +9833,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "last": "31-10-2026"
     },
     "links": {
-      "apply": "https://bihar.transportdept.bihar.gov.in",
-      "official": "https://bihar.transportdept.bihar.gov.in",
-      "notification": "https://bihar.transportdept.bihar.gov.in"
+      "apply": "https://bihar.gov.in",
+      "official": "https://bihar.gov.in",
+      "notification": "https://bihar.gov.in"
     }
   },
   {
@@ -9859,9 +9859,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://bihar.electricityboard.bihar.gov.in",
-      "official": "https://bihar.electricityboard.bihar.gov.in",
-      "notification": "https://bihar.electricityboard.bihar.gov.in"
+      "apply": "https://bihar.gov.in",
+      "official": "https://bihar.gov.in",
+      "notification": "https://bihar.gov.in"
     }
   },
   {
@@ -9883,10 +9883,10 @@ export const fullCatalogJobs: JobAlert[] = [
       "last": "31-10-2026"
     },
     "links": {
-      "apply": "https://bihar.electricityboard.bihar.gov.in",
-      "official": "https://bihar.electricityboard.bihar.gov.in",
-      "notification": "https://bihar.electricityboard.bihar.gov.in",
-      "admitCard": "https://bihar.electricityboard.bihar.gov.in"
+      "apply": "https://bihar.gov.in",
+      "official": "https://bihar.gov.in",
+      "notification": "https://bihar.gov.in",
+      "admitCard": "https://bihar.gov.in"
     }
   },
   {
@@ -9910,9 +9910,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://bihar.metrorail.bihar.gov.in",
-      "official": "https://bihar.metrorail.bihar.gov.in",
-      "notification": "https://bihar.metrorail.bihar.gov.in"
+      "apply": "https://bihar.gov.in",
+      "official": "https://bihar.gov.in",
+      "notification": "https://bihar.gov.in"
     }
   },
   {
@@ -9934,9 +9934,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "last": "31-10-2026"
     },
     "links": {
-      "apply": "https://bihar.metrorail.bihar.gov.in",
-      "official": "https://bihar.metrorail.bihar.gov.in",
-      "notification": "https://bihar.metrorail.bihar.gov.in"
+      "apply": "https://bihar.gov.in",
+      "official": "https://bihar.gov.in",
+      "notification": "https://bihar.gov.in"
     }
   },
   {
@@ -9959,9 +9959,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://bihar.university.bihar.gov.in",
-      "official": "https://bihar.university.bihar.gov.in",
-      "notification": "https://bihar.university.bihar.gov.in"
+      "apply": "https://bihar.gov.in",
+      "official": "https://bihar.gov.in",
+      "notification": "https://bihar.gov.in"
     }
   },
   {
@@ -9983,9 +9983,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "last": "31-10-2026"
     },
     "links": {
-      "apply": "https://bihar.university.bihar.gov.in",
-      "official": "https://bihar.university.bihar.gov.in",
-      "notification": "https://bihar.university.bihar.gov.in"
+      "apply": "https://bihar.gov.in",
+      "official": "https://bihar.gov.in",
+      "notification": "https://bihar.gov.in"
     }
   },
   {
@@ -10009,9 +10009,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://bihar.nagarnigam.bihar.gov.in",
-      "official": "https://bihar.nagarnigam.bihar.gov.in",
-      "notification": "https://bihar.nagarnigam.bihar.gov.in"
+      "apply": "https://bihar.gov.in",
+      "official": "https://bihar.gov.in",
+      "notification": "https://bihar.gov.in"
     }
   },
   {
@@ -10033,10 +10033,10 @@ export const fullCatalogJobs: JobAlert[] = [
       "last": "31-10-2026"
     },
     "links": {
-      "apply": "https://bihar.nagarnigam.bihar.gov.in",
-      "official": "https://bihar.nagarnigam.bihar.gov.in",
-      "notification": "https://bihar.nagarnigam.bihar.gov.in",
-      "admitCard": "https://bihar.nagarnigam.bihar.gov.in"
+      "apply": "https://bihar.gov.in",
+      "official": "https://bihar.gov.in",
+      "notification": "https://bihar.gov.in",
+      "admitCard": "https://bihar.gov.in"
     }
   },
   {
@@ -10060,9 +10060,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://bihar.panchayat.bihar.gov.in",
-      "official": "https://bihar.panchayat.bihar.gov.in",
-      "notification": "https://bihar.panchayat.bihar.gov.in"
+      "apply": "https://bihar.gov.in",
+      "official": "https://bihar.gov.in",
+      "notification": "https://bihar.gov.in"
     }
   },
   {
@@ -10084,9 +10084,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "last": "31-10-2026"
     },
     "links": {
-      "apply": "https://bihar.panchayat.bihar.gov.in",
-      "official": "https://bihar.panchayat.bihar.gov.in",
-      "notification": "https://bihar.panchayat.bihar.gov.in"
+      "apply": "https://bihar.gov.in",
+      "official": "https://bihar.gov.in",
+      "notification": "https://bihar.gov.in"
     }
   },
   {
@@ -10110,9 +10110,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://bihar.forestdept.bihar.gov.in",
-      "official": "https://bihar.forestdept.bihar.gov.in",
-      "notification": "https://bihar.forestdept.bihar.gov.in"
+      "apply": "https://bihar.gov.in",
+      "official": "https://bihar.gov.in",
+      "notification": "https://bihar.gov.in"
     }
   },
   {
@@ -10136,9 +10136,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://bihar.pwd.bihar.gov.in",
-      "official": "https://bihar.pwd.bihar.gov.in",
-      "notification": "https://bihar.pwd.bihar.gov.in"
+      "apply": "https://bihar.gov.in",
+      "official": "https://bihar.gov.in",
+      "notification": "https://bihar.gov.in"
     }
   },
   {
@@ -10161,9 +10161,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://bihar.socialwelfare.bihar.gov.in",
-      "official": "https://bihar.socialwelfare.bihar.gov.in",
-      "notification": "https://bihar.socialwelfare.bihar.gov.in"
+      "apply": "https://bihar.gov.in",
+      "official": "https://bihar.gov.in",
+      "notification": "https://bihar.gov.in"
     }
   },
   {
@@ -10187,9 +10187,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://bihar.apexbank.bihar.gov.in",
-      "official": "https://bihar.apexbank.bihar.gov.in",
-      "notification": "https://bihar.apexbank.bihar.gov.in"
+      "apply": "https://bihar.gov.in",
+      "official": "https://bihar.gov.in",
+      "notification": "https://bihar.gov.in"
     }
   },
   {
@@ -10212,9 +10212,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://bihar.technicalboard.bihar.gov.in",
-      "official": "https://bihar.technicalboard.bihar.gov.in",
-      "notification": "https://bihar.technicalboard.bihar.gov.in"
+      "apply": "https://bihar.gov.in",
+      "official": "https://bihar.gov.in",
+      "notification": "https://bihar.gov.in"
     }
   },
   {
@@ -10237,10 +10237,10 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Active / Ongoing"
     },
     "links": {
-      "apply": "https://bihar.tetexam.bihar.gov.in",
-      "official": "https://bihar.tetexam.bihar.gov.in",
-      "notification": "https://bihar.tetexam.bihar.gov.in",
-      "admitCard": "https://bihar.tetexam.bihar.gov.in"
+      "apply": "https://bihar.gov.in",
+      "official": "https://bihar.gov.in",
+      "notification": "https://bihar.gov.in",
+      "admitCard": "https://bihar.gov.in"
     }
   },
   {
@@ -10263,10 +10263,10 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://bihar.entranceexam.bihar.gov.in",
-      "official": "https://bihar.entranceexam.bihar.gov.in",
-      "notification": "https://bihar.entranceexam.bihar.gov.in",
-      "answerKey": "https://bihar.entranceexam.bihar.gov.in"
+      "apply": "https://bihar.gov.in",
+      "official": "https://bihar.gov.in",
+      "notification": "https://bihar.gov.in",
+      "answerKey": "https://bihar.gov.in"
     }
   },
   {
@@ -10289,9 +10289,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://bihar.revenuecouncil.bihar.gov.in",
-      "official": "https://bihar.revenuecouncil.bihar.gov.in",
-      "notification": "https://bihar.revenuecouncil.bihar.gov.in"
+      "apply": "https://bihar.gov.in",
+      "official": "https://bihar.gov.in",
+      "notification": "https://bihar.gov.in"
     }
   },
   {
@@ -10315,9 +10315,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://mp.police.mp.gov.in",
-      "official": "https://mp.police.mp.gov.in",
-      "notification": "https://mp.police.mp.gov.in"
+      "apply": "https://esb.mp.gov.in",
+      "official": "https://esb.mp.gov.in",
+      "notification": "https://esb.mp.gov.in"
     }
   },
   {
@@ -10339,10 +10339,10 @@ export const fullCatalogJobs: JobAlert[] = [
       "last": "31-10-2026"
     },
     "links": {
-      "apply": "https://mp.police.mp.gov.in",
-      "official": "https://mp.police.mp.gov.in",
-      "notification": "https://mp.police.mp.gov.in",
-      "admitCard": "https://mp.police.mp.gov.in"
+      "apply": "https://esb.mp.gov.in",
+      "official": "https://esb.mp.gov.in",
+      "notification": "https://esb.mp.gov.in",
+      "admitCard": "https://esb.mp.gov.in"
     }
   },
   {
@@ -10366,9 +10366,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://mp.psc.mp.gov.in",
-      "official": "https://mp.psc.mp.gov.in",
-      "notification": "https://mp.psc.mp.gov.in"
+      "apply": "https://esb.mp.gov.in",
+      "official": "https://mppsc.mp.gov.in",
+      "notification": "https://mppsc.mp.gov.in"
     }
   },
   {
@@ -10390,9 +10390,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "last": "31-10-2026"
     },
     "links": {
-      "apply": "https://mp.psc.mp.gov.in",
-      "official": "https://mp.psc.mp.gov.in",
-      "notification": "https://mp.psc.mp.gov.in"
+      "apply": "https://esb.mp.gov.in",
+      "official": "https://mppsc.mp.gov.in",
+      "notification": "https://mppsc.mp.gov.in"
     }
   },
   {
@@ -10416,9 +10416,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://mp.ssb.mp.gov.in",
-      "official": "https://mp.ssb.mp.gov.in",
-      "notification": "https://mp.ssb.mp.gov.in"
+      "apply": "https://mp.gov.in",
+      "official": "https://mp.gov.in",
+      "notification": "https://mp.gov.in"
     }
   },
   {
@@ -10440,9 +10440,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "last": "31-10-2026"
     },
     "links": {
-      "apply": "https://mp.ssb.mp.gov.in",
-      "official": "https://mp.ssb.mp.gov.in",
-      "notification": "https://mp.ssb.mp.gov.in"
+      "apply": "https://mp.gov.in",
+      "official": "https://mp.gov.in",
+      "notification": "https://mp.gov.in"
     }
   },
   {
@@ -10466,9 +10466,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://mp.highcourt.mp.gov.in",
-      "official": "https://mp.highcourt.mp.gov.in",
-      "notification": "https://mp.highcourt.mp.gov.in"
+      "apply": "https://mp.gov.in",
+      "official": "https://mp.gov.in",
+      "notification": "https://mp.gov.in"
     }
   },
   {
@@ -10490,10 +10490,10 @@ export const fullCatalogJobs: JobAlert[] = [
       "last": "31-10-2026"
     },
     "links": {
-      "apply": "https://mp.highcourt.mp.gov.in",
-      "official": "https://mp.highcourt.mp.gov.in",
-      "notification": "https://mp.highcourt.mp.gov.in",
-      "admitCard": "https://mp.highcourt.mp.gov.in"
+      "apply": "https://mp.gov.in",
+      "official": "https://mp.gov.in",
+      "notification": "https://mp.gov.in",
+      "admitCard": "https://mp.gov.in"
     }
   },
   {
@@ -10516,10 +10516,10 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://mp.educationboard.mp.gov.in",
-      "official": "https://mp.educationboard.mp.gov.in",
-      "notification": "https://mp.educationboard.mp.gov.in",
-      "result": "https://mp.educationboard.mp.gov.in"
+      "apply": "https://mp.gov.in",
+      "official": "https://mp.gov.in",
+      "notification": "https://mp.gov.in",
+      "result": "https://mp.gov.in"
     }
   },
   {
@@ -10541,9 +10541,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "last": "31-10-2026"
     },
     "links": {
-      "apply": "https://mp.educationboard.mp.gov.in",
-      "official": "https://mp.educationboard.mp.gov.in",
-      "notification": "https://mp.educationboard.mp.gov.in"
+      "apply": "https://mp.gov.in",
+      "official": "https://mp.gov.in",
+      "notification": "https://mp.gov.in"
     }
   },
   {
@@ -10567,9 +10567,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://mp.healthdept.mp.gov.in",
-      "official": "https://mp.healthdept.mp.gov.in",
-      "notification": "https://mp.healthdept.mp.gov.in"
+      "apply": "https://mp.gov.in",
+      "official": "https://mp.gov.in",
+      "notification": "https://mp.gov.in"
     }
   },
   {
@@ -10591,9 +10591,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "last": "31-10-2026"
     },
     "links": {
-      "apply": "https://mp.healthdept.mp.gov.in",
-      "official": "https://mp.healthdept.mp.gov.in",
-      "notification": "https://mp.healthdept.mp.gov.in"
+      "apply": "https://mp.gov.in",
+      "official": "https://mp.gov.in",
+      "notification": "https://mp.gov.in"
     }
   },
   {
@@ -10617,9 +10617,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://mp.transportdept.mp.gov.in",
-      "official": "https://mp.transportdept.mp.gov.in",
-      "notification": "https://mp.transportdept.mp.gov.in"
+      "apply": "https://mp.gov.in",
+      "official": "https://mp.gov.in",
+      "notification": "https://mp.gov.in"
     }
   },
   {
@@ -10641,10 +10641,10 @@ export const fullCatalogJobs: JobAlert[] = [
       "last": "31-10-2026"
     },
     "links": {
-      "apply": "https://mp.transportdept.mp.gov.in",
-      "official": "https://mp.transportdept.mp.gov.in",
-      "notification": "https://mp.transportdept.mp.gov.in",
-      "admitCard": "https://mp.transportdept.mp.gov.in"
+      "apply": "https://mp.gov.in",
+      "official": "https://mp.gov.in",
+      "notification": "https://mp.gov.in",
+      "admitCard": "https://mp.gov.in"
     }
   },
   {
@@ -10668,9 +10668,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://mp.electricityboard.mp.gov.in",
-      "official": "https://mp.electricityboard.mp.gov.in",
-      "notification": "https://mp.electricityboard.mp.gov.in"
+      "apply": "https://mp.gov.in",
+      "official": "https://mp.gov.in",
+      "notification": "https://mp.gov.in"
     }
   },
   {
@@ -10692,9 +10692,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "last": "31-10-2026"
     },
     "links": {
-      "apply": "https://mp.electricityboard.mp.gov.in",
-      "official": "https://mp.electricityboard.mp.gov.in",
-      "notification": "https://mp.electricityboard.mp.gov.in"
+      "apply": "https://mp.gov.in",
+      "official": "https://mp.gov.in",
+      "notification": "https://mp.gov.in"
     }
   },
   {
@@ -10718,9 +10718,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://mp.metrorail.mp.gov.in",
-      "official": "https://mp.metrorail.mp.gov.in",
-      "notification": "https://mp.metrorail.mp.gov.in"
+      "apply": "https://mp.gov.in",
+      "official": "https://mp.gov.in",
+      "notification": "https://mp.gov.in"
     }
   },
   {
@@ -10742,9 +10742,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "last": "31-10-2026"
     },
     "links": {
-      "apply": "https://mp.metrorail.mp.gov.in",
-      "official": "https://mp.metrorail.mp.gov.in",
-      "notification": "https://mp.metrorail.mp.gov.in"
+      "apply": "https://mp.gov.in",
+      "official": "https://mp.gov.in",
+      "notification": "https://mp.gov.in"
     }
   },
   {
@@ -10767,9 +10767,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://mp.university.mp.gov.in",
-      "official": "https://mp.university.mp.gov.in",
-      "notification": "https://mp.university.mp.gov.in"
+      "apply": "https://mp.gov.in",
+      "official": "https://mp.gov.in",
+      "notification": "https://mp.gov.in"
     }
   },
   {
@@ -10791,10 +10791,10 @@ export const fullCatalogJobs: JobAlert[] = [
       "last": "31-10-2026"
     },
     "links": {
-      "apply": "https://mp.university.mp.gov.in",
-      "official": "https://mp.university.mp.gov.in",
-      "notification": "https://mp.university.mp.gov.in",
-      "admitCard": "https://mp.university.mp.gov.in"
+      "apply": "https://mp.gov.in",
+      "official": "https://mp.gov.in",
+      "notification": "https://mp.gov.in",
+      "admitCard": "https://mp.gov.in"
     }
   },
   {
@@ -10818,9 +10818,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://mp.nagarnigam.mp.gov.in",
-      "official": "https://mp.nagarnigam.mp.gov.in",
-      "notification": "https://mp.nagarnigam.mp.gov.in"
+      "apply": "https://mp.gov.in",
+      "official": "https://mp.gov.in",
+      "notification": "https://mp.gov.in"
     }
   },
   {
@@ -10842,9 +10842,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "last": "31-10-2026"
     },
     "links": {
-      "apply": "https://mp.nagarnigam.mp.gov.in",
-      "official": "https://mp.nagarnigam.mp.gov.in",
-      "notification": "https://mp.nagarnigam.mp.gov.in"
+      "apply": "https://mp.gov.in",
+      "official": "https://mp.gov.in",
+      "notification": "https://mp.gov.in"
     }
   },
   {
@@ -10868,9 +10868,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://mp.panchayat.mp.gov.in",
-      "official": "https://mp.panchayat.mp.gov.in",
-      "notification": "https://mp.panchayat.mp.gov.in"
+      "apply": "https://mp.gov.in",
+      "official": "https://mp.gov.in",
+      "notification": "https://mp.gov.in"
     }
   },
   {
@@ -10892,9 +10892,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "last": "31-10-2026"
     },
     "links": {
-      "apply": "https://mp.panchayat.mp.gov.in",
-      "official": "https://mp.panchayat.mp.gov.in",
-      "notification": "https://mp.panchayat.mp.gov.in"
+      "apply": "https://mp.gov.in",
+      "official": "https://mp.gov.in",
+      "notification": "https://mp.gov.in"
     }
   },
   {
@@ -10918,9 +10918,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://mp.forestdept.mp.gov.in",
-      "official": "https://mp.forestdept.mp.gov.in",
-      "notification": "https://mp.forestdept.mp.gov.in"
+      "apply": "https://mp.gov.in",
+      "official": "https://mp.gov.in",
+      "notification": "https://mp.gov.in"
     }
   },
   {
@@ -10944,9 +10944,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://mp.pwd.mp.gov.in",
-      "official": "https://mp.pwd.mp.gov.in",
-      "notification": "https://mp.pwd.mp.gov.in"
+      "apply": "https://mp.gov.in",
+      "official": "https://mp.gov.in",
+      "notification": "https://mp.gov.in"
     }
   },
   {
@@ -10969,9 +10969,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://mp.socialwelfare.mp.gov.in",
-      "official": "https://mp.socialwelfare.mp.gov.in",
-      "notification": "https://mp.socialwelfare.mp.gov.in"
+      "apply": "https://mp.gov.in",
+      "official": "https://mp.gov.in",
+      "notification": "https://mp.gov.in"
     }
   },
   {
@@ -10995,9 +10995,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://mp.apexbank.mp.gov.in",
-      "official": "https://mp.apexbank.mp.gov.in",
-      "notification": "https://mp.apexbank.mp.gov.in"
+      "apply": "https://mp.gov.in",
+      "official": "https://mp.gov.in",
+      "notification": "https://mp.gov.in"
     }
   },
   {
@@ -11020,9 +11020,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://mp.technicalboard.mp.gov.in",
-      "official": "https://mp.technicalboard.mp.gov.in",
-      "notification": "https://mp.technicalboard.mp.gov.in"
+      "apply": "https://mp.gov.in",
+      "official": "https://mp.gov.in",
+      "notification": "https://mp.gov.in"
     }
   },
   {
@@ -11045,10 +11045,10 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Active / Ongoing"
     },
     "links": {
-      "apply": "https://mp.tetexam.mp.gov.in",
-      "official": "https://mp.tetexam.mp.gov.in",
-      "notification": "https://mp.tetexam.mp.gov.in",
-      "admitCard": "https://mp.tetexam.mp.gov.in"
+      "apply": "https://mp.gov.in",
+      "official": "https://mp.gov.in",
+      "notification": "https://mp.gov.in",
+      "admitCard": "https://mp.gov.in"
     }
   },
   {
@@ -11071,10 +11071,10 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://mp.entranceexam.mp.gov.in",
-      "official": "https://mp.entranceexam.mp.gov.in",
-      "notification": "https://mp.entranceexam.mp.gov.in",
-      "answerKey": "https://mp.entranceexam.mp.gov.in"
+      "apply": "https://mp.gov.in",
+      "official": "https://mp.gov.in",
+      "notification": "https://mp.gov.in",
+      "answerKey": "https://mp.gov.in"
     }
   },
   {
@@ -11097,9 +11097,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://mp.revenuecouncil.mp.gov.in",
-      "official": "https://mp.revenuecouncil.mp.gov.in",
-      "notification": "https://mp.revenuecouncil.mp.gov.in"
+      "apply": "https://mp.gov.in",
+      "official": "https://mp.gov.in",
+      "notification": "https://mp.gov.in"
     }
   },
   {
@@ -11123,9 +11123,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://rajasthan.police.rajasthan.gov.in",
-      "official": "https://rajasthan.police.rajasthan.gov.in",
-      "notification": "https://rajasthan.police.rajasthan.gov.in"
+      "apply": "https://sso.rajasthan.gov.in",
+      "official": "https://police.rajasthan.gov.in",
+      "notification": "https://police.rajasthan.gov.in"
     }
   },
   {
@@ -11147,9 +11147,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "last": "31-10-2026"
     },
     "links": {
-      "apply": "https://rajasthan.police.rajasthan.gov.in",
-      "official": "https://rajasthan.police.rajasthan.gov.in",
-      "notification": "https://rajasthan.police.rajasthan.gov.in"
+      "apply": "https://sso.rajasthan.gov.in",
+      "official": "https://police.rajasthan.gov.in",
+      "notification": "https://police.rajasthan.gov.in"
     }
   },
   {
@@ -11173,9 +11173,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://rajasthan.psc.rajasthan.gov.in",
-      "official": "https://rajasthan.psc.rajasthan.gov.in",
-      "notification": "https://rajasthan.psc.rajasthan.gov.in"
+      "apply": "https://sso.rajasthan.gov.in",
+      "official": "https://rpsc.rajasthan.gov.in",
+      "notification": "https://rpsc.rajasthan.gov.in"
     }
   },
   {
@@ -11197,9 +11197,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "last": "31-10-2026"
     },
     "links": {
-      "apply": "https://rajasthan.psc.rajasthan.gov.in",
-      "official": "https://rajasthan.psc.rajasthan.gov.in",
-      "notification": "https://rajasthan.psc.rajasthan.gov.in"
+      "apply": "https://sso.rajasthan.gov.in",
+      "official": "https://rpsc.rajasthan.gov.in",
+      "notification": "https://rpsc.rajasthan.gov.in"
     }
   },
   {
@@ -11223,9 +11223,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://rajasthan.ssb.rajasthan.gov.in",
-      "official": "https://rajasthan.ssb.rajasthan.gov.in",
-      "notification": "https://rajasthan.ssb.rajasthan.gov.in"
+      "apply": "https://rajasthan.gov.in",
+      "official": "https://rajasthan.gov.in",
+      "notification": "https://rajasthan.gov.in"
     }
   },
   {
@@ -11247,10 +11247,10 @@ export const fullCatalogJobs: JobAlert[] = [
       "last": "31-10-2026"
     },
     "links": {
-      "apply": "https://rajasthan.ssb.rajasthan.gov.in",
-      "official": "https://rajasthan.ssb.rajasthan.gov.in",
-      "notification": "https://rajasthan.ssb.rajasthan.gov.in",
-      "admitCard": "https://rajasthan.ssb.rajasthan.gov.in"
+      "apply": "https://rajasthan.gov.in",
+      "official": "https://rajasthan.gov.in",
+      "notification": "https://rajasthan.gov.in",
+      "admitCard": "https://rajasthan.gov.in"
     }
   },
   {
@@ -11274,9 +11274,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://rajasthan.highcourt.rajasthan.gov.in",
-      "official": "https://rajasthan.highcourt.rajasthan.gov.in",
-      "notification": "https://rajasthan.highcourt.rajasthan.gov.in"
+      "apply": "https://rajasthan.gov.in",
+      "official": "https://rajasthan.gov.in",
+      "notification": "https://rajasthan.gov.in"
     }
   },
   {
@@ -11298,9 +11298,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "last": "31-10-2026"
     },
     "links": {
-      "apply": "https://rajasthan.highcourt.rajasthan.gov.in",
-      "official": "https://rajasthan.highcourt.rajasthan.gov.in",
-      "notification": "https://rajasthan.highcourt.rajasthan.gov.in"
+      "apply": "https://rajasthan.gov.in",
+      "official": "https://rajasthan.gov.in",
+      "notification": "https://rajasthan.gov.in"
     }
   },
   {
@@ -11323,10 +11323,10 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://rajasthan.educationboard.rajasthan.gov.in",
-      "official": "https://rajasthan.educationboard.rajasthan.gov.in",
-      "notification": "https://rajasthan.educationboard.rajasthan.gov.in",
-      "result": "https://rajasthan.educationboard.rajasthan.gov.in"
+      "apply": "https://rajasthan.gov.in",
+      "official": "https://rajasthan.gov.in",
+      "notification": "https://rajasthan.gov.in",
+      "result": "https://rajasthan.gov.in"
     }
   },
   {
@@ -11348,9 +11348,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "last": "31-10-2026"
     },
     "links": {
-      "apply": "https://rajasthan.educationboard.rajasthan.gov.in",
-      "official": "https://rajasthan.educationboard.rajasthan.gov.in",
-      "notification": "https://rajasthan.educationboard.rajasthan.gov.in"
+      "apply": "https://rajasthan.gov.in",
+      "official": "https://rajasthan.gov.in",
+      "notification": "https://rajasthan.gov.in"
     }
   },
   {
@@ -11374,9 +11374,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://rajasthan.healthdept.rajasthan.gov.in",
-      "official": "https://rajasthan.healthdept.rajasthan.gov.in",
-      "notification": "https://rajasthan.healthdept.rajasthan.gov.in"
+      "apply": "https://rajasthan.gov.in",
+      "official": "https://rajasthan.gov.in",
+      "notification": "https://rajasthan.gov.in"
     }
   },
   {
@@ -11398,10 +11398,10 @@ export const fullCatalogJobs: JobAlert[] = [
       "last": "31-10-2026"
     },
     "links": {
-      "apply": "https://rajasthan.healthdept.rajasthan.gov.in",
-      "official": "https://rajasthan.healthdept.rajasthan.gov.in",
-      "notification": "https://rajasthan.healthdept.rajasthan.gov.in",
-      "admitCard": "https://rajasthan.healthdept.rajasthan.gov.in"
+      "apply": "https://rajasthan.gov.in",
+      "official": "https://rajasthan.gov.in",
+      "notification": "https://rajasthan.gov.in",
+      "admitCard": "https://rajasthan.gov.in"
     }
   },
   {
@@ -11425,9 +11425,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://rajasthan.transportdept.rajasthan.gov.in",
-      "official": "https://rajasthan.transportdept.rajasthan.gov.in",
-      "notification": "https://rajasthan.transportdept.rajasthan.gov.in"
+      "apply": "https://rajasthan.gov.in",
+      "official": "https://rajasthan.gov.in",
+      "notification": "https://rajasthan.gov.in"
     }
   },
   {
@@ -11449,9 +11449,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "last": "31-10-2026"
     },
     "links": {
-      "apply": "https://rajasthan.transportdept.rajasthan.gov.in",
-      "official": "https://rajasthan.transportdept.rajasthan.gov.in",
-      "notification": "https://rajasthan.transportdept.rajasthan.gov.in"
+      "apply": "https://rajasthan.gov.in",
+      "official": "https://rajasthan.gov.in",
+      "notification": "https://rajasthan.gov.in"
     }
   },
   {
@@ -11475,9 +11475,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://rajasthan.electricityboard.rajasthan.gov.in",
-      "official": "https://rajasthan.electricityboard.rajasthan.gov.in",
-      "notification": "https://rajasthan.electricityboard.rajasthan.gov.in"
+      "apply": "https://rajasthan.gov.in",
+      "official": "https://rajasthan.gov.in",
+      "notification": "https://rajasthan.gov.in"
     }
   },
   {
@@ -11499,9 +11499,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "last": "31-10-2026"
     },
     "links": {
-      "apply": "https://rajasthan.electricityboard.rajasthan.gov.in",
-      "official": "https://rajasthan.electricityboard.rajasthan.gov.in",
-      "notification": "https://rajasthan.electricityboard.rajasthan.gov.in"
+      "apply": "https://rajasthan.gov.in",
+      "official": "https://rajasthan.gov.in",
+      "notification": "https://rajasthan.gov.in"
     }
   },
   {
@@ -11525,9 +11525,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://rajasthan.metrorail.rajasthan.gov.in",
-      "official": "https://rajasthan.metrorail.rajasthan.gov.in",
-      "notification": "https://rajasthan.metrorail.rajasthan.gov.in"
+      "apply": "https://rajasthan.gov.in",
+      "official": "https://rajasthan.gov.in",
+      "notification": "https://rajasthan.gov.in"
     }
   },
   {
@@ -11549,10 +11549,10 @@ export const fullCatalogJobs: JobAlert[] = [
       "last": "31-10-2026"
     },
     "links": {
-      "apply": "https://rajasthan.metrorail.rajasthan.gov.in",
-      "official": "https://rajasthan.metrorail.rajasthan.gov.in",
-      "notification": "https://rajasthan.metrorail.rajasthan.gov.in",
-      "admitCard": "https://rajasthan.metrorail.rajasthan.gov.in"
+      "apply": "https://rajasthan.gov.in",
+      "official": "https://rajasthan.gov.in",
+      "notification": "https://rajasthan.gov.in",
+      "admitCard": "https://rajasthan.gov.in"
     }
   },
   {
@@ -11575,9 +11575,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://rajasthan.university.rajasthan.gov.in",
-      "official": "https://rajasthan.university.rajasthan.gov.in",
-      "notification": "https://rajasthan.university.rajasthan.gov.in"
+      "apply": "https://rajasthan.gov.in",
+      "official": "https://rajasthan.gov.in",
+      "notification": "https://rajasthan.gov.in"
     }
   },
   {
@@ -11599,9 +11599,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "last": "31-10-2026"
     },
     "links": {
-      "apply": "https://rajasthan.university.rajasthan.gov.in",
-      "official": "https://rajasthan.university.rajasthan.gov.in",
-      "notification": "https://rajasthan.university.rajasthan.gov.in"
+      "apply": "https://rajasthan.gov.in",
+      "official": "https://rajasthan.gov.in",
+      "notification": "https://rajasthan.gov.in"
     }
   },
   {
@@ -11625,9 +11625,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://rajasthan.nagarnigam.rajasthan.gov.in",
-      "official": "https://rajasthan.nagarnigam.rajasthan.gov.in",
-      "notification": "https://rajasthan.nagarnigam.rajasthan.gov.in"
+      "apply": "https://rajasthan.gov.in",
+      "official": "https://rajasthan.gov.in",
+      "notification": "https://rajasthan.gov.in"
     }
   },
   {
@@ -11649,9 +11649,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "last": "31-10-2026"
     },
     "links": {
-      "apply": "https://rajasthan.nagarnigam.rajasthan.gov.in",
-      "official": "https://rajasthan.nagarnigam.rajasthan.gov.in",
-      "notification": "https://rajasthan.nagarnigam.rajasthan.gov.in"
+      "apply": "https://rajasthan.gov.in",
+      "official": "https://rajasthan.gov.in",
+      "notification": "https://rajasthan.gov.in"
     }
   },
   {
@@ -11675,9 +11675,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://rajasthan.panchayat.rajasthan.gov.in",
-      "official": "https://rajasthan.panchayat.rajasthan.gov.in",
-      "notification": "https://rajasthan.panchayat.rajasthan.gov.in"
+      "apply": "https://rajasthan.gov.in",
+      "official": "https://rajasthan.gov.in",
+      "notification": "https://rajasthan.gov.in"
     }
   },
   {
@@ -11699,10 +11699,10 @@ export const fullCatalogJobs: JobAlert[] = [
       "last": "31-10-2026"
     },
     "links": {
-      "apply": "https://rajasthan.panchayat.rajasthan.gov.in",
-      "official": "https://rajasthan.panchayat.rajasthan.gov.in",
-      "notification": "https://rajasthan.panchayat.rajasthan.gov.in",
-      "admitCard": "https://rajasthan.panchayat.rajasthan.gov.in"
+      "apply": "https://rajasthan.gov.in",
+      "official": "https://rajasthan.gov.in",
+      "notification": "https://rajasthan.gov.in",
+      "admitCard": "https://rajasthan.gov.in"
     }
   },
   {
@@ -11726,9 +11726,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://rajasthan.forestdept.rajasthan.gov.in",
-      "official": "https://rajasthan.forestdept.rajasthan.gov.in",
-      "notification": "https://rajasthan.forestdept.rajasthan.gov.in"
+      "apply": "https://rajasthan.gov.in",
+      "official": "https://rajasthan.gov.in",
+      "notification": "https://rajasthan.gov.in"
     }
   },
   {
@@ -11752,9 +11752,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://rajasthan.pwd.rajasthan.gov.in",
-      "official": "https://rajasthan.pwd.rajasthan.gov.in",
-      "notification": "https://rajasthan.pwd.rajasthan.gov.in"
+      "apply": "https://rajasthan.gov.in",
+      "official": "https://rajasthan.gov.in",
+      "notification": "https://rajasthan.gov.in"
     }
   },
   {
@@ -11777,9 +11777,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://rajasthan.socialwelfare.rajasthan.gov.in",
-      "official": "https://rajasthan.socialwelfare.rajasthan.gov.in",
-      "notification": "https://rajasthan.socialwelfare.rajasthan.gov.in"
+      "apply": "https://rajasthan.gov.in",
+      "official": "https://rajasthan.gov.in",
+      "notification": "https://rajasthan.gov.in"
     }
   },
   {
@@ -11803,9 +11803,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://rajasthan.apexbank.rajasthan.gov.in",
-      "official": "https://rajasthan.apexbank.rajasthan.gov.in",
-      "notification": "https://rajasthan.apexbank.rajasthan.gov.in"
+      "apply": "https://rajasthan.gov.in",
+      "official": "https://rajasthan.gov.in",
+      "notification": "https://rajasthan.gov.in"
     }
   },
   {
@@ -11828,9 +11828,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://rajasthan.technicalboard.rajasthan.gov.in",
-      "official": "https://rajasthan.technicalboard.rajasthan.gov.in",
-      "notification": "https://rajasthan.technicalboard.rajasthan.gov.in"
+      "apply": "https://rajasthan.gov.in",
+      "official": "https://rajasthan.gov.in",
+      "notification": "https://rajasthan.gov.in"
     }
   },
   {
@@ -11853,10 +11853,10 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Active / Ongoing"
     },
     "links": {
-      "apply": "https://rajasthan.tetexam.rajasthan.gov.in",
-      "official": "https://rajasthan.tetexam.rajasthan.gov.in",
-      "notification": "https://rajasthan.tetexam.rajasthan.gov.in",
-      "admitCard": "https://rajasthan.tetexam.rajasthan.gov.in"
+      "apply": "https://rajasthan.gov.in",
+      "official": "https://rajasthan.gov.in",
+      "notification": "https://rajasthan.gov.in",
+      "admitCard": "https://rajasthan.gov.in"
     }
   },
   {
@@ -11879,10 +11879,10 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://rajasthan.entranceexam.rajasthan.gov.in",
-      "official": "https://rajasthan.entranceexam.rajasthan.gov.in",
-      "notification": "https://rajasthan.entranceexam.rajasthan.gov.in",
-      "answerKey": "https://rajasthan.entranceexam.rajasthan.gov.in"
+      "apply": "https://rajasthan.gov.in",
+      "official": "https://rajasthan.gov.in",
+      "notification": "https://rajasthan.gov.in",
+      "answerKey": "https://rajasthan.gov.in"
     }
   },
   {
@@ -11905,9 +11905,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://rajasthan.revenuecouncil.rajasthan.gov.in",
-      "official": "https://rajasthan.revenuecouncil.rajasthan.gov.in",
-      "notification": "https://rajasthan.revenuecouncil.rajasthan.gov.in"
+      "apply": "https://rajasthan.gov.in",
+      "official": "https://rajasthan.gov.in",
+      "notification": "https://rajasthan.gov.in"
     }
   },
   {
@@ -11931,9 +11931,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://delhi.police.delhi.gov.in",
-      "official": "https://delhi.police.delhi.gov.in",
-      "notification": "https://delhi.police.delhi.gov.in"
+      "apply": "https://dsssbonline.nic.in",
+      "official": "https://delhipolice.gov.in",
+      "notification": "https://delhipolice.gov.in"
     }
   },
   {
@@ -11955,9 +11955,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "last": "31-10-2026"
     },
     "links": {
-      "apply": "https://delhi.police.delhi.gov.in",
-      "official": "https://delhi.police.delhi.gov.in",
-      "notification": "https://delhi.police.delhi.gov.in"
+      "apply": "https://dsssbonline.nic.in",
+      "official": "https://delhipolice.gov.in",
+      "notification": "https://delhipolice.gov.in"
     }
   },
   {
@@ -11981,9 +11981,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://delhi.psc.delhi.gov.in",
-      "official": "https://delhi.psc.delhi.gov.in",
-      "notification": "https://delhi.psc.delhi.gov.in"
+      "apply": "https://dsssbonline.nic.in",
+      "official": "https://dsssb.delhi.gov.in",
+      "notification": "https://dsssb.delhi.gov.in"
     }
   },
   {
@@ -12005,10 +12005,10 @@ export const fullCatalogJobs: JobAlert[] = [
       "last": "31-10-2026"
     },
     "links": {
-      "apply": "https://delhi.psc.delhi.gov.in",
-      "official": "https://delhi.psc.delhi.gov.in",
-      "notification": "https://delhi.psc.delhi.gov.in",
-      "admitCard": "https://delhi.psc.delhi.gov.in"
+      "apply": "https://dsssbonline.nic.in",
+      "official": "https://dsssb.delhi.gov.in",
+      "notification": "https://dsssb.delhi.gov.in",
+      "admitCard": "https://dsssbonline.nic.in"
     }
   },
   {
@@ -12032,9 +12032,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://delhi.ssb.delhi.gov.in",
-      "official": "https://delhi.ssb.delhi.gov.in",
-      "notification": "https://delhi.ssb.delhi.gov.in"
+      "apply": "https://delhi.gov.in",
+      "official": "https://delhi.gov.in",
+      "notification": "https://delhi.gov.in"
     }
   },
   {
@@ -12056,9 +12056,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "last": "31-10-2026"
     },
     "links": {
-      "apply": "https://delhi.ssb.delhi.gov.in",
-      "official": "https://delhi.ssb.delhi.gov.in",
-      "notification": "https://delhi.ssb.delhi.gov.in"
+      "apply": "https://delhi.gov.in",
+      "official": "https://delhi.gov.in",
+      "notification": "https://delhi.gov.in"
     }
   },
   {
@@ -12082,9 +12082,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://delhi.highcourt.delhi.gov.in",
-      "official": "https://delhi.highcourt.delhi.gov.in",
-      "notification": "https://delhi.highcourt.delhi.gov.in"
+      "apply": "https://delhihighcourt.nic.in",
+      "official": "https://delhihighcourt.nic.in",
+      "notification": "https://delhihighcourt.nic.in"
     }
   },
   {
@@ -12106,9 +12106,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "last": "31-10-2026"
     },
     "links": {
-      "apply": "https://delhi.highcourt.delhi.gov.in",
-      "official": "https://delhi.highcourt.delhi.gov.in",
-      "notification": "https://delhi.highcourt.delhi.gov.in"
+      "apply": "https://delhihighcourt.nic.in",
+      "official": "https://delhihighcourt.nic.in",
+      "notification": "https://delhihighcourt.nic.in"
     }
   },
   {
@@ -12131,10 +12131,10 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://delhi.educationboard.delhi.gov.in",
-      "official": "https://delhi.educationboard.delhi.gov.in",
-      "notification": "https://delhi.educationboard.delhi.gov.in",
-      "result": "https://delhi.educationboard.delhi.gov.in"
+      "apply": "https://delhi.gov.in",
+      "official": "https://delhi.gov.in",
+      "notification": "https://delhi.gov.in",
+      "result": "https://delhi.gov.in"
     }
   },
   {
@@ -12156,10 +12156,10 @@ export const fullCatalogJobs: JobAlert[] = [
       "last": "31-10-2026"
     },
     "links": {
-      "apply": "https://delhi.educationboard.delhi.gov.in",
-      "official": "https://delhi.educationboard.delhi.gov.in",
-      "notification": "https://delhi.educationboard.delhi.gov.in",
-      "admitCard": "https://delhi.educationboard.delhi.gov.in"
+      "apply": "https://delhi.gov.in",
+      "official": "https://delhi.gov.in",
+      "notification": "https://delhi.gov.in",
+      "admitCard": "https://delhi.gov.in"
     }
   },
   {
@@ -12183,9 +12183,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://delhi.healthdept.delhi.gov.in",
-      "official": "https://delhi.healthdept.delhi.gov.in",
-      "notification": "https://delhi.healthdept.delhi.gov.in"
+      "apply": "https://delhi.gov.in",
+      "official": "https://delhi.gov.in",
+      "notification": "https://delhi.gov.in"
     }
   },
   {
@@ -12207,9 +12207,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "last": "31-10-2026"
     },
     "links": {
-      "apply": "https://delhi.healthdept.delhi.gov.in",
-      "official": "https://delhi.healthdept.delhi.gov.in",
-      "notification": "https://delhi.healthdept.delhi.gov.in"
+      "apply": "https://delhi.gov.in",
+      "official": "https://delhi.gov.in",
+      "notification": "https://delhi.gov.in"
     }
   },
   {
@@ -12233,9 +12233,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://delhi.transportdept.delhi.gov.in",
-      "official": "https://delhi.transportdept.delhi.gov.in",
-      "notification": "https://delhi.transportdept.delhi.gov.in"
+      "apply": "https://delhi.gov.in",
+      "official": "https://delhi.gov.in",
+      "notification": "https://delhi.gov.in"
     }
   },
   {
@@ -12257,9 +12257,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "last": "31-10-2026"
     },
     "links": {
-      "apply": "https://delhi.transportdept.delhi.gov.in",
-      "official": "https://delhi.transportdept.delhi.gov.in",
-      "notification": "https://delhi.transportdept.delhi.gov.in"
+      "apply": "https://delhi.gov.in",
+      "official": "https://delhi.gov.in",
+      "notification": "https://delhi.gov.in"
     }
   },
   {
@@ -12283,9 +12283,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://delhi.electricityboard.delhi.gov.in",
-      "official": "https://delhi.electricityboard.delhi.gov.in",
-      "notification": "https://delhi.electricityboard.delhi.gov.in"
+      "apply": "https://delhi.gov.in",
+      "official": "https://delhi.gov.in",
+      "notification": "https://delhi.gov.in"
     }
   },
   {
@@ -12307,10 +12307,10 @@ export const fullCatalogJobs: JobAlert[] = [
       "last": "31-10-2026"
     },
     "links": {
-      "apply": "https://delhi.electricityboard.delhi.gov.in",
-      "official": "https://delhi.electricityboard.delhi.gov.in",
-      "notification": "https://delhi.electricityboard.delhi.gov.in",
-      "admitCard": "https://delhi.electricityboard.delhi.gov.in"
+      "apply": "https://delhi.gov.in",
+      "official": "https://delhi.gov.in",
+      "notification": "https://delhi.gov.in",
+      "admitCard": "https://delhi.gov.in"
     }
   },
   {
@@ -12334,9 +12334,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://delhi.metrorail.delhi.gov.in",
-      "official": "https://delhi.metrorail.delhi.gov.in",
-      "notification": "https://delhi.metrorail.delhi.gov.in"
+      "apply": "https://delhi.gov.in",
+      "official": "https://delhi.gov.in",
+      "notification": "https://delhi.gov.in"
     }
   },
   {
@@ -12358,9 +12358,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "last": "31-10-2026"
     },
     "links": {
-      "apply": "https://delhi.metrorail.delhi.gov.in",
-      "official": "https://delhi.metrorail.delhi.gov.in",
-      "notification": "https://delhi.metrorail.delhi.gov.in"
+      "apply": "https://delhi.gov.in",
+      "official": "https://delhi.gov.in",
+      "notification": "https://delhi.gov.in"
     }
   },
   {
@@ -12383,9 +12383,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://delhi.university.delhi.gov.in",
-      "official": "https://delhi.university.delhi.gov.in",
-      "notification": "https://delhi.university.delhi.gov.in"
+      "apply": "https://delhi.gov.in",
+      "official": "https://delhi.gov.in",
+      "notification": "https://delhi.gov.in"
     }
   },
   {
@@ -12407,9 +12407,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "last": "31-10-2026"
     },
     "links": {
-      "apply": "https://delhi.university.delhi.gov.in",
-      "official": "https://delhi.university.delhi.gov.in",
-      "notification": "https://delhi.university.delhi.gov.in"
+      "apply": "https://delhi.gov.in",
+      "official": "https://delhi.gov.in",
+      "notification": "https://delhi.gov.in"
     }
   },
   {
@@ -12433,9 +12433,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://delhi.nagarnigam.delhi.gov.in",
-      "official": "https://delhi.nagarnigam.delhi.gov.in",
-      "notification": "https://delhi.nagarnigam.delhi.gov.in"
+      "apply": "https://delhi.gov.in",
+      "official": "https://delhi.gov.in",
+      "notification": "https://delhi.gov.in"
     }
   },
   {
@@ -12457,10 +12457,10 @@ export const fullCatalogJobs: JobAlert[] = [
       "last": "31-10-2026"
     },
     "links": {
-      "apply": "https://delhi.nagarnigam.delhi.gov.in",
-      "official": "https://delhi.nagarnigam.delhi.gov.in",
-      "notification": "https://delhi.nagarnigam.delhi.gov.in",
-      "admitCard": "https://delhi.nagarnigam.delhi.gov.in"
+      "apply": "https://delhi.gov.in",
+      "official": "https://delhi.gov.in",
+      "notification": "https://delhi.gov.in",
+      "admitCard": "https://delhi.gov.in"
     }
   },
   {
@@ -12484,9 +12484,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://delhi.panchayat.delhi.gov.in",
-      "official": "https://delhi.panchayat.delhi.gov.in",
-      "notification": "https://delhi.panchayat.delhi.gov.in"
+      "apply": "https://delhi.gov.in",
+      "official": "https://delhi.gov.in",
+      "notification": "https://delhi.gov.in"
     }
   },
   {
@@ -12508,9 +12508,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "last": "31-10-2026"
     },
     "links": {
-      "apply": "https://delhi.panchayat.delhi.gov.in",
-      "official": "https://delhi.panchayat.delhi.gov.in",
-      "notification": "https://delhi.panchayat.delhi.gov.in"
+      "apply": "https://delhi.gov.in",
+      "official": "https://delhi.gov.in",
+      "notification": "https://delhi.gov.in"
     }
   },
   {
@@ -12534,9 +12534,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://delhi.forestdept.delhi.gov.in",
-      "official": "https://delhi.forestdept.delhi.gov.in",
-      "notification": "https://delhi.forestdept.delhi.gov.in"
+      "apply": "https://delhi.gov.in",
+      "official": "https://delhi.gov.in",
+      "notification": "https://delhi.gov.in"
     }
   },
   {
@@ -12560,9 +12560,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://delhi.pwd.delhi.gov.in",
-      "official": "https://delhi.pwd.delhi.gov.in",
-      "notification": "https://delhi.pwd.delhi.gov.in"
+      "apply": "https://delhi.gov.in",
+      "official": "https://delhi.gov.in",
+      "notification": "https://delhi.gov.in"
     }
   },
   {
@@ -12585,9 +12585,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://delhi.socialwelfare.delhi.gov.in",
-      "official": "https://delhi.socialwelfare.delhi.gov.in",
-      "notification": "https://delhi.socialwelfare.delhi.gov.in"
+      "apply": "https://delhi.gov.in",
+      "official": "https://delhi.gov.in",
+      "notification": "https://delhi.gov.in"
     }
   },
   {
@@ -12611,9 +12611,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://delhi.apexbank.delhi.gov.in",
-      "official": "https://delhi.apexbank.delhi.gov.in",
-      "notification": "https://delhi.apexbank.delhi.gov.in"
+      "apply": "https://delhi.gov.in",
+      "official": "https://delhi.gov.in",
+      "notification": "https://delhi.gov.in"
     }
   },
   {
@@ -12636,9 +12636,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://delhi.technicalboard.delhi.gov.in",
-      "official": "https://delhi.technicalboard.delhi.gov.in",
-      "notification": "https://delhi.technicalboard.delhi.gov.in"
+      "apply": "https://delhi.gov.in",
+      "official": "https://delhi.gov.in",
+      "notification": "https://delhi.gov.in"
     }
   },
   {
@@ -12661,10 +12661,10 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Active / Ongoing"
     },
     "links": {
-      "apply": "https://delhi.tetexam.delhi.gov.in",
-      "official": "https://delhi.tetexam.delhi.gov.in",
-      "notification": "https://delhi.tetexam.delhi.gov.in",
-      "admitCard": "https://delhi.tetexam.delhi.gov.in"
+      "apply": "https://delhi.gov.in",
+      "official": "https://delhi.gov.in",
+      "notification": "https://delhi.gov.in",
+      "admitCard": "https://delhi.gov.in"
     }
   },
   {
@@ -12687,10 +12687,10 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://delhi.entranceexam.delhi.gov.in",
-      "official": "https://delhi.entranceexam.delhi.gov.in",
-      "notification": "https://delhi.entranceexam.delhi.gov.in",
-      "answerKey": "https://delhi.entranceexam.delhi.gov.in"
+      "apply": "https://delhi.gov.in",
+      "official": "https://delhi.gov.in",
+      "notification": "https://delhi.gov.in",
+      "answerKey": "https://delhi.gov.in"
     }
   },
   {
@@ -12713,9 +12713,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://delhi.revenuecouncil.delhi.gov.in",
-      "official": "https://delhi.revenuecouncil.delhi.gov.in",
-      "notification": "https://delhi.revenuecouncil.delhi.gov.in"
+      "apply": "https://delhi.gov.in",
+      "official": "https://delhi.gov.in",
+      "notification": "https://delhi.gov.in"
     }
   },
   {
@@ -12739,9 +12739,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://haryana.police.haryana.gov.in",
-      "official": "https://haryana.police.haryana.gov.in",
-      "notification": "https://haryana.police.haryana.gov.in"
+      "apply": "https://hssc.gov.in",
+      "official": "https://hssc.gov.in",
+      "notification": "https://hssc.gov.in"
     }
   },
   {
@@ -12765,9 +12765,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://haryana.psc.haryana.gov.in",
-      "official": "https://haryana.psc.haryana.gov.in",
-      "notification": "https://haryana.psc.haryana.gov.in"
+      "apply": "https://hssc.gov.in",
+      "official": "https://hpsc.gov.in",
+      "notification": "https://hpsc.gov.in"
     }
   },
   {
@@ -12791,9 +12791,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://haryana.ssb.haryana.gov.in",
-      "official": "https://haryana.ssb.haryana.gov.in",
-      "notification": "https://haryana.ssb.haryana.gov.in"
+      "apply": "https://haryana.gov.in",
+      "official": "https://haryana.gov.in",
+      "notification": "https://haryana.gov.in"
     }
   },
   {
@@ -12817,9 +12817,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://haryana.highcourt.haryana.gov.in",
-      "official": "https://haryana.highcourt.haryana.gov.in",
-      "notification": "https://haryana.highcourt.haryana.gov.in"
+      "apply": "https://haryana.gov.in",
+      "official": "https://haryana.gov.in",
+      "notification": "https://haryana.gov.in"
     }
   },
   {
@@ -12842,10 +12842,10 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://haryana.educationboard.haryana.gov.in",
-      "official": "https://haryana.educationboard.haryana.gov.in",
-      "notification": "https://haryana.educationboard.haryana.gov.in",
-      "result": "https://haryana.educationboard.haryana.gov.in"
+      "apply": "https://haryana.gov.in",
+      "official": "https://haryana.gov.in",
+      "notification": "https://haryana.gov.in",
+      "result": "https://haryana.gov.in"
     }
   },
   {
@@ -12869,9 +12869,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://haryana.healthdept.haryana.gov.in",
-      "official": "https://haryana.healthdept.haryana.gov.in",
-      "notification": "https://haryana.healthdept.haryana.gov.in"
+      "apply": "https://haryana.gov.in",
+      "official": "https://haryana.gov.in",
+      "notification": "https://haryana.gov.in"
     }
   },
   {
@@ -12895,9 +12895,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://haryana.transportdept.haryana.gov.in",
-      "official": "https://haryana.transportdept.haryana.gov.in",
-      "notification": "https://haryana.transportdept.haryana.gov.in"
+      "apply": "https://haryana.gov.in",
+      "official": "https://haryana.gov.in",
+      "notification": "https://haryana.gov.in"
     }
   },
   {
@@ -12921,9 +12921,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://haryana.electricityboard.haryana.gov.in",
-      "official": "https://haryana.electricityboard.haryana.gov.in",
-      "notification": "https://haryana.electricityboard.haryana.gov.in"
+      "apply": "https://haryana.gov.in",
+      "official": "https://haryana.gov.in",
+      "notification": "https://haryana.gov.in"
     }
   },
   {
@@ -12947,9 +12947,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://haryana.metrorail.haryana.gov.in",
-      "official": "https://haryana.metrorail.haryana.gov.in",
-      "notification": "https://haryana.metrorail.haryana.gov.in"
+      "apply": "https://haryana.gov.in",
+      "official": "https://haryana.gov.in",
+      "notification": "https://haryana.gov.in"
     }
   },
   {
@@ -12972,9 +12972,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://haryana.university.haryana.gov.in",
-      "official": "https://haryana.university.haryana.gov.in",
-      "notification": "https://haryana.university.haryana.gov.in"
+      "apply": "https://haryana.gov.in",
+      "official": "https://haryana.gov.in",
+      "notification": "https://haryana.gov.in"
     }
   },
   {
@@ -12998,9 +12998,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://haryana.nagarnigam.haryana.gov.in",
-      "official": "https://haryana.nagarnigam.haryana.gov.in",
-      "notification": "https://haryana.nagarnigam.haryana.gov.in"
+      "apply": "https://haryana.gov.in",
+      "official": "https://haryana.gov.in",
+      "notification": "https://haryana.gov.in"
     }
   },
   {
@@ -13024,9 +13024,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://haryana.panchayat.haryana.gov.in",
-      "official": "https://haryana.panchayat.haryana.gov.in",
-      "notification": "https://haryana.panchayat.haryana.gov.in"
+      "apply": "https://haryana.gov.in",
+      "official": "https://haryana.gov.in",
+      "notification": "https://haryana.gov.in"
     }
   },
   {
@@ -13050,9 +13050,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://haryana.forestdept.haryana.gov.in",
-      "official": "https://haryana.forestdept.haryana.gov.in",
-      "notification": "https://haryana.forestdept.haryana.gov.in"
+      "apply": "https://haryana.gov.in",
+      "official": "https://haryana.gov.in",
+      "notification": "https://haryana.gov.in"
     }
   },
   {
@@ -13076,9 +13076,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://haryana.pwd.haryana.gov.in",
-      "official": "https://haryana.pwd.haryana.gov.in",
-      "notification": "https://haryana.pwd.haryana.gov.in"
+      "apply": "https://haryana.gov.in",
+      "official": "https://haryana.gov.in",
+      "notification": "https://haryana.gov.in"
     }
   },
   {
@@ -13101,9 +13101,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://haryana.socialwelfare.haryana.gov.in",
-      "official": "https://haryana.socialwelfare.haryana.gov.in",
-      "notification": "https://haryana.socialwelfare.haryana.gov.in"
+      "apply": "https://haryana.gov.in",
+      "official": "https://haryana.gov.in",
+      "notification": "https://haryana.gov.in"
     }
   },
   {
@@ -13127,9 +13127,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://haryana.apexbank.haryana.gov.in",
-      "official": "https://haryana.apexbank.haryana.gov.in",
-      "notification": "https://haryana.apexbank.haryana.gov.in"
+      "apply": "https://haryana.gov.in",
+      "official": "https://haryana.gov.in",
+      "notification": "https://haryana.gov.in"
     }
   },
   {
@@ -13152,9 +13152,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://haryana.technicalboard.haryana.gov.in",
-      "official": "https://haryana.technicalboard.haryana.gov.in",
-      "notification": "https://haryana.technicalboard.haryana.gov.in"
+      "apply": "https://haryana.gov.in",
+      "official": "https://haryana.gov.in",
+      "notification": "https://haryana.gov.in"
     }
   },
   {
@@ -13177,10 +13177,10 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Active / Ongoing"
     },
     "links": {
-      "apply": "https://haryana.tetexam.haryana.gov.in",
-      "official": "https://haryana.tetexam.haryana.gov.in",
-      "notification": "https://haryana.tetexam.haryana.gov.in",
-      "admitCard": "https://haryana.tetexam.haryana.gov.in"
+      "apply": "https://haryana.gov.in",
+      "official": "https://haryana.gov.in",
+      "notification": "https://haryana.gov.in",
+      "admitCard": "https://haryana.gov.in"
     }
   },
   {
@@ -13203,10 +13203,10 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://haryana.entranceexam.haryana.gov.in",
-      "official": "https://haryana.entranceexam.haryana.gov.in",
-      "notification": "https://haryana.entranceexam.haryana.gov.in",
-      "answerKey": "https://haryana.entranceexam.haryana.gov.in"
+      "apply": "https://haryana.gov.in",
+      "official": "https://haryana.gov.in",
+      "notification": "https://haryana.gov.in",
+      "answerKey": "https://haryana.gov.in"
     }
   },
   {
@@ -13229,9 +13229,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://haryana.revenuecouncil.haryana.gov.in",
-      "official": "https://haryana.revenuecouncil.haryana.gov.in",
-      "notification": "https://haryana.revenuecouncil.haryana.gov.in"
+      "apply": "https://haryana.gov.in",
+      "official": "https://haryana.gov.in",
+      "notification": "https://haryana.gov.in"
     }
   },
   {
@@ -13255,9 +13255,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://punjab.police.punjab.gov.in",
-      "official": "https://punjab.police.punjab.gov.in",
-      "notification": "https://punjab.police.punjab.gov.in"
+      "apply": "https://punjab.gov.in",
+      "official": "https://punjab.gov.in",
+      "notification": "https://punjab.gov.in"
     }
   },
   {
@@ -13281,9 +13281,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://punjab.psc.punjab.gov.in",
-      "official": "https://punjab.psc.punjab.gov.in",
-      "notification": "https://punjab.psc.punjab.gov.in"
+      "apply": "https://punjab.gov.in",
+      "official": "https://punjab.gov.in",
+      "notification": "https://punjab.gov.in"
     }
   },
   {
@@ -13307,9 +13307,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://punjab.ssb.punjab.gov.in",
-      "official": "https://punjab.ssb.punjab.gov.in",
-      "notification": "https://punjab.ssb.punjab.gov.in"
+      "apply": "https://punjab.gov.in",
+      "official": "https://punjab.gov.in",
+      "notification": "https://punjab.gov.in"
     }
   },
   {
@@ -13333,9 +13333,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://punjab.highcourt.punjab.gov.in",
-      "official": "https://punjab.highcourt.punjab.gov.in",
-      "notification": "https://punjab.highcourt.punjab.gov.in"
+      "apply": "https://punjab.gov.in",
+      "official": "https://punjab.gov.in",
+      "notification": "https://punjab.gov.in"
     }
   },
   {
@@ -13358,10 +13358,10 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://punjab.educationboard.punjab.gov.in",
-      "official": "https://punjab.educationboard.punjab.gov.in",
-      "notification": "https://punjab.educationboard.punjab.gov.in",
-      "result": "https://punjab.educationboard.punjab.gov.in"
+      "apply": "https://punjab.gov.in",
+      "official": "https://punjab.gov.in",
+      "notification": "https://punjab.gov.in",
+      "result": "https://punjab.gov.in"
     }
   },
   {
@@ -13385,9 +13385,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://punjab.healthdept.punjab.gov.in",
-      "official": "https://punjab.healthdept.punjab.gov.in",
-      "notification": "https://punjab.healthdept.punjab.gov.in"
+      "apply": "https://punjab.gov.in",
+      "official": "https://punjab.gov.in",
+      "notification": "https://punjab.gov.in"
     }
   },
   {
@@ -13411,9 +13411,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://punjab.transportdept.punjab.gov.in",
-      "official": "https://punjab.transportdept.punjab.gov.in",
-      "notification": "https://punjab.transportdept.punjab.gov.in"
+      "apply": "https://punjab.gov.in",
+      "official": "https://punjab.gov.in",
+      "notification": "https://punjab.gov.in"
     }
   },
   {
@@ -13437,9 +13437,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://punjab.electricityboard.punjab.gov.in",
-      "official": "https://punjab.electricityboard.punjab.gov.in",
-      "notification": "https://punjab.electricityboard.punjab.gov.in"
+      "apply": "https://punjab.gov.in",
+      "official": "https://punjab.gov.in",
+      "notification": "https://punjab.gov.in"
     }
   },
   {
@@ -13463,9 +13463,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://punjab.metrorail.punjab.gov.in",
-      "official": "https://punjab.metrorail.punjab.gov.in",
-      "notification": "https://punjab.metrorail.punjab.gov.in"
+      "apply": "https://punjab.gov.in",
+      "official": "https://punjab.gov.in",
+      "notification": "https://punjab.gov.in"
     }
   },
   {
@@ -13488,9 +13488,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://punjab.university.punjab.gov.in",
-      "official": "https://punjab.university.punjab.gov.in",
-      "notification": "https://punjab.university.punjab.gov.in"
+      "apply": "https://punjab.gov.in",
+      "official": "https://punjab.gov.in",
+      "notification": "https://punjab.gov.in"
     }
   },
   {
@@ -13514,9 +13514,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://punjab.nagarnigam.punjab.gov.in",
-      "official": "https://punjab.nagarnigam.punjab.gov.in",
-      "notification": "https://punjab.nagarnigam.punjab.gov.in"
+      "apply": "https://punjab.gov.in",
+      "official": "https://punjab.gov.in",
+      "notification": "https://punjab.gov.in"
     }
   },
   {
@@ -13540,9 +13540,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://punjab.panchayat.punjab.gov.in",
-      "official": "https://punjab.panchayat.punjab.gov.in",
-      "notification": "https://punjab.panchayat.punjab.gov.in"
+      "apply": "https://punjab.gov.in",
+      "official": "https://punjab.gov.in",
+      "notification": "https://punjab.gov.in"
     }
   },
   {
@@ -13566,9 +13566,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://punjab.forestdept.punjab.gov.in",
-      "official": "https://punjab.forestdept.punjab.gov.in",
-      "notification": "https://punjab.forestdept.punjab.gov.in"
+      "apply": "https://punjab.gov.in",
+      "official": "https://punjab.gov.in",
+      "notification": "https://punjab.gov.in"
     }
   },
   {
@@ -13592,9 +13592,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://punjab.pwd.punjab.gov.in",
-      "official": "https://punjab.pwd.punjab.gov.in",
-      "notification": "https://punjab.pwd.punjab.gov.in"
+      "apply": "https://punjab.gov.in",
+      "official": "https://punjab.gov.in",
+      "notification": "https://punjab.gov.in"
     }
   },
   {
@@ -13617,9 +13617,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://punjab.socialwelfare.punjab.gov.in",
-      "official": "https://punjab.socialwelfare.punjab.gov.in",
-      "notification": "https://punjab.socialwelfare.punjab.gov.in"
+      "apply": "https://punjab.gov.in",
+      "official": "https://punjab.gov.in",
+      "notification": "https://punjab.gov.in"
     }
   },
   {
@@ -13643,9 +13643,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://punjab.apexbank.punjab.gov.in",
-      "official": "https://punjab.apexbank.punjab.gov.in",
-      "notification": "https://punjab.apexbank.punjab.gov.in"
+      "apply": "https://punjab.gov.in",
+      "official": "https://punjab.gov.in",
+      "notification": "https://punjab.gov.in"
     }
   },
   {
@@ -13668,9 +13668,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://punjab.technicalboard.punjab.gov.in",
-      "official": "https://punjab.technicalboard.punjab.gov.in",
-      "notification": "https://punjab.technicalboard.punjab.gov.in"
+      "apply": "https://punjab.gov.in",
+      "official": "https://punjab.gov.in",
+      "notification": "https://punjab.gov.in"
     }
   },
   {
@@ -13693,10 +13693,10 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Active / Ongoing"
     },
     "links": {
-      "apply": "https://punjab.tetexam.punjab.gov.in",
-      "official": "https://punjab.tetexam.punjab.gov.in",
-      "notification": "https://punjab.tetexam.punjab.gov.in",
-      "admitCard": "https://punjab.tetexam.punjab.gov.in"
+      "apply": "https://punjab.gov.in",
+      "official": "https://punjab.gov.in",
+      "notification": "https://punjab.gov.in",
+      "admitCard": "https://punjab.gov.in"
     }
   },
   {
@@ -13719,10 +13719,10 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://punjab.entranceexam.punjab.gov.in",
-      "official": "https://punjab.entranceexam.punjab.gov.in",
-      "notification": "https://punjab.entranceexam.punjab.gov.in",
-      "answerKey": "https://punjab.entranceexam.punjab.gov.in"
+      "apply": "https://punjab.gov.in",
+      "official": "https://punjab.gov.in",
+      "notification": "https://punjab.gov.in",
+      "answerKey": "https://punjab.gov.in"
     }
   },
   {
@@ -13745,9 +13745,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://punjab.revenuecouncil.punjab.gov.in",
-      "official": "https://punjab.revenuecouncil.punjab.gov.in",
-      "notification": "https://punjab.revenuecouncil.punjab.gov.in"
+      "apply": "https://punjab.gov.in",
+      "official": "https://punjab.gov.in",
+      "notification": "https://punjab.gov.in"
     }
   },
   {
@@ -13771,9 +13771,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://maharashtra.police.maharashtra.gov.in",
-      "official": "https://maharashtra.police.maharashtra.gov.in",
-      "notification": "https://maharashtra.police.maharashtra.gov.in"
+      "apply": "https://mpsc.gov.in",
+      "official": "https://mahapolice.gov.in",
+      "notification": "https://mahapolice.gov.in"
     }
   },
   {
@@ -13795,9 +13795,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "last": "31-10-2026"
     },
     "links": {
-      "apply": "https://maharashtra.police.maharashtra.gov.in",
-      "official": "https://maharashtra.police.maharashtra.gov.in",
-      "notification": "https://maharashtra.police.maharashtra.gov.in"
+      "apply": "https://mpsc.gov.in",
+      "official": "https://mahapolice.gov.in",
+      "notification": "https://mahapolice.gov.in"
     }
   },
   {
@@ -13821,9 +13821,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://maharashtra.psc.maharashtra.gov.in",
-      "official": "https://maharashtra.psc.maharashtra.gov.in",
-      "notification": "https://maharashtra.psc.maharashtra.gov.in"
+      "apply": "https://mpsc.gov.in",
+      "official": "https://mpsc.gov.in",
+      "notification": "https://mpsc.gov.in"
     }
   },
   {
@@ -13845,10 +13845,10 @@ export const fullCatalogJobs: JobAlert[] = [
       "last": "31-10-2026"
     },
     "links": {
-      "apply": "https://maharashtra.psc.maharashtra.gov.in",
-      "official": "https://maharashtra.psc.maharashtra.gov.in",
-      "notification": "https://maharashtra.psc.maharashtra.gov.in",
-      "admitCard": "https://maharashtra.psc.maharashtra.gov.in"
+      "apply": "https://mpsc.gov.in",
+      "official": "https://mpsc.gov.in",
+      "notification": "https://mpsc.gov.in",
+      "admitCard": "https://mpsc.gov.in"
     }
   },
   {
@@ -13872,9 +13872,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://maharashtra.ssb.maharashtra.gov.in",
-      "official": "https://maharashtra.ssb.maharashtra.gov.in",
-      "notification": "https://maharashtra.ssb.maharashtra.gov.in"
+      "apply": "https://maharashtra.gov.in",
+      "official": "https://maharashtra.gov.in",
+      "notification": "https://maharashtra.gov.in"
     }
   },
   {
@@ -13896,9 +13896,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "last": "31-10-2026"
     },
     "links": {
-      "apply": "https://maharashtra.ssb.maharashtra.gov.in",
-      "official": "https://maharashtra.ssb.maharashtra.gov.in",
-      "notification": "https://maharashtra.ssb.maharashtra.gov.in"
+      "apply": "https://maharashtra.gov.in",
+      "official": "https://maharashtra.gov.in",
+      "notification": "https://maharashtra.gov.in"
     }
   },
   {
@@ -13922,9 +13922,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://maharashtra.highcourt.maharashtra.gov.in",
-      "official": "https://maharashtra.highcourt.maharashtra.gov.in",
-      "notification": "https://maharashtra.highcourt.maharashtra.gov.in"
+      "apply": "https://maharashtra.gov.in",
+      "official": "https://maharashtra.gov.in",
+      "notification": "https://maharashtra.gov.in"
     }
   },
   {
@@ -13946,9 +13946,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "last": "31-10-2026"
     },
     "links": {
-      "apply": "https://maharashtra.highcourt.maharashtra.gov.in",
-      "official": "https://maharashtra.highcourt.maharashtra.gov.in",
-      "notification": "https://maharashtra.highcourt.maharashtra.gov.in"
+      "apply": "https://maharashtra.gov.in",
+      "official": "https://maharashtra.gov.in",
+      "notification": "https://maharashtra.gov.in"
     }
   },
   {
@@ -13971,10 +13971,10 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://maharashtra.educationboard.maharashtra.gov.in",
-      "official": "https://maharashtra.educationboard.maharashtra.gov.in",
-      "notification": "https://maharashtra.educationboard.maharashtra.gov.in",
-      "result": "https://maharashtra.educationboard.maharashtra.gov.in"
+      "apply": "https://maharashtra.gov.in",
+      "official": "https://maharashtra.gov.in",
+      "notification": "https://maharashtra.gov.in",
+      "result": "https://maharashtra.gov.in"
     }
   },
   {
@@ -13996,10 +13996,10 @@ export const fullCatalogJobs: JobAlert[] = [
       "last": "31-10-2026"
     },
     "links": {
-      "apply": "https://maharashtra.educationboard.maharashtra.gov.in",
-      "official": "https://maharashtra.educationboard.maharashtra.gov.in",
-      "notification": "https://maharashtra.educationboard.maharashtra.gov.in",
-      "admitCard": "https://maharashtra.educationboard.maharashtra.gov.in"
+      "apply": "https://maharashtra.gov.in",
+      "official": "https://maharashtra.gov.in",
+      "notification": "https://maharashtra.gov.in",
+      "admitCard": "https://maharashtra.gov.in"
     }
   },
   {
@@ -14023,9 +14023,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://maharashtra.healthdept.maharashtra.gov.in",
-      "official": "https://maharashtra.healthdept.maharashtra.gov.in",
-      "notification": "https://maharashtra.healthdept.maharashtra.gov.in"
+      "apply": "https://maharashtra.gov.in",
+      "official": "https://maharashtra.gov.in",
+      "notification": "https://maharashtra.gov.in"
     }
   },
   {
@@ -14047,9 +14047,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "last": "31-10-2026"
     },
     "links": {
-      "apply": "https://maharashtra.healthdept.maharashtra.gov.in",
-      "official": "https://maharashtra.healthdept.maharashtra.gov.in",
-      "notification": "https://maharashtra.healthdept.maharashtra.gov.in"
+      "apply": "https://maharashtra.gov.in",
+      "official": "https://maharashtra.gov.in",
+      "notification": "https://maharashtra.gov.in"
     }
   },
   {
@@ -14073,9 +14073,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://maharashtra.transportdept.maharashtra.gov.in",
-      "official": "https://maharashtra.transportdept.maharashtra.gov.in",
-      "notification": "https://maharashtra.transportdept.maharashtra.gov.in"
+      "apply": "https://maharashtra.gov.in",
+      "official": "https://maharashtra.gov.in",
+      "notification": "https://maharashtra.gov.in"
     }
   },
   {
@@ -14097,9 +14097,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "last": "31-10-2026"
     },
     "links": {
-      "apply": "https://maharashtra.transportdept.maharashtra.gov.in",
-      "official": "https://maharashtra.transportdept.maharashtra.gov.in",
-      "notification": "https://maharashtra.transportdept.maharashtra.gov.in"
+      "apply": "https://maharashtra.gov.in",
+      "official": "https://maharashtra.gov.in",
+      "notification": "https://maharashtra.gov.in"
     }
   },
   {
@@ -14123,9 +14123,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://maharashtra.electricityboard.maharashtra.gov.in",
-      "official": "https://maharashtra.electricityboard.maharashtra.gov.in",
-      "notification": "https://maharashtra.electricityboard.maharashtra.gov.in"
+      "apply": "https://maharashtra.gov.in",
+      "official": "https://maharashtra.gov.in",
+      "notification": "https://maharashtra.gov.in"
     }
   },
   {
@@ -14147,10 +14147,10 @@ export const fullCatalogJobs: JobAlert[] = [
       "last": "31-10-2026"
     },
     "links": {
-      "apply": "https://maharashtra.electricityboard.maharashtra.gov.in",
-      "official": "https://maharashtra.electricityboard.maharashtra.gov.in",
-      "notification": "https://maharashtra.electricityboard.maharashtra.gov.in",
-      "admitCard": "https://maharashtra.electricityboard.maharashtra.gov.in"
+      "apply": "https://maharashtra.gov.in",
+      "official": "https://maharashtra.gov.in",
+      "notification": "https://maharashtra.gov.in",
+      "admitCard": "https://maharashtra.gov.in"
     }
   },
   {
@@ -14174,9 +14174,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://maharashtra.metrorail.maharashtra.gov.in",
-      "official": "https://maharashtra.metrorail.maharashtra.gov.in",
-      "notification": "https://maharashtra.metrorail.maharashtra.gov.in"
+      "apply": "https://maharashtra.gov.in",
+      "official": "https://maharashtra.gov.in",
+      "notification": "https://maharashtra.gov.in"
     }
   },
   {
@@ -14198,9 +14198,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "last": "31-10-2026"
     },
     "links": {
-      "apply": "https://maharashtra.metrorail.maharashtra.gov.in",
-      "official": "https://maharashtra.metrorail.maharashtra.gov.in",
-      "notification": "https://maharashtra.metrorail.maharashtra.gov.in"
+      "apply": "https://maharashtra.gov.in",
+      "official": "https://maharashtra.gov.in",
+      "notification": "https://maharashtra.gov.in"
     }
   },
   {
@@ -14223,9 +14223,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://maharashtra.university.maharashtra.gov.in",
-      "official": "https://maharashtra.university.maharashtra.gov.in",
-      "notification": "https://maharashtra.university.maharashtra.gov.in"
+      "apply": "https://maharashtra.gov.in",
+      "official": "https://maharashtra.gov.in",
+      "notification": "https://maharashtra.gov.in"
     }
   },
   {
@@ -14247,9 +14247,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "last": "31-10-2026"
     },
     "links": {
-      "apply": "https://maharashtra.university.maharashtra.gov.in",
-      "official": "https://maharashtra.university.maharashtra.gov.in",
-      "notification": "https://maharashtra.university.maharashtra.gov.in"
+      "apply": "https://maharashtra.gov.in",
+      "official": "https://maharashtra.gov.in",
+      "notification": "https://maharashtra.gov.in"
     }
   },
   {
@@ -14273,9 +14273,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://maharashtra.nagarnigam.maharashtra.gov.in",
-      "official": "https://maharashtra.nagarnigam.maharashtra.gov.in",
-      "notification": "https://maharashtra.nagarnigam.maharashtra.gov.in"
+      "apply": "https://maharashtra.gov.in",
+      "official": "https://maharashtra.gov.in",
+      "notification": "https://maharashtra.gov.in"
     }
   },
   {
@@ -14297,10 +14297,10 @@ export const fullCatalogJobs: JobAlert[] = [
       "last": "31-10-2026"
     },
     "links": {
-      "apply": "https://maharashtra.nagarnigam.maharashtra.gov.in",
-      "official": "https://maharashtra.nagarnigam.maharashtra.gov.in",
-      "notification": "https://maharashtra.nagarnigam.maharashtra.gov.in",
-      "admitCard": "https://maharashtra.nagarnigam.maharashtra.gov.in"
+      "apply": "https://maharashtra.gov.in",
+      "official": "https://maharashtra.gov.in",
+      "notification": "https://maharashtra.gov.in",
+      "admitCard": "https://maharashtra.gov.in"
     }
   },
   {
@@ -14324,9 +14324,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://maharashtra.panchayat.maharashtra.gov.in",
-      "official": "https://maharashtra.panchayat.maharashtra.gov.in",
-      "notification": "https://maharashtra.panchayat.maharashtra.gov.in"
+      "apply": "https://maharashtra.gov.in",
+      "official": "https://maharashtra.gov.in",
+      "notification": "https://maharashtra.gov.in"
     }
   },
   {
@@ -14348,9 +14348,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "last": "31-10-2026"
     },
     "links": {
-      "apply": "https://maharashtra.panchayat.maharashtra.gov.in",
-      "official": "https://maharashtra.panchayat.maharashtra.gov.in",
-      "notification": "https://maharashtra.panchayat.maharashtra.gov.in"
+      "apply": "https://maharashtra.gov.in",
+      "official": "https://maharashtra.gov.in",
+      "notification": "https://maharashtra.gov.in"
     }
   },
   {
@@ -14374,9 +14374,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://maharashtra.forestdept.maharashtra.gov.in",
-      "official": "https://maharashtra.forestdept.maharashtra.gov.in",
-      "notification": "https://maharashtra.forestdept.maharashtra.gov.in"
+      "apply": "https://maharashtra.gov.in",
+      "official": "https://maharashtra.gov.in",
+      "notification": "https://maharashtra.gov.in"
     }
   },
   {
@@ -14400,9 +14400,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://maharashtra.pwd.maharashtra.gov.in",
-      "official": "https://maharashtra.pwd.maharashtra.gov.in",
-      "notification": "https://maharashtra.pwd.maharashtra.gov.in"
+      "apply": "https://maharashtra.gov.in",
+      "official": "https://maharashtra.gov.in",
+      "notification": "https://maharashtra.gov.in"
     }
   },
   {
@@ -14425,9 +14425,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://maharashtra.socialwelfare.maharashtra.gov.in",
-      "official": "https://maharashtra.socialwelfare.maharashtra.gov.in",
-      "notification": "https://maharashtra.socialwelfare.maharashtra.gov.in"
+      "apply": "https://maharashtra.gov.in",
+      "official": "https://maharashtra.gov.in",
+      "notification": "https://maharashtra.gov.in"
     }
   },
   {
@@ -14451,9 +14451,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://maharashtra.apexbank.maharashtra.gov.in",
-      "official": "https://maharashtra.apexbank.maharashtra.gov.in",
-      "notification": "https://maharashtra.apexbank.maharashtra.gov.in"
+      "apply": "https://maharashtra.gov.in",
+      "official": "https://maharashtra.gov.in",
+      "notification": "https://maharashtra.gov.in"
     }
   },
   {
@@ -14476,9 +14476,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://maharashtra.technicalboard.maharashtra.gov.in",
-      "official": "https://maharashtra.technicalboard.maharashtra.gov.in",
-      "notification": "https://maharashtra.technicalboard.maharashtra.gov.in"
+      "apply": "https://maharashtra.gov.in",
+      "official": "https://maharashtra.gov.in",
+      "notification": "https://maharashtra.gov.in"
     }
   },
   {
@@ -14501,10 +14501,10 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Active / Ongoing"
     },
     "links": {
-      "apply": "https://maharashtra.tetexam.maharashtra.gov.in",
-      "official": "https://maharashtra.tetexam.maharashtra.gov.in",
-      "notification": "https://maharashtra.tetexam.maharashtra.gov.in",
-      "admitCard": "https://maharashtra.tetexam.maharashtra.gov.in"
+      "apply": "https://maharashtra.gov.in",
+      "official": "https://maharashtra.gov.in",
+      "notification": "https://maharashtra.gov.in",
+      "admitCard": "https://maharashtra.gov.in"
     }
   },
   {
@@ -14527,10 +14527,10 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://maharashtra.entranceexam.maharashtra.gov.in",
-      "official": "https://maharashtra.entranceexam.maharashtra.gov.in",
-      "notification": "https://maharashtra.entranceexam.maharashtra.gov.in",
-      "answerKey": "https://maharashtra.entranceexam.maharashtra.gov.in"
+      "apply": "https://maharashtra.gov.in",
+      "official": "https://maharashtra.gov.in",
+      "notification": "https://maharashtra.gov.in",
+      "answerKey": "https://maharashtra.gov.in"
     }
   },
   {
@@ -14553,9 +14553,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://maharashtra.revenuecouncil.maharashtra.gov.in",
-      "official": "https://maharashtra.revenuecouncil.maharashtra.gov.in",
-      "notification": "https://maharashtra.revenuecouncil.maharashtra.gov.in"
+      "apply": "https://maharashtra.gov.in",
+      "official": "https://maharashtra.gov.in",
+      "notification": "https://maharashtra.gov.in"
     }
   },
   {
@@ -14579,9 +14579,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://wb.police.wb.gov.in",
-      "official": "https://wb.police.wb.gov.in",
-      "notification": "https://wb.police.wb.gov.in"
+      "apply": "https://prb.wb.gov.in",
+      "official": "https://prb.wb.gov.in",
+      "notification": "https://prb.wb.gov.in"
     }
   },
   {
@@ -14605,9 +14605,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://wb.psc.wb.gov.in",
-      "official": "https://wb.psc.wb.gov.in",
-      "notification": "https://wb.psc.wb.gov.in"
+      "apply": "https://psc.wb.gov.in",
+      "official": "https://psc.wb.gov.in",
+      "notification": "https://psc.wb.gov.in"
     }
   },
   {
@@ -14631,9 +14631,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://wb.ssb.wb.gov.in",
-      "official": "https://wb.ssb.wb.gov.in",
-      "notification": "https://wb.ssb.wb.gov.in"
+      "apply": "https://wb.gov.in",
+      "official": "https://wb.gov.in",
+      "notification": "https://wb.gov.in"
     }
   },
   {
@@ -14657,9 +14657,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://wb.highcourt.wb.gov.in",
-      "official": "https://wb.highcourt.wb.gov.in",
-      "notification": "https://wb.highcourt.wb.gov.in"
+      "apply": "https://wb.gov.in",
+      "official": "https://wb.gov.in",
+      "notification": "https://wb.gov.in"
     }
   },
   {
@@ -14682,10 +14682,10 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://wb.educationboard.wb.gov.in",
-      "official": "https://wb.educationboard.wb.gov.in",
-      "notification": "https://wb.educationboard.wb.gov.in",
-      "result": "https://wb.educationboard.wb.gov.in"
+      "apply": "https://wb.gov.in",
+      "official": "https://wb.gov.in",
+      "notification": "https://wb.gov.in",
+      "result": "https://wb.gov.in"
     }
   },
   {
@@ -14709,9 +14709,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://wb.healthdept.wb.gov.in",
-      "official": "https://wb.healthdept.wb.gov.in",
-      "notification": "https://wb.healthdept.wb.gov.in"
+      "apply": "https://wb.gov.in",
+      "official": "https://wb.gov.in",
+      "notification": "https://wb.gov.in"
     }
   },
   {
@@ -14735,9 +14735,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://wb.transportdept.wb.gov.in",
-      "official": "https://wb.transportdept.wb.gov.in",
-      "notification": "https://wb.transportdept.wb.gov.in"
+      "apply": "https://wb.gov.in",
+      "official": "https://wb.gov.in",
+      "notification": "https://wb.gov.in"
     }
   },
   {
@@ -14761,9 +14761,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://wb.electricityboard.wb.gov.in",
-      "official": "https://wb.electricityboard.wb.gov.in",
-      "notification": "https://wb.electricityboard.wb.gov.in"
+      "apply": "https://wb.gov.in",
+      "official": "https://wb.gov.in",
+      "notification": "https://wb.gov.in"
     }
   },
   {
@@ -14787,9 +14787,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://wb.metrorail.wb.gov.in",
-      "official": "https://wb.metrorail.wb.gov.in",
-      "notification": "https://wb.metrorail.wb.gov.in"
+      "apply": "https://wb.gov.in",
+      "official": "https://wb.gov.in",
+      "notification": "https://wb.gov.in"
     }
   },
   {
@@ -14812,9 +14812,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://wb.university.wb.gov.in",
-      "official": "https://wb.university.wb.gov.in",
-      "notification": "https://wb.university.wb.gov.in"
+      "apply": "https://wb.gov.in",
+      "official": "https://wb.gov.in",
+      "notification": "https://wb.gov.in"
     }
   },
   {
@@ -14838,9 +14838,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://wb.nagarnigam.wb.gov.in",
-      "official": "https://wb.nagarnigam.wb.gov.in",
-      "notification": "https://wb.nagarnigam.wb.gov.in"
+      "apply": "https://wb.gov.in",
+      "official": "https://wb.gov.in",
+      "notification": "https://wb.gov.in"
     }
   },
   {
@@ -14864,9 +14864,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://wb.panchayat.wb.gov.in",
-      "official": "https://wb.panchayat.wb.gov.in",
-      "notification": "https://wb.panchayat.wb.gov.in"
+      "apply": "https://wb.gov.in",
+      "official": "https://wb.gov.in",
+      "notification": "https://wb.gov.in"
     }
   },
   {
@@ -14890,9 +14890,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://wb.forestdept.wb.gov.in",
-      "official": "https://wb.forestdept.wb.gov.in",
-      "notification": "https://wb.forestdept.wb.gov.in"
+      "apply": "https://wb.gov.in",
+      "official": "https://wb.gov.in",
+      "notification": "https://wb.gov.in"
     }
   },
   {
@@ -14916,9 +14916,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://wb.pwd.wb.gov.in",
-      "official": "https://wb.pwd.wb.gov.in",
-      "notification": "https://wb.pwd.wb.gov.in"
+      "apply": "https://wb.gov.in",
+      "official": "https://wb.gov.in",
+      "notification": "https://wb.gov.in"
     }
   },
   {
@@ -14941,9 +14941,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://wb.socialwelfare.wb.gov.in",
-      "official": "https://wb.socialwelfare.wb.gov.in",
-      "notification": "https://wb.socialwelfare.wb.gov.in"
+      "apply": "https://wb.gov.in",
+      "official": "https://wb.gov.in",
+      "notification": "https://wb.gov.in"
     }
   },
   {
@@ -14967,9 +14967,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://wb.apexbank.wb.gov.in",
-      "official": "https://wb.apexbank.wb.gov.in",
-      "notification": "https://wb.apexbank.wb.gov.in"
+      "apply": "https://wb.gov.in",
+      "official": "https://wb.gov.in",
+      "notification": "https://wb.gov.in"
     }
   },
   {
@@ -14992,9 +14992,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://wb.technicalboard.wb.gov.in",
-      "official": "https://wb.technicalboard.wb.gov.in",
-      "notification": "https://wb.technicalboard.wb.gov.in"
+      "apply": "https://wb.gov.in",
+      "official": "https://wb.gov.in",
+      "notification": "https://wb.gov.in"
     }
   },
   {
@@ -15017,10 +15017,10 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Active / Ongoing"
     },
     "links": {
-      "apply": "https://wb.tetexam.wb.gov.in",
-      "official": "https://wb.tetexam.wb.gov.in",
-      "notification": "https://wb.tetexam.wb.gov.in",
-      "admitCard": "https://wb.tetexam.wb.gov.in"
+      "apply": "https://wb.gov.in",
+      "official": "https://wb.gov.in",
+      "notification": "https://wb.gov.in",
+      "admitCard": "https://wb.gov.in"
     }
   },
   {
@@ -15043,10 +15043,10 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://wb.entranceexam.wb.gov.in",
-      "official": "https://wb.entranceexam.wb.gov.in",
-      "notification": "https://wb.entranceexam.wb.gov.in",
-      "answerKey": "https://wb.entranceexam.wb.gov.in"
+      "apply": "https://wb.gov.in",
+      "official": "https://wb.gov.in",
+      "notification": "https://wb.gov.in",
+      "answerKey": "https://wb.gov.in"
     }
   },
   {
@@ -15069,9 +15069,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://wb.revenuecouncil.wb.gov.in",
-      "official": "https://wb.revenuecouncil.wb.gov.in",
-      "notification": "https://wb.revenuecouncil.wb.gov.in"
+      "apply": "https://wb.gov.in",
+      "official": "https://wb.gov.in",
+      "notification": "https://wb.gov.in"
     }
   },
   {
@@ -15095,9 +15095,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://jharkhand.police.jharkhand.gov.in",
-      "official": "https://jharkhand.police.jharkhand.gov.in",
-      "notification": "https://jharkhand.police.jharkhand.gov.in"
+      "apply": "https://jssc.nic.in",
+      "official": "https://jhpolice.gov.in",
+      "notification": "https://jhpolice.gov.in"
     }
   },
   {
@@ -15121,9 +15121,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://jharkhand.psc.jharkhand.gov.in",
-      "official": "https://jharkhand.psc.jharkhand.gov.in",
-      "notification": "https://jharkhand.psc.jharkhand.gov.in"
+      "apply": "https://jssc.nic.in",
+      "official": "https://jpsc.gov.in",
+      "notification": "https://jpsc.gov.in"
     }
   },
   {
@@ -15147,9 +15147,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://jharkhand.ssb.jharkhand.gov.in",
-      "official": "https://jharkhand.ssb.jharkhand.gov.in",
-      "notification": "https://jharkhand.ssb.jharkhand.gov.in"
+      "apply": "https://jharkhand.gov.in",
+      "official": "https://jharkhand.gov.in",
+      "notification": "https://jharkhand.gov.in"
     }
   },
   {
@@ -15173,9 +15173,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://jharkhand.highcourt.jharkhand.gov.in",
-      "official": "https://jharkhand.highcourt.jharkhand.gov.in",
-      "notification": "https://jharkhand.highcourt.jharkhand.gov.in"
+      "apply": "https://jharkhand.gov.in",
+      "official": "https://jharkhand.gov.in",
+      "notification": "https://jharkhand.gov.in"
     }
   },
   {
@@ -15198,10 +15198,10 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://jharkhand.educationboard.jharkhand.gov.in",
-      "official": "https://jharkhand.educationboard.jharkhand.gov.in",
-      "notification": "https://jharkhand.educationboard.jharkhand.gov.in",
-      "result": "https://jharkhand.educationboard.jharkhand.gov.in"
+      "apply": "https://jharkhand.gov.in",
+      "official": "https://jharkhand.gov.in",
+      "notification": "https://jharkhand.gov.in",
+      "result": "https://jharkhand.gov.in"
     }
   },
   {
@@ -15225,9 +15225,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://jharkhand.healthdept.jharkhand.gov.in",
-      "official": "https://jharkhand.healthdept.jharkhand.gov.in",
-      "notification": "https://jharkhand.healthdept.jharkhand.gov.in"
+      "apply": "https://jharkhand.gov.in",
+      "official": "https://jharkhand.gov.in",
+      "notification": "https://jharkhand.gov.in"
     }
   },
   {
@@ -15251,9 +15251,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://jharkhand.transportdept.jharkhand.gov.in",
-      "official": "https://jharkhand.transportdept.jharkhand.gov.in",
-      "notification": "https://jharkhand.transportdept.jharkhand.gov.in"
+      "apply": "https://jharkhand.gov.in",
+      "official": "https://jharkhand.gov.in",
+      "notification": "https://jharkhand.gov.in"
     }
   },
   {
@@ -15277,9 +15277,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://jharkhand.electricityboard.jharkhand.gov.in",
-      "official": "https://jharkhand.electricityboard.jharkhand.gov.in",
-      "notification": "https://jharkhand.electricityboard.jharkhand.gov.in"
+      "apply": "https://jharkhand.gov.in",
+      "official": "https://jharkhand.gov.in",
+      "notification": "https://jharkhand.gov.in"
     }
   },
   {
@@ -15303,9 +15303,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://jharkhand.metrorail.jharkhand.gov.in",
-      "official": "https://jharkhand.metrorail.jharkhand.gov.in",
-      "notification": "https://jharkhand.metrorail.jharkhand.gov.in"
+      "apply": "https://jharkhand.gov.in",
+      "official": "https://jharkhand.gov.in",
+      "notification": "https://jharkhand.gov.in"
     }
   },
   {
@@ -15328,9 +15328,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://jharkhand.university.jharkhand.gov.in",
-      "official": "https://jharkhand.university.jharkhand.gov.in",
-      "notification": "https://jharkhand.university.jharkhand.gov.in"
+      "apply": "https://jharkhand.gov.in",
+      "official": "https://jharkhand.gov.in",
+      "notification": "https://jharkhand.gov.in"
     }
   },
   {
@@ -15354,9 +15354,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://jharkhand.nagarnigam.jharkhand.gov.in",
-      "official": "https://jharkhand.nagarnigam.jharkhand.gov.in",
-      "notification": "https://jharkhand.nagarnigam.jharkhand.gov.in"
+      "apply": "https://jharkhand.gov.in",
+      "official": "https://jharkhand.gov.in",
+      "notification": "https://jharkhand.gov.in"
     }
   },
   {
@@ -15380,9 +15380,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://jharkhand.panchayat.jharkhand.gov.in",
-      "official": "https://jharkhand.panchayat.jharkhand.gov.in",
-      "notification": "https://jharkhand.panchayat.jharkhand.gov.in"
+      "apply": "https://jharkhand.gov.in",
+      "official": "https://jharkhand.gov.in",
+      "notification": "https://jharkhand.gov.in"
     }
   },
   {
@@ -15406,9 +15406,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://jharkhand.forestdept.jharkhand.gov.in",
-      "official": "https://jharkhand.forestdept.jharkhand.gov.in",
-      "notification": "https://jharkhand.forestdept.jharkhand.gov.in"
+      "apply": "https://jharkhand.gov.in",
+      "official": "https://jharkhand.gov.in",
+      "notification": "https://jharkhand.gov.in"
     }
   },
   {
@@ -15432,9 +15432,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://jharkhand.pwd.jharkhand.gov.in",
-      "official": "https://jharkhand.pwd.jharkhand.gov.in",
-      "notification": "https://jharkhand.pwd.jharkhand.gov.in"
+      "apply": "https://jharkhand.gov.in",
+      "official": "https://jharkhand.gov.in",
+      "notification": "https://jharkhand.gov.in"
     }
   },
   {
@@ -15457,9 +15457,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://jharkhand.socialwelfare.jharkhand.gov.in",
-      "official": "https://jharkhand.socialwelfare.jharkhand.gov.in",
-      "notification": "https://jharkhand.socialwelfare.jharkhand.gov.in"
+      "apply": "https://jharkhand.gov.in",
+      "official": "https://jharkhand.gov.in",
+      "notification": "https://jharkhand.gov.in"
     }
   },
   {
@@ -15483,9 +15483,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://jharkhand.apexbank.jharkhand.gov.in",
-      "official": "https://jharkhand.apexbank.jharkhand.gov.in",
-      "notification": "https://jharkhand.apexbank.jharkhand.gov.in"
+      "apply": "https://jharkhand.gov.in",
+      "official": "https://jharkhand.gov.in",
+      "notification": "https://jharkhand.gov.in"
     }
   },
   {
@@ -15508,9 +15508,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://jharkhand.technicalboard.jharkhand.gov.in",
-      "official": "https://jharkhand.technicalboard.jharkhand.gov.in",
-      "notification": "https://jharkhand.technicalboard.jharkhand.gov.in"
+      "apply": "https://jharkhand.gov.in",
+      "official": "https://jharkhand.gov.in",
+      "notification": "https://jharkhand.gov.in"
     }
   },
   {
@@ -15533,10 +15533,10 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Active / Ongoing"
     },
     "links": {
-      "apply": "https://jharkhand.tetexam.jharkhand.gov.in",
-      "official": "https://jharkhand.tetexam.jharkhand.gov.in",
-      "notification": "https://jharkhand.tetexam.jharkhand.gov.in",
-      "admitCard": "https://jharkhand.tetexam.jharkhand.gov.in"
+      "apply": "https://jharkhand.gov.in",
+      "official": "https://jharkhand.gov.in",
+      "notification": "https://jharkhand.gov.in",
+      "admitCard": "https://jharkhand.gov.in"
     }
   },
   {
@@ -15559,10 +15559,10 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://jharkhand.entranceexam.jharkhand.gov.in",
-      "official": "https://jharkhand.entranceexam.jharkhand.gov.in",
-      "notification": "https://jharkhand.entranceexam.jharkhand.gov.in",
-      "answerKey": "https://jharkhand.entranceexam.jharkhand.gov.in"
+      "apply": "https://jharkhand.gov.in",
+      "official": "https://jharkhand.gov.in",
+      "notification": "https://jharkhand.gov.in",
+      "answerKey": "https://jharkhand.gov.in"
     }
   },
   {
@@ -15585,9 +15585,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://jharkhand.revenuecouncil.jharkhand.gov.in",
-      "official": "https://jharkhand.revenuecouncil.jharkhand.gov.in",
-      "notification": "https://jharkhand.revenuecouncil.jharkhand.gov.in"
+      "apply": "https://jharkhand.gov.in",
+      "official": "https://jharkhand.gov.in",
+      "notification": "https://jharkhand.gov.in"
     }
   },
   {
@@ -15611,9 +15611,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://cg.police.cg.gov.in",
-      "official": "https://cg.police.cg.gov.in",
-      "notification": "https://cg.police.cg.gov.in"
+      "apply": "https://cg.gov.in",
+      "official": "https://cg.gov.in",
+      "notification": "https://cg.gov.in"
     }
   },
   {
@@ -15637,9 +15637,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://cg.psc.cg.gov.in",
-      "official": "https://cg.psc.cg.gov.in",
-      "notification": "https://cg.psc.cg.gov.in"
+      "apply": "https://cg.gov.in",
+      "official": "https://cg.gov.in",
+      "notification": "https://cg.gov.in"
     }
   },
   {
@@ -15663,9 +15663,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://cg.ssb.cg.gov.in",
-      "official": "https://cg.ssb.cg.gov.in",
-      "notification": "https://cg.ssb.cg.gov.in"
+      "apply": "https://cg.gov.in",
+      "official": "https://cg.gov.in",
+      "notification": "https://cg.gov.in"
     }
   },
   {
@@ -15689,9 +15689,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://cg.highcourt.cg.gov.in",
-      "official": "https://cg.highcourt.cg.gov.in",
-      "notification": "https://cg.highcourt.cg.gov.in"
+      "apply": "https://cg.gov.in",
+      "official": "https://cg.gov.in",
+      "notification": "https://cg.gov.in"
     }
   },
   {
@@ -15714,10 +15714,10 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://cg.educationboard.cg.gov.in",
-      "official": "https://cg.educationboard.cg.gov.in",
-      "notification": "https://cg.educationboard.cg.gov.in",
-      "result": "https://cg.educationboard.cg.gov.in"
+      "apply": "https://cg.gov.in",
+      "official": "https://cg.gov.in",
+      "notification": "https://cg.gov.in",
+      "result": "https://cg.gov.in"
     }
   },
   {
@@ -15741,9 +15741,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://cg.healthdept.cg.gov.in",
-      "official": "https://cg.healthdept.cg.gov.in",
-      "notification": "https://cg.healthdept.cg.gov.in"
+      "apply": "https://cg.gov.in",
+      "official": "https://cg.gov.in",
+      "notification": "https://cg.gov.in"
     }
   },
   {
@@ -15767,9 +15767,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://cg.transportdept.cg.gov.in",
-      "official": "https://cg.transportdept.cg.gov.in",
-      "notification": "https://cg.transportdept.cg.gov.in"
+      "apply": "https://cg.gov.in",
+      "official": "https://cg.gov.in",
+      "notification": "https://cg.gov.in"
     }
   },
   {
@@ -15793,9 +15793,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://cg.electricityboard.cg.gov.in",
-      "official": "https://cg.electricityboard.cg.gov.in",
-      "notification": "https://cg.electricityboard.cg.gov.in"
+      "apply": "https://cg.gov.in",
+      "official": "https://cg.gov.in",
+      "notification": "https://cg.gov.in"
     }
   },
   {
@@ -15819,9 +15819,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://cg.metrorail.cg.gov.in",
-      "official": "https://cg.metrorail.cg.gov.in",
-      "notification": "https://cg.metrorail.cg.gov.in"
+      "apply": "https://cg.gov.in",
+      "official": "https://cg.gov.in",
+      "notification": "https://cg.gov.in"
     }
   },
   {
@@ -15844,9 +15844,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://cg.university.cg.gov.in",
-      "official": "https://cg.university.cg.gov.in",
-      "notification": "https://cg.university.cg.gov.in"
+      "apply": "https://cg.gov.in",
+      "official": "https://cg.gov.in",
+      "notification": "https://cg.gov.in"
     }
   },
   {
@@ -15870,9 +15870,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://cg.nagarnigam.cg.gov.in",
-      "official": "https://cg.nagarnigam.cg.gov.in",
-      "notification": "https://cg.nagarnigam.cg.gov.in"
+      "apply": "https://cg.gov.in",
+      "official": "https://cg.gov.in",
+      "notification": "https://cg.gov.in"
     }
   },
   {
@@ -15896,9 +15896,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://cg.panchayat.cg.gov.in",
-      "official": "https://cg.panchayat.cg.gov.in",
-      "notification": "https://cg.panchayat.cg.gov.in"
+      "apply": "https://cg.gov.in",
+      "official": "https://cg.gov.in",
+      "notification": "https://cg.gov.in"
     }
   },
   {
@@ -15922,9 +15922,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://cg.forestdept.cg.gov.in",
-      "official": "https://cg.forestdept.cg.gov.in",
-      "notification": "https://cg.forestdept.cg.gov.in"
+      "apply": "https://cg.gov.in",
+      "official": "https://cg.gov.in",
+      "notification": "https://cg.gov.in"
     }
   },
   {
@@ -15948,9 +15948,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://cg.pwd.cg.gov.in",
-      "official": "https://cg.pwd.cg.gov.in",
-      "notification": "https://cg.pwd.cg.gov.in"
+      "apply": "https://cg.gov.in",
+      "official": "https://cg.gov.in",
+      "notification": "https://cg.gov.in"
     }
   },
   {
@@ -15973,9 +15973,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://cg.socialwelfare.cg.gov.in",
-      "official": "https://cg.socialwelfare.cg.gov.in",
-      "notification": "https://cg.socialwelfare.cg.gov.in"
+      "apply": "https://cg.gov.in",
+      "official": "https://cg.gov.in",
+      "notification": "https://cg.gov.in"
     }
   },
   {
@@ -15999,9 +15999,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://cg.apexbank.cg.gov.in",
-      "official": "https://cg.apexbank.cg.gov.in",
-      "notification": "https://cg.apexbank.cg.gov.in"
+      "apply": "https://cg.gov.in",
+      "official": "https://cg.gov.in",
+      "notification": "https://cg.gov.in"
     }
   },
   {
@@ -16024,9 +16024,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://cg.technicalboard.cg.gov.in",
-      "official": "https://cg.technicalboard.cg.gov.in",
-      "notification": "https://cg.technicalboard.cg.gov.in"
+      "apply": "https://cg.gov.in",
+      "official": "https://cg.gov.in",
+      "notification": "https://cg.gov.in"
     }
   },
   {
@@ -16049,10 +16049,10 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Active / Ongoing"
     },
     "links": {
-      "apply": "https://cg.tetexam.cg.gov.in",
-      "official": "https://cg.tetexam.cg.gov.in",
-      "notification": "https://cg.tetexam.cg.gov.in",
-      "admitCard": "https://cg.tetexam.cg.gov.in"
+      "apply": "https://cg.gov.in",
+      "official": "https://cg.gov.in",
+      "notification": "https://cg.gov.in",
+      "admitCard": "https://cg.gov.in"
     }
   },
   {
@@ -16075,10 +16075,10 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://cg.entranceexam.cg.gov.in",
-      "official": "https://cg.entranceexam.cg.gov.in",
-      "notification": "https://cg.entranceexam.cg.gov.in",
-      "answerKey": "https://cg.entranceexam.cg.gov.in"
+      "apply": "https://cg.gov.in",
+      "official": "https://cg.gov.in",
+      "notification": "https://cg.gov.in",
+      "answerKey": "https://cg.gov.in"
     }
   },
   {
@@ -16101,9 +16101,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://cg.revenuecouncil.cg.gov.in",
-      "official": "https://cg.revenuecouncil.cg.gov.in",
-      "notification": "https://cg.revenuecouncil.cg.gov.in"
+      "apply": "https://cg.gov.in",
+      "official": "https://cg.gov.in",
+      "notification": "https://cg.gov.in"
     }
   },
   {
@@ -16127,9 +16127,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://uk.police.uk.gov.in",
-      "official": "https://uk.police.uk.gov.in",
-      "notification": "https://uk.police.uk.gov.in"
+      "apply": "https://uk.gov.in",
+      "official": "https://uk.gov.in",
+      "notification": "https://uk.gov.in"
     }
   },
   {
@@ -16153,9 +16153,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://uk.psc.uk.gov.in",
-      "official": "https://uk.psc.uk.gov.in",
-      "notification": "https://uk.psc.uk.gov.in"
+      "apply": "https://uk.gov.in",
+      "official": "https://uk.gov.in",
+      "notification": "https://uk.gov.in"
     }
   },
   {
@@ -16179,9 +16179,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://uk.ssb.uk.gov.in",
-      "official": "https://uk.ssb.uk.gov.in",
-      "notification": "https://uk.ssb.uk.gov.in"
+      "apply": "https://uk.gov.in",
+      "official": "https://uk.gov.in",
+      "notification": "https://uk.gov.in"
     }
   },
   {
@@ -16205,9 +16205,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://uk.highcourt.uk.gov.in",
-      "official": "https://uk.highcourt.uk.gov.in",
-      "notification": "https://uk.highcourt.uk.gov.in"
+      "apply": "https://uk.gov.in",
+      "official": "https://uk.gov.in",
+      "notification": "https://uk.gov.in"
     }
   },
   {
@@ -16230,10 +16230,10 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://uk.educationboard.uk.gov.in",
-      "official": "https://uk.educationboard.uk.gov.in",
-      "notification": "https://uk.educationboard.uk.gov.in",
-      "result": "https://uk.educationboard.uk.gov.in"
+      "apply": "https://uk.gov.in",
+      "official": "https://uk.gov.in",
+      "notification": "https://uk.gov.in",
+      "result": "https://uk.gov.in"
     }
   },
   {
@@ -16257,9 +16257,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://uk.healthdept.uk.gov.in",
-      "official": "https://uk.healthdept.uk.gov.in",
-      "notification": "https://uk.healthdept.uk.gov.in"
+      "apply": "https://uk.gov.in",
+      "official": "https://uk.gov.in",
+      "notification": "https://uk.gov.in"
     }
   },
   {
@@ -16283,9 +16283,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://uk.transportdept.uk.gov.in",
-      "official": "https://uk.transportdept.uk.gov.in",
-      "notification": "https://uk.transportdept.uk.gov.in"
+      "apply": "https://uk.gov.in",
+      "official": "https://uk.gov.in",
+      "notification": "https://uk.gov.in"
     }
   },
   {
@@ -16309,9 +16309,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://uk.electricityboard.uk.gov.in",
-      "official": "https://uk.electricityboard.uk.gov.in",
-      "notification": "https://uk.electricityboard.uk.gov.in"
+      "apply": "https://uk.gov.in",
+      "official": "https://uk.gov.in",
+      "notification": "https://uk.gov.in"
     }
   },
   {
@@ -16335,9 +16335,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://uk.metrorail.uk.gov.in",
-      "official": "https://uk.metrorail.uk.gov.in",
-      "notification": "https://uk.metrorail.uk.gov.in"
+      "apply": "https://uk.gov.in",
+      "official": "https://uk.gov.in",
+      "notification": "https://uk.gov.in"
     }
   },
   {
@@ -16360,9 +16360,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://uk.university.uk.gov.in",
-      "official": "https://uk.university.uk.gov.in",
-      "notification": "https://uk.university.uk.gov.in"
+      "apply": "https://uk.gov.in",
+      "official": "https://uk.gov.in",
+      "notification": "https://uk.gov.in"
     }
   },
   {
@@ -16386,9 +16386,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://uk.nagarnigam.uk.gov.in",
-      "official": "https://uk.nagarnigam.uk.gov.in",
-      "notification": "https://uk.nagarnigam.uk.gov.in"
+      "apply": "https://uk.gov.in",
+      "official": "https://uk.gov.in",
+      "notification": "https://uk.gov.in"
     }
   },
   {
@@ -16412,9 +16412,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://uk.panchayat.uk.gov.in",
-      "official": "https://uk.panchayat.uk.gov.in",
-      "notification": "https://uk.panchayat.uk.gov.in"
+      "apply": "https://uk.gov.in",
+      "official": "https://uk.gov.in",
+      "notification": "https://uk.gov.in"
     }
   },
   {
@@ -16438,9 +16438,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://uk.forestdept.uk.gov.in",
-      "official": "https://uk.forestdept.uk.gov.in",
-      "notification": "https://uk.forestdept.uk.gov.in"
+      "apply": "https://uk.gov.in",
+      "official": "https://uk.gov.in",
+      "notification": "https://uk.gov.in"
     }
   },
   {
@@ -16464,9 +16464,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://uk.pwd.uk.gov.in",
-      "official": "https://uk.pwd.uk.gov.in",
-      "notification": "https://uk.pwd.uk.gov.in"
+      "apply": "https://uk.gov.in",
+      "official": "https://uk.gov.in",
+      "notification": "https://uk.gov.in"
     }
   },
   {
@@ -16489,9 +16489,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://uk.socialwelfare.uk.gov.in",
-      "official": "https://uk.socialwelfare.uk.gov.in",
-      "notification": "https://uk.socialwelfare.uk.gov.in"
+      "apply": "https://uk.gov.in",
+      "official": "https://uk.gov.in",
+      "notification": "https://uk.gov.in"
     }
   },
   {
@@ -16515,9 +16515,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://uk.apexbank.uk.gov.in",
-      "official": "https://uk.apexbank.uk.gov.in",
-      "notification": "https://uk.apexbank.uk.gov.in"
+      "apply": "https://uk.gov.in",
+      "official": "https://uk.gov.in",
+      "notification": "https://uk.gov.in"
     }
   },
   {
@@ -16540,9 +16540,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://uk.technicalboard.uk.gov.in",
-      "official": "https://uk.technicalboard.uk.gov.in",
-      "notification": "https://uk.technicalboard.uk.gov.in"
+      "apply": "https://uk.gov.in",
+      "official": "https://uk.gov.in",
+      "notification": "https://uk.gov.in"
     }
   },
   {
@@ -16565,10 +16565,10 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Active / Ongoing"
     },
     "links": {
-      "apply": "https://uk.tetexam.uk.gov.in",
-      "official": "https://uk.tetexam.uk.gov.in",
-      "notification": "https://uk.tetexam.uk.gov.in",
-      "admitCard": "https://uk.tetexam.uk.gov.in"
+      "apply": "https://uk.gov.in",
+      "official": "https://uk.gov.in",
+      "notification": "https://uk.gov.in",
+      "admitCard": "https://uk.gov.in"
     }
   },
   {
@@ -16591,10 +16591,10 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://uk.entranceexam.uk.gov.in",
-      "official": "https://uk.entranceexam.uk.gov.in",
-      "notification": "https://uk.entranceexam.uk.gov.in",
-      "answerKey": "https://uk.entranceexam.uk.gov.in"
+      "apply": "https://uk.gov.in",
+      "official": "https://uk.gov.in",
+      "notification": "https://uk.gov.in",
+      "answerKey": "https://uk.gov.in"
     }
   },
   {
@@ -16617,9 +16617,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://uk.revenuecouncil.uk.gov.in",
-      "official": "https://uk.revenuecouncil.uk.gov.in",
-      "notification": "https://uk.revenuecouncil.uk.gov.in"
+      "apply": "https://uk.gov.in",
+      "official": "https://uk.gov.in",
+      "notification": "https://uk.gov.in"
     }
   },
   {
@@ -16643,9 +16643,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://hp.police.hp.gov.in",
-      "official": "https://hp.police.hp.gov.in",
-      "notification": "https://hp.police.hp.gov.in"
+      "apply": "https://hp.gov.in",
+      "official": "https://hp.gov.in",
+      "notification": "https://hp.gov.in"
     }
   },
   {
@@ -16669,9 +16669,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://hp.psc.hp.gov.in",
-      "official": "https://hp.psc.hp.gov.in",
-      "notification": "https://hp.psc.hp.gov.in"
+      "apply": "https://hp.gov.in",
+      "official": "https://hp.gov.in",
+      "notification": "https://hp.gov.in"
     }
   },
   {
@@ -16695,9 +16695,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://hp.ssb.hp.gov.in",
-      "official": "https://hp.ssb.hp.gov.in",
-      "notification": "https://hp.ssb.hp.gov.in"
+      "apply": "https://hp.gov.in",
+      "official": "https://hp.gov.in",
+      "notification": "https://hp.gov.in"
     }
   },
   {
@@ -16721,9 +16721,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://hp.highcourt.hp.gov.in",
-      "official": "https://hp.highcourt.hp.gov.in",
-      "notification": "https://hp.highcourt.hp.gov.in"
+      "apply": "https://hp.gov.in",
+      "official": "https://hp.gov.in",
+      "notification": "https://hp.gov.in"
     }
   },
   {
@@ -16746,10 +16746,10 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://hp.educationboard.hp.gov.in",
-      "official": "https://hp.educationboard.hp.gov.in",
-      "notification": "https://hp.educationboard.hp.gov.in",
-      "result": "https://hp.educationboard.hp.gov.in"
+      "apply": "https://hp.gov.in",
+      "official": "https://hp.gov.in",
+      "notification": "https://hp.gov.in",
+      "result": "https://hp.gov.in"
     }
   },
   {
@@ -16773,9 +16773,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://hp.healthdept.hp.gov.in",
-      "official": "https://hp.healthdept.hp.gov.in",
-      "notification": "https://hp.healthdept.hp.gov.in"
+      "apply": "https://hp.gov.in",
+      "official": "https://hp.gov.in",
+      "notification": "https://hp.gov.in"
     }
   },
   {
@@ -16799,9 +16799,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://hp.transportdept.hp.gov.in",
-      "official": "https://hp.transportdept.hp.gov.in",
-      "notification": "https://hp.transportdept.hp.gov.in"
+      "apply": "https://hp.gov.in",
+      "official": "https://hp.gov.in",
+      "notification": "https://hp.gov.in"
     }
   },
   {
@@ -16825,9 +16825,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://hp.electricityboard.hp.gov.in",
-      "official": "https://hp.electricityboard.hp.gov.in",
-      "notification": "https://hp.electricityboard.hp.gov.in"
+      "apply": "https://hp.gov.in",
+      "official": "https://hp.gov.in",
+      "notification": "https://hp.gov.in"
     }
   },
   {
@@ -16851,9 +16851,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://hp.metrorail.hp.gov.in",
-      "official": "https://hp.metrorail.hp.gov.in",
-      "notification": "https://hp.metrorail.hp.gov.in"
+      "apply": "https://hp.gov.in",
+      "official": "https://hp.gov.in",
+      "notification": "https://hp.gov.in"
     }
   },
   {
@@ -16876,9 +16876,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://hp.university.hp.gov.in",
-      "official": "https://hp.university.hp.gov.in",
-      "notification": "https://hp.university.hp.gov.in"
+      "apply": "https://hp.gov.in",
+      "official": "https://hp.gov.in",
+      "notification": "https://hp.gov.in"
     }
   },
   {
@@ -16902,9 +16902,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://hp.nagarnigam.hp.gov.in",
-      "official": "https://hp.nagarnigam.hp.gov.in",
-      "notification": "https://hp.nagarnigam.hp.gov.in"
+      "apply": "https://hp.gov.in",
+      "official": "https://hp.gov.in",
+      "notification": "https://hp.gov.in"
     }
   },
   {
@@ -16928,9 +16928,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://hp.panchayat.hp.gov.in",
-      "official": "https://hp.panchayat.hp.gov.in",
-      "notification": "https://hp.panchayat.hp.gov.in"
+      "apply": "https://hp.gov.in",
+      "official": "https://hp.gov.in",
+      "notification": "https://hp.gov.in"
     }
   },
   {
@@ -16954,9 +16954,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://hp.forestdept.hp.gov.in",
-      "official": "https://hp.forestdept.hp.gov.in",
-      "notification": "https://hp.forestdept.hp.gov.in"
+      "apply": "https://hp.gov.in",
+      "official": "https://hp.gov.in",
+      "notification": "https://hp.gov.in"
     }
   },
   {
@@ -16980,9 +16980,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://hp.pwd.hp.gov.in",
-      "official": "https://hp.pwd.hp.gov.in",
-      "notification": "https://hp.pwd.hp.gov.in"
+      "apply": "https://hp.gov.in",
+      "official": "https://hp.gov.in",
+      "notification": "https://hp.gov.in"
     }
   },
   {
@@ -17005,9 +17005,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://hp.socialwelfare.hp.gov.in",
-      "official": "https://hp.socialwelfare.hp.gov.in",
-      "notification": "https://hp.socialwelfare.hp.gov.in"
+      "apply": "https://hp.gov.in",
+      "official": "https://hp.gov.in",
+      "notification": "https://hp.gov.in"
     }
   },
   {
@@ -17031,9 +17031,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://hp.apexbank.hp.gov.in",
-      "official": "https://hp.apexbank.hp.gov.in",
-      "notification": "https://hp.apexbank.hp.gov.in"
+      "apply": "https://hp.gov.in",
+      "official": "https://hp.gov.in",
+      "notification": "https://hp.gov.in"
     }
   },
   {
@@ -17056,9 +17056,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://hp.technicalboard.hp.gov.in",
-      "official": "https://hp.technicalboard.hp.gov.in",
-      "notification": "https://hp.technicalboard.hp.gov.in"
+      "apply": "https://hp.gov.in",
+      "official": "https://hp.gov.in",
+      "notification": "https://hp.gov.in"
     }
   },
   {
@@ -17081,10 +17081,10 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Active / Ongoing"
     },
     "links": {
-      "apply": "https://hp.tetexam.hp.gov.in",
-      "official": "https://hp.tetexam.hp.gov.in",
-      "notification": "https://hp.tetexam.hp.gov.in",
-      "admitCard": "https://hp.tetexam.hp.gov.in"
+      "apply": "https://hp.gov.in",
+      "official": "https://hp.gov.in",
+      "notification": "https://hp.gov.in",
+      "admitCard": "https://hp.gov.in"
     }
   },
   {
@@ -17107,10 +17107,10 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://hp.entranceexam.hp.gov.in",
-      "official": "https://hp.entranceexam.hp.gov.in",
-      "notification": "https://hp.entranceexam.hp.gov.in",
-      "answerKey": "https://hp.entranceexam.hp.gov.in"
+      "apply": "https://hp.gov.in",
+      "official": "https://hp.gov.in",
+      "notification": "https://hp.gov.in",
+      "answerKey": "https://hp.gov.in"
     }
   },
   {
@@ -17133,9 +17133,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://hp.revenuecouncil.hp.gov.in",
-      "official": "https://hp.revenuecouncil.hp.gov.in",
-      "notification": "https://hp.revenuecouncil.hp.gov.in"
+      "apply": "https://hp.gov.in",
+      "official": "https://hp.gov.in",
+      "notification": "https://hp.gov.in"
     }
   },
   {
@@ -17159,9 +17159,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://gujarat.police.gujarat.gov.in",
-      "official": "https://gujarat.police.gujarat.gov.in",
-      "notification": "https://gujarat.police.gujarat.gov.in"
+      "apply": "https://gujarat.gov.in",
+      "official": "https://gujarat.gov.in",
+      "notification": "https://gujarat.gov.in"
     }
   },
   {
@@ -17185,9 +17185,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://gujarat.psc.gujarat.gov.in",
-      "official": "https://gujarat.psc.gujarat.gov.in",
-      "notification": "https://gujarat.psc.gujarat.gov.in"
+      "apply": "https://gujarat.gov.in",
+      "official": "https://gujarat.gov.in",
+      "notification": "https://gujarat.gov.in"
     }
   },
   {
@@ -17211,9 +17211,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://gujarat.ssb.gujarat.gov.in",
-      "official": "https://gujarat.ssb.gujarat.gov.in",
-      "notification": "https://gujarat.ssb.gujarat.gov.in"
+      "apply": "https://gujarat.gov.in",
+      "official": "https://gujarat.gov.in",
+      "notification": "https://gujarat.gov.in"
     }
   },
   {
@@ -17237,9 +17237,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://gujarat.highcourt.gujarat.gov.in",
-      "official": "https://gujarat.highcourt.gujarat.gov.in",
-      "notification": "https://gujarat.highcourt.gujarat.gov.in"
+      "apply": "https://gujarat.gov.in",
+      "official": "https://gujarat.gov.in",
+      "notification": "https://gujarat.gov.in"
     }
   },
   {
@@ -17262,10 +17262,10 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://gujarat.educationboard.gujarat.gov.in",
-      "official": "https://gujarat.educationboard.gujarat.gov.in",
-      "notification": "https://gujarat.educationboard.gujarat.gov.in",
-      "result": "https://gujarat.educationboard.gujarat.gov.in"
+      "apply": "https://gujarat.gov.in",
+      "official": "https://gujarat.gov.in",
+      "notification": "https://gujarat.gov.in",
+      "result": "https://gujarat.gov.in"
     }
   },
   {
@@ -17289,9 +17289,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://gujarat.healthdept.gujarat.gov.in",
-      "official": "https://gujarat.healthdept.gujarat.gov.in",
-      "notification": "https://gujarat.healthdept.gujarat.gov.in"
+      "apply": "https://gujarat.gov.in",
+      "official": "https://gujarat.gov.in",
+      "notification": "https://gujarat.gov.in"
     }
   },
   {
@@ -17315,9 +17315,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://gujarat.transportdept.gujarat.gov.in",
-      "official": "https://gujarat.transportdept.gujarat.gov.in",
-      "notification": "https://gujarat.transportdept.gujarat.gov.in"
+      "apply": "https://gujarat.gov.in",
+      "official": "https://gujarat.gov.in",
+      "notification": "https://gujarat.gov.in"
     }
   },
   {
@@ -17341,9 +17341,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://gujarat.electricityboard.gujarat.gov.in",
-      "official": "https://gujarat.electricityboard.gujarat.gov.in",
-      "notification": "https://gujarat.electricityboard.gujarat.gov.in"
+      "apply": "https://gujarat.gov.in",
+      "official": "https://gujarat.gov.in",
+      "notification": "https://gujarat.gov.in"
     }
   },
   {
@@ -17367,9 +17367,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://gujarat.metrorail.gujarat.gov.in",
-      "official": "https://gujarat.metrorail.gujarat.gov.in",
-      "notification": "https://gujarat.metrorail.gujarat.gov.in"
+      "apply": "https://gujarat.gov.in",
+      "official": "https://gujarat.gov.in",
+      "notification": "https://gujarat.gov.in"
     }
   },
   {
@@ -17392,9 +17392,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://gujarat.university.gujarat.gov.in",
-      "official": "https://gujarat.university.gujarat.gov.in",
-      "notification": "https://gujarat.university.gujarat.gov.in"
+      "apply": "https://gujarat.gov.in",
+      "official": "https://gujarat.gov.in",
+      "notification": "https://gujarat.gov.in"
     }
   },
   {
@@ -17418,9 +17418,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://gujarat.nagarnigam.gujarat.gov.in",
-      "official": "https://gujarat.nagarnigam.gujarat.gov.in",
-      "notification": "https://gujarat.nagarnigam.gujarat.gov.in"
+      "apply": "https://gujarat.gov.in",
+      "official": "https://gujarat.gov.in",
+      "notification": "https://gujarat.gov.in"
     }
   },
   {
@@ -17444,9 +17444,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://gujarat.panchayat.gujarat.gov.in",
-      "official": "https://gujarat.panchayat.gujarat.gov.in",
-      "notification": "https://gujarat.panchayat.gujarat.gov.in"
+      "apply": "https://gujarat.gov.in",
+      "official": "https://gujarat.gov.in",
+      "notification": "https://gujarat.gov.in"
     }
   },
   {
@@ -17470,9 +17470,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://gujarat.forestdept.gujarat.gov.in",
-      "official": "https://gujarat.forestdept.gujarat.gov.in",
-      "notification": "https://gujarat.forestdept.gujarat.gov.in"
+      "apply": "https://gujarat.gov.in",
+      "official": "https://gujarat.gov.in",
+      "notification": "https://gujarat.gov.in"
     }
   },
   {
@@ -17496,9 +17496,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://gujarat.pwd.gujarat.gov.in",
-      "official": "https://gujarat.pwd.gujarat.gov.in",
-      "notification": "https://gujarat.pwd.gujarat.gov.in"
+      "apply": "https://gujarat.gov.in",
+      "official": "https://gujarat.gov.in",
+      "notification": "https://gujarat.gov.in"
     }
   },
   {
@@ -17521,9 +17521,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://gujarat.socialwelfare.gujarat.gov.in",
-      "official": "https://gujarat.socialwelfare.gujarat.gov.in",
-      "notification": "https://gujarat.socialwelfare.gujarat.gov.in"
+      "apply": "https://gujarat.gov.in",
+      "official": "https://gujarat.gov.in",
+      "notification": "https://gujarat.gov.in"
     }
   },
   {
@@ -17547,9 +17547,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://gujarat.apexbank.gujarat.gov.in",
-      "official": "https://gujarat.apexbank.gujarat.gov.in",
-      "notification": "https://gujarat.apexbank.gujarat.gov.in"
+      "apply": "https://gujarat.gov.in",
+      "official": "https://gujarat.gov.in",
+      "notification": "https://gujarat.gov.in"
     }
   },
   {
@@ -17572,9 +17572,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://gujarat.technicalboard.gujarat.gov.in",
-      "official": "https://gujarat.technicalboard.gujarat.gov.in",
-      "notification": "https://gujarat.technicalboard.gujarat.gov.in"
+      "apply": "https://gujarat.gov.in",
+      "official": "https://gujarat.gov.in",
+      "notification": "https://gujarat.gov.in"
     }
   },
   {
@@ -17597,10 +17597,10 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Active / Ongoing"
     },
     "links": {
-      "apply": "https://gujarat.tetexam.gujarat.gov.in",
-      "official": "https://gujarat.tetexam.gujarat.gov.in",
-      "notification": "https://gujarat.tetexam.gujarat.gov.in",
-      "admitCard": "https://gujarat.tetexam.gujarat.gov.in"
+      "apply": "https://gujarat.gov.in",
+      "official": "https://gujarat.gov.in",
+      "notification": "https://gujarat.gov.in",
+      "admitCard": "https://gujarat.gov.in"
     }
   },
   {
@@ -17623,10 +17623,10 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://gujarat.entranceexam.gujarat.gov.in",
-      "official": "https://gujarat.entranceexam.gujarat.gov.in",
-      "notification": "https://gujarat.entranceexam.gujarat.gov.in",
-      "answerKey": "https://gujarat.entranceexam.gujarat.gov.in"
+      "apply": "https://gujarat.gov.in",
+      "official": "https://gujarat.gov.in",
+      "notification": "https://gujarat.gov.in",
+      "answerKey": "https://gujarat.gov.in"
     }
   },
   {
@@ -17649,9 +17649,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://gujarat.revenuecouncil.gujarat.gov.in",
-      "official": "https://gujarat.revenuecouncil.gujarat.gov.in",
-      "notification": "https://gujarat.revenuecouncil.gujarat.gov.in"
+      "apply": "https://gujarat.gov.in",
+      "official": "https://gujarat.gov.in",
+      "notification": "https://gujarat.gov.in"
     }
   },
   {
@@ -17675,9 +17675,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://odisha.police.odisha.gov.in",
-      "official": "https://odisha.police.odisha.gov.in",
-      "notification": "https://odisha.police.odisha.gov.in"
+      "apply": "https://odisha.gov.in",
+      "official": "https://odisha.gov.in",
+      "notification": "https://odisha.gov.in"
     }
   },
   {
@@ -17701,9 +17701,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://odisha.psc.odisha.gov.in",
-      "official": "https://odisha.psc.odisha.gov.in",
-      "notification": "https://odisha.psc.odisha.gov.in"
+      "apply": "https://odisha.gov.in",
+      "official": "https://odisha.gov.in",
+      "notification": "https://odisha.gov.in"
     }
   },
   {
@@ -17727,9 +17727,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://odisha.ssb.odisha.gov.in",
-      "official": "https://odisha.ssb.odisha.gov.in",
-      "notification": "https://odisha.ssb.odisha.gov.in"
+      "apply": "https://odisha.gov.in",
+      "official": "https://odisha.gov.in",
+      "notification": "https://odisha.gov.in"
     }
   },
   {
@@ -17753,9 +17753,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://odisha.highcourt.odisha.gov.in",
-      "official": "https://odisha.highcourt.odisha.gov.in",
-      "notification": "https://odisha.highcourt.odisha.gov.in"
+      "apply": "https://odisha.gov.in",
+      "official": "https://odisha.gov.in",
+      "notification": "https://odisha.gov.in"
     }
   },
   {
@@ -17778,10 +17778,10 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://odisha.educationboard.odisha.gov.in",
-      "official": "https://odisha.educationboard.odisha.gov.in",
-      "notification": "https://odisha.educationboard.odisha.gov.in",
-      "result": "https://odisha.educationboard.odisha.gov.in"
+      "apply": "https://odisha.gov.in",
+      "official": "https://odisha.gov.in",
+      "notification": "https://odisha.gov.in",
+      "result": "https://odisha.gov.in"
     }
   },
   {
@@ -17805,9 +17805,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://odisha.healthdept.odisha.gov.in",
-      "official": "https://odisha.healthdept.odisha.gov.in",
-      "notification": "https://odisha.healthdept.odisha.gov.in"
+      "apply": "https://odisha.gov.in",
+      "official": "https://odisha.gov.in",
+      "notification": "https://odisha.gov.in"
     }
   },
   {
@@ -17831,9 +17831,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://odisha.transportdept.odisha.gov.in",
-      "official": "https://odisha.transportdept.odisha.gov.in",
-      "notification": "https://odisha.transportdept.odisha.gov.in"
+      "apply": "https://odisha.gov.in",
+      "official": "https://odisha.gov.in",
+      "notification": "https://odisha.gov.in"
     }
   },
   {
@@ -17857,9 +17857,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://odisha.electricityboard.odisha.gov.in",
-      "official": "https://odisha.electricityboard.odisha.gov.in",
-      "notification": "https://odisha.electricityboard.odisha.gov.in"
+      "apply": "https://odisha.gov.in",
+      "official": "https://odisha.gov.in",
+      "notification": "https://odisha.gov.in"
     }
   },
   {
@@ -17883,9 +17883,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://odisha.metrorail.odisha.gov.in",
-      "official": "https://odisha.metrorail.odisha.gov.in",
-      "notification": "https://odisha.metrorail.odisha.gov.in"
+      "apply": "https://odisha.gov.in",
+      "official": "https://odisha.gov.in",
+      "notification": "https://odisha.gov.in"
     }
   },
   {
@@ -17908,9 +17908,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://odisha.university.odisha.gov.in",
-      "official": "https://odisha.university.odisha.gov.in",
-      "notification": "https://odisha.university.odisha.gov.in"
+      "apply": "https://odisha.gov.in",
+      "official": "https://odisha.gov.in",
+      "notification": "https://odisha.gov.in"
     }
   },
   {
@@ -17934,9 +17934,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://odisha.nagarnigam.odisha.gov.in",
-      "official": "https://odisha.nagarnigam.odisha.gov.in",
-      "notification": "https://odisha.nagarnigam.odisha.gov.in"
+      "apply": "https://odisha.gov.in",
+      "official": "https://odisha.gov.in",
+      "notification": "https://odisha.gov.in"
     }
   },
   {
@@ -17960,9 +17960,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://odisha.panchayat.odisha.gov.in",
-      "official": "https://odisha.panchayat.odisha.gov.in",
-      "notification": "https://odisha.panchayat.odisha.gov.in"
+      "apply": "https://odisha.gov.in",
+      "official": "https://odisha.gov.in",
+      "notification": "https://odisha.gov.in"
     }
   },
   {
@@ -17986,9 +17986,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://odisha.forestdept.odisha.gov.in",
-      "official": "https://odisha.forestdept.odisha.gov.in",
-      "notification": "https://odisha.forestdept.odisha.gov.in"
+      "apply": "https://odisha.gov.in",
+      "official": "https://odisha.gov.in",
+      "notification": "https://odisha.gov.in"
     }
   },
   {
@@ -18012,9 +18012,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://odisha.pwd.odisha.gov.in",
-      "official": "https://odisha.pwd.odisha.gov.in",
-      "notification": "https://odisha.pwd.odisha.gov.in"
+      "apply": "https://odisha.gov.in",
+      "official": "https://odisha.gov.in",
+      "notification": "https://odisha.gov.in"
     }
   },
   {
@@ -18037,9 +18037,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://odisha.socialwelfare.odisha.gov.in",
-      "official": "https://odisha.socialwelfare.odisha.gov.in",
-      "notification": "https://odisha.socialwelfare.odisha.gov.in"
+      "apply": "https://odisha.gov.in",
+      "official": "https://odisha.gov.in",
+      "notification": "https://odisha.gov.in"
     }
   },
   {
@@ -18063,9 +18063,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://odisha.apexbank.odisha.gov.in",
-      "official": "https://odisha.apexbank.odisha.gov.in",
-      "notification": "https://odisha.apexbank.odisha.gov.in"
+      "apply": "https://odisha.gov.in",
+      "official": "https://odisha.gov.in",
+      "notification": "https://odisha.gov.in"
     }
   },
   {
@@ -18088,9 +18088,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://odisha.technicalboard.odisha.gov.in",
-      "official": "https://odisha.technicalboard.odisha.gov.in",
-      "notification": "https://odisha.technicalboard.odisha.gov.in"
+      "apply": "https://odisha.gov.in",
+      "official": "https://odisha.gov.in",
+      "notification": "https://odisha.gov.in"
     }
   },
   {
@@ -18113,10 +18113,10 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Active / Ongoing"
     },
     "links": {
-      "apply": "https://odisha.tetexam.odisha.gov.in",
-      "official": "https://odisha.tetexam.odisha.gov.in",
-      "notification": "https://odisha.tetexam.odisha.gov.in",
-      "admitCard": "https://odisha.tetexam.odisha.gov.in"
+      "apply": "https://odisha.gov.in",
+      "official": "https://odisha.gov.in",
+      "notification": "https://odisha.gov.in",
+      "admitCard": "https://odisha.gov.in"
     }
   },
   {
@@ -18139,10 +18139,10 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://odisha.entranceexam.odisha.gov.in",
-      "official": "https://odisha.entranceexam.odisha.gov.in",
-      "notification": "https://odisha.entranceexam.odisha.gov.in",
-      "answerKey": "https://odisha.entranceexam.odisha.gov.in"
+      "apply": "https://odisha.gov.in",
+      "official": "https://odisha.gov.in",
+      "notification": "https://odisha.gov.in",
+      "answerKey": "https://odisha.gov.in"
     }
   },
   {
@@ -18165,9 +18165,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://odisha.revenuecouncil.odisha.gov.in",
-      "official": "https://odisha.revenuecouncil.odisha.gov.in",
-      "notification": "https://odisha.revenuecouncil.odisha.gov.in"
+      "apply": "https://odisha.gov.in",
+      "official": "https://odisha.gov.in",
+      "notification": "https://odisha.gov.in"
     }
   },
   {
@@ -18191,9 +18191,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://assam.police.assam.gov.in",
-      "official": "https://assam.police.assam.gov.in",
-      "notification": "https://assam.police.assam.gov.in"
+      "apply": "https://assam.gov.in",
+      "official": "https://assam.gov.in",
+      "notification": "https://assam.gov.in"
     }
   },
   {
@@ -18217,9 +18217,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://assam.psc.assam.gov.in",
-      "official": "https://assam.psc.assam.gov.in",
-      "notification": "https://assam.psc.assam.gov.in"
+      "apply": "https://assam.gov.in",
+      "official": "https://assam.gov.in",
+      "notification": "https://assam.gov.in"
     }
   },
   {
@@ -18243,9 +18243,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://assam.ssb.assam.gov.in",
-      "official": "https://assam.ssb.assam.gov.in",
-      "notification": "https://assam.ssb.assam.gov.in"
+      "apply": "https://assam.gov.in",
+      "official": "https://assam.gov.in",
+      "notification": "https://assam.gov.in"
     }
   },
   {
@@ -18269,9 +18269,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://assam.highcourt.assam.gov.in",
-      "official": "https://assam.highcourt.assam.gov.in",
-      "notification": "https://assam.highcourt.assam.gov.in"
+      "apply": "https://assam.gov.in",
+      "official": "https://assam.gov.in",
+      "notification": "https://assam.gov.in"
     }
   },
   {
@@ -18294,10 +18294,10 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://assam.educationboard.assam.gov.in",
-      "official": "https://assam.educationboard.assam.gov.in",
-      "notification": "https://assam.educationboard.assam.gov.in",
-      "result": "https://assam.educationboard.assam.gov.in"
+      "apply": "https://assam.gov.in",
+      "official": "https://assam.gov.in",
+      "notification": "https://assam.gov.in",
+      "result": "https://assam.gov.in"
     }
   },
   {
@@ -18321,9 +18321,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://assam.healthdept.assam.gov.in",
-      "official": "https://assam.healthdept.assam.gov.in",
-      "notification": "https://assam.healthdept.assam.gov.in"
+      "apply": "https://assam.gov.in",
+      "official": "https://assam.gov.in",
+      "notification": "https://assam.gov.in"
     }
   },
   {
@@ -18347,9 +18347,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://assam.transportdept.assam.gov.in",
-      "official": "https://assam.transportdept.assam.gov.in",
-      "notification": "https://assam.transportdept.assam.gov.in"
+      "apply": "https://assam.gov.in",
+      "official": "https://assam.gov.in",
+      "notification": "https://assam.gov.in"
     }
   },
   {
@@ -18373,9 +18373,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://assam.electricityboard.assam.gov.in",
-      "official": "https://assam.electricityboard.assam.gov.in",
-      "notification": "https://assam.electricityboard.assam.gov.in"
+      "apply": "https://assam.gov.in",
+      "official": "https://assam.gov.in",
+      "notification": "https://assam.gov.in"
     }
   },
   {
@@ -18399,9 +18399,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://assam.metrorail.assam.gov.in",
-      "official": "https://assam.metrorail.assam.gov.in",
-      "notification": "https://assam.metrorail.assam.gov.in"
+      "apply": "https://assam.gov.in",
+      "official": "https://assam.gov.in",
+      "notification": "https://assam.gov.in"
     }
   },
   {
@@ -18424,9 +18424,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://assam.university.assam.gov.in",
-      "official": "https://assam.university.assam.gov.in",
-      "notification": "https://assam.university.assam.gov.in"
+      "apply": "https://assam.gov.in",
+      "official": "https://assam.gov.in",
+      "notification": "https://assam.gov.in"
     }
   },
   {
@@ -18450,9 +18450,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://assam.nagarnigam.assam.gov.in",
-      "official": "https://assam.nagarnigam.assam.gov.in",
-      "notification": "https://assam.nagarnigam.assam.gov.in"
+      "apply": "https://assam.gov.in",
+      "official": "https://assam.gov.in",
+      "notification": "https://assam.gov.in"
     }
   },
   {
@@ -18476,9 +18476,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://assam.panchayat.assam.gov.in",
-      "official": "https://assam.panchayat.assam.gov.in",
-      "notification": "https://assam.panchayat.assam.gov.in"
+      "apply": "https://assam.gov.in",
+      "official": "https://assam.gov.in",
+      "notification": "https://assam.gov.in"
     }
   },
   {
@@ -18502,9 +18502,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://assam.forestdept.assam.gov.in",
-      "official": "https://assam.forestdept.assam.gov.in",
-      "notification": "https://assam.forestdept.assam.gov.in"
+      "apply": "https://assam.gov.in",
+      "official": "https://assam.gov.in",
+      "notification": "https://assam.gov.in"
     }
   },
   {
@@ -18528,9 +18528,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://assam.pwd.assam.gov.in",
-      "official": "https://assam.pwd.assam.gov.in",
-      "notification": "https://assam.pwd.assam.gov.in"
+      "apply": "https://assam.gov.in",
+      "official": "https://assam.gov.in",
+      "notification": "https://assam.gov.in"
     }
   },
   {
@@ -18553,9 +18553,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://assam.socialwelfare.assam.gov.in",
-      "official": "https://assam.socialwelfare.assam.gov.in",
-      "notification": "https://assam.socialwelfare.assam.gov.in"
+      "apply": "https://assam.gov.in",
+      "official": "https://assam.gov.in",
+      "notification": "https://assam.gov.in"
     }
   },
   {
@@ -18579,9 +18579,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://assam.apexbank.assam.gov.in",
-      "official": "https://assam.apexbank.assam.gov.in",
-      "notification": "https://assam.apexbank.assam.gov.in"
+      "apply": "https://assam.gov.in",
+      "official": "https://assam.gov.in",
+      "notification": "https://assam.gov.in"
     }
   },
   {
@@ -18604,9 +18604,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://assam.technicalboard.assam.gov.in",
-      "official": "https://assam.technicalboard.assam.gov.in",
-      "notification": "https://assam.technicalboard.assam.gov.in"
+      "apply": "https://assam.gov.in",
+      "official": "https://assam.gov.in",
+      "notification": "https://assam.gov.in"
     }
   },
   {
@@ -18629,10 +18629,10 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Active / Ongoing"
     },
     "links": {
-      "apply": "https://assam.tetexam.assam.gov.in",
-      "official": "https://assam.tetexam.assam.gov.in",
-      "notification": "https://assam.tetexam.assam.gov.in",
-      "admitCard": "https://assam.tetexam.assam.gov.in"
+      "apply": "https://assam.gov.in",
+      "official": "https://assam.gov.in",
+      "notification": "https://assam.gov.in",
+      "admitCard": "https://assam.gov.in"
     }
   },
   {
@@ -18655,10 +18655,10 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://assam.entranceexam.assam.gov.in",
-      "official": "https://assam.entranceexam.assam.gov.in",
-      "notification": "https://assam.entranceexam.assam.gov.in",
-      "answerKey": "https://assam.entranceexam.assam.gov.in"
+      "apply": "https://assam.gov.in",
+      "official": "https://assam.gov.in",
+      "notification": "https://assam.gov.in",
+      "answerKey": "https://assam.gov.in"
     }
   },
   {
@@ -18681,9 +18681,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://assam.revenuecouncil.assam.gov.in",
-      "official": "https://assam.revenuecouncil.assam.gov.in",
-      "notification": "https://assam.revenuecouncil.assam.gov.in"
+      "apply": "https://assam.gov.in",
+      "official": "https://assam.gov.in",
+      "notification": "https://assam.gov.in"
     }
   },
   {
@@ -18707,9 +18707,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://karnataka.police.karnataka.gov.in",
-      "official": "https://karnataka.police.karnataka.gov.in",
-      "notification": "https://karnataka.police.karnataka.gov.in"
+      "apply": "https://karnataka.gov.in",
+      "official": "https://karnataka.gov.in",
+      "notification": "https://karnataka.gov.in"
     }
   },
   {
@@ -18733,9 +18733,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://karnataka.psc.karnataka.gov.in",
-      "official": "https://karnataka.psc.karnataka.gov.in",
-      "notification": "https://karnataka.psc.karnataka.gov.in"
+      "apply": "https://karnataka.gov.in",
+      "official": "https://karnataka.gov.in",
+      "notification": "https://karnataka.gov.in"
     }
   },
   {
@@ -18759,9 +18759,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://karnataka.ssb.karnataka.gov.in",
-      "official": "https://karnataka.ssb.karnataka.gov.in",
-      "notification": "https://karnataka.ssb.karnataka.gov.in"
+      "apply": "https://karnataka.gov.in",
+      "official": "https://karnataka.gov.in",
+      "notification": "https://karnataka.gov.in"
     }
   },
   {
@@ -18785,9 +18785,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://karnataka.highcourt.karnataka.gov.in",
-      "official": "https://karnataka.highcourt.karnataka.gov.in",
-      "notification": "https://karnataka.highcourt.karnataka.gov.in"
+      "apply": "https://karnataka.gov.in",
+      "official": "https://karnataka.gov.in",
+      "notification": "https://karnataka.gov.in"
     }
   },
   {
@@ -18810,10 +18810,10 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://karnataka.educationboard.karnataka.gov.in",
-      "official": "https://karnataka.educationboard.karnataka.gov.in",
-      "notification": "https://karnataka.educationboard.karnataka.gov.in",
-      "result": "https://karnataka.educationboard.karnataka.gov.in"
+      "apply": "https://karnataka.gov.in",
+      "official": "https://karnataka.gov.in",
+      "notification": "https://karnataka.gov.in",
+      "result": "https://karnataka.gov.in"
     }
   },
   {
@@ -18837,9 +18837,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://karnataka.healthdept.karnataka.gov.in",
-      "official": "https://karnataka.healthdept.karnataka.gov.in",
-      "notification": "https://karnataka.healthdept.karnataka.gov.in"
+      "apply": "https://karnataka.gov.in",
+      "official": "https://karnataka.gov.in",
+      "notification": "https://karnataka.gov.in"
     }
   },
   {
@@ -18863,9 +18863,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://karnataka.transportdept.karnataka.gov.in",
-      "official": "https://karnataka.transportdept.karnataka.gov.in",
-      "notification": "https://karnataka.transportdept.karnataka.gov.in"
+      "apply": "https://karnataka.gov.in",
+      "official": "https://karnataka.gov.in",
+      "notification": "https://karnataka.gov.in"
     }
   },
   {
@@ -18889,9 +18889,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://karnataka.electricityboard.karnataka.gov.in",
-      "official": "https://karnataka.electricityboard.karnataka.gov.in",
-      "notification": "https://karnataka.electricityboard.karnataka.gov.in"
+      "apply": "https://karnataka.gov.in",
+      "official": "https://karnataka.gov.in",
+      "notification": "https://karnataka.gov.in"
     }
   },
   {
@@ -18915,9 +18915,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://karnataka.metrorail.karnataka.gov.in",
-      "official": "https://karnataka.metrorail.karnataka.gov.in",
-      "notification": "https://karnataka.metrorail.karnataka.gov.in"
+      "apply": "https://karnataka.gov.in",
+      "official": "https://karnataka.gov.in",
+      "notification": "https://karnataka.gov.in"
     }
   },
   {
@@ -18940,9 +18940,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://karnataka.university.karnataka.gov.in",
-      "official": "https://karnataka.university.karnataka.gov.in",
-      "notification": "https://karnataka.university.karnataka.gov.in"
+      "apply": "https://karnataka.gov.in",
+      "official": "https://karnataka.gov.in",
+      "notification": "https://karnataka.gov.in"
     }
   },
   {
@@ -18966,9 +18966,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://karnataka.nagarnigam.karnataka.gov.in",
-      "official": "https://karnataka.nagarnigam.karnataka.gov.in",
-      "notification": "https://karnataka.nagarnigam.karnataka.gov.in"
+      "apply": "https://karnataka.gov.in",
+      "official": "https://karnataka.gov.in",
+      "notification": "https://karnataka.gov.in"
     }
   },
   {
@@ -18992,9 +18992,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://karnataka.panchayat.karnataka.gov.in",
-      "official": "https://karnataka.panchayat.karnataka.gov.in",
-      "notification": "https://karnataka.panchayat.karnataka.gov.in"
+      "apply": "https://karnataka.gov.in",
+      "official": "https://karnataka.gov.in",
+      "notification": "https://karnataka.gov.in"
     }
   },
   {
@@ -19018,9 +19018,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://karnataka.forestdept.karnataka.gov.in",
-      "official": "https://karnataka.forestdept.karnataka.gov.in",
-      "notification": "https://karnataka.forestdept.karnataka.gov.in"
+      "apply": "https://karnataka.gov.in",
+      "official": "https://karnataka.gov.in",
+      "notification": "https://karnataka.gov.in"
     }
   },
   {
@@ -19044,9 +19044,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://karnataka.pwd.karnataka.gov.in",
-      "official": "https://karnataka.pwd.karnataka.gov.in",
-      "notification": "https://karnataka.pwd.karnataka.gov.in"
+      "apply": "https://karnataka.gov.in",
+      "official": "https://karnataka.gov.in",
+      "notification": "https://karnataka.gov.in"
     }
   },
   {
@@ -19069,9 +19069,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://karnataka.socialwelfare.karnataka.gov.in",
-      "official": "https://karnataka.socialwelfare.karnataka.gov.in",
-      "notification": "https://karnataka.socialwelfare.karnataka.gov.in"
+      "apply": "https://karnataka.gov.in",
+      "official": "https://karnataka.gov.in",
+      "notification": "https://karnataka.gov.in"
     }
   },
   {
@@ -19095,9 +19095,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://karnataka.apexbank.karnataka.gov.in",
-      "official": "https://karnataka.apexbank.karnataka.gov.in",
-      "notification": "https://karnataka.apexbank.karnataka.gov.in"
+      "apply": "https://karnataka.gov.in",
+      "official": "https://karnataka.gov.in",
+      "notification": "https://karnataka.gov.in"
     }
   },
   {
@@ -19120,9 +19120,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://karnataka.technicalboard.karnataka.gov.in",
-      "official": "https://karnataka.technicalboard.karnataka.gov.in",
-      "notification": "https://karnataka.technicalboard.karnataka.gov.in"
+      "apply": "https://karnataka.gov.in",
+      "official": "https://karnataka.gov.in",
+      "notification": "https://karnataka.gov.in"
     }
   },
   {
@@ -19145,10 +19145,10 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Active / Ongoing"
     },
     "links": {
-      "apply": "https://karnataka.tetexam.karnataka.gov.in",
-      "official": "https://karnataka.tetexam.karnataka.gov.in",
-      "notification": "https://karnataka.tetexam.karnataka.gov.in",
-      "admitCard": "https://karnataka.tetexam.karnataka.gov.in"
+      "apply": "https://karnataka.gov.in",
+      "official": "https://karnataka.gov.in",
+      "notification": "https://karnataka.gov.in",
+      "admitCard": "https://karnataka.gov.in"
     }
   },
   {
@@ -19171,10 +19171,10 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://karnataka.entranceexam.karnataka.gov.in",
-      "official": "https://karnataka.entranceexam.karnataka.gov.in",
-      "notification": "https://karnataka.entranceexam.karnataka.gov.in",
-      "answerKey": "https://karnataka.entranceexam.karnataka.gov.in"
+      "apply": "https://karnataka.gov.in",
+      "official": "https://karnataka.gov.in",
+      "notification": "https://karnataka.gov.in",
+      "answerKey": "https://karnataka.gov.in"
     }
   },
   {
@@ -19197,9 +19197,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://karnataka.revenuecouncil.karnataka.gov.in",
-      "official": "https://karnataka.revenuecouncil.karnataka.gov.in",
-      "notification": "https://karnataka.revenuecouncil.karnataka.gov.in"
+      "apply": "https://karnataka.gov.in",
+      "official": "https://karnataka.gov.in",
+      "notification": "https://karnataka.gov.in"
     }
   },
   {
@@ -19223,9 +19223,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://kerala.police.kerala.gov.in",
-      "official": "https://kerala.police.kerala.gov.in",
-      "notification": "https://kerala.police.kerala.gov.in"
+      "apply": "https://kerala.gov.in",
+      "official": "https://kerala.gov.in",
+      "notification": "https://kerala.gov.in"
     }
   },
   {
@@ -19249,9 +19249,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://kerala.psc.kerala.gov.in",
-      "official": "https://kerala.psc.kerala.gov.in",
-      "notification": "https://kerala.psc.kerala.gov.in"
+      "apply": "https://kerala.gov.in",
+      "official": "https://kerala.gov.in",
+      "notification": "https://kerala.gov.in"
     }
   },
   {
@@ -19275,9 +19275,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://kerala.ssb.kerala.gov.in",
-      "official": "https://kerala.ssb.kerala.gov.in",
-      "notification": "https://kerala.ssb.kerala.gov.in"
+      "apply": "https://kerala.gov.in",
+      "official": "https://kerala.gov.in",
+      "notification": "https://kerala.gov.in"
     }
   },
   {
@@ -19301,9 +19301,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://kerala.highcourt.kerala.gov.in",
-      "official": "https://kerala.highcourt.kerala.gov.in",
-      "notification": "https://kerala.highcourt.kerala.gov.in"
+      "apply": "https://kerala.gov.in",
+      "official": "https://kerala.gov.in",
+      "notification": "https://kerala.gov.in"
     }
   },
   {
@@ -19326,10 +19326,10 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://kerala.educationboard.kerala.gov.in",
-      "official": "https://kerala.educationboard.kerala.gov.in",
-      "notification": "https://kerala.educationboard.kerala.gov.in",
-      "result": "https://kerala.educationboard.kerala.gov.in"
+      "apply": "https://kerala.gov.in",
+      "official": "https://kerala.gov.in",
+      "notification": "https://kerala.gov.in",
+      "result": "https://kerala.gov.in"
     }
   },
   {
@@ -19353,9 +19353,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://kerala.healthdept.kerala.gov.in",
-      "official": "https://kerala.healthdept.kerala.gov.in",
-      "notification": "https://kerala.healthdept.kerala.gov.in"
+      "apply": "https://kerala.gov.in",
+      "official": "https://kerala.gov.in",
+      "notification": "https://kerala.gov.in"
     }
   },
   {
@@ -19379,9 +19379,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://kerala.transportdept.kerala.gov.in",
-      "official": "https://kerala.transportdept.kerala.gov.in",
-      "notification": "https://kerala.transportdept.kerala.gov.in"
+      "apply": "https://kerala.gov.in",
+      "official": "https://kerala.gov.in",
+      "notification": "https://kerala.gov.in"
     }
   },
   {
@@ -19405,9 +19405,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://kerala.electricityboard.kerala.gov.in",
-      "official": "https://kerala.electricityboard.kerala.gov.in",
-      "notification": "https://kerala.electricityboard.kerala.gov.in"
+      "apply": "https://kerala.gov.in",
+      "official": "https://kerala.gov.in",
+      "notification": "https://kerala.gov.in"
     }
   },
   {
@@ -19431,9 +19431,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://kerala.metrorail.kerala.gov.in",
-      "official": "https://kerala.metrorail.kerala.gov.in",
-      "notification": "https://kerala.metrorail.kerala.gov.in"
+      "apply": "https://kerala.gov.in",
+      "official": "https://kerala.gov.in",
+      "notification": "https://kerala.gov.in"
     }
   },
   {
@@ -19456,9 +19456,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://kerala.university.kerala.gov.in",
-      "official": "https://kerala.university.kerala.gov.in",
-      "notification": "https://kerala.university.kerala.gov.in"
+      "apply": "https://kerala.gov.in",
+      "official": "https://kerala.gov.in",
+      "notification": "https://kerala.gov.in"
     }
   },
   {
@@ -19482,9 +19482,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://kerala.nagarnigam.kerala.gov.in",
-      "official": "https://kerala.nagarnigam.kerala.gov.in",
-      "notification": "https://kerala.nagarnigam.kerala.gov.in"
+      "apply": "https://kerala.gov.in",
+      "official": "https://kerala.gov.in",
+      "notification": "https://kerala.gov.in"
     }
   },
   {
@@ -19508,9 +19508,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://kerala.panchayat.kerala.gov.in",
-      "official": "https://kerala.panchayat.kerala.gov.in",
-      "notification": "https://kerala.panchayat.kerala.gov.in"
+      "apply": "https://kerala.gov.in",
+      "official": "https://kerala.gov.in",
+      "notification": "https://kerala.gov.in"
     }
   },
   {
@@ -19534,9 +19534,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://kerala.forestdept.kerala.gov.in",
-      "official": "https://kerala.forestdept.kerala.gov.in",
-      "notification": "https://kerala.forestdept.kerala.gov.in"
+      "apply": "https://kerala.gov.in",
+      "official": "https://kerala.gov.in",
+      "notification": "https://kerala.gov.in"
     }
   },
   {
@@ -19560,9 +19560,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://kerala.pwd.kerala.gov.in",
-      "official": "https://kerala.pwd.kerala.gov.in",
-      "notification": "https://kerala.pwd.kerala.gov.in"
+      "apply": "https://kerala.gov.in",
+      "official": "https://kerala.gov.in",
+      "notification": "https://kerala.gov.in"
     }
   },
   {
@@ -19585,9 +19585,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://kerala.socialwelfare.kerala.gov.in",
-      "official": "https://kerala.socialwelfare.kerala.gov.in",
-      "notification": "https://kerala.socialwelfare.kerala.gov.in"
+      "apply": "https://kerala.gov.in",
+      "official": "https://kerala.gov.in",
+      "notification": "https://kerala.gov.in"
     }
   },
   {
@@ -19611,9 +19611,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://kerala.apexbank.kerala.gov.in",
-      "official": "https://kerala.apexbank.kerala.gov.in",
-      "notification": "https://kerala.apexbank.kerala.gov.in"
+      "apply": "https://kerala.gov.in",
+      "official": "https://kerala.gov.in",
+      "notification": "https://kerala.gov.in"
     }
   },
   {
@@ -19636,9 +19636,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://kerala.technicalboard.kerala.gov.in",
-      "official": "https://kerala.technicalboard.kerala.gov.in",
-      "notification": "https://kerala.technicalboard.kerala.gov.in"
+      "apply": "https://kerala.gov.in",
+      "official": "https://kerala.gov.in",
+      "notification": "https://kerala.gov.in"
     }
   },
   {
@@ -19661,10 +19661,10 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Active / Ongoing"
     },
     "links": {
-      "apply": "https://kerala.tetexam.kerala.gov.in",
-      "official": "https://kerala.tetexam.kerala.gov.in",
-      "notification": "https://kerala.tetexam.kerala.gov.in",
-      "admitCard": "https://kerala.tetexam.kerala.gov.in"
+      "apply": "https://kerala.gov.in",
+      "official": "https://kerala.gov.in",
+      "notification": "https://kerala.gov.in",
+      "admitCard": "https://kerala.gov.in"
     }
   },
   {
@@ -19687,10 +19687,10 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://kerala.entranceexam.kerala.gov.in",
-      "official": "https://kerala.entranceexam.kerala.gov.in",
-      "notification": "https://kerala.entranceexam.kerala.gov.in",
-      "answerKey": "https://kerala.entranceexam.kerala.gov.in"
+      "apply": "https://kerala.gov.in",
+      "official": "https://kerala.gov.in",
+      "notification": "https://kerala.gov.in",
+      "answerKey": "https://kerala.gov.in"
     }
   },
   {
@@ -19713,9 +19713,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://kerala.revenuecouncil.kerala.gov.in",
-      "official": "https://kerala.revenuecouncil.kerala.gov.in",
-      "notification": "https://kerala.revenuecouncil.kerala.gov.in"
+      "apply": "https://kerala.gov.in",
+      "official": "https://kerala.gov.in",
+      "notification": "https://kerala.gov.in"
     }
   },
   {
@@ -19739,9 +19739,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://tn.police.tn.gov.in",
-      "official": "https://tn.police.tn.gov.in",
-      "notification": "https://tn.police.tn.gov.in"
+      "apply": "https://tn.gov.in",
+      "official": "https://tn.gov.in",
+      "notification": "https://tn.gov.in"
     }
   },
   {
@@ -19765,9 +19765,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://tn.psc.tn.gov.in",
-      "official": "https://tn.psc.tn.gov.in",
-      "notification": "https://tn.psc.tn.gov.in"
+      "apply": "https://tn.gov.in",
+      "official": "https://tn.gov.in",
+      "notification": "https://tn.gov.in"
     }
   },
   {
@@ -19791,9 +19791,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://tn.ssb.tn.gov.in",
-      "official": "https://tn.ssb.tn.gov.in",
-      "notification": "https://tn.ssb.tn.gov.in"
+      "apply": "https://tn.gov.in",
+      "official": "https://tn.gov.in",
+      "notification": "https://tn.gov.in"
     }
   },
   {
@@ -19817,9 +19817,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://tn.highcourt.tn.gov.in",
-      "official": "https://tn.highcourt.tn.gov.in",
-      "notification": "https://tn.highcourt.tn.gov.in"
+      "apply": "https://tn.gov.in",
+      "official": "https://tn.gov.in",
+      "notification": "https://tn.gov.in"
     }
   },
   {
@@ -19842,10 +19842,10 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://tn.educationboard.tn.gov.in",
-      "official": "https://tn.educationboard.tn.gov.in",
-      "notification": "https://tn.educationboard.tn.gov.in",
-      "result": "https://tn.educationboard.tn.gov.in"
+      "apply": "https://tn.gov.in",
+      "official": "https://tn.gov.in",
+      "notification": "https://tn.gov.in",
+      "result": "https://tn.gov.in"
     }
   },
   {
@@ -19869,9 +19869,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://tn.healthdept.tn.gov.in",
-      "official": "https://tn.healthdept.tn.gov.in",
-      "notification": "https://tn.healthdept.tn.gov.in"
+      "apply": "https://tn.gov.in",
+      "official": "https://tn.gov.in",
+      "notification": "https://tn.gov.in"
     }
   },
   {
@@ -19895,9 +19895,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://tn.transportdept.tn.gov.in",
-      "official": "https://tn.transportdept.tn.gov.in",
-      "notification": "https://tn.transportdept.tn.gov.in"
+      "apply": "https://tn.gov.in",
+      "official": "https://tn.gov.in",
+      "notification": "https://tn.gov.in"
     }
   },
   {
@@ -19921,9 +19921,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://tn.electricityboard.tn.gov.in",
-      "official": "https://tn.electricityboard.tn.gov.in",
-      "notification": "https://tn.electricityboard.tn.gov.in"
+      "apply": "https://tn.gov.in",
+      "official": "https://tn.gov.in",
+      "notification": "https://tn.gov.in"
     }
   },
   {
@@ -19947,9 +19947,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://tn.metrorail.tn.gov.in",
-      "official": "https://tn.metrorail.tn.gov.in",
-      "notification": "https://tn.metrorail.tn.gov.in"
+      "apply": "https://tn.gov.in",
+      "official": "https://tn.gov.in",
+      "notification": "https://tn.gov.in"
     }
   },
   {
@@ -19972,9 +19972,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://tn.university.tn.gov.in",
-      "official": "https://tn.university.tn.gov.in",
-      "notification": "https://tn.university.tn.gov.in"
+      "apply": "https://tn.gov.in",
+      "official": "https://tn.gov.in",
+      "notification": "https://tn.gov.in"
     }
   },
   {
@@ -19998,9 +19998,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://tn.nagarnigam.tn.gov.in",
-      "official": "https://tn.nagarnigam.tn.gov.in",
-      "notification": "https://tn.nagarnigam.tn.gov.in"
+      "apply": "https://tn.gov.in",
+      "official": "https://tn.gov.in",
+      "notification": "https://tn.gov.in"
     }
   },
   {
@@ -20024,9 +20024,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://tn.panchayat.tn.gov.in",
-      "official": "https://tn.panchayat.tn.gov.in",
-      "notification": "https://tn.panchayat.tn.gov.in"
+      "apply": "https://tn.gov.in",
+      "official": "https://tn.gov.in",
+      "notification": "https://tn.gov.in"
     }
   },
   {
@@ -20050,9 +20050,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://tn.forestdept.tn.gov.in",
-      "official": "https://tn.forestdept.tn.gov.in",
-      "notification": "https://tn.forestdept.tn.gov.in"
+      "apply": "https://tn.gov.in",
+      "official": "https://tn.gov.in",
+      "notification": "https://tn.gov.in"
     }
   },
   {
@@ -20076,9 +20076,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://tn.pwd.tn.gov.in",
-      "official": "https://tn.pwd.tn.gov.in",
-      "notification": "https://tn.pwd.tn.gov.in"
+      "apply": "https://tn.gov.in",
+      "official": "https://tn.gov.in",
+      "notification": "https://tn.gov.in"
     }
   },
   {
@@ -20101,9 +20101,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://tn.socialwelfare.tn.gov.in",
-      "official": "https://tn.socialwelfare.tn.gov.in",
-      "notification": "https://tn.socialwelfare.tn.gov.in"
+      "apply": "https://tn.gov.in",
+      "official": "https://tn.gov.in",
+      "notification": "https://tn.gov.in"
     }
   },
   {
@@ -20127,9 +20127,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://tn.apexbank.tn.gov.in",
-      "official": "https://tn.apexbank.tn.gov.in",
-      "notification": "https://tn.apexbank.tn.gov.in"
+      "apply": "https://tn.gov.in",
+      "official": "https://tn.gov.in",
+      "notification": "https://tn.gov.in"
     }
   },
   {
@@ -20152,9 +20152,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://tn.technicalboard.tn.gov.in",
-      "official": "https://tn.technicalboard.tn.gov.in",
-      "notification": "https://tn.technicalboard.tn.gov.in"
+      "apply": "https://tn.gov.in",
+      "official": "https://tn.gov.in",
+      "notification": "https://tn.gov.in"
     }
   },
   {
@@ -20177,10 +20177,10 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Active / Ongoing"
     },
     "links": {
-      "apply": "https://tn.tetexam.tn.gov.in",
-      "official": "https://tn.tetexam.tn.gov.in",
-      "notification": "https://tn.tetexam.tn.gov.in",
-      "admitCard": "https://tn.tetexam.tn.gov.in"
+      "apply": "https://tn.gov.in",
+      "official": "https://tn.gov.in",
+      "notification": "https://tn.gov.in",
+      "admitCard": "https://tn.gov.in"
     }
   },
   {
@@ -20203,10 +20203,10 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://tn.entranceexam.tn.gov.in",
-      "official": "https://tn.entranceexam.tn.gov.in",
-      "notification": "https://tn.entranceexam.tn.gov.in",
-      "answerKey": "https://tn.entranceexam.tn.gov.in"
+      "apply": "https://tn.gov.in",
+      "official": "https://tn.gov.in",
+      "notification": "https://tn.gov.in",
+      "answerKey": "https://tn.gov.in"
     }
   },
   {
@@ -20229,9 +20229,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://tn.revenuecouncil.tn.gov.in",
-      "official": "https://tn.revenuecouncil.tn.gov.in",
-      "notification": "https://tn.revenuecouncil.tn.gov.in"
+      "apply": "https://tn.gov.in",
+      "official": "https://tn.gov.in",
+      "notification": "https://tn.gov.in"
     }
   },
   {
@@ -20255,9 +20255,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://telangana.police.telangana.gov.in",
-      "official": "https://telangana.police.telangana.gov.in",
-      "notification": "https://telangana.police.telangana.gov.in"
+      "apply": "https://telangana.gov.in",
+      "official": "https://telangana.gov.in",
+      "notification": "https://telangana.gov.in"
     }
   },
   {
@@ -20281,9 +20281,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://telangana.psc.telangana.gov.in",
-      "official": "https://telangana.psc.telangana.gov.in",
-      "notification": "https://telangana.psc.telangana.gov.in"
+      "apply": "https://telangana.gov.in",
+      "official": "https://telangana.gov.in",
+      "notification": "https://telangana.gov.in"
     }
   },
   {
@@ -20307,9 +20307,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://telangana.ssb.telangana.gov.in",
-      "official": "https://telangana.ssb.telangana.gov.in",
-      "notification": "https://telangana.ssb.telangana.gov.in"
+      "apply": "https://telangana.gov.in",
+      "official": "https://telangana.gov.in",
+      "notification": "https://telangana.gov.in"
     }
   },
   {
@@ -20333,9 +20333,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://telangana.highcourt.telangana.gov.in",
-      "official": "https://telangana.highcourt.telangana.gov.in",
-      "notification": "https://telangana.highcourt.telangana.gov.in"
+      "apply": "https://telangana.gov.in",
+      "official": "https://telangana.gov.in",
+      "notification": "https://telangana.gov.in"
     }
   },
   {
@@ -20358,10 +20358,10 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://telangana.educationboard.telangana.gov.in",
-      "official": "https://telangana.educationboard.telangana.gov.in",
-      "notification": "https://telangana.educationboard.telangana.gov.in",
-      "result": "https://telangana.educationboard.telangana.gov.in"
+      "apply": "https://telangana.gov.in",
+      "official": "https://telangana.gov.in",
+      "notification": "https://telangana.gov.in",
+      "result": "https://telangana.gov.in"
     }
   },
   {
@@ -20385,9 +20385,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://telangana.healthdept.telangana.gov.in",
-      "official": "https://telangana.healthdept.telangana.gov.in",
-      "notification": "https://telangana.healthdept.telangana.gov.in"
+      "apply": "https://telangana.gov.in",
+      "official": "https://telangana.gov.in",
+      "notification": "https://telangana.gov.in"
     }
   },
   {
@@ -20411,9 +20411,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://telangana.transportdept.telangana.gov.in",
-      "official": "https://telangana.transportdept.telangana.gov.in",
-      "notification": "https://telangana.transportdept.telangana.gov.in"
+      "apply": "https://telangana.gov.in",
+      "official": "https://telangana.gov.in",
+      "notification": "https://telangana.gov.in"
     }
   },
   {
@@ -20437,9 +20437,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://telangana.electricityboard.telangana.gov.in",
-      "official": "https://telangana.electricityboard.telangana.gov.in",
-      "notification": "https://telangana.electricityboard.telangana.gov.in"
+      "apply": "https://telangana.gov.in",
+      "official": "https://telangana.gov.in",
+      "notification": "https://telangana.gov.in"
     }
   },
   {
@@ -20463,9 +20463,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://telangana.metrorail.telangana.gov.in",
-      "official": "https://telangana.metrorail.telangana.gov.in",
-      "notification": "https://telangana.metrorail.telangana.gov.in"
+      "apply": "https://telangana.gov.in",
+      "official": "https://telangana.gov.in",
+      "notification": "https://telangana.gov.in"
     }
   },
   {
@@ -20488,9 +20488,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://telangana.university.telangana.gov.in",
-      "official": "https://telangana.university.telangana.gov.in",
-      "notification": "https://telangana.university.telangana.gov.in"
+      "apply": "https://telangana.gov.in",
+      "official": "https://telangana.gov.in",
+      "notification": "https://telangana.gov.in"
     }
   },
   {
@@ -20514,9 +20514,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://telangana.nagarnigam.telangana.gov.in",
-      "official": "https://telangana.nagarnigam.telangana.gov.in",
-      "notification": "https://telangana.nagarnigam.telangana.gov.in"
+      "apply": "https://telangana.gov.in",
+      "official": "https://telangana.gov.in",
+      "notification": "https://telangana.gov.in"
     }
   },
   {
@@ -20540,9 +20540,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://telangana.panchayat.telangana.gov.in",
-      "official": "https://telangana.panchayat.telangana.gov.in",
-      "notification": "https://telangana.panchayat.telangana.gov.in"
+      "apply": "https://telangana.gov.in",
+      "official": "https://telangana.gov.in",
+      "notification": "https://telangana.gov.in"
     }
   },
   {
@@ -20566,9 +20566,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://telangana.forestdept.telangana.gov.in",
-      "official": "https://telangana.forestdept.telangana.gov.in",
-      "notification": "https://telangana.forestdept.telangana.gov.in"
+      "apply": "https://telangana.gov.in",
+      "official": "https://telangana.gov.in",
+      "notification": "https://telangana.gov.in"
     }
   },
   {
@@ -20592,9 +20592,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://telangana.pwd.telangana.gov.in",
-      "official": "https://telangana.pwd.telangana.gov.in",
-      "notification": "https://telangana.pwd.telangana.gov.in"
+      "apply": "https://telangana.gov.in",
+      "official": "https://telangana.gov.in",
+      "notification": "https://telangana.gov.in"
     }
   },
   {
@@ -20617,9 +20617,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://telangana.socialwelfare.telangana.gov.in",
-      "official": "https://telangana.socialwelfare.telangana.gov.in",
-      "notification": "https://telangana.socialwelfare.telangana.gov.in"
+      "apply": "https://telangana.gov.in",
+      "official": "https://telangana.gov.in",
+      "notification": "https://telangana.gov.in"
     }
   },
   {
@@ -20643,9 +20643,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://telangana.apexbank.telangana.gov.in",
-      "official": "https://telangana.apexbank.telangana.gov.in",
-      "notification": "https://telangana.apexbank.telangana.gov.in"
+      "apply": "https://telangana.gov.in",
+      "official": "https://telangana.gov.in",
+      "notification": "https://telangana.gov.in"
     }
   },
   {
@@ -20668,9 +20668,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://telangana.technicalboard.telangana.gov.in",
-      "official": "https://telangana.technicalboard.telangana.gov.in",
-      "notification": "https://telangana.technicalboard.telangana.gov.in"
+      "apply": "https://telangana.gov.in",
+      "official": "https://telangana.gov.in",
+      "notification": "https://telangana.gov.in"
     }
   },
   {
@@ -20693,10 +20693,10 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Active / Ongoing"
     },
     "links": {
-      "apply": "https://telangana.tetexam.telangana.gov.in",
-      "official": "https://telangana.tetexam.telangana.gov.in",
-      "notification": "https://telangana.tetexam.telangana.gov.in",
-      "admitCard": "https://telangana.tetexam.telangana.gov.in"
+      "apply": "https://telangana.gov.in",
+      "official": "https://telangana.gov.in",
+      "notification": "https://telangana.gov.in",
+      "admitCard": "https://telangana.gov.in"
     }
   },
   {
@@ -20719,10 +20719,10 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://telangana.entranceexam.telangana.gov.in",
-      "official": "https://telangana.entranceexam.telangana.gov.in",
-      "notification": "https://telangana.entranceexam.telangana.gov.in",
-      "answerKey": "https://telangana.entranceexam.telangana.gov.in"
+      "apply": "https://telangana.gov.in",
+      "official": "https://telangana.gov.in",
+      "notification": "https://telangana.gov.in",
+      "answerKey": "https://telangana.gov.in"
     }
   },
   {
@@ -20745,9 +20745,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://telangana.revenuecouncil.telangana.gov.in",
-      "official": "https://telangana.revenuecouncil.telangana.gov.in",
-      "notification": "https://telangana.revenuecouncil.telangana.gov.in"
+      "apply": "https://telangana.gov.in",
+      "official": "https://telangana.gov.in",
+      "notification": "https://telangana.gov.in"
     }
   },
   {
@@ -20771,9 +20771,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://ap.police.ap.gov.in",
-      "official": "https://ap.police.ap.gov.in",
-      "notification": "https://ap.police.ap.gov.in"
+      "apply": "https://ap.gov.in",
+      "official": "https://ap.gov.in",
+      "notification": "https://ap.gov.in"
     }
   },
   {
@@ -20797,9 +20797,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://ap.psc.ap.gov.in",
-      "official": "https://ap.psc.ap.gov.in",
-      "notification": "https://ap.psc.ap.gov.in"
+      "apply": "https://ap.gov.in",
+      "official": "https://ap.gov.in",
+      "notification": "https://ap.gov.in"
     }
   },
   {
@@ -20823,9 +20823,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://ap.ssb.ap.gov.in",
-      "official": "https://ap.ssb.ap.gov.in",
-      "notification": "https://ap.ssb.ap.gov.in"
+      "apply": "https://ap.gov.in",
+      "official": "https://ap.gov.in",
+      "notification": "https://ap.gov.in"
     }
   },
   {
@@ -20849,9 +20849,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://ap.highcourt.ap.gov.in",
-      "official": "https://ap.highcourt.ap.gov.in",
-      "notification": "https://ap.highcourt.ap.gov.in"
+      "apply": "https://ap.gov.in",
+      "official": "https://ap.gov.in",
+      "notification": "https://ap.gov.in"
     }
   },
   {
@@ -20874,10 +20874,10 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://ap.educationboard.ap.gov.in",
-      "official": "https://ap.educationboard.ap.gov.in",
-      "notification": "https://ap.educationboard.ap.gov.in",
-      "result": "https://ap.educationboard.ap.gov.in"
+      "apply": "https://ap.gov.in",
+      "official": "https://ap.gov.in",
+      "notification": "https://ap.gov.in",
+      "result": "https://ap.gov.in"
     }
   },
   {
@@ -20901,9 +20901,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://ap.healthdept.ap.gov.in",
-      "official": "https://ap.healthdept.ap.gov.in",
-      "notification": "https://ap.healthdept.ap.gov.in"
+      "apply": "https://ap.gov.in",
+      "official": "https://ap.gov.in",
+      "notification": "https://ap.gov.in"
     }
   },
   {
@@ -20927,9 +20927,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://ap.transportdept.ap.gov.in",
-      "official": "https://ap.transportdept.ap.gov.in",
-      "notification": "https://ap.transportdept.ap.gov.in"
+      "apply": "https://ap.gov.in",
+      "official": "https://ap.gov.in",
+      "notification": "https://ap.gov.in"
     }
   },
   {
@@ -20953,9 +20953,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://ap.electricityboard.ap.gov.in",
-      "official": "https://ap.electricityboard.ap.gov.in",
-      "notification": "https://ap.electricityboard.ap.gov.in"
+      "apply": "https://ap.gov.in",
+      "official": "https://ap.gov.in",
+      "notification": "https://ap.gov.in"
     }
   },
   {
@@ -20979,9 +20979,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://ap.metrorail.ap.gov.in",
-      "official": "https://ap.metrorail.ap.gov.in",
-      "notification": "https://ap.metrorail.ap.gov.in"
+      "apply": "https://ap.gov.in",
+      "official": "https://ap.gov.in",
+      "notification": "https://ap.gov.in"
     }
   },
   {
@@ -21004,9 +21004,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://ap.university.ap.gov.in",
-      "official": "https://ap.university.ap.gov.in",
-      "notification": "https://ap.university.ap.gov.in"
+      "apply": "https://ap.gov.in",
+      "official": "https://ap.gov.in",
+      "notification": "https://ap.gov.in"
     }
   },
   {
@@ -21030,9 +21030,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://ap.nagarnigam.ap.gov.in",
-      "official": "https://ap.nagarnigam.ap.gov.in",
-      "notification": "https://ap.nagarnigam.ap.gov.in"
+      "apply": "https://ap.gov.in",
+      "official": "https://ap.gov.in",
+      "notification": "https://ap.gov.in"
     }
   },
   {
@@ -21056,9 +21056,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://ap.panchayat.ap.gov.in",
-      "official": "https://ap.panchayat.ap.gov.in",
-      "notification": "https://ap.panchayat.ap.gov.in"
+      "apply": "https://ap.gov.in",
+      "official": "https://ap.gov.in",
+      "notification": "https://ap.gov.in"
     }
   },
   {
@@ -21082,9 +21082,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://ap.forestdept.ap.gov.in",
-      "official": "https://ap.forestdept.ap.gov.in",
-      "notification": "https://ap.forestdept.ap.gov.in"
+      "apply": "https://ap.gov.in",
+      "official": "https://ap.gov.in",
+      "notification": "https://ap.gov.in"
     }
   },
   {
@@ -21108,9 +21108,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://ap.pwd.ap.gov.in",
-      "official": "https://ap.pwd.ap.gov.in",
-      "notification": "https://ap.pwd.ap.gov.in"
+      "apply": "https://ap.gov.in",
+      "official": "https://ap.gov.in",
+      "notification": "https://ap.gov.in"
     }
   },
   {
@@ -21133,9 +21133,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://ap.socialwelfare.ap.gov.in",
-      "official": "https://ap.socialwelfare.ap.gov.in",
-      "notification": "https://ap.socialwelfare.ap.gov.in"
+      "apply": "https://ap.gov.in",
+      "official": "https://ap.gov.in",
+      "notification": "https://ap.gov.in"
     }
   },
   {
@@ -21159,9 +21159,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://ap.apexbank.ap.gov.in",
-      "official": "https://ap.apexbank.ap.gov.in",
-      "notification": "https://ap.apexbank.ap.gov.in"
+      "apply": "https://ap.gov.in",
+      "official": "https://ap.gov.in",
+      "notification": "https://ap.gov.in"
     }
   },
   {
@@ -21184,9 +21184,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://ap.technicalboard.ap.gov.in",
-      "official": "https://ap.technicalboard.ap.gov.in",
-      "notification": "https://ap.technicalboard.ap.gov.in"
+      "apply": "https://ap.gov.in",
+      "official": "https://ap.gov.in",
+      "notification": "https://ap.gov.in"
     }
   },
   {
@@ -21209,10 +21209,10 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Active / Ongoing"
     },
     "links": {
-      "apply": "https://ap.tetexam.ap.gov.in",
-      "official": "https://ap.tetexam.ap.gov.in",
-      "notification": "https://ap.tetexam.ap.gov.in",
-      "admitCard": "https://ap.tetexam.ap.gov.in"
+      "apply": "https://ap.gov.in",
+      "official": "https://ap.gov.in",
+      "notification": "https://ap.gov.in",
+      "admitCard": "https://ap.gov.in"
     }
   },
   {
@@ -21235,10 +21235,10 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://ap.entranceexam.ap.gov.in",
-      "official": "https://ap.entranceexam.ap.gov.in",
-      "notification": "https://ap.entranceexam.ap.gov.in",
-      "answerKey": "https://ap.entranceexam.ap.gov.in"
+      "apply": "https://ap.gov.in",
+      "official": "https://ap.gov.in",
+      "notification": "https://ap.gov.in",
+      "answerKey": "https://ap.gov.in"
     }
   },
   {
@@ -21261,9 +21261,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://ap.revenuecouncil.ap.gov.in",
-      "official": "https://ap.revenuecouncil.ap.gov.in",
-      "notification": "https://ap.revenuecouncil.ap.gov.in"
+      "apply": "https://ap.gov.in",
+      "official": "https://ap.gov.in",
+      "notification": "https://ap.gov.in"
     }
   },
   {
@@ -21287,9 +21287,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://j&k.police.jk.gov.in",
-      "official": "https://j&k.police.jk.gov.in",
-      "notification": "https://j&k.police.jk.gov.in"
+      "apply": "https://jk.gov.in",
+      "official": "https://jk.gov.in",
+      "notification": "https://jk.gov.in"
     }
   },
   {
@@ -21313,9 +21313,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://j&k.psc.jk.gov.in",
-      "official": "https://j&k.psc.jk.gov.in",
-      "notification": "https://j&k.psc.jk.gov.in"
+      "apply": "https://jk.gov.in",
+      "official": "https://jk.gov.in",
+      "notification": "https://jk.gov.in"
     }
   },
   {
@@ -21339,9 +21339,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://j&k.ssb.jk.gov.in",
-      "official": "https://j&k.ssb.jk.gov.in",
-      "notification": "https://j&k.ssb.jk.gov.in"
+      "apply": "https://jk.gov.in",
+      "official": "https://jk.gov.in",
+      "notification": "https://jk.gov.in"
     }
   },
   {
@@ -21365,9 +21365,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://j&k.highcourt.jk.gov.in",
-      "official": "https://j&k.highcourt.jk.gov.in",
-      "notification": "https://j&k.highcourt.jk.gov.in"
+      "apply": "https://jk.gov.in",
+      "official": "https://jk.gov.in",
+      "notification": "https://jk.gov.in"
     }
   },
   {
@@ -21390,10 +21390,10 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://j&k.educationboard.jk.gov.in",
-      "official": "https://j&k.educationboard.jk.gov.in",
-      "notification": "https://j&k.educationboard.jk.gov.in",
-      "result": "https://j&k.educationboard.jk.gov.in"
+      "apply": "https://jk.gov.in",
+      "official": "https://jk.gov.in",
+      "notification": "https://jk.gov.in",
+      "result": "https://jk.gov.in"
     }
   },
   {
@@ -21417,9 +21417,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://j&k.healthdept.jk.gov.in",
-      "official": "https://j&k.healthdept.jk.gov.in",
-      "notification": "https://j&k.healthdept.jk.gov.in"
+      "apply": "https://jk.gov.in",
+      "official": "https://jk.gov.in",
+      "notification": "https://jk.gov.in"
     }
   },
   {
@@ -21443,9 +21443,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://j&k.transportdept.jk.gov.in",
-      "official": "https://j&k.transportdept.jk.gov.in",
-      "notification": "https://j&k.transportdept.jk.gov.in"
+      "apply": "https://jk.gov.in",
+      "official": "https://jk.gov.in",
+      "notification": "https://jk.gov.in"
     }
   },
   {
@@ -21469,9 +21469,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://j&k.electricityboard.jk.gov.in",
-      "official": "https://j&k.electricityboard.jk.gov.in",
-      "notification": "https://j&k.electricityboard.jk.gov.in"
+      "apply": "https://jk.gov.in",
+      "official": "https://jk.gov.in",
+      "notification": "https://jk.gov.in"
     }
   },
   {
@@ -21495,9 +21495,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://j&k.metrorail.jk.gov.in",
-      "official": "https://j&k.metrorail.jk.gov.in",
-      "notification": "https://j&k.metrorail.jk.gov.in"
+      "apply": "https://jk.gov.in",
+      "official": "https://jk.gov.in",
+      "notification": "https://jk.gov.in"
     }
   },
   {
@@ -21520,9 +21520,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://j&k.university.jk.gov.in",
-      "official": "https://j&k.university.jk.gov.in",
-      "notification": "https://j&k.university.jk.gov.in"
+      "apply": "https://jk.gov.in",
+      "official": "https://jk.gov.in",
+      "notification": "https://jk.gov.in"
     }
   },
   {
@@ -21546,9 +21546,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://j&k.nagarnigam.jk.gov.in",
-      "official": "https://j&k.nagarnigam.jk.gov.in",
-      "notification": "https://j&k.nagarnigam.jk.gov.in"
+      "apply": "https://jk.gov.in",
+      "official": "https://jk.gov.in",
+      "notification": "https://jk.gov.in"
     }
   },
   {
@@ -21572,9 +21572,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://j&k.panchayat.jk.gov.in",
-      "official": "https://j&k.panchayat.jk.gov.in",
-      "notification": "https://j&k.panchayat.jk.gov.in"
+      "apply": "https://jk.gov.in",
+      "official": "https://jk.gov.in",
+      "notification": "https://jk.gov.in"
     }
   },
   {
@@ -21598,9 +21598,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://j&k.forestdept.jk.gov.in",
-      "official": "https://j&k.forestdept.jk.gov.in",
-      "notification": "https://j&k.forestdept.jk.gov.in"
+      "apply": "https://jk.gov.in",
+      "official": "https://jk.gov.in",
+      "notification": "https://jk.gov.in"
     }
   },
   {
@@ -21624,9 +21624,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://j&k.pwd.jk.gov.in",
-      "official": "https://j&k.pwd.jk.gov.in",
-      "notification": "https://j&k.pwd.jk.gov.in"
+      "apply": "https://jk.gov.in",
+      "official": "https://jk.gov.in",
+      "notification": "https://jk.gov.in"
     }
   },
   {
@@ -21649,9 +21649,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://j&k.socialwelfare.jk.gov.in",
-      "official": "https://j&k.socialwelfare.jk.gov.in",
-      "notification": "https://j&k.socialwelfare.jk.gov.in"
+      "apply": "https://jk.gov.in",
+      "official": "https://jk.gov.in",
+      "notification": "https://jk.gov.in"
     }
   },
   {
@@ -21675,9 +21675,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://j&k.apexbank.jk.gov.in",
-      "official": "https://j&k.apexbank.jk.gov.in",
-      "notification": "https://j&k.apexbank.jk.gov.in"
+      "apply": "https://jk.gov.in",
+      "official": "https://jk.gov.in",
+      "notification": "https://jk.gov.in"
     }
   },
   {
@@ -21700,9 +21700,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://j&k.technicalboard.jk.gov.in",
-      "official": "https://j&k.technicalboard.jk.gov.in",
-      "notification": "https://j&k.technicalboard.jk.gov.in"
+      "apply": "https://jk.gov.in",
+      "official": "https://jk.gov.in",
+      "notification": "https://jk.gov.in"
     }
   },
   {
@@ -21725,10 +21725,10 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Active / Ongoing"
     },
     "links": {
-      "apply": "https://j&k.tetexam.jk.gov.in",
-      "official": "https://j&k.tetexam.jk.gov.in",
-      "notification": "https://j&k.tetexam.jk.gov.in",
-      "admitCard": "https://j&k.tetexam.jk.gov.in"
+      "apply": "https://jk.gov.in",
+      "official": "https://jk.gov.in",
+      "notification": "https://jk.gov.in",
+      "admitCard": "https://jk.gov.in"
     }
   },
   {
@@ -21751,10 +21751,10 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://j&k.entranceexam.jk.gov.in",
-      "official": "https://j&k.entranceexam.jk.gov.in",
-      "notification": "https://j&k.entranceexam.jk.gov.in",
-      "answerKey": "https://j&k.entranceexam.jk.gov.in"
+      "apply": "https://jk.gov.in",
+      "official": "https://jk.gov.in",
+      "notification": "https://jk.gov.in",
+      "answerKey": "https://jk.gov.in"
     }
   },
   {
@@ -21777,9 +21777,9 @@ export const fullCatalogJobs: JobAlert[] = [
       "examDate": "Upcoming 2026"
     },
     "links": {
-      "apply": "https://j&k.revenuecouncil.jk.gov.in",
-      "official": "https://j&k.revenuecouncil.jk.gov.in",
-      "notification": "https://j&k.revenuecouncil.jk.gov.in"
+      "apply": "https://jk.gov.in",
+      "official": "https://jk.gov.in",
+      "notification": "https://jk.gov.in"
     }
   }
 ];

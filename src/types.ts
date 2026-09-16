@@ -70,6 +70,8 @@ export interface JobAlert {
   };
   eligibility?: string;
   qualifications?: string[];
+  qualification?: string | string[];
+  lastLinkAuditAt?: string;
   postWiseVacancies?: PostWiseVacancy[];
   subjects?: SubjectItem[];
   selectionProcess?: string[];

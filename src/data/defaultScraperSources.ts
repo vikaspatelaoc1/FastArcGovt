@@ -1,11 +1,12 @@
 import { ScraperSource, JobCategory } from '../types';
+import { STATE_PORTALS, CENTRAL_PORTALS } from '../utils/govtPortals';
 
 export const baseCuratedScraperSources: ScraperSource[] = [
   {
     id: 'src-employment-news',
     name: 'Employment News (Govt of India Official)',
-    url: 'https://employmentnews.gov.in/feed.rss',
-    type: 'rss',
+    url: 'https://employmentnews.gov.in',
+    type: 'html_scraper',
     defaultCategory: 'latest-jobs',
     state: 'Central',
     enabled: true,
@@ -16,8 +17,8 @@ export const baseCuratedScraperSources: ScraperSource[] = [
   {
     id: 'src-ssc-portal',
     name: 'SSC (Staff Selection Commission) Central Notifications',
-    url: 'https://ssc.gov.in/notices/rss.xml',
-    type: 'rss',
+    url: 'https://ssc.gov.in',
+    type: 'html_scraper',
     defaultCategory: 'latest-jobs',
     state: 'Central',
     enabled: true,
@@ -28,8 +29,8 @@ export const baseCuratedScraperSources: ScraperSource[] = [
   {
     id: 'src-rrb-railways',
     name: 'Railway RRB (Indian Railways Recruitment)',
-    url: 'https://rrbapply.gov.in/updates.rss',
-    type: 'rss',
+    url: 'https://rrbapply.gov.in',
+    type: 'html_scraper',
     defaultCategory: 'admit-cards',
     state: 'Central',
     enabled: true,
@@ -40,7 +41,7 @@ export const baseCuratedScraperSources: ScraperSource[] = [
   {
     id: 'src-upsc-portal',
     name: 'UPSC (Union Public Service Commission) Active Examinations',
-    url: 'https://upsc.gov.in/rss-feed',
+    url: 'https://upsc.gov.in',
     type: 'html_scraper',
     defaultCategory: 'latest-jobs',
     state: 'Central',
@@ -52,8 +53,8 @@ export const baseCuratedScraperSources: ScraperSource[] = [
   {
     id: 'src-pib-jobs',
     name: 'PIB (Press Information Bureau) Central Govt Notices',
-    url: 'https://pib.gov.in/rss/recruitment.xml',
-    type: 'rss',
+    url: 'https://pib.gov.in',
+    type: 'html_scraper',
     defaultCategory: 'latest-jobs',
     state: 'Central',
     enabled: true,
@@ -64,8 +65,8 @@ export const baseCuratedScraperSources: ScraperSource[] = [
   {
     id: 'src-ibps-banking',
     name: 'IBPS (Institute of Banking Personnel Selection)',
-    url: 'https://ibps.in/notifications.xml',
-    type: 'rss',
+    url: 'https://ibps.in',
+    type: 'html_scraper',
     defaultCategory: 'results',
     state: 'Central',
     enabled: true,
@@ -76,7 +77,7 @@ export const baseCuratedScraperSources: ScraperSource[] = [
   {
     id: 'src-upprpb-police',
     name: 'UP Police Recruitment Promotion Board (UPPRPB)',
-    url: 'https://uppbpb.gov.in/notices.rss',
+    url: 'https://uppbpb.gov.in',
     type: 'html_scraper',
     defaultCategory: 'results',
     state: 'UP',
@@ -88,8 +89,8 @@ export const baseCuratedScraperSources: ScraperSource[] = [
   {
     id: 'src-bssc-bihar',
     name: 'Bihar Staff Selection Commission (BSSC / BPSC)',
-    url: 'https://bssc.bihar.gov.in/rss.xml',
-    type: 'rss',
+    url: 'https://bpsc.bih.nic.in',
+    type: 'html_scraper',
     defaultCategory: 'latest-jobs',
     state: 'Bihar',
     enabled: true,
@@ -101,45 +102,55 @@ export const baseCuratedScraperSources: ScraperSource[] = [
 
 export const generateAllScraperSources = (): ScraperSource[] => {
   const sources: ScraperSource[] = [...baseCuratedScraperSources];
-
-  const indianStates = ['UP', 'MP', 'Bihar', 'Rajasthan', 'Gujarat', 'Maharashtra', 'Punjab', 'Haryana', 'Tamil Nadu', 'Kerala', 'Karnataka', 'Odisha', 'West Bengal', 'Assam', 'Jharkhand', 'Chhattisgarh', 'Uttarakhand', 'Himachal Pradesh', 'Telangana', 'Andhra Pradesh', 'Delhi', 'Jammu & Kashmir'];
-  const orgTypes = ['Police', 'PSC', 'SSC', 'High Court', 'Education Board', 'Health Dept', 'Transport', 'Electricity Board', 'Metro', 'University', 'Municipal Corp', 'Panchayat', 'Forest Dept', 'Water Board', 'Housing Board', 'PWD', 'Tourism Dept', 'Social Welfare', 'Rural Development', 'Urban Development', 'Agriculture Dept', 'Revenue Dept', 'Tax Dept', 'State Cooperative Bank'];
-  const centralOrgs = ['UPSC', 'SSC', 'RRB', 'IBPS', 'SBI', 'RBI', 'LIC', 'DRDO', 'ISRO', 'BARC', 'ONGC', 'NTPC', 'BHEL', 'GAIL', 'SAIL', 'IOCL', 'BPCL', 'HPCL', 'CIL', 'AAI', 'FCI', 'NHAI', 'BSF', 'CRPF', 'CISF', 'ITBP', 'SSB', 'Indian Army', 'Indian Navy', 'Indian Air Force', 'Coast Guard', 'Post Office', 'NTA', 'CBSE', 'KVS', 'NVS', 'DSSSB'];
-  const categories: JobCategory[] = ['latest-jobs', 'admit-cards', 'results', 'syllabus', 'answer-key', 'admission', 'documents', 'important'];
-
+  const seenUrls = new Set<string>(sources.map(s => s.url.toLowerCase()));
   let extraSourceId = 1;
 
-  // Add State Level Sources (22 * 24 = 528 sources)
-  indianStates.forEach(state => {
-    orgTypes.forEach(org => {
+  // Add all Central Portals as real verified sources
+  Object.entries(CENTRAL_PORTALS).forEach(([key, portal]) => {
+    if (!seenUrls.has(portal.official.toLowerCase())) {
+      seenUrls.add(portal.official.toLowerCase());
       sources.push({
-        id: `src-auto-${extraSourceId++}`,
-        name: `${state} ${org} Official Board`,
-        url: `https://${state.toLowerCase().replace(/ & | /g, '')}.${org.toLowerCase().replace(/ /g, '')}.gov.in/rss.xml`,
-        type: extraSourceId % 3 === 0 ? 'html_scraper' : 'rss',
-        defaultCategory: categories[extraSourceId % categories.length],
-        state: state,
+        id: `src-central-${key}`,
+        name: portal.name,
+        url: portal.official,
+        type: 'html_scraper',
+        defaultCategory: 'latest-jobs',
+        state: 'Central',
         enabled: true,
-        lastScraped: 'Pending',
-        itemCount: 0,
+        lastScraped: '15-08-2026 12:00',
+        itemCount: 5,
         status: 'idle'
       });
-    });
+    }
   });
 
-  // Add Central Level Sources (37 sources)
-  centralOrgs.forEach(org => {
-    sources.push({
-      id: `src-auto-${extraSourceId++}`,
-      name: `${org} Central Govt Recruitment`,
-      url: `https://${org.toLowerCase()}.gov.in/latest-updates.rss`,
-      type: 'rss',
-      defaultCategory: 'latest-jobs',
-      state: 'Central',
-      enabled: true,
-      lastScraped: 'Pending',
-      itemCount: 0,
-      status: 'idle'
+  // Add all State Portals (PSC, Police, SSC, Education, High Court)
+  Object.entries(STATE_PORTALS).forEach(([stateCode, config]) => {
+    const orgs = [
+      { name: `${config.name} Public Service Commission (PSC)`, url: config.psc, cat: 'latest-jobs' as JobCategory },
+      { name: `${config.name} Police Recruitment Department`, url: config.police, cat: 'latest-jobs' as JobCategory },
+      { name: `${config.name} Staff Selection Board / Commission`, url: config.ssc, cat: 'latest-jobs' as JobCategory },
+      { name: `${config.name} Education Examination Board`, url: config.education, cat: 'results' as JobCategory },
+      { name: `${config.name} High Court Recruitment Cell`, url: config.highCourt, cat: 'admit-cards' as JobCategory },
+      { name: `${config.name} Official State Portal`, url: config.official, cat: 'important' as JobCategory }
+    ];
+
+    orgs.forEach(org => {
+      if (org.url && !seenUrls.has(org.url.toLowerCase())) {
+        seenUrls.add(org.url.toLowerCase());
+        sources.push({
+          id: `src-state-${extraSourceId++}`,
+          name: org.name,
+          url: org.url,
+          type: 'html_scraper',
+          defaultCategory: org.cat,
+          state: stateCode,
+          enabled: true,
+          lastScraped: 'Pending',
+          itemCount: 0,
+          status: 'idle'
+        });
+      }
     });
   });
 

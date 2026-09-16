@@ -231,8 +231,45 @@ indianStates.forEach(state => {
   orgTypesList.forEach((org, orgIdx) => {
     genCount++;
     const cat = org.cat;
-    const url = `https://${stateShort.toLowerCase()}.${org.short.toLowerCase().replace(/[^a-z0-9]/g, '')}.${stateDomain}`;
-    const cleanUrl = cleanOfficialUrl(url, `https://${stateDomain}`);
+    // Map to real official government portals
+    let cleanUrl = `https://${stateDomain}`;
+    let applyUrl = cleanUrl;
+
+    if (org.short === 'Police') {
+      if (stateShort === 'UP') { cleanUrl = 'https://uppbpb.gov.in'; applyUrl = cleanUrl; }
+      else if (stateShort === 'Bihar') { cleanUrl = 'https://csbc.bih.nic.in'; applyUrl = cleanUrl; }
+      else if (stateShort === 'Rajasthan') { cleanUrl = 'https://police.rajasthan.gov.in'; applyUrl = 'https://sso.rajasthan.gov.in'; }
+      else if (stateShort === 'MP') { cleanUrl = 'https://esb.mp.gov.in'; applyUrl = cleanUrl; }
+      else if (stateShort === 'Delhi') { cleanUrl = 'https://delhipolice.gov.in'; applyUrl = 'https://dsssbonline.nic.in'; }
+      else if (stateShort === 'Haryana') { cleanUrl = 'https://hssc.gov.in'; applyUrl = cleanUrl; }
+      else if (stateShort === 'Maharashtra') { cleanUrl = 'https://mahapolice.gov.in'; applyUrl = 'https://mpsc.gov.in'; }
+      else if (stateShort === 'WB') { cleanUrl = 'https://prb.wb.gov.in'; applyUrl = cleanUrl; }
+      else if (stateShort === 'Jharkhand') { cleanUrl = 'https://jhpolice.gov.in'; applyUrl = 'https://jssc.nic.in'; }
+    } else if (org.short === 'PSC') {
+      if (stateShort === 'UP') { cleanUrl = 'https://uppsc.up.nic.in'; applyUrl = cleanUrl; }
+      else if (stateShort === 'Bihar') { cleanUrl = 'https://bpsc.bih.nic.in'; applyUrl = 'https://onlinebpsc.bihar.gov.in'; }
+      else if (stateShort === 'Rajasthan') { cleanUrl = 'https://rpsc.rajasthan.gov.in'; applyUrl = 'https://sso.rajasthan.gov.in'; }
+      else if (stateShort === 'MP') { cleanUrl = 'https://mppsc.mp.gov.in'; applyUrl = 'https://esb.mp.gov.in'; }
+      else if (stateShort === 'Delhi') { cleanUrl = 'https://dsssb.delhi.gov.in'; applyUrl = 'https://dsssbonline.nic.in'; }
+      else if (stateShort === 'Haryana') { cleanUrl = 'https://hpsc.gov.in'; applyUrl = 'https://hssc.gov.in'; }
+      else if (stateShort === 'Maharashtra') { cleanUrl = 'https://mpsc.gov.in'; applyUrl = cleanUrl; }
+      else if (stateShort === 'WB') { cleanUrl = 'https://psc.wb.gov.in'; applyUrl = cleanUrl; }
+      else if (stateShort === 'Jharkhand') { cleanUrl = 'https://jpsc.gov.in'; applyUrl = 'https://jssc.nic.in'; }
+    } else if (org.short === 'Subordinate' || org.short === 'SSC') {
+      if (stateShort === 'UP') { cleanUrl = 'https://upsssc.gov.in'; applyUrl = cleanUrl; }
+      else if (stateShort === 'Bihar') { cleanUrl = 'https://bssc.bihar.gov.in'; applyUrl = cleanUrl; }
+      else if (stateShort === 'Rajasthan') { cleanUrl = 'https://rsmssb.rajasthan.gov.in'; applyUrl = 'https://sso.rajasthan.gov.in'; }
+      else if (stateShort === 'MP') { cleanUrl = 'https://esb.mp.gov.in'; applyUrl = cleanUrl; }
+      else if (stateShort === 'Delhi') { cleanUrl = 'https://dsssb.delhi.gov.in'; applyUrl = 'https://dsssbonline.nic.in'; }
+    } else if (org.short === 'High Court') {
+      if (stateShort === 'UP') { cleanUrl = 'https://allahabadhighcourt.in'; applyUrl = cleanUrl; }
+      else if (stateShort === 'Bihar') { cleanUrl = 'https://patnahighcourt.gov.in'; applyUrl = cleanUrl; }
+      else if (stateShort === 'Delhi') { cleanUrl = 'https://delhihighcourt.nic.in'; applyUrl = cleanUrl; }
+    } else if (org.short === 'Education' || org.short === 'Board') {
+      if (stateShort === 'UP') { cleanUrl = 'https://upmsp.edu.in'; applyUrl = cleanUrl; }
+      else if (stateShort === 'Bihar') { cleanUrl = 'https://biharboardonline.bihar.gov.in'; applyUrl = cleanUrl; }
+      else if (stateShort === 'Rajasthan') { cleanUrl = 'https://rajeduboard.rajasthan.gov.in'; applyUrl = cleanUrl; }
+    }
 
     // Create primary job
     let title = `${stateShort} ${org.name} Recruitment 2026 (${Math.floor(500 + (genCount * 37) % 4500)} Posts)`;
@@ -262,10 +299,10 @@ indianStates.forEach(state => {
         examDate: cat === 'admit-cards' ? 'Active / Ongoing' : 'Upcoming 2026'
       },
       links: {
-        apply: cleanUrl,
+        apply: applyUrl,
         official: cleanUrl,
         notification: cleanUrl,
-        admitCard: cat === 'admit-cards' ? cleanUrl : undefined,
+        admitCard: cat === 'admit-cards' ? applyUrl : undefined,
         result: cat === 'results' ? cleanUrl : undefined,
         answerKey: cat === 'answer-key' ? cleanUrl : undefined
       }
@@ -291,10 +328,10 @@ indianStates.forEach(state => {
         fees: { general: '₹0 (Free)', scSt: '₹0' },
         dates: { start: 'Live Now', last: '31-10-2026' },
         links: {
-          apply: cleanUrl,
+          apply: applyUrl,
           official: cleanUrl,
           notification: cleanUrl,
-          admitCard: altCat === 'admit-cards' ? cleanUrl : undefined,
+          admitCard: altCat === 'admit-cards' ? applyUrl : undefined,
           result: altCat === 'results' ? cleanUrl : undefined,
           answerKey: altCat === 'answer-key' ? cleanUrl : undefined
         }

@@ -1,7 +1,14 @@
+import { isSyntheticOrBrokenDomain } from './govtPortals';
+
 export function normalizeExternalUrl(url?: string): string {
   if (!url || typeof url !== 'string' || !url.trim() || url.trim() === '#') return '';
   
   let clean = url.trim();
+
+  // Handle invalid markers or placeholders
+  if (clean.toLowerCase() === 'needs review' || clean.toLowerCase() === 'n/a' || clean.toLowerCase() === 'pending') {
+    return '';
+  }
 
   // Remove invalid characters like quotation marks and angle brackets
   clean = clean.replace(/['"<>]/g, '');
@@ -14,6 +21,8 @@ export function normalizeExternalUrl(url?: string): string {
   // Ensure protocol exists
   if (!/^https?:\/\//i.test(clean)) {
     if (/^(javascript|data|file):/i.test(clean)) return '';
+    // If it doesn't have a dot in the domain part, it's not a valid URL
+    if (!clean.includes('.')) return '';
     clean = `https://${clean}`;
   }
 
@@ -25,24 +34,21 @@ export function normalizeExternalUrl(url?: string): string {
 
   try {
     const u = new URL(clean);
+
+    // Filter out synthetic or broken domains
+    if (isSyntheticOrBrokenDomain(u.hostname)) {
+      return '';
+    }
     
-    // Many Indian govt websites require 'www.' to resolve properly.
-    // If it's a naked domain like 'upsc.gov.in' or 'ssc.nic.in', add 'www.'
-    const hostParts = u.hostname.split('.');
-    
-    // Heuristic: if it has 2 parts (example.com) or 3 parts ending in country code (example.gov.in)
-    // and it's not already starting with www.
-    if (!u.hostname.startsWith('www.')) {
-      const isCountryTLD = hostParts.length === 3 && hostParts[2].length === 2;
-      const isNormalTLD = hostParts.length === 2;
-      
-      if (isNormalTLD || isCountryTLD) {
-        u.hostname = 'www.' + u.hostname;
-      }
+    // Only prepend 'www.' for specific known domains that strictly require it
+    const requiresWww = new Set(['upsc.gov.in', 'ibps.in', 'india.gov.in']);
+    if (requiresWww.has(u.hostname.toLowerCase())) {
+      u.hostname = 'www.' + u.hostname;
     }
 
     return u.toString();
   } catch {
-    return clean;
+    return '';
   }
 }
+
