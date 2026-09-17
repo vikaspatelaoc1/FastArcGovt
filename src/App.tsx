@@ -99,7 +99,7 @@ export default function App() {
       }
 
       setIsDarkMode(effectiveDark);
-      const effectiveThemeColor = effectiveDark ? '#020617' : '#ffffff';
+      const effectiveThemeColor = '#020617'; // ALWAYS use dark navy for PWA status bar to guarantee system icons (which are white) remain clearly visible on Android.
       if (effectiveDark) {
         document.documentElement.classList.add('dark');
         document.body.classList.add('dark');
@@ -1124,6 +1124,25 @@ export default function App() {
     setTimeout(() => setToastMessage(null), 3000);
   };
 
+  useEffect(() => {
+    const headerEl = document.getElementById('app-fixed-top-header');
+    if (!headerEl) return;
+
+    const observer = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        const height = entry.borderBoxSize ? entry.borderBoxSize[0].blockSize : entry.contentRect.height;
+        if (height > 0 && height < 50) {
+          console.error(`[Header Debug] Alert! Header collapsed to ${height}px!`);
+          triggerToast(`⚠️ UI Bug: Header collapsed to ${height}px!`);
+        }
+      }
+    });
+
+    observer.observe(headerEl);
+
+    return () => observer.disconnect();
+  }, []);
+
   const handleAdminAction = () => {
     if (isAdminLoggedIn) {
       if (currentUserRole === 'employee' && !currentPermissions.canAddJob) {
@@ -1595,9 +1614,10 @@ export default function App() {
       {/* Mobile System Status Bar Safe Area & Fixed Top Navigation */}
       <div 
         id="app-fixed-top-header"
-        className="fixed top-0 left-0 right-0 z-50 w-full shadow-md bg-white dark:bg-slate-900 transition-colors"
+        className="fixed top-0 left-0 right-0 z-[100] w-full shadow-md bg-white dark:bg-slate-900 transition-colors"
         style={{
-          paddingTop: 'env(safe-area-inset-top, 0px)'
+          paddingTop: 'env(safe-area-inset-top, 0px)',
+          minHeight: 'calc(56px + env(safe-area-inset-top, 0px))'
         }}
       >
         <Header 
