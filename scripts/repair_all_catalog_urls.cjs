@@ -386,10 +386,15 @@ async function runRepairAudit() {
   console.log(`\n🎉 Verification Audit: Remaining synthetic/broken link instances: ${remainingBroken}`);
 
   // Firestore Live Database Sync
-  const configPath = path.resolve(__dirname, '../firebase-applet-config.json');
-  if (fs.existsSync(configPath)) {
+  const firebaseConfig = {
+    projectId: process.env.VITE_FIREBASE_PROJECT_ID || "direct-stone-dxctm",
+    appId: process.env.VITE_FIREBASE_APP_ID || "1:993642021377:web:98bdd8dc2f5d577e283600",
+    apiKey: process.env.VITE_FIREBASE_API_KEY || "AIzaSyBPobsHpRVFbi4PKiomkK-46hYr1ylhSec",
+    authDomain: process.env.VITE_FIREBASE_AUTH_DOMAIN || "direct-stone-dxctm.firebaseapp.com",
+    firestoreDatabaseId: process.env.VITE_FIREBASE_DATABASE_ID || "ai-studio-fastarcgovtresul-21912eff-20ad-4387-bde5-7cb20bed357a"
+  };
+  if (true) {
     try {
-      const firebaseConfig = JSON.parse(fs.readFileSync(configPath, 'utf8'));
       if (firebaseConfig.projectId) {
         console.log('\n🔥 Syncing repaired links to Firestore Database...');
         const { initializeApp } = require('firebase/app');

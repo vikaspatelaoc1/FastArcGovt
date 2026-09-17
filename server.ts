@@ -49,7 +49,7 @@ import { generateSitemapXml } from './src/utils/sitemapGenerator';
 import { normalizeExternalUrl } from './src/utils/urlUtils';
 import { resolveOfficialPortals, sanitizeAndRepairUrl, isSyntheticOrBrokenDomain } from './src/utils/govtPortals';
 
-const requireModule = createRequire(import.meta.url);
+// requireModule removed
 import { initializeApp } from 'firebase/app';
 import { getFirestore, collection, getDocs, doc, setDoc, getDoc, deleteDoc, writeBatch, setLogLevel } from 'firebase/firestore/lite';
 import { defaultScraperSources } from './src/data/defaultScraperSources';
@@ -3308,7 +3308,7 @@ app.post('/api/check-url', async (req, res) => {
 // Admin endpoint to trigger one-time or on-demand link normalization & health audit migration
 app.post('/api/admin/run-link-migration', async (req, res) => {
   try {
-    const { runMigration } = requireModule('./scripts/migrate_firestore_job_links.cjs');
+    const { runMigration } = await import('./scripts/migrate_firestore_job_links.cjs');
     const stats = await runMigration();
     res.json({ status: 'success', stats });
   } catch (err: any) {
