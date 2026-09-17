@@ -58,7 +58,7 @@ export function UpdatePrompt() {
   if (!showUpdate) return null;
 
   return (
-    <div className="fixed top-4 left-4 right-4 sm:left-auto sm:right-4 sm:w-96 z-[9999] bg-gradient-to-r from-blue-900 to-indigo-900 text-white rounded-2xl shadow-2xl p-5 border border-blue-400/30 animate-in slide-in-from-top-10 fade-in duration-300">
+    <div className="fixed bottom-4 left-4 right-4 sm:bottom-auto sm:top-[calc(68px+env(safe-area-inset-top,0px))] sm:left-auto sm:right-4 sm:w-96 z-50 bg-gradient-to-r from-blue-900 to-indigo-900 text-white rounded-2xl shadow-2xl p-5 border border-blue-400/30 animate-in slide-in-from-bottom-5 sm:slide-in-from-top-5 fade-in duration-300">
       <div className="flex items-start justify-between">
         <div className="flex items-center gap-3">
           <div className="p-2 bg-blue-500/20 rounded-xl">

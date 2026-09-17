@@ -110,11 +110,25 @@ export default function App() {
         localStorage.setItem('theme', 'light');
       }
 
-      // Dynamically update mobile browser & PWA status bar theme-color
-      // We only update the generic one, not the media-query specific ones to prevent OS confusion
-      const metaThemeColor = document.getElementById('meta-theme-color');
-      if (metaThemeColor) {
-        metaThemeColor.setAttribute('content', effectiveThemeColor);
+      // Dynamically update mobile browser & PWA status bar theme-color for both dark and light/day modes
+      const metas = document.querySelectorAll('meta[name="theme-color"]');
+      if (metas.length > 0) {
+        metas.forEach((m) => {
+          m.removeAttribute('media');
+          m.setAttribute('content', effectiveThemeColor);
+        });
+      } else {
+        const metaTheme = document.createElement('meta');
+        metaTheme.name = 'theme-color';
+        metaTheme.id = 'meta-theme-color';
+        metaTheme.content = effectiveThemeColor;
+        document.head.appendChild(metaTheme);
+      }
+
+      // Sync iOS WebKit status bar style
+      const appleMeta = document.querySelector('meta[name="apple-mobile-web-app-status-bar-style"]');
+      if (appleMeta) {
+        appleMeta.setAttribute('content', effectiveDark ? 'black-translucent' : 'default');
       }
     };
 
@@ -124,16 +138,8 @@ export default function App() {
 
     if (themeMode === 'system') {
       const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-      const handleChange = (e: MediaQueryListEvent) => {
-        const isDark = e.matches;
-        setIsDarkMode(isDark);
-        if (isDark) {
-          document.documentElement.classList.add('dark');
-          document.body.classList.add('dark');
-        } else {
-          document.documentElement.classList.remove('dark');
-          document.body.classList.remove('dark');
-        }
+      const handleChange = () => {
+        applyTheme();
       };
       mediaQuery.addEventListener('change', handleChange);
       return () => mediaQuery.removeEventListener('change', handleChange);

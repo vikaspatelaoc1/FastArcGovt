@@ -8,6 +8,24 @@
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     
+    <script>
+      (function() {
+        try {
+          var mode = localStorage.getItem('theme_mode') || localStorage.getItem('theme') || 'dark';
+          var isDark = mode === 'dark' || (mode === 'system' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+          if (mode === 'light') isDark = false;
+          if (isDark) {
+            document.documentElement.classList.add('dark');
+          } else {
+            document.documentElement.classList.remove('dark');
+          }
+          var color = isDark ? '#020617' : '#ffffff';
+          var meta = document.getElementById('meta-theme-color');
+          if (meta) meta.setAttribute('content', color);
+        } catch(e) {}
+      })();
+    </script>
+    
     <!-- Suppress benign Vite dev WebSocket HMR connection messages & unhandled rejections -->
     <script>
       (function() {
