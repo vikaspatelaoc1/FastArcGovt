@@ -1,4 +1,4 @@
-import { MobileTabsConfig, MobilePwaCardConfig } from '../types';
+import { MobileTabsConfig, MobilePwaCardConfig, AppBannerItem, BannerSliderConfig } from '../types';
 
 export const DEFAULT_PWA_CARD_CONFIG: MobilePwaCardConfig = {
   // Job Card Dimensions (Mobile PWA)
@@ -29,10 +29,152 @@ export const DEFAULT_PWA_CARD_CONFIG: MobilePwaCardConfig = {
   cardMetaFontSize: 11
 };
 
+export const DEFAULT_BANNER_SLIDER_CONFIG: BannerSliderConfig = {
+  autoSlide: true,
+  slideIntervalMs: 4500,
+  showDots: true,
+  showArrows: true,
+  pauseOnHover: true,
+  transitionSpeed: 'smooth'
+};
+
+export const DEFAULT_TRENDING_BANNERS: AppBannerItem[] = [
+  {
+    id: 'ssc-chsl',
+    title: 'SSC 10+2 CHSL Apply Online',
+    subtitle: 'Staff Selection Commission Combined Higher Secondary Level (10+2) Examination 2026',
+    badgeText: 'TOP ALERT',
+    badgeColor: 'bg-white/20 text-white',
+    gradient: 'from-[#7db61a] via-[#85b822] to-[#8c1328]',
+    readMoreColor: 'text-[#8c1328]',
+    buttonText: 'Read More',
+    targetType: 'category',
+    category: 'latest-jobs',
+    boardText: 'इतिहास',
+    illustrationType: 'classroom',
+    enabled: true,
+    order: 1
+  },
+  {
+    id: 'railway-alp',
+    title: 'Railway RRB ALP & Technician Online Form',
+    subtitle: 'Ministry of Railways Recruitment Board 18,799+ Vacancies Apply Online',
+    badgeText: 'TOP ALERT',
+    badgeColor: 'bg-white/20 text-white',
+    gradient: 'from-[#ea580c] via-[#f97316] to-[#991b1b]',
+    readMoreColor: 'text-[#991b1b]',
+    buttonText: 'Read More',
+    targetType: 'category',
+    category: 'latest-jobs',
+    boardText: 'भूगोल',
+    illustrationType: 'classroom',
+    enabled: true,
+    order: 2
+  },
+  {
+    id: 'upsc-civil',
+    title: 'UPSC Civil Services Pre 2026 Apply',
+    subtitle: 'Union Public Service Commission IAS / IFS Examination Online Application',
+    badgeText: 'TOP ALERT',
+    badgeColor: 'bg-white/20 text-white',
+    gradient: 'from-[#0284c7] via-[#0369a1] to-[#1e1b4b]',
+    readMoreColor: 'text-[#0369a1]',
+    buttonText: 'Read More',
+    targetType: 'category',
+    category: 'latest-jobs',
+    boardText: 'संविधान',
+    illustrationType: 'classroom',
+    enabled: true,
+    order: 3
+  },
+  {
+    id: 'up-police',
+    title: 'UP Police Constable Exam City / Admit Card',
+    subtitle: 'Uttar Pradesh Police Recruitment & Promotion Board 60,244 Posts',
+    badgeText: 'TOP ALERT',
+    badgeColor: 'bg-white/20 text-white',
+    gradient: 'from-[#10b981] via-[#059669] to-[#881337]',
+    readMoreColor: 'text-[#881337]',
+    buttonText: 'Read More',
+    targetType: 'category',
+    category: 'admit-cards',
+    boardText: 'गणित',
+    illustrationType: 'classroom',
+    enabled: true,
+    order: 4
+  },
+  {
+    id: 'neet-jee',
+    title: 'NTA NEET UG & JEE Main 2026 Registration',
+    subtitle: 'National Testing Agency Medical & Engineering Entrance Exam Online Form',
+    badgeText: 'TOP ALERT',
+    badgeColor: 'bg-white/20 text-white',
+    gradient: 'from-[#e11d48] via-[#be123c] to-[#4c0519]',
+    readMoreColor: 'text-[#be123c]',
+    buttonText: 'Read More',
+    targetType: 'category',
+    category: 'admission',
+    boardText: 'विज्ञान',
+    illustrationType: 'classroom',
+    enabled: true,
+    order: 5
+  },
+  {
+    id: 'ibps-po',
+    title: 'IBPS PO / Clerk Recruitment Form',
+    subtitle: 'Institute of Banking Personnel Selection Common Recruitment Process',
+    badgeText: 'TOP ALERT',
+    badgeColor: 'bg-white/20 text-white',
+    gradient: 'from-[#854d0e] via-[#ca8a04] to-[#7f1d1d]',
+    readMoreColor: 'text-[#7f1d1d]',
+    buttonText: 'Read More',
+    targetType: 'category',
+    category: 'latest-jobs',
+    boardText: 'तर्कशक्ति',
+    illustrationType: 'classroom',
+    enabled: true,
+    order: 6
+  },
+  {
+    id: 'ctet-exam',
+    title: 'CBSE CTET 2026 Online Application Form',
+    subtitle: 'Central Board of Secondary Education Teacher Eligibility Test',
+    badgeText: 'TOP ALERT',
+    badgeColor: 'bg-white/20 text-white',
+    gradient: 'from-[#4338ca] via-[#6366f1] to-[#831843]',
+    readMoreColor: 'text-[#4338ca]',
+    buttonText: 'Read More',
+    targetType: 'category',
+    category: 'latest-jobs',
+    boardText: 'शिक्षा',
+    illustrationType: 'classroom',
+    enabled: true,
+    order: 7
+  },
+  {
+    id: 'bihar-police',
+    title: 'Bihar Police CSBC Constable Result & Cutoff',
+    subtitle: 'Central Selection Board of Constable Bihar Police Exam Results Released',
+    badgeText: 'TOP ALERT',
+    badgeColor: 'bg-white/20 text-white',
+    gradient: 'from-[#059669] via-[#10b981] to-[#1e3a8a]',
+    readMoreColor: 'text-[#059669]',
+    buttonText: 'Read More',
+    targetType: 'category',
+    category: 'results',
+    boardText: 'हिन्दी',
+    illustrationType: 'classroom',
+    enabled: true,
+    order: 8
+  }
+];
+
 export const DEFAULT_MOBILE_TABS_CONFIG: MobileTabsConfig = {
   toolsSectionTitle: 'Tools',
   categorySectionTitle: 'Category Wise Updates',
   pwaCardConfig: DEFAULT_PWA_CARD_CONFIG,
+  bannerSliderConfig: DEFAULT_BANNER_SLIDER_CONFIG,
+  banners: DEFAULT_TRENDING_BANNERS,
   tools: [
     {
       id: 'image-resizer',
@@ -336,6 +478,13 @@ export function loadMobileTabsConfig(): MobileTabsConfig {
         return {
           ...DEFAULT_MOBILE_TABS_CONFIG,
           ...parsed,
+          banners: Array.isArray(parsed.banners) && parsed.banners.length > 0 
+            ? parsed.banners 
+            : DEFAULT_TRENDING_BANNERS,
+          bannerSliderConfig: {
+            ...DEFAULT_BANNER_SLIDER_CONFIG,
+            ...(parsed.bannerSliderConfig || {})
+          },
           pwaCardConfig: {
             ...DEFAULT_PWA_CARD_CONFIG,
             ...(parsed.pwaCardConfig || {})

@@ -1,5 +1,5 @@
 import { getDomainName, getDomainNameLowercase } from '../utils/domain';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { normalizeExternalUrl } from '../utils/urlUtils';
 import { 
   Sparkles, Wand2, Check, ArrowLeft, ArrowRight, Save, Eye, X, 
@@ -10,6 +10,7 @@ import {
 import { JobAlert, JobCategory, PostWiseVacancy } from '../types';
 import { DateInputWithPicker } from './DateInputWithPicker';
 import { enrichJobDetails, cleanOfficialUrl } from '../utils/jobEnricher';
+import { PopularCategoriesAndTrafficAnalytics } from './PopularCategoriesAndTrafficAnalytics';
 
 interface AdminPanelProps {
   isOpen: boolean;
@@ -245,6 +246,16 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose, onSave,
       setActiveTab('basic');
     }
   }, [editingJob, isOpen]);
+
+  const existingJobs = useMemo<JobAlert[]>(() => {
+    if (typeof window === 'undefined') return [];
+    try {
+      const raw = localStorage.getItem('fastarc_jobs');
+      return raw ? JSON.parse(raw) : [];
+    } catch {
+      return [];
+    }
+  }, [isOpen]);
 
   if (!isOpen) return null;
 
@@ -703,6 +714,16 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose, onSave,
           </button>
         ))}
       </div>
+
+      {/* Editor Content Prioritization & Popular Categories Radar */}
+      <PopularCategoriesAndTrafficAnalytics
+        jobs={existingJobs}
+        compact={true}
+        onSelectCategory={(cat) => {
+          handleChange('category', cat);
+          setStatusMessage(`Category updated to: ${cat.toUpperCase()}`);
+        }}
+      />
 
       {/* Horizontal Tabs Navigation Bar */}
       <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm p-1.5 overflow-x-auto custom-scrollbar">

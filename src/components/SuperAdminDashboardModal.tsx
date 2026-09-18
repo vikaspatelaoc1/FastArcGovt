@@ -24,10 +24,12 @@ import { SitemapGeneratorTab } from './SitemapGeneratorTab';
 import { WebsiteControlTab } from './WebsiteControlTab';
 import { JobsManagerTab } from './JobsManagerTab';
 import { MobileAppButtonsManagerTab } from './MobileAppButtonsManagerTab';
+import { TrendingBannersManagerTab } from './TrendingBannersManagerTab';
 import { PagesManagerTab, ApiAnalyticsTab, ActivityLogsTab, HelpdeskTab, AutoBroadcasterTab, AdsManagerTab, EmailNotificationsTab } from './NewAdminTabs';
 import { AdminStudentDocuments } from './AdminStudentDocuments';
 import { LinkHealthCheckerTab } from './LinkHealthCheckerTab';
 import { DomainEditorModal } from './DomainEditorModal';
+import { PopularCategoriesAndTrafficAnalytics } from './PopularCategoriesAndTrafficAnalytics';
 import { getDomainName } from '../utils/domain';
 import { DEFAULT_MOBILE_TABS_CONFIG } from '../data/mobileTabsData';
 import { MobileTabsConfig } from '../types';
@@ -1375,6 +1377,15 @@ export const SuperAdminDashboardModal: React.FC<SuperAdminDashboardModalProps> =
                   </div>
                 </div>
 
+                {/* Most Popular Job Categories & High-Traffic Links Radar (Content Prioritization) */}
+                <PopularCategoriesAndTrafficAnalytics
+                  jobs={jobs}
+                  onSelectCategory={(cat) => {
+                    setActiveTab('jobsManager');
+                  }}
+                  onToast={onToast}
+                />
+
                 <div className="bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-900/50 p-4 rounded-xl text-xs text-amber-800 dark:text-amber-300 flex items-start gap-3">
                   <AlertTriangle className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
                   <div>
@@ -1411,6 +1422,16 @@ export const SuperAdminDashboardModal: React.FC<SuperAdminDashboardModalProps> =
                 onSave={onSaveMobileTabsConfig}
                 onToast={onToast}
                 initialSubTab="cardSizing"
+              />
+            )}
+
+            {/* TAB: TRENDING BANNERS & SLIDER CUSTOMIZER */}
+            {activeTab === 'bannersManager' && (
+              <TrendingBannersManagerTab
+                config={mobileTabsConfig}
+                onSave={onSaveMobileTabsConfig}
+                onToast={onToast}
+                jobs={jobs}
               />
             )}
 

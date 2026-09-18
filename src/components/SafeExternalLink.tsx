@@ -1,12 +1,16 @@
 import React from 'react';
 import { normalizeExternalUrl } from '../utils/urlUtils';
 import { ExternalLink } from 'lucide-react';
+import { trackLinkClick } from '../utils/trafficAnalytics';
 
 export interface SafeExternalLinkProps extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
   url?: string;
   fallbackUrl?: string;
   fallbackText?: string;
   showIcon?: boolean;
+  linkType?: string;
+  jobTitle?: string;
+  category?: string;
   children?: React.ReactNode;
   className?: string;
 }
@@ -16,8 +20,12 @@ export function SafeExternalLink({
   fallbackUrl = 'https://www.india.gov.in',
   fallbackText = 'Official Portal',
   showIcon = true,
+  linkType,
+  jobTitle,
+  category,
   children,
   className,
+  onClick,
   ...props
 }: SafeExternalLinkProps) {
   let targetUrl = normalizeExternalUrl(url);
@@ -39,11 +47,17 @@ export function SafeExternalLink({
     );
   }
 
+  const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    trackLinkClick(targetUrl, linkType, jobTitle, category);
+    if (onClick) onClick(e);
+  };
+
   return (
     <a
       href={targetUrl}
       target="_blank"
       rel="noopener noreferrer"
+      onClick={handleClick}
       title={isFallback ? 'Visit Official National / State Govt Portal' : undefined}
       className={`inline-flex items-center justify-center ${className || ''}`}
       {...props}

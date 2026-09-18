@@ -2,27 +2,30 @@ import React, { useState } from 'react';
 import { 
   Save, RefreshCw, ArrowLeft, ArrowRight, ArrowUp, ArrowDown, 
   Trash2, Plus, Check, Eye, EyeOff, Palette, Move, 
-  Sliders, Sparkles, AlertCircle, Smartphone, HelpCircle, Maximize2
+  Sliders, Sparkles, AlertCircle, Smartphone, HelpCircle, Maximize2, Layers
 } from 'lucide-react';
-import { MobileTabsConfig, AppToolItem, AppCategoryButton } from '../types';
-import { DEFAULT_MOBILE_TABS_CONFIG } from '../data/mobileTabsData';
+import { MobileTabsConfig, AppToolItem, AppCategoryButton, JobAlert } from '../types';
+import { DEFAULT_MOBILE_TABS_CONFIG, DEFAULT_TRENDING_BANNERS } from '../data/mobileTabsData';
 import { MobilePwaCardSizingTab } from './MobilePwaCardSizingTab';
+import { TrendingBannersManagerTab } from './TrendingBannersManagerTab';
 
 interface MobileAppButtonsManagerTabProps {
   config: MobileTabsConfig;
   onSave: (newConfig: MobileTabsConfig) => Promise<void> | void;
   onToast: (msg: string) => void;
-  initialSubTab?: 'categories' | 'tools' | 'cardSizing';
+  jobs?: JobAlert[];
+  initialSubTab?: 'categories' | 'tools' | 'banners' | 'cardSizing';
 }
 
 export const MobileAppButtonsManagerTab: React.FC<MobileAppButtonsManagerTabProps> = ({
   config,
   onSave,
   onToast,
+  jobs = [],
   initialSubTab = 'categories'
 }) => {
   const [currentConfig, setCurrentConfig] = useState<MobileTabsConfig>(config);
-  const [activeSubTab, setActiveSubTab] = useState<'categories' | 'tools' | 'cardSizing'>(initialSubTab);
+  const [activeSubTab, setActiveSubTab] = useState<'categories' | 'tools' | 'banners' | 'cardSizing'>(initialSubTab);
   const [isSaving, setIsSaving] = useState(false);
 
   // Reorder Tools
@@ -171,38 +174,49 @@ export const MobileAppButtonsManagerTab: React.FC<MobileAppButtonsManagerTabProp
         </div>
       </div>
 
-      {/* Sub tabs: Category Wise Updates vs Tools vs Mobile PWA Card Sizing */}
+      {/* Sub tabs: Category Wise Updates vs Tools vs Trending Banners vs Mobile PWA Card Sizing */}
       <div className="flex flex-wrap items-center border-b border-slate-200 dark:border-slate-800 bg-slate-100 dark:bg-slate-900/60 p-1.5 rounded-2xl gap-1">
         <button
           onClick={() => setActiveSubTab('categories')}
-          className={`flex-1 min-w-[140px] py-2 px-3 rounded-xl text-xs font-black transition-all cursor-pointer ${
+          className={`flex-1 min-w-[130px] py-2 px-3 rounded-xl text-xs font-black transition-all cursor-pointer ${
             activeSubTab === 'categories'
               ? 'bg-white dark:bg-slate-800 text-[#8c1328] dark:text-rose-400 shadow-sm'
               : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
           }`}
         >
-          Category Wise Updates ({currentConfig.categoryButtons.length})
+          Categories ({currentConfig.categoryButtons.length})
         </button>
         <button
           onClick={() => setActiveSubTab('tools')}
-          className={`flex-1 min-w-[140px] py-2 px-3 rounded-xl text-xs font-black transition-all cursor-pointer ${
+          className={`flex-1 min-w-[130px] py-2 px-3 rounded-xl text-xs font-black transition-all cursor-pointer ${
             activeSubTab === 'tools'
               ? 'bg-white dark:bg-slate-800 text-[#8c1328] dark:text-rose-400 shadow-sm'
               : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
           }`}
         >
-          Utility Tools ({currentConfig.tools.length})
+          Tools ({currentConfig.tools.length})
+        </button>
+        <button
+          onClick={() => setActiveSubTab('banners')}
+          className={`flex-1 min-w-[150px] py-2 px-3 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
+            activeSubTab === 'banners'
+              ? 'bg-white dark:bg-slate-800 text-amber-600 dark:text-amber-400 shadow-sm ring-1 ring-amber-400/40'
+              : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
+          }`}
+        >
+          <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+          <span>Trending Banners ({(currentConfig.banners || DEFAULT_TRENDING_BANNERS).length})</span>
         </button>
         <button
           onClick={() => setActiveSubTab('cardSizing')}
-          className={`flex-1 min-w-[180px] py-2 px-3 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
+          className={`flex-1 min-w-[160px] py-2 px-3 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
             activeSubTab === 'cardSizing'
               ? 'bg-white dark:bg-slate-800 text-sky-600 dark:text-sky-400 shadow-sm ring-1 ring-sky-400/40'
               : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
           }`}
         >
           <Maximize2 className="w-3.5 h-3.5 text-sky-500" />
-          <span>📐 Job Cards &amp; Icons (Mobile PWA)</span>
+          <span>PWA Card Sizing</span>
         </button>
       </div>
 
@@ -475,7 +489,17 @@ export const MobileAppButtonsManagerTab: React.FC<MobileAppButtonsManagerTabProp
         </div>
       )}
 
-      {/* 3. MOBILE PWA JOB CARDS & ICONS SIZING */}
+      {/* 3. TRENDING BANNERS & SLIDER CUSTOMIZER */}
+      {activeSubTab === 'banners' && (
+        <TrendingBannersManagerTab
+          config={currentConfig}
+          onSave={onSave}
+          onToast={onToast}
+          jobs={jobs}
+        />
+      )}
+
+      {/* 4. MOBILE PWA JOB CARDS & ICONS SIZING */}
       {activeSubTab === 'cardSizing' && (
         <MobilePwaCardSizingTab
           config={currentConfig}

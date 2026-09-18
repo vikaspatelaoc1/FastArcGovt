@@ -1,16 +1,16 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion, AnimatePresence, type Variants } from 'motion/react';
 import { 
   Search, Mic, MicOff, X, Sparkles, ChevronLeft, ChevronRight,
   Crop, FileText, HeartHandshake, Calendar, Keyboard, ArrowRight,
   Wrench, Clock, Layers, ExternalLink, ShieldCheck, Flame
 } from 'lucide-react';
-import { JobAlert, SocialLinkItem, MobileTabsConfig, AppToolItem } from '../types';
+import { JobAlert, SocialLinkItem, MobileTabsConfig, AppToolItem, AppBannerItem } from '../types';
 import { ColumnConfigsMap } from '../utils/columnConfig';
 import { isImageIconUrl } from './CategoryIcon';
 import { OfficialSocialLogo } from './SocialIcons';
 import { ToolDetailModal } from './ToolDetailModal';
-import { DEFAULT_MOBILE_TABS_CONFIG } from '../data/mobileTabsData';
+import { DEFAULT_MOBILE_TABS_CONFIG, DEFAULT_TRENDING_BANNERS, DEFAULT_BANNER_SLIDER_CONFIG } from '../data/mobileTabsData';
 
 interface ModernAppViewProps {
   jobs: JobAlert[];
@@ -62,108 +62,56 @@ export const ModernAppView: React.FC<ModernAppViewProps> = ({
     }
   };
 
-  // Trending slides with recruitment themes matching the screenshot
-  const trendingSlides = [
-    {
-      id: 'ssc-chsl',
-      title: 'SSC 10+2 CHSL Apply Online',
-      subtitle: 'Staff Selection Commission Combined Higher Secondary Level (10+2) Examination 2026',
-      gradient: 'from-[#7db61a] via-[#85b822] to-[#8c1328]',
-      readMoreColor: 'text-[#8c1328]',
-      category: 'latest-jobs',
-      boardText: 'इतिहास'
-    },
-    {
-      id: 'railway-alp',
-      title: 'Railway RRB ALP & Technician Online Form',
-      subtitle: 'Ministry of Railways Recruitment Board 18,799+ Vacancies Apply Online',
-      gradient: 'from-[#ea580c] via-[#f97316] to-[#991b1b]',
-      readMoreColor: 'text-[#991b1b]',
-      category: 'latest-jobs',
-      boardText: 'भूगोल'
-    },
-    {
-      id: 'upsc-civil',
-      title: 'UPSC Civil Services Pre 2026 Apply',
-      subtitle: 'Union Public Service Commission IAS / IFS Examination Online Application',
-      gradient: 'from-[#0284c7] via-[#0369a1] to-[#1e1b4b]',
-      readMoreColor: 'text-[#0369a1]',
-      category: 'latest-jobs',
-      boardText: 'संविधान'
-    },
-    {
-      id: 'up-police',
-      title: 'UP Police Constable Exam City / Admit Card',
-      subtitle: 'Uttar Pradesh Police Recruitment & Promotion Board 60,244 Posts',
-      gradient: 'from-[#10b981] via-[#059669] to-[#881337]',
-      readMoreColor: 'text-[#881337]',
-      category: 'admit-card',
-      boardText: 'गणित'
-    },
-    {
-      id: 'neet-jee',
-      title: 'NTA NEET UG & JEE Main 2026 Registration',
-      subtitle: 'National Testing Agency Medical & Engineering Entrance Exam Online Form',
-      gradient: 'from-[#e11d48] via-[#be123c] to-[#4c0519]',
-      readMoreColor: 'text-[#be123c]',
-      category: 'admission',
-      boardText: 'विज्ञान'
-    },
-    {
-      id: 'ibps-po',
-      title: 'IBPS PO / Clerk Recruitment Form',
-      subtitle: 'Institute of Banking Personnel Selection Common Recruitment Process',
-      gradient: 'from-[#854d0e] via-[#ca8a04] to-[#7f1d1d]',
-      readMoreColor: 'text-[#7f1d1d]',
-      category: 'latest-jobs',
-      boardText: 'तर्कशक्ति'
-    },
-    {
-      id: 'ctet-exam',
-      title: 'CBSE CTET 2026 Online Application Form',
-      subtitle: 'Central Board of Secondary Education Teacher Eligibility Test',
-      gradient: 'from-[#4338ca] via-[#6366f1] to-[#831843]',
-      readMoreColor: 'text-[#4338ca]',
-      category: 'latest-jobs',
-      boardText: 'शिक्षा'
-    },
-    {
-      id: 'bihar-police',
-      title: 'Bihar Police CSBC Constable Result & Cutoff',
-      subtitle: 'Central Selection Board of Constable Bihar Police Exam Results Released',
-      gradient: 'from-[#059669] via-[#10b981] to-[#1e3a8a]',
-      readMoreColor: 'text-[#059669]',
-      category: 'results',
-      boardText: 'हिन्दी'
+  // Active dynamic banners from Super Admin configuration
+  const bannerList: AppBannerItem[] = useMemo(() => {
+    if (mobileTabsConfig?.banners && Array.isArray(mobileTabsConfig.banners) && mobileTabsConfig.banners.length > 0) {
+      const active = mobileTabsConfig.banners.filter(b => b.enabled);
+      if (active.length > 0) return active;
     }
-  ];
+    return DEFAULT_TRENDING_BANNERS;
+  }, [mobileTabsConfig?.banners]);
+
+  // Dynamic Slider Settings (speed, auto-slide, pause, dots, arrows)
+  const sliderConfig = useMemo(() => {
+    return mobileTabsConfig?.bannerSliderConfig || DEFAULT_BANNER_SLIDER_CONFIG;
+  }, [mobileTabsConfig?.bannerSliderConfig]);
 
   // Pagination and slide animation helpers
   const paginate = (newDirection: number) => {
+    if (bannerList.length <= 1) return;
     setDirection(newDirection);
-    setPage(prev => (prev + newDirection + trendingSlides.length) % trendingSlides.length);
+    setPage(prev => (prev + newDirection + bannerList.length) % bannerList.length);
   };
 
   const goToSlide = (idx: number) => {
+    if (idx === page) return;
     setDirection(idx > page ? 1 : -1);
     setPage(idx);
   };
 
-  // Auto-play timer
+  // Safe page index bounds check if banner list length changes
   useEffect(() => {
-    if (isPaused) return;
+    if (page >= bannerList.length) {
+      setPage(0);
+    }
+  }, [bannerList.length, page]);
+
+  // Dynamic auto-play timer configurable from Super Admin
+  useEffect(() => {
+    if (!sliderConfig.autoSlide || (sliderConfig.pauseOnHover && isPaused) || bannerList.length <= 1) return;
+    const intervalTime = Math.max(2000, sliderConfig.slideIntervalMs || 4500);
     const timer = setInterval(() => {
       paginate(1);
-    }, 4500);
+    }, intervalTime);
     return () => clearInterval(timer);
-  }, [isPaused, page, trendingSlides.length]);
+  }, [isPaused, page, bannerList.length, sliderConfig.autoSlide, sliderConfig.pauseOnHover, sliderConfig.slideIntervalMs]);
 
-  // Spring slide variants for real horizontal swipe feedback
-  const slideVariants = {
+  // Ultra-smooth slide variants with tuned spring physics and fluid easing
+  const slideVariants: Variants = {
     enter: (dir: number) => ({
       x: dir > 0 ? '100%' : dir < 0 ? '-100%' : 0,
-      opacity: 0.3,
-      scale: 0.95
+      opacity: 0.7,
+      scale: 0.98
     }),
     center: {
       x: 0,
@@ -171,39 +119,53 @@ export const ModernAppView: React.FC<ModernAppViewProps> = ({
       scale: 1,
       zIndex: 1,
       transition: {
-        x: { type: "spring" as const, stiffness: 320, damping: 32 },
-        opacity: { duration: 0.25 },
-        scale: { duration: 0.25 }
+        x: { type: "spring", stiffness: 260, damping: 28, mass: 0.8 },
+        opacity: { duration: 0.35, ease: "easeOut" },
+        scale: { duration: 0.35, ease: "easeOut" }
       }
     },
     exit: (dir: number) => ({
       x: dir > 0 ? '-100%' : '100%',
-      opacity: 0.3,
-      scale: 0.95,
+      opacity: 0.7,
+      scale: 0.98,
       zIndex: 0,
       transition: {
-        x: { type: "spring" as const, stiffness: 320, damping: 32 },
-        opacity: { duration: 0.2 },
-        scale: { duration: 0.2 }
+        x: { type: "spring", stiffness: 260, damping: 28, mass: 0.8 },
+        opacity: { duration: 0.3, ease: "easeIn" },
+        scale: { duration: 0.3, ease: "easeIn" }
       }
     })
   };
 
-  // Find matching job or fallback
-  const handleReadMore = (slide: typeof trendingSlides[0]) => {
-    const terms = [slide.id, slide.title, slide.category];
+  // Dynamic banner action click handler (supports URLs, specific Jobs, and Categories)
+  const handleReadMore = (slide: AppBannerItem) => {
+    if (slide.targetType === 'url' && slide.targetValue) {
+      window.open(slide.targetValue, '_blank');
+      return;
+    }
+
+    if (slide.targetType === 'job' && slide.targetValue) {
+      const targetJob = jobs.find(j => j.id === slide.targetValue || j.title.toLowerCase() === slide.targetValue?.toLowerCase());
+      if (targetJob && onSelectJob) {
+        onSelectJob(targetJob);
+        return;
+      }
+    }
+
+    const targetCategory = slide.category || 'latest-jobs';
+    const terms = [slide.id, slide.title, targetCategory];
     const matching = jobs.find(j => 
       terms.some(t => j.title.toLowerCase().includes(t.toLowerCase()) || (j.shortInfo && j.shortInfo.toLowerCase().includes(t.toLowerCase())))
-    ) || jobs.find(j => j.category === slide.category) || jobs[0];
+    ) || jobs.find(j => j.category === targetCategory) || jobs[0];
 
     if (matching && onSelectJob) {
       onSelectJob(matching);
     } else {
-      onTabChange(slide.category);
+      onTabChange(targetCategory);
       if (setSearchQuery) {
         setSearchQuery(slide.title.split(' ')[0]);
       }
-      const el = document.getElementById(`section-${slide.category}`) || document.getElementById('main-job-columns');
+      const el = document.getElementById(`section-${targetCategory}`) || document.getElementById('main-job-columns');
       if (el) el.scrollIntoView({ behavior: 'smooth' });
     }
   };
@@ -491,7 +453,7 @@ export const ModernAppView: React.FC<ModernAppViewProps> = ({
     }
   ];
 
-  const activeSlideData = trendingSlides[page];
+  const activeSlideData: AppBannerItem = bannerList[page] || bannerList[0] || DEFAULT_TRENDING_BANNERS[0];
 
   return (
     <div className="w-full bg-slate-50 dark:bg-slate-900/50 pb-2 transition-colors">
@@ -505,40 +467,46 @@ export const ModernAppView: React.FC<ModernAppViewProps> = ({
             </h2>
           </div>
           <span className="text-[10px] sm:text-[11px] font-semibold tracking-wide text-slate-600 dark:text-slate-400 bg-slate-200/50 dark:bg-slate-800 px-2 py-0.5 rounded-full border border-slate-300/50 dark:border-slate-700">
-            {page + 1} / {trendingSlides.length}
+            {page + 1} / {bannerList.length}
           </span>
         </div>
 
         {/* Carousel Container with Interactive Drag & Touch Swipe */}
         <div 
           className="relative w-full max-w-4xl mx-auto h-44 sm:h-56 md:h-64 overflow-hidden rounded-2xl sm:rounded-3xl shadow-xl select-none"
-          onMouseEnter={() => setIsPaused(true)}
-          onMouseLeave={() => setIsPaused(false)}
+          onMouseEnter={() => sliderConfig.pauseOnHover && setIsPaused(true)}
+          onMouseLeave={() => sliderConfig.pauseOnHover && setIsPaused(false)}
+          onTouchStart={() => sliderConfig.pauseOnHover && setIsPaused(true)}
+          onTouchEnd={() => sliderConfig.pauseOnHover && setIsPaused(false)}
         >
           {/* Navigation Chevrons for Quick Slide Navigation */}
-          <button 
-            type="button"
-            onClick={(e) => {
-              e.stopPropagation();
-              paginate(-1);
-            }}
-            className="absolute left-2 sm:left-3 top-1/2 -translate-y-1/2 z-20 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-black/45 hover:bg-black/75 text-white flex items-center justify-center backdrop-blur-xs shadow-lg transition-transform active:scale-90 cursor-pointer border border-white/20"
-            aria-label="Previous slide"
-          >
-            <ChevronLeft className="w-5 h-5" />
-          </button>
+          {sliderConfig.showArrows !== false && bannerList.length > 1 && (
+            <>
+              <button 
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  paginate(-1);
+                }}
+                className="absolute left-2 sm:left-3 top-1/2 -translate-y-1/2 z-20 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-black/45 hover:bg-black/75 text-white flex items-center justify-center backdrop-blur-xs shadow-lg transition-transform active:scale-90 cursor-pointer border border-white/20"
+                aria-label="Previous slide"
+              >
+                <ChevronLeft className="w-5 h-5" />
+              </button>
 
-          <button 
-            type="button"
-            onClick={(e) => {
-              e.stopPropagation();
-              paginate(1);
-            }}
-            className="absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 z-20 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-black/45 hover:bg-black/75 text-white flex items-center justify-center backdrop-blur-xs shadow-lg transition-transform active:scale-90 cursor-pointer border border-white/20"
-            aria-label="Next slide"
-          >
-            <ChevronRight className="w-5 h-5" />
-          </button>
+              <button 
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  paginate(1);
+                }}
+                className="absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 z-20 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-black/45 hover:bg-black/75 text-white flex items-center justify-center backdrop-blur-xs shadow-lg transition-transform active:scale-90 cursor-pointer border border-white/20"
+                aria-label="Next slide"
+              >
+                <ChevronRight className="w-5 h-5" />
+              </button>
+            </>
+          )}
 
           {/* Active Sliding Card with Real Horizontal Spring Physics */}
           <AnimatePresence initial={false} custom={direction} mode="popLayout">
@@ -562,66 +530,84 @@ export const ModernAppView: React.FC<ModernAppViewProps> = ({
               }}
               className={`absolute inset-0 w-full h-full rounded-2xl sm:rounded-3xl bg-gradient-to-r ${activeSlideData.gradient} p-4 sm:p-6 md:p-8 flex items-center justify-between shadow-xl overflow-hidden text-white cursor-grab active:cursor-grabbing touch-pan-y`}
             >
-              {/* Left Side Scene Illustration (Blackboard "इतिहास", Teacher/Student, Desk, Globe, Plant) */}
+              {/* Left Side Scene Illustration / Custom Image / Blackboard */}
               <div className="w-1/2 sm:w-5/12 h-full flex items-center justify-center relative shrink-0 pointer-events-none">
-                <svg viewBox="0 0 280 200" className="w-full h-full max-h-52 drop-shadow-md" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  {/* Green Chalkboard with wooden frame */}
-                  <rect x="20" y="20" width="130" height="85" rx="4" fill="#654321" stroke="#4a3525" strokeWidth="2.5" />
-                  <rect x="25" y="25" width="120" height="75" rx="2" fill="#2d5a27" />
-                  {/* Chalkboard Hindi Text "इतिहास" */}
-                  <text x="85" y="65" fill="#ffffff" fontSize="19" fontWeight="bold" fontFamily="sans-serif" textAnchor="middle" opacity="0.95">
-                    {activeSlideData.boardText || 'इतिहास'}
-                  </text>
-                  <line x1="45" y1="78" x2="125" y2="78" stroke="#ffffff" strokeWidth="1.5" strokeDasharray="3 3" opacity="0.6" />
+                {activeSlideData.illustrationType === 'custom_image' && activeSlideData.customImageUrl ? (
+                  <img
+                    src={activeSlideData.customImageUrl}
+                    alt={activeSlideData.title}
+                    className="w-full h-full max-h-48 sm:max-h-56 object-contain drop-shadow-xl select-none"
+                    onError={(e) => {
+                      // Fallback to SVG if image fails
+                      (e.currentTarget as HTMLElement).style.display = 'none';
+                    }}
+                  />
+                ) : activeSlideData.illustrationType === 'gradient_only' ? (
+                  <div className="flex flex-col items-center justify-center text-white/20">
+                    <Sparkles className="w-16 h-16 sm:w-24 sm:h-24 stroke-[1.2]" />
+                  </div>
+                ) : (
+                  <svg viewBox="0 0 280 200" className="w-full h-full max-h-52 drop-shadow-md" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    {/* Green Chalkboard with wooden frame */}
+                    <rect x="20" y="20" width="130" height="85" rx="4" fill="#654321" stroke="#4a3525" strokeWidth="2.5" />
+                    <rect x="25" y="25" width="120" height="75" rx="2" fill="#2d5a27" />
+                    {/* Chalkboard Hindi Text */}
+                    <text x="85" y="65" fill="#ffffff" fontSize="19" fontWeight="bold" fontFamily="sans-serif" textAnchor="middle" opacity="0.95">
+                      {activeSlideData.boardText || 'इतिहास'}
+                    </text>
+                    <line x1="45" y1="78" x2="125" y2="78" stroke="#ffffff" strokeWidth="1.5" strokeDasharray="3 3" opacity="0.6" />
 
-                  {/* Floor line */}
-                  <line x1="5" y1="175" x2="275" y2="175" stroke="#ffffff" strokeWidth="1.5" opacity="0.2" />
+                    {/* Floor line */}
+                    <line x1="5" y1="175" x2="275" y2="175" stroke="#ffffff" strokeWidth="1.5" opacity="0.2" />
 
-                  {/* Wooden Teacher/Student Desk */}
-                  <rect x="75" y="105" width="125" height="10" rx="2" fill="#d97706" />
-                  <rect x="85" y="115" width="6" height="60" fill="#92400e" />
-                  <rect x="185" y="115" width="6" height="60" fill="#92400e" />
-                  <rect x="80" y="145" width="115" height="4" fill="#b45309" opacity="0.6" />
+                    {/* Wooden Teacher/Student Desk */}
+                    <rect x="75" y="105" width="125" height="10" rx="2" fill="#d97706" />
+                    <rect x="85" y="115" width="6" height="60" fill="#92400e" />
+                    <rect x="185" y="115" width="6" height="60" fill="#92400e" />
+                    <rect x="80" y="145" width="115" height="4" fill="#b45309" opacity="0.6" />
 
-                  {/* Teacher / Candidate Character */}
-                  <circle cx="160" cy="80" r="14" fill="#fed7aa" />
-                  {/* Hair */}
-                  <path d="M148 78c0-8 6-15 14-15s14 7 14 15c-3-2-7-3-11-2-5 1-9 1-17 2z" fill="#1e293b" />
-                  {/* Specs */}
-                  <rect x="153" y="77" width="6" height="4" rx="1" stroke="#0f172a" strokeWidth="1" fill="none" />
-                  <rect x="162" y="77" width="6" height="4" rx="1" stroke="#0f172a" strokeWidth="1" fill="none" />
-                  <line x1="159" y1="79" x2="162" y2="79" stroke="#0f172a" strokeWidth="1" />
-                  {/* Body & Blue Shirt */}
-                  <path d="M142 120c0-14 8-24 18-24s18 10 18 24v25h-36v-25z" fill="#0284c7" />
-                  {/* Collar & Tie */}
-                  <path d="M156 96l4 8 4-8h-8z" fill="#ffffff" />
-                  <path d="M158 104l2 12 2-12h-4z" fill="#e11d48" />
+                    {/* Teacher / Candidate Character */}
+                    <circle cx="160" cy="80" r="14" fill="#fed7aa" />
+                    {/* Hair */}
+                    <path d="M148 78c0-8 6-15 14-15s14 7 14 15c-3-2-7-3-11-2-5 1-9 1-17 2z" fill="#1e293b" />
+                    {/* Specs */}
+                    <rect x="153" y="77" width="6" height="4" rx="1" stroke="#0f172a" strokeWidth="1" fill="none" />
+                    <rect x="162" y="77" width="6" height="4" rx="1" stroke="#0f172a" strokeWidth="1" fill="none" />
+                    <line x1="159" y1="79" x2="162" y2="79" stroke="#0f172a" strokeWidth="1" />
+                    {/* Body & Blue Shirt */}
+                    <path d="M142 120c0-14 8-24 18-24s18 10 18 24v25h-36v-25z" fill="#0284c7" />
+                    {/* Collar & Tie */}
+                    <path d="M156 96l4 8 4-8h-8z" fill="#ffffff" />
+                    <path d="M158 104l2 12 2-12h-4z" fill="#e11d48" />
 
-                  {/* Globe on desk */}
-                  <circle cx="100" cy="90" r="10" fill="#38bdf8" />
-                  <path d="M93 88c4 3 10 2 14-2" stroke="#22c55e" strokeWidth="2.5" fill="none" />
-                  <path d="M96 95c3 2 7 1 8-2" stroke="#22c55e" strokeWidth="2" fill="none" />
-                  <path d="M100 80a10 10 0 0 1 0 20" stroke="#f59e0b" strokeWidth="1.5" fill="none" />
-                  <line x1="100" y1="100" x2="100" y2="105" stroke="#64748b" strokeWidth="2" />
-                  <rect x="95" y="104" width="10" height="2" rx="1" fill="#64748b" />
+                    {/* Globe on desk */}
+                    <circle cx="100" cy="90" r="10" fill="#38bdf8" />
+                    <path d="M93 88c4 3 10 2 14-2" stroke="#22c55e" strokeWidth="2.5" fill="none" />
+                    <path d="M96 95c3 2 7 1 8-2" stroke="#22c55e" strokeWidth="2" fill="none" />
+                    <path d="M100 80a10 10 0 0 1 0 20" stroke="#f59e0b" strokeWidth="1.5" fill="none" />
+                    <line x1="100" y1="100" x2="100" y2="105" stroke="#64748b" strokeWidth="2" />
+                    <rect x="95" y="104" width="10" height="2" rx="1" fill="#64748b" />
 
-                  {/* Books Stack on desk */}
-                  <rect x="120" y="99" width="22" height="4" rx="1" fill="#ef4444" />
-                  <rect x="122" y="95" width="18" height="4" rx="1" fill="#f59e0b" />
-                  <rect x="121" y="91" width="20" height="4" rx="1" fill="#10b981" />
+                    {/* Books Stack on desk */}
+                    <rect x="120" y="99" width="22" height="4" rx="1" fill="#ef4444" />
+                    <rect x="122" y="95" width="18" height="4" rx="1" fill="#f59e0b" />
+                    <rect x="121" y="91" width="20" height="4" rx="1" fill="#10b981" />
 
-                  {/* Green Potted Plant on floor */}
-                  <path d="M40 148l5 27h16l5-27H40z" fill="#b45309" />
-                  <circle cx="53" cy="138" r="10" fill="#22c55e" />
-                  <circle cx="44" cy="144" r="8" fill="#16a34a" />
-                  <circle cx="62" cy="144" r="8" fill="#15803d" />
-                </svg>
+                    {/* Green Potted Plant on floor */}
+                    <path d="M40 148l5 27h16l5-27H40z" fill="#b45309" />
+                    <circle cx="53" cy="138" r="10" fill="#22c55e" />
+                    <circle cx="44" cy="144" r="8" fill="#16a34a" />
+                    <circle cx="62" cy="144" r="8" fill="#15803d" />
+                  </svg>
+                )}
               </div>
 
               {/* Right Side Info & Action Button */}
               <div className="w-1/2 sm:w-7/12 pl-2 sm:pl-6 flex flex-col items-start justify-center z-10">
-                <span className="bg-white/20 backdrop-blur-xs text-white text-[10px] sm:text-xs font-extrabold px-2.5 py-0.5 rounded-full uppercase tracking-wider mb-1.5 sm:mb-2.5 pointer-events-none">
-                  Top Alert
+                <span className={`text-[10px] sm:text-xs font-extrabold px-2.5 py-0.5 rounded-full uppercase tracking-wider mb-1.5 sm:mb-2.5 pointer-events-none ${
+                  activeSlideData.badgeColor ? activeSlideData.badgeColor : 'bg-white/20 backdrop-blur-xs text-white'
+                }`}>
+                  {activeSlideData.badgeText || 'Top Alert'}
                 </span>
                 <h3 className="text-base sm:text-2xl md:text-3xl font-black text-white leading-snug sm:leading-tight mb-2 sm:mb-4 drop-shadow-sm pointer-events-none">
                   {activeSlideData.title}
@@ -634,9 +620,9 @@ export const ModernAppView: React.FC<ModernAppViewProps> = ({
                   onPointerDown={(e) => e.stopPropagation()}
                   onClick={() => checkDoubleTap(activeSlideData.id, () => handleReadMore(activeSlideData))}
                   onDoubleClick={handleGoHome}
-                  className={`bg-white ${activeSlideData.readMoreColor} font-black text-xs sm:text-sm px-4 sm:px-6 py-1.5 sm:py-2.5 rounded-full shadow-lg hover:bg-slate-100 hover:scale-105 active:scale-95 transition-all cursor-pointer`}
+                  className={`bg-white ${activeSlideData.readMoreColor || 'text-[#8c1328]'} font-black text-xs sm:text-sm px-4 sm:px-6 py-1.5 sm:py-2.5 rounded-full shadow-lg hover:bg-slate-100 hover:scale-105 active:scale-95 transition-all cursor-pointer`}
                 >
-                  Read More
+                  {activeSlideData.buttonText || 'Read More'}
                 </button>
               </div>
             </motion.div>
@@ -644,22 +630,24 @@ export const ModernAppView: React.FC<ModernAppViewProps> = ({
         </div>
 
         {/* Carousel Pagination Dots with Expanding Active Pill */}
-        <div className="flex items-center justify-center space-x-1.5 sm:space-x-2 mt-3.5 mb-2">
-          {trendingSlides.map((_, idx) => (
-            <button
-              key={idx}
-              type="button"
-              onClick={() => checkDoubleTap(`dot-${idx}`, () => goToSlide(idx))}
-              onDoubleClick={handleGoHome}
-              className={`transition-all duration-300 rounded-full cursor-pointer focus:outline-none ${
-                page === idx
-                  ? 'w-7 h-2.5 bg-[#8c1328] dark:bg-[#e11d48] scale-105 shadow-sm'
-                  : 'w-2.5 h-2.5 border-2 border-slate-400 dark:border-slate-500 bg-transparent hover:border-slate-600'
-              }`}
-              aria-label={`Go to slide ${idx + 1}`}
-            />
-          ))}
-        </div>
+        {sliderConfig.showDots !== false && bannerList.length > 1 && (
+          <div className="flex items-center justify-center space-x-1.5 sm:space-x-2 mt-3.5 mb-2">
+            {bannerList.map((_, idx) => (
+              <button
+                key={idx}
+                type="button"
+                onClick={() => checkDoubleTap(`dot-${idx}`, () => goToSlide(idx))}
+                onDoubleClick={handleGoHome}
+                className={`transition-all duration-300 rounded-full cursor-pointer focus:outline-none ${
+                  page === idx
+                    ? 'w-7 h-2.5 bg-[#8c1328] dark:bg-[#e11d48] scale-105 shadow-sm'
+                    : 'w-2.5 h-2.5 border-2 border-slate-400 dark:border-slate-500 bg-transparent hover:border-slate-600'
+                }`}
+                aria-label={`Go to slide ${idx + 1}`}
+              />
+            ))}
+          </div>
+        )}
       </section>
 
       {/* 2. CATEGORIES SECTION (Squircle Buttons with Light/Dark Mode Theme) */}

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { JobAlert } from '../types';
 import { bulkDeleteJobsFromFirestore } from '../services/firestoreService';
 import { Search, Trash2, CheckSquare, Square, AlertTriangle, Edit2, CheckCircle2, RefreshCw, Filter } from 'lucide-react';
+import { PopularCategoriesAndTrafficAnalytics } from './PopularCategoriesAndTrafficAnalytics';
 
 interface JobsManagerTabProps {
   jobs: JobAlert[];
@@ -130,6 +131,14 @@ export const JobsManagerTab: React.FC<JobsManagerTabProps> = ({
           </button>
         )}
       </div>
+
+      {/* Popular Job Categories & High-Traffic Links Radar for Editors */}
+      <PopularCategoriesAndTrafficAnalytics
+        jobs={jobs}
+        compact={true}
+        onSelectCategory={(cat) => setSelectedCategory(cat)}
+        onToast={onToast}
+      />
 
       {/* Filter and Search Bar */}
       <div className="flex flex-col sm:flex-row gap-3 items-center justify-between bg-slate-50 dark:bg-slate-800/50 p-3.5 rounded-xl border border-slate-200 dark:border-slate-700">

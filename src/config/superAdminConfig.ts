@@ -19,6 +19,8 @@ import { Activity,
   Bell,
   Trash2,
   Smartphone,
+  Sparkles,
+  Layers,
   LucideIcon 
 } from 'lucide-react';
 import { SuperAdminTabType } from '../types';
@@ -80,6 +82,18 @@ export const SUPER_ADMIN_MODULES: SuperAdminModuleConfig[] = [
     color: 'text-sky-400',
     hoverBg: 'hover:bg-sky-950/40',
     tag: 'MOBILE-PWA'
+  },
+  {
+    id: 'bannersManager',
+    label: 'Trending Banners & Slider Manager',
+    shortLabel: 'Trending Banners',
+    description: 'Edit, reorder, add or customize top mobile app trending banners, gradients, images, chalkboard text & slider speed',
+    icon: Sparkles,
+    category: 'content',
+    categoryLabel: 'Content & Updates',
+    color: 'text-amber-400',
+    hoverBg: 'hover:bg-amber-950/40',
+    tag: 'BANNER-CUSTOMIZER'
   },
   {
     id: 'analytics',

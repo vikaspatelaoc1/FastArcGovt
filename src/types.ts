@@ -208,6 +208,7 @@ export type SuperAdminTabType =
   | 'jobsManager'
   | 'mobileTabs'
   | 'mobileCardSizing'
+  | 'bannersManager'
   | 'approvals'
   | 'documentCenter'
   | 'linkHealth';
@@ -381,9 +382,39 @@ export interface MobilePwaCardConfig {
   cardMetaFontSize: number;       // in px: 9 to 13
 }
 
+export interface AppBannerItem {
+  id: string;
+  title: string;
+  subtitle?: string;
+  badgeText?: string;
+  badgeColor?: string;
+  gradient: string;
+  readMoreColor?: string;
+  buttonText?: string;
+  targetType?: 'category' | 'job' | 'url';
+  targetValue?: string;
+  category?: string;
+  boardText?: string;
+  illustrationType?: 'classroom' | 'custom_image' | 'gradient_only';
+  customImageUrl?: string;
+  enabled: boolean;
+  order: number;
+}
+
+export interface BannerSliderConfig {
+  autoSlide: boolean;
+  slideIntervalMs: number;
+  showDots: boolean;
+  showArrows: boolean;
+  pauseOnHover: boolean;
+  transitionSpeed?: 'normal' | 'smooth' | 'snappy';
+}
+
 export interface MobileTabsConfig {
   tools: AppToolItem[];
   categoryButtons: AppCategoryButton[];
+  banners?: AppBannerItem[];
+  bannerSliderConfig?: BannerSliderConfig;
   toolsSectionTitle?: string;
   categorySectionTitle?: string;
   pwaCardConfig?: MobilePwaCardConfig;
