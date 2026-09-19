@@ -6,6 +6,12 @@
   "start_url": "/?mode=app",
   "scope": "/",
   "display": "standalone",
+  "display_override": [
+    "standalone",
+    "minimal-ui",
+    "browser"
+  ],
+  "handle_links": "auto",
   "background_color": "#020617",
   "theme_color": "#020617",
   "icons": [

@@ -83,7 +83,34 @@ import {StrictMode} from 'react';
 import {createRoot} from 'react-dom/client';
 import App from './App.tsx';
 import { ErrorBoundary } from './components/ErrorBoundary';
+import { openInDefaultBrowser, isStandaloneApp } from './utils/urlUtils';
 import './index.css';
+
+// Global handler for standalone/PWA installed mobile apps:
+// Ensures all external links open in the user's default browser (Chrome, Samsung Internet, etc.) on a new page.
+if (typeof window !== 'undefined') {
+  window.addEventListener(
+    'click',
+    (e) => {
+      const anchor = (e.target as HTMLElement)?.closest('a');
+      if (!anchor) return;
+
+      const href = anchor.getAttribute('href');
+      if (!href || href.startsWith('#') || href.startsWith('javascript:') || href.startsWith('tel:') || href.startsWith('mailto:')) {
+        return;
+      }
+
+      // If it is an external URL and we are running in standalone/PWA or mobile mode
+      const isExternal = /^https?:\/\//i.test(href) && !href.startsWith(window.location.origin);
+      if (isExternal && isStandaloneApp()) {
+        e.preventDefault();
+        e.stopPropagation();
+        openInDefaultBrowser(href);
+      }
+    },
+    { capture: true }
+  );
+}
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

@@ -11,6 +11,7 @@ import { isImageIconUrl } from './CategoryIcon';
 import { OfficialSocialLogo } from './SocialIcons';
 import { ToolDetailModal } from './ToolDetailModal';
 import { DEFAULT_MOBILE_TABS_CONFIG, DEFAULT_TRENDING_BANNERS, DEFAULT_BANNER_SLIDER_CONFIG } from '../data/mobileTabsData';
+import { openInDefaultBrowser } from '../utils/urlUtils';
 
 interface ModernAppViewProps {
   jobs: JobAlert[];
@@ -140,7 +141,7 @@ export const ModernAppView: React.FC<ModernAppViewProps> = ({
   // Dynamic banner action click handler (supports URLs, specific Jobs, and Categories)
   const handleReadMore = (slide: AppBannerItem) => {
     if (slide.targetType === 'url' && slide.targetValue) {
-      window.open(slide.targetValue, '_blank');
+      openInDefaultBrowser(slide.targetValue);
       return;
     }
 

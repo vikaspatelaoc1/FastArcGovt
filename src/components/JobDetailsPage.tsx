@@ -12,6 +12,7 @@ import { enrichJobDetails, formatLongDate, cleanOfficialUrl } from '../utils/job
 import { getCategoryWiseJobLinks } from '../utils/sarkariLinks';
 import { SafeExternalLink } from './SafeExternalLink';
 import { openJobInNewTab, getJobDetailUrl } from '../utils/jobUrl';
+import { openInDefaultBrowser, isStandaloneApp } from '../utils/urlUtils';
 import { updateJobDetailSeo } from '../utils/seo';
 import { saveSubscriberToFirestore, SubscriberRecord } from '../services/firestoreService';
 import { OfficialSocialLogo } from './SocialIcons';
@@ -406,7 +407,13 @@ export const JobDetailsPage: React.FC<JobDetailsPageProps> = ({
               <a
                 href={applyLink}
                 target="_blank"
-                rel="noopener noreferrer"
+                rel="noopener noreferrer external"
+                onClick={(e) => {
+                  if (isStandaloneApp()) {
+                    e.preventDefault();
+                    openInDefaultBrowser(applyLink, e);
+                  }
+                }}
                 className="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-extrabold px-6 py-2.5 rounded-xl text-xs sm:text-sm shadow-md hover:shadow-lg transition-all active:scale-95 flex items-center gap-2 cursor-pointer"
               >
                 <CheckCircle2 className="w-4 h-4" />
@@ -417,7 +424,13 @@ export const JobDetailsPage: React.FC<JobDetailsPageProps> = ({
               <a
                 href={notificationLink}
                 target="_blank"
-                rel="noopener noreferrer"
+                rel="noopener noreferrer external"
+                onClick={(e) => {
+                  if (isStandaloneApp()) {
+                    e.preventDefault();
+                    openInDefaultBrowser(notificationLink, e);
+                  }
+                }}
                 className="bg-slate-800 hover:bg-slate-900 dark:bg-slate-700 dark:hover:bg-slate-600 text-white font-bold px-5 py-2.5 rounded-xl text-xs sm:text-sm shadow-md transition-all active:scale-95 flex items-center gap-2 cursor-pointer"
               >
                 <Download className="w-4 h-4" />
@@ -771,9 +784,15 @@ export const JobDetailsPage: React.FC<JobDetailsPageProps> = ({
                       <a
                         href={row.actionUrl}
                         target="_blank"
-                        rel="noopener noreferrer"
+                        rel="noopener noreferrer external"
+                        onClick={(e) => {
+                          if (isStandaloneApp()) {
+                            e.preventDefault();
+                            openInDefaultBrowser(row.actionUrl, e);
+                          }
+                        }}
                         className="hover:underline flex items-center gap-1.5 cursor-pointer text-inherit"
-                        title={`Click to open ${row.categoryTitle}`}
+                        title={`Click to open ${row.categoryTitle} in default browser`}
                       >
                         <span>{row.categoryTitle}</span>
                       </a>
@@ -790,8 +809,15 @@ export const JobDetailsPage: React.FC<JobDetailsPageProps> = ({
                       <a
                         href={row.actionUrl}
                         target="_blank"
-                        rel="noopener noreferrer"
+                        rel="noopener noreferrer external"
+                        onClick={(e) => {
+                          if (isStandaloneApp()) {
+                            e.preventDefault();
+                            openInDefaultBrowser(row.actionUrl, e);
+                          }
+                        }}
                         className={`hover:underline flex items-center gap-1.5 cursor-pointer ${!row.isExternal ? 'text-amber-600 dark:text-amber-400' : ''}`}
+                        title="Open page in default browser"
                       >
                         <span>{row.actionText}</span>
                         <ExternalLink className="w-3.5 h-3.5 opacity-75" />
@@ -803,8 +829,15 @@ export const JobDetailsPage: React.FC<JobDetailsPageProps> = ({
                           <a
                             href={row.server2Url}
                             target="_blank"
-                            rel="noopener noreferrer"
+                            rel="noopener noreferrer external"
+                            onClick={(e) => {
+                              if (isStandaloneApp()) {
+                                e.preventDefault();
+                                openInDefaultBrowser(row.server2Url!, e);
+                              }
+                            }}
                             className="hover:underline flex items-center gap-1.5 cursor-pointer"
+                            title="Open Server II in default browser"
                           >
                             <span>{row.server2Text || 'Server II'}</span>
                             <ExternalLink className="w-3.5 h-3.5 opacity-75" />

@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Printer, Bell, Check, Mail, Share2, Link as LinkIcon, ExternalLink, FileText, Globe, Copy, CheckCheck, DollarSign } from 'lucide-react';
 import { JobAlert } from '../types';
 import { saveSubscriberToFirestore, SubscriberRecord } from '../services/firestoreService';
+import { openInDefaultBrowser, isStandaloneApp } from '../utils/urlUtils';
 
 interface JobDetailModalProps {
   job: JobAlert | null;
@@ -650,10 +651,17 @@ export const JobDetailModal: React.FC<JobDetailModalProps> = ({ job, onClose }) 
                         <span className="hidden xs:inline">{copiedLinkType === 'apply' ? 'Copied' : 'Copy'}</span>
                       </button>
                       <a
-                        href={applyUrl} target="_blank"
-                        
-                        rel="noopener noreferrer"
+                        href={applyUrl} 
+                        target="_blank"
+                        rel="noopener noreferrer external"
+                        onClick={(e) => {
+                          if (isStandaloneApp()) {
+                            e.preventDefault();
+                            openInDefaultBrowser(applyUrl, e);
+                          }
+                        }}
                         className="flex-1 sm:flex-none bg-gradient-to-r from-amber-500 via-yellow-500 to-amber-600 hover:from-amber-600 hover:to-yellow-600 text-slate-950 font-black px-4 py-2 rounded-lg text-xs shadow-md transition-all flex items-center justify-center gap-1.5 active:scale-95 text-center"
+                        title="Open Apply Online in default browser"
                       >
                         <span>Click Here</span>
                         <ExternalLink className="w-3.5 h-3.5" />
@@ -693,10 +701,17 @@ export const JobDetailModal: React.FC<JobDetailModalProps> = ({ job, onClose }) 
                         <span className="hidden xs:inline">{copiedLinkType === 'notification' ? 'Copied' : 'Copy'}</span>
                       </button>
                       <a
-                        href={notifUrl} target="_blank"
-                        
-                        rel="noopener noreferrer"
+                        href={notifUrl} 
+                        target="_blank"
+                        rel="noopener noreferrer external"
+                        onClick={(e) => {
+                          if (isStandaloneApp()) {
+                            e.preventDefault();
+                            openInDefaultBrowser(notifUrl, e);
+                          }
+                        }}
                         className="flex-1 sm:flex-none bg-red-600 hover:bg-red-700 text-white font-bold px-3.5 py-1.5 rounded-lg text-xs shadow transition-all flex items-center justify-center gap-1.5 active:scale-95 text-center"
+                        title="Download Notification in default browser"
                       >
                         <span>Download PDF</span>
                         <ExternalLink className="w-3.5 h-3.5" />
@@ -736,10 +751,17 @@ export const JobDetailModal: React.FC<JobDetailModalProps> = ({ job, onClose }) 
                         <span className="hidden xs:inline">{copiedLinkType === 'official' ? 'Copied' : 'Copy'}</span>
                       </button>
                       <a
-                        href={officialUrl} target="_blank"
-                        
-                        rel="noopener noreferrer"
+                        href={officialUrl} 
+                        target="_blank"
+                        rel="noopener noreferrer external"
+                        onClick={(e) => {
+                          if (isStandaloneApp()) {
+                            e.preventDefault();
+                            openInDefaultBrowser(officialUrl, e);
+                          }
+                        }}
                         className="flex-1 sm:flex-none bg-slate-800 hover:bg-slate-900 text-amber-300 border border-amber-500/40 font-bold px-3.5 py-1.5 rounded-lg text-xs shadow transition-all flex items-center justify-center gap-1.5 active:scale-95 text-center"
+                        title="Visit Official Website in default browser"
                       >
                         <span>Visit Website</span>
                         <ExternalLink className="w-3.5 h-3.5" />

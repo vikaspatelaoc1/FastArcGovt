@@ -1,5 +1,18 @@
 import { isSyntheticOrBrokenDomain } from './govtPortals';
 
+/**
+ * Checks if the app is currently running in standalone (installed PWA / mobile app) mode.
+ */
+export function isStandaloneApp(): boolean {
+  if (typeof window === 'undefined') return false;
+  const isStandalone = 
+    window.matchMedia?.('(display-mode: standalone)').matches ||
+    (window.navigator as any).standalone === true ||
+    document.referrer.includes('android-app://') ||
+    window.location.search.includes('mode=app');
+  return !!isStandalone;
+}
+
 export function normalizeExternalUrl(url?: string): string {
   if (!url || typeof url !== 'string' || !url.trim() || url.trim() === '#') return '';
   
@@ -51,4 +64,46 @@ export function normalizeExternalUrl(url?: string): string {
     return '';
   }
 }
+
+/**
+ * Opens any external job/portal link in the user's DEFAULT BROWSER on a NEW PAGE.
+ * Specifically configured for installed mobile apps (PWA / Android standalone),
+ * ensuring the phone's default browser (Chrome, Samsung Internet, Firefox, Edge, etc.)
+ * is invoked instead of staying trapped in a webview.
+ */
+export function openInDefaultBrowser(url: string, e?: React.MouseEvent | MouseEvent | Event): void {
+  if (e) {
+    if ('stopPropagation' in e && typeof e.stopPropagation === 'function') {
+      e.stopPropagation();
+    }
+  }
+
+  const targetUrl = normalizeExternalUrl(url);
+  if (!targetUrl) return;
+
+  if (typeof window === 'undefined') return;
+
+  try {
+    // 1. Create a dynamic, untruncated link element with explicit external rel
+    const link = document.createElement('a');
+    link.href = targetUrl;
+    link.target = '_blank';
+    link.rel = 'noopener noreferrer external';
+    link.setAttribute('target', '_blank');
+    link.setAttribute('rel', 'noopener noreferrer external');
+
+    // On mobile devices / Android PWA, standard programmatic click on anchor with rel="external"
+    // triggers the OS default browser intent
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  } catch {
+    try {
+      window.open(targetUrl, '_blank', 'noopener,noreferrer');
+    } catch {
+      window.location.href = targetUrl;
+    }
+  }
+}
+
 

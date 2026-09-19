@@ -1,5 +1,5 @@
 import React from 'react';
-import { normalizeExternalUrl } from '../utils/urlUtils';
+import { normalizeExternalUrl, openInDefaultBrowser, isStandaloneApp } from '../utils/urlUtils';
 import { ExternalLink } from 'lucide-react';
 import { trackLinkClick } from '../utils/trafficAnalytics';
 
@@ -49,6 +49,13 @@ export function SafeExternalLink({
 
   const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     trackLinkClick(targetUrl, linkType, jobTitle, category);
+    
+    // In standalone mobile PWA or mobile app mode, ensure opening in user's default browser
+    if (isStandaloneApp()) {
+      e.preventDefault();
+      openInDefaultBrowser(targetUrl, e);
+    }
+    
     if (onClick) onClick(e);
   };
 
@@ -56,7 +63,7 @@ export function SafeExternalLink({
     <a
       href={targetUrl}
       target="_blank"
-      rel="noopener noreferrer"
+      rel="noopener noreferrer external"
       onClick={handleClick}
       title={isFallback ? 'Visit Official National / State Govt Portal' : undefined}
       className={`inline-flex items-center justify-center ${className || ''}`}
@@ -67,3 +74,4 @@ export function SafeExternalLink({
     </a>
   );
 }
+
